@@ -252,6 +252,41 @@ const CHAPTERS = [
     },
   },
   {
+    id: "oderco-checkout", num: "", cap: "PEÇA", domain: "E-COMMERCE · B2B", cat: "ecommerce",
+    project: "Checkout Oderço", descriptor: "Checkout B2B por nota fiscal (Grupo Oderço)", title: "Checkout Oderço",
+    sfx: "ザッ", cover: "volume/assets/projetos/checkout/cover.png",
+    links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null },
+    premise: "Compra B2B de nota fiscal não pode ser um formulário de fé.",
+    role: "UX e construção do fluxo de checkout (steps + revisão).",
+    surface: "Web · E-commerce B2B", year: "2026",
+    fact: "Checkout B2B do Grupo Oderço — compra por nota fiscal, por filial, com crédito RMA",
+    tldr: {
+      papel: "Design e build do checkout em steps, com revisão",
+      oque: "Checkout B2B por nota fiscal: logística, pagamento e revisão por filial",
+      resultado: "Fluxo testado com funcionários e clientes [confirmar adoção]",
+    },
+    problema: {
+      t: "Pedido B2B alto, margem de erro zero",
+      p: ["Comprar no atacado por nota fiscal envolve filial, frete (CIF/FOB/retirada), crédito (RMA/depósito) e pedidos de milhares de reais. Errar custa caro — e o fluxo precisava dar confiança antes de confirmar.",
+          "A restrição: ser amigável sem esconder o que o comprador B2B precisa conferir."],
+    },
+    decisoes: [
+      { d: "Quebrei em steps com revisão final (Carrinho → Pedido → Revisão)", r: "porque pedido B2B grande exige conferência — revisar o conteúdo antes de fechar derruba o erro e a insegurança." },
+      { d: "Resumo da filial e progresso do pedido sempre à vista", r: "porque o comprador precisa ver itens, total e onde está no fluxo o tempo todo — nada de checkout às cegas." },
+      { d: "Testei com funcionários e clientes reais", r: "porque quem compra por NF tem manhas (frete, crédito RMA) que só aparecem no uso. Iterei com eles antes de fechar." },
+    ],
+    solucao: {
+      t: "Checkout B2B em steps, sem susto",
+      p: ["Fluxo por filial e nota fiscal: logística (CIF/FOB/retirada) com opções de frete, uso de crédito (RMA/depósito), forma de pagamento e revisão final — com resumo da filial e progresso do pedido sempre visíveis."],
+      slots: 2,
+      shots: ["volume/assets/projetos/checkout/cover.png", "volume/assets/projetos/checkout/s1.png"],
+    },
+    resultado: {
+      t: "Confiança pra fechar pedido grande",
+      p: ["Steps e revisão deram ao comprador B2B o controle que faltava, testado com funcionários e clientes. [confirmar adoção / redução de erro]"],
+    },
+  },
+  {
     id: "hub-oderco", num: "", cap: "PEÇA", domain: "SAAS · FERRAMENTA", cat: "saas",
     project: "Hub Oderço", descriptor: "Hub multi-marca de marketing", title: "Hub Oderço",
     sfx: "ガチャ", cover: "volume/assets/projetos/hub/cover.png",
@@ -455,6 +490,7 @@ const PROJECTS = [
   { id: "4yu",         title: "4YU MKT",       cat: "web",       domain: "Website",             fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   // E-COMMERCE  (favorito: PCYES)
   { id: "pcyes",       title: "PCYES",         cat: "ecommerce", domain: "E-commerce",          fav: true,  chapterId: "pcyes",   cover: "volume/assets/projetos/pcyes/cover.png",     links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null } },
+  { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: "oderco-checkout", cover: "volume/assets/projetos/checkout/cover.png", links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
   { id: "tonante",     title: "Tonante",       cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "odex-ec",     title: "Odex",          cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
