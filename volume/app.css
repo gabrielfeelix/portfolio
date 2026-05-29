@@ -164,6 +164,10 @@
 
 /* real company logos (fallback to the [logo] placeholder if missing) */
 .co-logo-img { max-width: 82%; max-height: 78%; object-fit: contain; display: block; }
+
+/* real project covers (screenshots) — fill the panel, fallback is MangaPlate */
+.rc-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.cover-art .cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 @media (hover: hover) and (pointer: fine) {
   body.cursor-none, body.cursor-none a, body.cursor-none button, body.cursor-none [role='button'] { cursor: none; }
 }

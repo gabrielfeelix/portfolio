@@ -197,7 +197,7 @@ function RailCover({ proj, off, dist, hidden, focused, hovered, unit, onClick, o
         <span className="rc-vol">{projTag(proj)}</span>
         <span className="rc-cat">{proj.domain}</span>
       </span>
-      <span className="rc-art"><MangaPlate />{(focused || hovered) ? <span className="rc-sl"></span> : null}{proj.fav ? <span className="rc-fav">Favorito</span> : null}</span>
+      <span className="rc-art">{proj.cover ? <img className="rc-cover" src={proj.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}{(focused || hovered) ? <span className="rc-sl"></span> : null}{proj.fav ? <span className="rc-fav">Favorito</span> : null}</span>
       <span className="rc-spine" aria-hidden="true"></span>
       <span className="rc-obi">
         <span className="rc-title">{proj.title}</span>

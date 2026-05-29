@@ -29,8 +29,9 @@ function Tobira({ chap }) {
           <div className="cover-scroll"><span className="dn">↓</span> Role para ler</div>
         </div>
         <div className="cover-art">
-          <MangaPlate dark />
-          <Organic variant={chapOrg(chap.id)} size={150} className="cover-org" onInk />
+          {chap.cover
+            ? <img className="cover-img" src={chap.cover} alt={`Tela de ${chap.title}`} loading="lazy" draggable="false" />
+            : <><MangaPlate dark /><Organic variant={chapOrg(chap.id)} size={150} className="cover-org" onInk /></>}
         </div>
       </div>
     </section>
