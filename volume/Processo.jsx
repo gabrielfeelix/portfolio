@@ -5,7 +5,7 @@
    vermilion for energy. Honest and fast: preempts "qual seu processo?".
    ===================================================================== */
 /* one organic ink loader per method step — motion that reads as "working" */
-const PROC_ORG = ["pulse", "orbit", "cluster", "three", "split", "merge"];
+const PROC_ORG = ["split", "bounce", "trail", "merge", "jelly", "drip"];
 
 function Processo({ onContact }) {
   const steps = PROCESSO;                 // 6 steps, read top→bottom

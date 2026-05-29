@@ -5,6 +5,12 @@
    ===================================================================== */
 
 /* ---- [1] TOBIRA-E (inverted chapter cover) ---- */
+/* each chapter cover gets its own ink loader (deterministic per project) */
+const CHAP_ORG = ["split", "twin", "bounce", "merge", "trail", "jelly", "drip", "yin"];
+function chapOrg(id) {
+  const h = [...String(id)].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return CHAP_ORG[h % CHAP_ORG.length];
+}
 function Tobira({ chap }) {
   return (
     <section className="cover">
@@ -24,7 +30,7 @@ function Tobira({ chap }) {
         </div>
         <div className="cover-art">
           <MangaPlate dark />
-          <Organic variant="orbit" size={140} className="cover-org" onInk />
+          <Organic variant={chapOrg(chap.id)} size={150} className="cover-org" onInk />
         </div>
       </div>
     </section>

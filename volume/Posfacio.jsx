@@ -59,7 +59,7 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject }) {
           </div>
         </div>
 
-        <Organic variant="ripple" size={72} className="pos-org" />
+        <Organic variant="bounce" size={76} className="pos-org" />
 
         <div className="pos-certs">
           <div className="pos-k">Certificados &amp; formação</div>
