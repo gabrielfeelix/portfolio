@@ -161,6 +161,9 @@
 .cursor-layer.on-red .cursor-dot { background: var(--paper); }
 .cursor-layer.on-red .cursor-ring { border-color: var(--paper); }
 .cursor-layer.on-red .cursor-ring.hover { border-color: var(--paper); background: color-mix(in srgb, var(--paper) 18%, transparent); }
+
+/* real company logos (fallback to the [logo] placeholder if missing) */
+.co-logo-img { max-width: 82%; max-height: 78%; object-fit: contain; display: block; }
 @media (hover: hover) and (pointer: fine) {
   body.cursor-none, body.cursor-none a, body.cursor-none button, body.cursor-none [role='button'] { cursor: none; }
 }
@@ -201,8 +204,10 @@
 .hd-float .nav-contact-d { padding: 7px 14px; }
 .hd-float.hd-hidden .v-nav { transform: translate(-50%, -170%); opacity: 0; pointer-events: none; }
 @media (max-width: 760px) {
-  .hd-float .v-nav { left: var(--gutter); right: var(--gutter); transform: none; max-width: none; width: auto; border-radius: 16px; top: 10px; }
+  .hd-float .v-nav { left: var(--gutter); right: var(--gutter); transform: none; max-width: none; width: auto; border-radius: 16px; top: 10px; justify-content: space-between; }
   .hd-float.hd-hidden .v-nav { transform: translateY(-170%); }
+  /* restore the dropdown (the desktop pill makes links inline) → just brand + burger */
+  .hd-float .v-navlinks { position: absolute; top: 100%; left: 0; right: 0; transform: none; gap: 0; }
 }
 
 /* =====================================================================
@@ -941,10 +946,11 @@
   .splash { min-height: 82vh; }
   .splash-kana { display: none; }
   .splash-center { width: 100%; max-width: 100%; }
-  .splash-h { font-size: clamp(1.5rem, 6.6vw, 2.4rem); line-height: 1.05; }
-  .splash-h .sh-line { gap: .22em; }
-  .rotw-box { max-width: 100%; }
-  .splash-id { display: flex; flex-wrap: wrap; justify-content: center; font-size: 10.5px; letter-spacing: .12em; line-height: 1.7; }
-  .splash-sub { font-size: 1rem; }
-  .hero-field .hf-x { display: none; }
+  /* bigger, readable headline on phones (WCAG 1.4.4); rotate box gets its own
+     smaller size so the longest phrase still fits the screen */
+  .splash-h { font-size: clamp(2rem, 9vw, 2.9rem); line-height: 1.04; }
+  .splash-h .sh-line { gap: .25em; }
+  .splash-h .rotw-box { font-size: .62em; max-width: 100%; }
+  .splash-id { display: flex; flex-wrap: wrap; justify-content: center; font-size: 11px; letter-spacing: .12em; line-height: 1.7; }
+  .splash-sub { font-size: 1.02rem; }
 }

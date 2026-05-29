@@ -232,7 +232,7 @@ const VOL = "VOL. 2026";
 const COMPANIES = [
   {
     id: "ttt", name: "TT&T", role: "Onde comecei", period: "Início de carreira", atual: false,
-    note: "Primeiros produtos de verdade",
+    note: "Primeiros produtos de verdade", logo: "volume/assets/logos/ttt.png",
     blurb: "Meu primeiro contato com produto de verdade. Onde a vontade de desenhar e construir virou ofício.",
     story: [
       { k: "O que fiz", p: "Caí de cabeça nas primeiras telas que foram pro ar. [conte o que você tocou na TT&T]" },
@@ -243,7 +243,7 @@ const COMPANIES = [
   },
   {
     id: "locar", name: "Locarmais", role: "Produto de verdade", period: "Produto", atual: false,
-    note: "IMMO, Signamais e cia",
+    note: "IMMO, Signamais e cia", logo: "volume/assets/logos/locarmais.png",
     blurb: "Onde desenhei produto de verdade e aprendi o handoff de ponta a ponta.",
     story: [
       { k: "O que construí", p: "Website Locarmais, Signamais e IMMO. Da interface ao que sustenta ela por trás." },
@@ -254,7 +254,7 @@ const COMPANIES = [
   },
   {
     id: "oderco", name: "Grupo Oderço", role: "Design de um time de marcas", period: "Atual", atual: true,
-    note: "PCYES, Odex, Tonante, Vinik, Skul",
+    note: "PCYES, Odex, Tonante, Vinik, Skul", logo: "volume/assets/logos/oderco.png",
     blurb: "Hoje. Toco o design de um time inteiro de marcas, do e-commerce ao SaaS.",
     story: [
       { k: "O desafio", p: "Manter coerência e ritmo desenhando para várias marcas ao mesmo tempo. [detalhe o desafio do seu jeito]" },
@@ -465,4 +465,15 @@ function ProtoLinks({ links = {}, onInk }) {
   );
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo });
+/* a company logo: real image when present, the marked placeholder otherwise */
+function CompanyLogo({ company, kind = "qsc" }) {
+  const [err, setErr] = useState(false);
+  if (company.logo && !err) {
+    return <img className="co-logo-img" src={company.logo} alt={`Logo ${company.name}`}
+                draggable="false" onError={() => setErr(true)} />;
+  }
+  return (<><span className={`${kind}-logo-mark`}>{company.name}</span>
+           <span className={`${kind}-logo-cap`}>[ logo ]</span></>);
+}
+
+Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo });

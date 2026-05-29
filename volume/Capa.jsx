@@ -73,7 +73,6 @@ function HeroField() {
       <path className="hf-path" d="M-40 170 C 200 50, 410 320, 650 200 S 1050 110, 1260 250" />
       <path className="hf-red"  d="M-40 360 C 250 470, 450 170, 710 360 S 1110 490, 1290 300" />
       <path className="hf-path" d="M-40 470 C 300 360, 600 540, 900 420 S 1160 360, 1260 470" />
-      <g className="hf-x"><line x1="552" y1="267" x2="570" y2="285" /><line x1="570" y1="267" x2="552" y2="285" /></g>
     </svg>
   );
 }
@@ -341,7 +340,7 @@ function QuemSou({ onSobre, onEmpresa }) {
             </div>
           </div>
           <button type="button" className="qsc-card" onClick={() => onEmpresa(c.id)} aria-label={`Ver minha história na ${c.name}`}>
-            <span className="qsc-logo"><span className="qsc-logo-mark">{c.name}</span><span className="qsc-logo-cap">[ logo ]</span></span>
+            <span className="qsc-logo"><CompanyLogo company={c} kind="qsc" /></span>
             <span className="qsc-body">
               <span className="qsc-name">{c.name}</span>
               <span className="qsc-role">{c.role}</span>

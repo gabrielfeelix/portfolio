@@ -60,9 +60,8 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
             <div className="emp-role">{company.role}</div>
             <p className="emp-blurb">{company.blurb}</p>
           </div>
-          <div className="emp-logo" aria-label="Logo da empresa (a preencher)">
-            <span className="emp-logo-mark">{company.name}</span>
-            <span className="emp-logo-cap">[ logo ]</span>
+          <div className="emp-logo" aria-label={`Logo ${company.name}`}>
+            <CompanyLogo company={company} kind="emp" />
           </div>
         </div>
         <div className="shell emp-meta">
