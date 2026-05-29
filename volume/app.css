@@ -72,10 +72,18 @@
 /* deeper-red screentone so the fill reads as ink, not a flat scream */
 .splash::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
   background-image: radial-gradient(var(--vermilion-ink) 1.2px, transparent 1.3px); background-size: 9px 9px; }
-/* big organic ink blobs drifting behind */
-.splash .hf-blob { position: absolute; z-index: 0; opacity: .08; }
-.splash .hf-blob-a { top: -8%; left: -6%; }
-.splash .hf-blob-b { bottom: -10%; right: -4%; }
+/* manga 集中線 speed-lines (top-left) + halftone burst (bottom-right) */
+.splash .hero-speedlines { position: absolute; z-index: 0; pointer-events: none;
+  width: 900px; height: 900px; top: -440px; left: -440px;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(246,243,236,.5) 0 .32deg, transparent .32deg 3deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 26%, #000 64%); mask-image: radial-gradient(circle, transparent 26%, #000 64%);
+  opacity: .32; }
+.splash .hero-halftone { position: absolute; z-index: 0; pointer-events: none;
+  width: 420px; height: 420px; right: -90px; bottom: -90px;
+  background-image: radial-gradient(var(--ink) 2px, transparent 2.4px); background-size: 13px 13px;
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, #000, transparent 68%); mask-image: radial-gradient(circle at 100% 100%, #000, transparent 68%);
+  opacity: .22; }
+.splash.lit .hero-speedlines { animation: org-spin 80s linear infinite; }
 /* organic black ink dots — morphing, not static circles */
 .splash .hf-orb { position: absolute; z-index: 1; }
 .splash .hf-orb-a { left: 12%; top: 57%; }
@@ -145,6 +153,10 @@
   transition: width .28s ease, height .28s ease, border-color .28s ease, background .28s ease; }
 .cursor-ring.hover { width: 46px; height: 46px; border-color: var(--vermilion);
   background: color-mix(in srgb, var(--vermilion) 14%, transparent); }
+/* over the red cover: flip to white so it never muddies on vermelho */
+.cursor-layer.on-red .cursor-dot { background: var(--paper); }
+.cursor-layer.on-red .cursor-ring { border-color: var(--paper); }
+.cursor-layer.on-red .cursor-ring.hover { border-color: var(--paper); background: color-mix(in srgb, var(--paper) 18%, transparent); }
 @media (hover: hover) and (pointer: fine) {
   body.cursor-none, body.cursor-none a, body.cursor-none button, body.cursor-none [role='button'] { cursor: none; }
 }
@@ -539,7 +551,7 @@
   }
   .splash-title .ln, .splash-title .trail { opacity: 1 !important; transform: none !important; }
   .splash.lit .hero-field, .splash.lit .hf-path, .splash.lit .hf-red, .splash.lit .splash-h,
-  .rotw-ch, .ss-wheel { animation: none !important; }
+  .splash.lit .hero-speedlines, .rotw-ch, .ss-wheel { animation: none !important; }
   .rotw-ch { transform: none !important; }
   .pageturn { display: none !important; }
 }

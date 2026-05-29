@@ -11,7 +11,7 @@
 /* ---- Fonts ---------------------------------------------------------
    Self-hosted (user-uploaded .ttf): Anton, Bangers, Cinzel.
    CDN (Google Fonts): Oswald, Hanken Grotesk, Caveat. */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Caveat:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chonburi&family=Oswald:wght@300;400;500;600;700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Caveat:wght@500;600;700&display=swap');
 
 @font-face {
   font-family: 'Anton';
@@ -71,7 +71,7 @@
      Body/dialogue  : Hanken Grotesk — humanist sans, the reading voice
      Hand (sparing) : Caveat — only true "dialogue" asides
      ============================================================ */
-  --font-display: 'Anton', 'Oswald', Impact, sans-serif;
+  --font-display: 'Chonburi', 'Anton', 'Oswald', Impact, sans-serif;
   --font-sfx:     'Bangers', 'Anton', Impact, cursive;     /* onomatopoeia only */
   --font-editorial:'Cinzel', 'Times New Roman', Georgia, serif; /* edition accents, numerals */
   --font-condensed:'Oswald', 'Anton', sans-serif;

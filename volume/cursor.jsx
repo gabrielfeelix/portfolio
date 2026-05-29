@@ -1,9 +1,10 @@
 /* =====================================================================
    VOLUME — cursor.jsx
    Custom cursor: a fast ink dot + a slower trailing ring that grows and
-   inks vermelho over interactive elements. Disabled on touch / reduced
-   motion (native cursor stays). Positions are written straight to the DOM
-   in the rAF loop (no per-frame React re-render).
+   inks vermelho over interactive elements, and flips to white over the red
+   cover. Disabled on touch / reduced motion (native cursor stays).
+   Positions are written straight to the DOM in the rAF loop (no per-frame
+   React re-render).
    ===================================================================== */
 function CursorDot() {
   const mouse = useRef({ x: 0, y: 0 });
@@ -13,6 +14,7 @@ function CursorDot() {
   const ringEl = useRef(null);
   const [enabled, setEnabled] = useState(false);
   const [hovering, setHovering] = useState(false);
+  const [onRed, setOnRed] = useState(false);
 
   useEffect(() => {
     const fine = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
@@ -23,19 +25,22 @@ function CursorDot() {
 
     const SEL = "a, button, input, textarea, select, [role='button'], [tabindex], .rail-cover, .comp, .cert, .qsc-card, .dif-tag, .next-chap, .eq-card";
     const move = (e) => { mouse.current = { x: e.clientX, y: e.clientY }; };
-    const over = (e) => { if (e.target.closest && e.target.closest(SEL)) setHovering(true); };
-    const out = (e) => { if (e.target.closest && e.target.closest(SEL)) setHovering(false); };
+    const over = (e) => {
+      const t = e.target;
+      if (!t || !t.closest) return;
+      setHovering(!!t.closest(SEL));
+      setOnRed(!!t.closest(".splash"));
+    };
     window.addEventListener("mousemove", move);
     document.addEventListener("mouseover", over);
-    document.addEventListener("mouseout", out);
 
     const lerp = (a, b, f) => a + (b - a) * f;
     let raf;
     const tick = () => {
-      dot.current.x = lerp(dot.current.x, mouse.current.x, 0.2);
-      dot.current.y = lerp(dot.current.y, mouse.current.y, 0.2);
-      ring.current.x = lerp(ring.current.x, mouse.current.x, 0.1);
-      ring.current.y = lerp(ring.current.y, mouse.current.y, 0.1);
+      dot.current.x = lerp(dot.current.x, mouse.current.x, 0.3);
+      dot.current.y = lerp(dot.current.y, mouse.current.y, 0.3);
+      ring.current.x = lerp(ring.current.x, mouse.current.x, 0.16);
+      ring.current.y = lerp(ring.current.y, mouse.current.y, 0.16);
       if (dotEl.current) dotEl.current.style.transform = `translate(${dot.current.x}px, ${dot.current.y}px) translate(-50%, -50%)`;
       if (ringEl.current) ringEl.current.style.transform = `translate(${ring.current.x}px, ${ring.current.y}px) translate(-50%, -50%)`;
       raf = requestAnimationFrame(tick);
@@ -45,7 +50,6 @@ function CursorDot() {
     return () => {
       window.removeEventListener("mousemove", move);
       document.removeEventListener("mouseover", over);
-      document.removeEventListener("mouseout", out);
       cancelAnimationFrame(raf);
       document.body.classList.remove("cursor-none");
     };
@@ -53,7 +57,7 @@ function CursorDot() {
 
   if (!enabled) return null;
   return (
-    <div className="cursor-layer" aria-hidden="true">
+    <div className={`cursor-layer ${onRed ? "on-red" : ""}`} aria-hidden="true">
       <div ref={dotEl} className="cursor-dot"></div>
       <div ref={ringEl} className={`cursor-ring ${hovering ? "hover" : ""}`}></div>
     </div>

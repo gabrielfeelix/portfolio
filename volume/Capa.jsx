@@ -102,8 +102,8 @@ function RotateWord({ items, interval = 2300 }) {
 function Splash({ onRead, onContact, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
-      <Organic onInk variant="wave" size={360} className="hf-blob hf-blob-a" />
-      <Organic onInk variant="morph" size={280} className="hf-blob hf-blob-b" />
+      <span className="hero-speedlines" aria-hidden="true"></span>
+      <span className="hero-halftone" aria-hidden="true"></span>
       <HeroField />
       <Organic variant="morph" size={26} className="hf-orb hf-orb-a" />
       <Organic variant="wave" size={34} className="hf-orb hf-orb-b" />
