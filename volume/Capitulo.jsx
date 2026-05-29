@@ -115,7 +115,8 @@ function Decisoes({ chap }) {
 
 /* ---- [4] SOLUÇÃO ---- */
 function Solucao({ chap }) {
-  const n = chap.solucao.slots || 2;
+  const shots = chap.solucao.shots || [];
+  const n = shots.length || chap.solucao.slots || 2;
   const spans = n >= 3 ? ["c8", "c4", "wide"] : ["c8", "c4"];
   return (
     <>
@@ -141,7 +142,9 @@ function Solucao({ chap }) {
               const style = span === "wide" ? { gridColumn: "1 / -1", aspectRatio: "21 / 9" } : {};
               return (
                 <div className={cls} key={i} style={style}>
-                  <MangaPlate />
+                  {shots[i]
+                    ? <img className="sol-img" src={shots[i]} alt={`${chap.title} — tela ${i + 1}`} loading="lazy" draggable="false" />
+                    : <MangaPlate />}
                 </div>
               );
             })}
