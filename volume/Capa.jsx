@@ -128,7 +128,7 @@ function Splash({ onRead, onContact, lit }) {
 /* ---------- [C] DIFERENCIAL — categories that filter + reveal ------- */
 function Diferencial({ onPick, active }) {
   const tags = [["saas", "SaaS"], ["mobile", "Mobile"], ["desktop", "Desktop"], ["web", "Web"], ["ecommerce", "E-commerce"]];
-  const byCat = (k) => PROJECTS.filter((p) => p.cat === k);
+  const byCat = (k) => PROJECTS.filter((p) => p.cat === k && !p.hidden);
   return (
     <section className="dif">
       <div className="shell">
@@ -303,7 +303,8 @@ function FilterBar({ filter, setFilter }) {
 }
 
 function Sumario({ onOpen, filter, setFilter }) {
-  const items = filter === "todos" ? PROJECTS : PROJECTS.filter((p) => p.cat === filter);
+  const shown = PROJECTS.filter((p) => !p.hidden);
+  const items = filter === "todos" ? shown : shown.filter((p) => p.cat === filter);
   return (
     <section className="shell" style={{ paddingTop: "var(--ma-6)" }}>
       <div className="sec-head" id="sumario">

@@ -727,8 +727,8 @@ const PROJECTS = [
   // E-COMMERCE  (favorito: PCYES)
   { id: "pcyes",       title: "PCYES",         cat: "ecommerce", domain: "E-commerce",          fav: true,  chapterId: "pcyes",   cover: "volume/assets/projetos/pcyes/cover.png",     links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null } },
   { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: "oderco-checkout", cover: "volume/assets/projetos/checkout/cover.png", links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
-  { id: "tonante",     title: "Tonante",       cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "odex-ec",     title: "Odex",          cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "tonante",     title: "Tonante",       cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      hidden: true, links: { vercel: null, figma: null } },
+  { id: "odex-ec",     title: "Odex",          cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      hidden: true, links: { vercel: null, figma: null } },
   { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: "dropchina", links: { vercel: null, figma: null } },
 ];
 
