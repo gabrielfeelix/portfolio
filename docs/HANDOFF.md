@@ -32,13 +32,19 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
 - Tonante e Odex e-commerce **ocultos** (`hidden:true` em PROJECTS).
 - **Sobre** reescrito (valores na frente, menos cringe).
 - A11y rodadas 1–2: skip-link, `sr-only` no rotw, `aria-live` no rail, contraste de texto/botão corrigido (`--wash-3` escuro, textos vermelhos→`vermilion-ink`, btn texto `#fff`). Rodapé do rail centralizado no mobile, tap targets 44px.
-- **axe desktop: 28→8** violações (os 8 = capas laterais esmaecidas do coverflow).
+- **A11y rodada 3 (validada por view, axe 1440/768/390):** achei e corrigi o que rodadas 1–2 não pegaram (só tinham auditado a home). Processo tinha `role="tablist"`+`aria-selected` em botão comum (2 críticas) → virou `role="group"`+`aria-current`. Cluster de contraste: `--vermilion`(#E4231B=4.16) como texto pequeno → `--vermilion-ink`(#B01510=6.40) em chapter `.tldr .l`+`.live`, nav `.active`, Sobre `.comp-go`, Empresa `.es-k`; `.comp-step`/`.es-n` em `--wash-2`(1.97)→`--wash-3`(5.82); `.comp-now` bg→vermilion-ink. **Resultado: chapter/processo/sobre/empresa = 0 violação no axe nas 3 viewports.**
+- **Focus management SPA:** ativar link/capítulo jogava foco no `<body>` (Tab pulava skip-link+header). App agora foca `#conteudo` a cada troca de view (menos mount inicial). Tab order traçado nas 5 views: ordem lógica, focus-ring em todo stop, capas laterais do coverflow fora do tab order (navega por setas), 1 `<main>`, h1→h2, imgs com alt.
+- **Footer no Sobre** (era a única view sem Colofão) + **footer nav** (Início/Projetos/Sobre) via prop `onNav` no Colofão, threaded do App em todas as 5 páginas.
+- **Tablet 641–1024 validado** (screenshots 768+1024 das 5 views): layouts seguram nos breakpoints existentes (880/760/640), sem breakpoint dedicado novo. Bug corrigido: `.emp-meta` (`.shell` com `padding:0`) colava no canto < 1240px → `padding: 0 var(--gutter)`.
+- **Breadcrumb chapter/empresa:** era `position:sticky` (congelava como barra sobre a capa escura ao rolar) → `static`. Nav flutuante já navega.
+- **axe home: 1 regra restante = 8 nós das capas laterais esmaecidas do coverflow.** DECISÃO do Gabriel (2026-05-29): **ACEITAR** (preview periférico decorativo, borrado/cinza/fade; a capa focada carrega o texto legível). Exceção consciente WCAG 1.4.3. Não mexer.
 
 ## PENDENTE (continuar aqui)
-1. **Tablet (641–1024px):** breakpoints dedicados; hoje cai nas regras ≤880/≤640. Validar Sobre/Processo/Empresa/Capítulo/Home em 768 e 1024.
-2. **Passe profundo teclado/leitor de tela:** testar Tab do topo ao rodapé em CADA view (home, capítulo, processo, sobre, empresa), revisar ordem de foco, landmarks (`<main>` único, h1→h2), `alt` significativo nas capas vs `aria-hidden` no decorativo. Meta: 0 violação séria no axe + navegação 100% por teclado.
-3. **Os 8 contrastes do coverflow:** decidir com Gabriel se clareia menos as capas laterais (menos profundidade) pra zerar, OU aceitar (são preview periférico).
-4. **Conteúdo:** ~13 marcadores `[confirmar]` no `data.jsx` (números/status que só o Gabriel confirma). Traxium sem print (ele tem em casa). IMMO: ele vai mandar Figma. Logos TT&T/Locarmais/Grupo-Oderço: ele manda (vão em `volume/assets/logos/`, já há fallback).
+1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
+2. ✅ FEITO — Passe teclado/leitor (focus mgmt + Tab order nas 5 views + landmarks).
+3. ✅ DECIDIDO — coverflow: Gabriel aceitou as 8 (não mexer).
+4. **Conteúdo (único pendente real):** ~13 marcadores `[confirmar]` no `data.jsx` (números/status que só o Gabriel confirma). Traxium sem print (ele tem em casa). IMMO: ele vai mandar Figma. Logos TT&T/Locarmais/Grupo-Oderço: ele manda (vão em `volume/assets/logos/`, já há fallback).
+5. **Quirk pré-existente (fora de escopo, não regressão):** ao navegar pra um capítulo a partir de uma posição rolada, a pill flutuante começa escondida (lógica hide-on-scroll do Nav) até rolar pra cima. Mexer só com cuidado (Nav é comportamento sensível).
 
 ## VALIDAÇÃO SEM VIÉS (importante)
 Não confie nestas notas: **valide por conta própria** a cada rodada —
