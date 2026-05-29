@@ -8,7 +8,19 @@
 function Nav({ view, go, onContact }) {
   const [stamped, setStamped] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);   // hide on scroll-down, show on scroll-up
   useEffect(() => { const t = setTimeout(() => setStamped(true), 60); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (Math.abs(y - last) < 6) return;        // ignore jitter
+      setHidden(y > last && y > 90);             // down past a threshold = hide
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const nav = (fn) => { setMenuOpen(false); fn(); };
   const Link = ({ to, children, active }) => (
     <a href="#" className={active ? "active" : ""}
@@ -16,7 +28,7 @@ function Nav({ view, go, onContact }) {
   );
   return (
     <header>
-      <nav className="v-nav">
+      <nav className={`v-nav ${hidden && !menuOpen ? "nav-hidden" : ""}`}>
         <a className="v-brand" href="#" onClick={(e) => { e.preventDefault(); nav(() => go("home")); }}>
           <span className={`seal-wrap ${stamped ? "stamp-in" : ""}`}><Seal size={34} alt="Selo de Gabriel" /></span>
           <span className="wm">Volume</span>
