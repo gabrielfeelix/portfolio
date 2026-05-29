@@ -201,7 +201,6 @@
 
 /* chapter pages have their own top bar — push it clear of the floating pill */
 .chapter-main { padding-top: clamp(54px, 8vh, 74px); }
-.chapter-back { top: 64px; }
 
 /* ---- header modes: hidden over cover / floating pill past it ---- */
 .hd-hidden .v-nav { transform: translateY(-150%); opacity: 0; pointer-events: none; }
