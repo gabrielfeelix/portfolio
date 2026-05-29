@@ -12,6 +12,7 @@ const SCRIPTS = [
   "tweaks-panel.jsx",
   "data.jsx",
   "organic.jsx",
+  "cursor.jsx",
   "Capa.jsx",
   "Capitulo.jsx",
   "Processo.jsx",

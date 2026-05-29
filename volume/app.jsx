@@ -133,6 +133,7 @@ function App() {
 
   return (
     <>
+      <CursorDot />
       <Nav view={view} go={handleNav} onContact={goContact} />
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       {body}
