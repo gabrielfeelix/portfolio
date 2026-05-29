@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="volume/kit.css">
 <link rel="stylesheet" href="volume/chapter.css">
 <link rel="stylesheet" href="volume/app.css">
+<link rel="stylesheet" href="volume/organic.css">
 <style>
   /* critical boot styles — inline so the loader paints before anything compiles */
   #boot{position:fixed;inset:0;z-index:9999;background:#F6F3EC;display:flex;flex-direction:column;
@@ -62,6 +63,18 @@
       <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"></feGaussianBlur>
       <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"></feColorMatrix>
       <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+    </filter>
+    <!-- organic loaders: metaball weld + organic turbulence -->
+    <filter id="org-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"></feGaussianBlur>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"></feColorMatrix>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+    </filter>
+    <filter id="org-wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="3" result="noise">
+        <animate attributeName="baseFrequency" dur="9s" values="0.018;0.03;0.018" repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"></feDisplacementMap>
     </filter>
   </defs>
 </svg>

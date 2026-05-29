@@ -208,7 +208,7 @@ const PROCESSO = [
 
 const CONTATO = {
   whatsapp:  { label: "WhatsApp", display: "44 99877-5978", href: "https://wa.me/5544998775978" },
-  email:     { label: "E-mail", display: "[email@exemplo.com]", href: "mailto:" },
+  email:     { label: "E-mail", display: "gab.feelix@gmail.com", href: "mailto:gab.feelix@gmail.com" },
   linkedin:  { label: "LinkedIn", display: "/in/gabrielfeelix", href: "https://www.linkedin.com/in/gabrielfeelix/" },
   instagram: { label: "Instagram", display: "@gaabriel.feelix", href: "https://www.instagram.com/gaabriel.feelix/" },
 };

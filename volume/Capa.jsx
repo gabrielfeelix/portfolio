@@ -47,7 +47,7 @@ function Splash({ onRead, onContact, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
       <div className="shell">
-        <InkBlob size={150} className="splash-blob" />
+        <Organic variant="cluster" size={150} className="splash-org" />
         <div className="splash-charpanel" aria-hidden="true">
           <img className="splash-char" src="volume/assets/gabriel.png" alt="Ilustração de Gabriel" draggable="false" />
           <span className="scp-tone"></span>

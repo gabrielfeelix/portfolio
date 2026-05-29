@@ -1,0 +1,231 @@
+/* =====================================================================
+   VOLUME — organic.css
+   Organic ink loaders, namespaced port of assets/Organic loaders.
+   Decorative only (aria-hidden + pointer-events:none). All keyframes and
+   filter ids are org- prefixed to avoid clobbering the app's motion.
+   Intrinsic stage is 120px; the <Organic> component scales via --org-scale.
+   ===================================================================== */
+.org { display: grid; place-items: center; pointer-events: none; }
+.org .fig {
+  position: relative; width: 120px; height: 120px;
+  display: grid; place-items: center;
+  transform: scale(var(--org-scale, 1));
+}
+/* the variant stage carries the shape/animation; children anchor to it */
+.org .stage { position: relative; display: grid; place-items: center; }
+
+/* shared morph keyframes */
+@keyframes org-morphA {
+  0%,100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  33%     { border-radius: 67% 33% 38% 62% / 58% 62% 38% 42%; }
+  66%     { border-radius: 38% 62% 56% 44% / 64% 33% 67% 36%; }
+}
+@keyframes org-morphB {
+  0%,100% { border-radius: 60% 40% 55% 45% / 55% 48% 52% 45%; }
+  50%     { border-radius: 40% 60% 42% 58% / 42% 60% 40% 58%; }
+}
+@keyframes org-spin    { to { transform: rotate(360deg); } }
+@keyframes org-spinRev { to { transform: rotate(-360deg); } }
+@keyframes org-breathe { 0%,100% { transform: scale(0.62); } 50% { transform: scale(1); } }
+
+/* 01 · MORPH */
+.org .v-morph { width: 92px; height: 92px; background: var(--ink);
+  animation: org-morphA 4s ease-in-out infinite, org-spin 9s linear infinite; }
+
+/* 02 · CONTOUR */
+.org .v-contour { width: 92px; height: 92px; border: 7px solid var(--ink);
+  animation: org-morphA 3.4s ease-in-out infinite, org-spinRev 8s linear infinite; }
+
+/* 03 · PULSE */
+.org .v-pulse { width: 86px; height: 86px; background: var(--ink);
+  animation: org-morphB 3s ease-in-out infinite, org-breathe 2.2s ease-in-out infinite; }
+
+/* 04 · GOO ORBIT */
+.org .v-orbit { width: 120px; height: 120px; filter: url(#org-goo); }
+.org .v-orbit .core { position: absolute; inset: 50% auto auto 50%;
+  width: 46px; height: 46px; margin: -23px 0 0 -23px; background: var(--ink); border-radius: 50%; }
+.org .v-orbit .sat { position: absolute; inset: 50% auto auto 50%;
+  width: 60px; height: 60px; margin: -30px 0 0 -30px; transform-origin: center;
+  animation: org-spin 2.4s cubic-bezier(.6,0,.4,1) infinite; }
+.org .v-orbit .sat::after { content: ""; position: absolute; top: 0; left: 50%;
+  width: 24px; height: 24px; margin-left: -12px; background: var(--ink); border-radius: 50%; }
+
+/* 05 · MERGE */
+.org .v-merge { width: 120px; height: 80px; filter: url(#org-goo); }
+.org .v-merge span { position: absolute; top: 50%; width: 40px; height: 40px;
+  margin-top: -20px; background: var(--ink); border-radius: 50%; }
+.org .v-merge .a { left: 12px; animation: org-mergeA 1.9s ease-in-out infinite; }
+.org .v-merge .b { right: 12px; animation: org-mergeB 1.9s ease-in-out infinite; }
+@keyframes org-mergeA { 0%,100% { transform: translateX(0) scale(1); } 50% { transform: translateX(28px) scale(0.8); } }
+@keyframes org-mergeB { 0%,100% { transform: translateX(0) scale(1); } 50% { transform: translateX(-28px) scale(0.8); } }
+
+/* 06 · THREE */
+.org .v-three { width: 120px; height: 48px; filter: url(#org-goo);
+  display: flex; align-items: center; justify-content: center; gap: 6px; }
+.org .v-three span { width: 28px; height: 28px; background: var(--ink); border-radius: 50%;
+  animation: org-swell 1.4s ease-in-out infinite; }
+.org .v-three span:nth-child(2) { animation-delay: .18s; }
+.org .v-three span:nth-child(3) { animation-delay: .36s; }
+@keyframes org-swell { 0%,100% { transform: scale(0.55); } 40% { transform: scale(1.25); } }
+
+/* 07 · AMOEBA */
+.org .v-amoeba svg { width: 120px; height: 120px; }
+.org .v-amoeba circle { fill: none; stroke: var(--ink); stroke-width: 9;
+  transform-origin: center; animation: org-breathe 2.6s ease-in-out infinite; }
+
+/* 08 · SPLIT */
+.org .v-split { width: 120px; height: 70px; filter: url(#org-goo); }
+.org .v-split span { position: absolute; top: 50%; left: 50%; width: 44px; height: 44px;
+  margin: -22px 0 0 -22px; background: var(--ink); border-radius: 50%; }
+.org .v-split .a { animation: org-splitA 2.1s ease-in-out infinite; }
+.org .v-split .b { animation: org-splitB 2.1s ease-in-out infinite; }
+@keyframes org-splitA { 0%,100% { transform: translateX(0) scale(1); } 50% { transform: translateX(-26px) scale(0.78); } }
+@keyframes org-splitB { 0%,100% { transform: translateX(0) scale(1); } 50% { transform: translateX(26px) scale(0.78); } }
+
+/* 09 · MAGATAMA */
+.org .v-magatama { width: 100px; height: 100px; animation: org-spin 1.6s cubic-bezier(.5,.1,.5,.9) infinite; }
+.org .v-magatama svg { width: 100%; height: 100%; }
+.org .v-magatama path { fill: var(--ink); }
+
+/* 10 · DRIP */
+.org .v-drip { width: 90px; height: 120px; filter: url(#org-goo); }
+.org .v-drip .src { position: absolute; top: 8px; left: 50%; width: 40px; height: 30px;
+  margin-left: -20px; background: var(--ink); border-radius: 50% 50% 45% 45%; }
+.org .v-drip .drop { position: absolute; top: 18px; left: 50%; width: 26px; height: 26px;
+  margin-left: -13px; background: var(--ink); border-radius: 50%;
+  animation: org-dripfall 1.8s cubic-bezier(.5,0,.7,.4) infinite; }
+@keyframes org-dripfall {
+  0%   { transform: translateY(0) scale(0.6); opacity: 1; }
+  55%  { transform: translateY(46px) scale(1); }
+  100% { transform: translateY(86px) scale(0.7); opacity: 0; }
+}
+
+/* 11 · CLUSTER (the hero) */
+.org .v-cluster { width: 120px; height: 120px; filter: url(#org-goo); }
+.org .v-cluster .hub { position: absolute; inset: 50% auto auto 50%; width: 30px; height: 30px;
+  margin: -15px 0 0 -15px; background: var(--ink); border-radius: 50%; }
+.org .v-cluster i { position: absolute; inset: 50% auto auto 50%; width: 20px; height: 20px;
+  margin: -10px 0 0 -10px; background: var(--ink); border-radius: 50%;
+  transform: rotate(var(--a)) translateY(-6px);
+  animation: org-orbitOut 2.2s ease-in-out infinite; }
+.org .v-cluster i:nth-child(2) { --a: 0deg; }
+.org .v-cluster i:nth-child(3) { --a: 72deg;  animation-delay: .12s; }
+.org .v-cluster i:nth-child(4) { --a: 144deg; animation-delay: .24s; }
+.org .v-cluster i:nth-child(5) { --a: 216deg; animation-delay: .36s; }
+.org .v-cluster i:nth-child(6) { --a: 288deg; animation-delay: .48s; }
+/* animate transform directly (no @property needed → works in all browsers) */
+@keyframes org-orbitOut {
+  0%,100% { transform: rotate(var(--a)) translateY(-6px); }
+  50%     { transform: rotate(var(--a)) translateY(-38px); }
+}
+
+/* 12 · JELLY */
+.org .v-jelly { width: 84px; height: 84px; background: var(--ink); border-radius: 50%;
+  animation: org-jelly 1.3s cubic-bezier(.45,0,.35,1) infinite; }
+@keyframes org-jelly {
+  0%,100% { transform: translateY(-22px) scaleX(1) scaleY(1); }
+  50%     { transform: translateY(20px) scaleX(1.25) scaleY(0.78); }
+  58%     { transform: translateY(18px) scaleX(1.2) scaleY(0.82); }
+}
+
+/* 13 · TRAIL */
+.org .v-trail { width: 120px; height: 120px; filter: url(#org-goo); animation: org-spin 2.2s linear infinite; }
+.org .v-trail i { position: absolute; inset: 50% auto auto 50%; width: 26px; height: 26px;
+  margin: -13px 0 0 -13px; background: var(--ink); border-radius: 50%; }
+.org .v-trail i:nth-child(1) { transform: rotate(0deg) translateY(-40px); }
+.org .v-trail i:nth-child(2) { transform: rotate(40deg) translateY(-40px); width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+.org .v-trail i:nth-child(3) { transform: rotate(75deg) translateY(-40px); width: 14px; height: 14px; margin: -7px 0 0 -7px; }
+
+/* 14 · WAVE */
+.org .v-wave { width: 96px; height: 96px; background: var(--ink); animation: org-wave 3.6s linear infinite; }
+@keyframes org-wave {
+  0%   { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  25%  { border-radius: 58% 42% 45% 55% / 38% 60% 40% 62%; }
+  50%  { border-radius: 70% 30% 42% 58% / 55% 55% 45% 45%; }
+  75%  { border-radius: 45% 55% 58% 42% / 60% 38% 62% 40%; }
+  100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+}
+
+/* 15 · YIN */
+.org .v-yin { width: 110px; height: 110px; filter: url(#org-goo); animation: org-spin 2.6s cubic-bezier(.6,0,.4,1) infinite; }
+.org .v-yin span { position: absolute; top: 50%; left: 50%; width: 48px; height: 48px;
+  margin: -24px 0 0 -24px; background: var(--ink); border-radius: 50%; }
+.org .v-yin .a { animation: org-nudge 1.3s ease-in-out infinite alternate; transform: translateX(-20px); }
+.org .v-yin .b { animation: org-nudge 1.3s ease-in-out infinite alternate-reverse; transform: translateX(20px); }
+@keyframes org-nudge { from { scale: 0.7; } to { scale: 1.05; } }
+
+/* 16 · BOUNCE */
+.org .v-bounce { width: 120px; height: 120px; filter: url(#org-goo); }
+.org .v-bounce .puddle { position: absolute; bottom: 14px; left: 50%; width: 56px; height: 16px;
+  margin-left: -28px; background: var(--ink); border-radius: 50%; }
+.org .v-bounce .ball { position: absolute; bottom: 14px; left: 50%; width: 40px; height: 40px;
+  margin-left: -20px; background: var(--ink); border-radius: 50%;
+  animation: org-bounce 1.2s cubic-bezier(.5,.05,.5,.95) infinite; }
+@keyframes org-bounce {
+  0%,100% { transform: translateY(0) scaleY(0.7) scaleX(1.15); }
+  15%     { transform: translateY(-12px) scaleY(1) scaleX(1); }
+  50%     { transform: translateY(-72px) scaleY(1.08) scaleX(0.94); }
+  85%     { transform: translateY(-12px) scaleY(1) scaleX(1); }
+}
+
+/* 17 · RIPPLE */
+.org .v-ripple { width: 120px; height: 120px; }
+.org .v-ripple span { position: absolute; inset: 50% auto auto 50%; width: 30px; height: 30px;
+  margin: -15px 0 0 -15px; border: 6px solid var(--ink);
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  animation: org-ripple 2.4s cubic-bezier(.2,.6,.3,1) infinite; opacity: 0; }
+.org .v-ripple span:nth-child(2) { animation-delay: .8s; }
+.org .v-ripple span:nth-child(3) { animation-delay: 1.6s; }
+@keyframes org-ripple {
+  0%   { transform: scale(0.3) rotate(0deg); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: scale(2.4) rotate(140deg); opacity: 0; }
+}
+
+/* 18 · SPREAD */
+.org .v-spread { width: 96px; height: 96px; background: var(--ink);
+  animation: org-morphA 5s ease-in-out infinite, org-spread 2.4s ease-in-out infinite; }
+@keyframes org-spread { 0%,100% { transform: scale(0.35); } 45% { transform: scale(1); } }
+
+/* 19 · ARC */
+.org .v-arc { width: 92px; height: 92px; border: 8px solid var(--ink);
+  border-right-color: transparent; border-bottom-color: transparent;
+  animation: org-morphB 2.8s ease-in-out infinite, org-spin 1.4s linear infinite; }
+
+/* 20 · TWIN */
+.org .v-twin { width: 120px; height: 120px; filter: url(#org-goo); }
+.org .v-twin span { position: absolute; inset: 50% auto auto 50%; width: 54px; height: 54px;
+  margin: -27px 0 0 -27px; background: var(--ink); }
+.org .v-twin .a { animation: org-morphA 3s ease-in-out infinite, org-spin 2.4s linear infinite; }
+.org .v-twin .b { animation: org-morphB 2.4s ease-in-out infinite, org-spinRev 2.4s linear infinite;
+  width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+
+/* inverted (white ink on dark panels) */
+.org.on-ink .v-morph, .org.on-ink .v-pulse, .org.on-ink .v-jelly, .org.on-ink .v-wave,
+.org.on-ink .v-spread, .org.on-ink .core, .org.on-ink .sat::after, .org.on-ink .hub,
+.org.on-ink .v-cluster i, .org.on-ink .v-merge span, .org.on-ink .v-three span,
+.org.on-ink .v-split span, .org.on-ink .v-drip .src, .org.on-ink .v-drip .drop,
+.org.on-ink .v-trail i, .org.on-ink .v-yin span, .org.on-ink .v-bounce .puddle,
+.org.on-ink .v-bounce .ball, .org.on-ink .v-twin span { background: var(--paper); }
+.org.on-ink .v-contour, .org.on-ink .v-arc { border-color: var(--paper); border-right-color: transparent; border-bottom-color: transparent; }
+.org.on-ink .v-amoeba circle, .org.on-ink .v-ripple span { stroke: var(--paper); border-color: var(--paper); }
+.org.on-ink .v-magatama path { fill: var(--paper); }
+
+/* ---- placements ---- */
+/* hero: sits where the old splash blob did, behind the copy */
+.splash-org { position: absolute; z-index: 1; top: -26px; right: 6.5%; }
+@media (min-width: 900px) { .splash-org { top: -20px; right: 2px; } }
+@media (max-width: 600px) { .splash-org .fig { --org-scale: 0.62 !important; } }
+
+/* processo: replaces the old vermilion pv-blob in the panel corner */
+.proc-org { position: absolute; right: 7%; bottom: 8%; }
+
+/* chapter cover: inverted accent, centered in the dark tobira panel */
+.cover-org { position: absolute; inset: 0; margin: auto; opacity: .9; }
+
+/* posfácio: a quiet centered ink-break between sections */
+.pos-org { display: grid; place-items: center; margin: var(--ma-5) 0; opacity: .55; }
+
+@media (prefers-reduced-motion: reduce) {
+  .org .fig, .org .fig * { animation: none !important; }
+}

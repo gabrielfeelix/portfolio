@@ -24,6 +24,7 @@ function Tobira({ chap }) {
         </div>
         <div className="cover-art">
           <MangaPlate dark />
+          <Organic variant="orbit" size={140} className="cover-org" onInk />
         </div>
       </div>
     </section>

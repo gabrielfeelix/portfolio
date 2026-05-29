@@ -11,6 +11,7 @@ const DIST = path.join(ROOT, "dist");
 const SCRIPTS = [
   "tweaks-panel.jsx",
   "data.jsx",
+  "organic.jsx",
   "Capa.jsx",
   "Capitulo.jsx",
   "Processo.jsx",
@@ -63,7 +64,7 @@ async function copyAssets() {
     const src = path.join(ROOT, "volume", dir);
     if (existsSync(src)) await cp(src, path.join(DIST, "volume", dir), { recursive: true });
   }
-  for (const css of ["colors_and_type.css", "kit.css", "chapter.css", "app.css"]) {
+  for (const css of ["colors_and_type.css", "kit.css", "chapter.css", "app.css", "organic.css"]) {
     const src = path.join(ROOT, "volume", css);
     if (existsSync(src)) await cp(src, path.join(DIST, "volume", css));
   }
@@ -72,10 +73,21 @@ async function copyAssets() {
   }
 }
 
+async function bundleAnalytics() {
+  // Bundle @vercel/analytics + @vercel/speed-insights into one classic script.
+  await esbuild.build({
+    entryPoints: [path.join(ROOT, "analytics", "entry.js")],
+    outfile: path.join(DIST, "analytics.js"),
+    bundle: true,
+    minify: true,
+    format: "iife",
+    target: ["es2018"],
+    logLevel: "info",
+  });
+}
+
 function analyticsSnippet() {
-  const vercel = `
-<script defer src="/_vercel/insights/script.js"></script>
-<script defer src="/_vercel/speed-insights/script.js"></script>`;
+  const vercel = `\n<script defer src="analytics.js"></script>`;
   const id = process.env.CLARITY_ID;
   const clarity = id
     ? `
@@ -104,6 +116,7 @@ async function generateHtml() {
 async function buildOnce() {
   await clean();
   await transpileScripts();
+  await bundleAnalytics();
   await copyVendor();
   await copyAssets();
   await generateHtml();

@@ -4,6 +4,9 @@
    cuts in (text + manga panel), pagination bars track progress, a beat of
    vermilion for energy. Honest and fast: preempts "qual seu processo?".
    ===================================================================== */
+/* one organic ink loader per method step — motion that reads as "working" */
+const PROC_ORG = ["pulse", "orbit", "cluster", "three", "split", "merge"];
+
 function Processo({ onContact }) {
   const steps = PROCESSO;                 // 6 steps, read top→bottom
   const n = steps.length;
@@ -75,7 +78,7 @@ function Processo({ onContact }) {
                   <MangaPlate />
                   <span className="pv-sl"></span>
                   <span className="pv-num" aria-hidden="true">{cur.n}</span>
-                  <span className="pv-blob"></span>
+                  <Organic variant={PROC_ORG[active % PROC_ORG.length]} size={92} className="proc-org" />
                 </span>
                 <span className="pv-cap">{cur.t}</span>
               </div>
