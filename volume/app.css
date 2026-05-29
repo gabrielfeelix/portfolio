@@ -523,7 +523,7 @@
 .emp-logo { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; aspect-ratio: 4 / 3; border: var(--ink-stroke-hi) solid var(--paper); background: var(--wash-4); }
 .emp-logo-mark { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: .95; text-align: center; padding: 0 12px; color: var(--paper); }
 .emp-logo-cap { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .16em; font-size: 10px; color: var(--wash-2); }
-.emp-meta { position: relative; z-index: 2; display: flex; gap: 0; border-top: var(--ink-hair) solid var(--wash-4); padding: 0; margin-top: var(--ma-4); }
+.emp-meta { position: relative; z-index: 2; display: flex; gap: 0; border-top: var(--ink-hair) solid var(--wash-4); padding: 0 var(--gutter); margin-top: var(--ma-4); }
 .emp-meta .m { flex: 1; padding: var(--ma-3) var(--ma-3) 0 0; }
 .emp-meta .m + .m { border-left: var(--ink-hair) solid var(--wash-4); padding-left: var(--ma-3); }
 .emp-meta .l { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: var(--wash-2); }
