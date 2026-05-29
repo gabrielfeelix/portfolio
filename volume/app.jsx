@@ -16,12 +16,12 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 
 /* the RTL page-turn overlay with kinetic SFX */
 function PageTurn({ sfx }) {
-  const w = (sfx || "CORTE!").replace(/!$/, "");
+  const jp = sfx || "ザッ";
   return (
     <div className="pageturn" aria-hidden="true">
       <div className="sheet"></div>
       <div className="pt-blob"></div>
-      <div className="pt-sfx">{w}<em>!</em></div>
+      <div className="pt-sfx">{jp}<i className="pt-ro">{sfxRo(jp)}</i></div>
     </div>
   );
 }
@@ -86,7 +86,7 @@ function App() {
     if (mode === "off") { setView(id); top(); return; }
     if (mode === "corte") { setView(id); top(); return; }
     // "virada" — the manga page-turn
-    setTurn({ key: Date.now(), sfx: chap ? chap.sfx : "CORTE!" });
+    setTurn({ key: Date.now(), sfx: chap ? chap.sfx : "ザッ" });
     setTimeout(() => { setView(id); top(); }, 252);
     setTimeout(() => setTurn(null), 660);
   };

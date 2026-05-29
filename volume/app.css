@@ -308,6 +308,13 @@
 }
 .pageturn .pt-sfx em { color: var(--vermilion); font-style: normal; }
 .pageturn .pt-sfx { animation: ptsfx 600ms steps(1,end) both; }
+/* manga SFX romaji subtitle (small, under the kana) */
+.pageturn .pt-sfx { flex-direction: column; gap: 4px; }
+.pt-ro, .sfx-ro { display: block; font-family: var(--font-condensed); font-weight: 600; font-style: normal;
+  text-transform: uppercase; letter-spacing: .45em; color: var(--vermilion); text-indent: .45em; }
+.pageturn .pt-sfx .pt-ro { font-size: clamp(.7rem, 1.8vw, 1.2rem); }
+.beat-sfx .word { display: inline-flex; flex-direction: column; align-items: center; line-height: .9; }
+.beat-sfx .word .sfx-ro { font-size: .26em; margin-top: .4em; }
 @keyframes ptsfx {
   0%, 30% { opacity: 0; transform: skewX(-6deg) scale(.8); }
   44% { opacity: 1; transform: skewX(-6deg) scale(1.04); }

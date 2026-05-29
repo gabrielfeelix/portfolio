@@ -82,10 +82,9 @@ function Problema({ chap }) {
 
 /* ---- punctuating SFX ---- */
 function SfxBeat({ word }) {
-  const w = word.replace(/!$/, "");
   return (
     <Beat>
-      <div className="beat-sfx"><div className="word">{w}<em>!</em></div></div>
+      <div className="beat-sfx"><div className="word">{word}<i className="sfx-ro">{sfxRo(word)}</i></div></div>
     </Beat>
   );
 }

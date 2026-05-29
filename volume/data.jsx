@@ -6,6 +6,18 @@
    ===================================================================== */
 const { useState, useEffect, useRef, useCallback } = React;
 
+/* manga onomatopoeia — SFX shown on chapter entry + beats (jp big, romaji small) */
+const SFX_RO = {
+  "ドン": "DON", "カチッ": "KACHI", "ゴゴゴ": "GOGOGO", "バーン": "BAAN",
+  "シャキーン": "SHAKIIN", "ザッ": "ZAH", "スッ": "SU", "パッ": "PA", "キラッ": "KIRA", "バッ": "BA",
+};
+const SYNTH_SFX = ["ザッ", "スッ", "パッ", "キラッ", "バッ"];
+function sfxRo(jp) { return SFX_RO[jp] || ""; }
+function synthSfx(id) {
+  const h = [...String(id)].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return SYNTH_SFX[h % SYNTH_SFX.length];
+}
+
 /* a clearly-marked placeholder token, renders dim + bracketed */
 function PH({ children }) {
   return <span className="ph">[{children}]</span>;
@@ -18,7 +30,7 @@ const CHAPTERS = [
     project: "Rodapé",
     descriptor: "App de clube de leitura",
     title: "Rodapé",
-    sfx: "VIRA!",                      // SFX flashed on chapter entry
+    sfx: "ドン",                        // don — impact (landed / published)
     links: { vercel: null, figma: null },   // Gabriel preenche: protótipo (Vercel) + Figma
     premise: "[premissa, a linha que abre o capítulo]",
     role: "[seu papel]",
@@ -55,7 +67,7 @@ const CHAPTERS = [
     project: "Remoctrl",
     descriptor: "App nativo de controle remoto",
     title: "Remoctrl",
-    sfx: "CLIC!",
+    sfx: "カチッ",                      // kachi — click (remote control)
     links: { vercel: null, figma: null },
     premise: "[premissa, a linha que abre o capítulo]",
     role: "[seu papel]",
@@ -91,7 +103,7 @@ const CHAPTERS = [
     project: "Traxium",
     descriptor: "Plataforma SaaS",
     title: "Traxium",
-    sfx: "ZUM!",
+    sfx: "ゴゴゴ",                      // gogogo — looming scale (SaaS platform)
     links: { vercel: null, figma: null },
     premise: "[premissa, a linha que abre o capítulo]",
     role: "[seu papel]",
@@ -127,7 +139,7 @@ const CHAPTERS = [
     project: "PCYES",
     descriptor: "Site · e-commerce",
     title: "PCYES",
-    sfx: "BAM!",
+    sfx: "バーン",                      // baan — boom (e-commerce)
     links: { vercel: null, figma: null },
     premise: "[premissa, a linha que abre o capítulo]",
     role: "[seu papel]",
@@ -163,7 +175,7 @@ const CHAPTERS = [
     project: "Portfólio",
     descriptor: "Este volume que você está lendo",
     title: "Portfólio",
-    sfx: "VIVO!",
+    sfx: "シャキーン",                  // shakiin — slash / sharp (this volume)
     links: { vercel: null, figma: null },
     premise: "Um portfólio que se lê como um volume de mangá.",
     role: "Concepção, design e construção",
@@ -324,7 +336,7 @@ function projById(id) { return PROJECTS.find((p) => p.id === id); }
 function synthChapter(p) {
   return {
     id: p.id, num: "", cap: projTag(p), domain: p.domain, cat: p.cat,
-    project: p.title, title: p.title, sfx: "VIVO!", links: p.links || { vercel: null, figma: null },
+    project: p.title, title: p.title, sfx: synthSfx(p.id), links: p.links || { vercel: null, figma: null },
     premise: "[premissa: a linha que abre o capítulo]",
     role: "[seu papel]", surface: p.domain, year: "2026", fact: null,
     tldr: { papel: "[seu papel]", oque: "[o que é, em 1 linha]", resultado: "[resultado]" },
@@ -453,4 +465,4 @@ function ProtoLinks({ links = {}, onInk }) {
   );
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo });
