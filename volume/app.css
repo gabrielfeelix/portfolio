@@ -76,6 +76,11 @@
 .splash .hf-blob { position: absolute; z-index: 0; opacity: .08; }
 .splash .hf-blob-a { top: -8%; left: -6%; }
 .splash .hf-blob-b { bottom: -10%; right: -4%; }
+/* organic black ink dots — morphing, not static circles */
+.splash .hf-orb { position: absolute; z-index: 1; }
+.splash .hf-orb-a { left: 12%; top: 57%; }
+.splash .hf-orb-b { left: 66%; top: 75%; }
+.splash .hf-orb-c { left: 84%; top: 24%; }
 
 /* backdrop: dashed ink curves + red dots + × register marks (ref-style) */
 .hero-field { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -159,7 +164,7 @@
 .ss-wheel { background: var(--paper); }
 .splash .btn-primary { background: var(--paper); color: var(--vermilion); box-shadow: 5px 5px 0 var(--ink); }
 .splash .btn-primary:hover { background: var(--ink); color: var(--paper); transform: translate(2px,2px); box-shadow: 3px 3px 0 var(--ink); }
-.splash .btn-ghost { color: var(--paper); border-bottom-color: var(--paper); }
+.splash .btn-ghost { background: transparent; color: var(--paper); border-bottom-color: var(--paper); }
 .splash .btn-ghost:hover { color: var(--paper); opacity: .75; border-bottom-color: var(--paper); }
 
 /* ---- header modes: hidden over cover / floating pill past it ---- */

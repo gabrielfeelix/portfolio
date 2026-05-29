@@ -73,9 +73,6 @@ function HeroField() {
       <path className="hf-path" d="M-40 170 C 200 50, 410 320, 650 200 S 1050 110, 1260 250" />
       <path className="hf-red"  d="M-40 360 C 250 470, 450 170, 710 360 S 1110 490, 1290 300" />
       <path className="hf-path" d="M-40 470 C 300 360, 600 540, 900 420 S 1160 360, 1260 470" />
-      <circle className="hf-dot" cx="150" cy="330" r="9" />
-      <circle className="hf-dot" cx="820" cy="445" r="11" />
-      <circle className="hf-dot" cx="1040" cy="150" r="7" />
       <g className="hf-x"><line x1="552" y1="267" x2="570" y2="285" /><line x1="570" y1="267" x2="552" y2="285" /></g>
     </svg>
   );
@@ -108,6 +105,9 @@ function Splash({ onRead, onContact, lit }) {
       <Organic onInk variant="wave" size={360} className="hf-blob hf-blob-a" />
       <Organic onInk variant="morph" size={280} className="hf-blob hf-blob-b" />
       <HeroField />
+      <Organic variant="morph" size={26} className="hf-orb hf-orb-a" />
+      <Organic variant="wave" size={34} className="hf-orb hf-orb-b" />
+      <Organic variant="morph" size={20} className="hf-orb hf-orb-c" />
       <span className="splash-kana" aria-hidden="true">ボリューム 2026</span>
       <div className="shell splash-center">
         <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / Product Designer <b>· Pleno</b></div>
