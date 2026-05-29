@@ -191,7 +191,7 @@ function NextChapter({ next, onOpen, onHome }) {
 function Capitulo({ chap, next, onOpen, onHome }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
   return (
-    <main key={chap.id}>
+    <main key={chap.id} className="chapter-main">
       <div className="chapter-back">
         <a className="back" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>
           <span className="arr">←</span> Voltar ao volume

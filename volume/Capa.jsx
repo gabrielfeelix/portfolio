@@ -25,11 +25,11 @@ function Nav({ view, go, onContact }) {
   }, [view]);
 
   const isHome = view === "home";
-  // home: hidden over the cover, then a floating centered pill once past it.
-  // other views: the normal bar, hidden on scroll-down.
+  // floating centered pill on EVERY view (consistent). On home it stays hidden
+  // while sitting over the red cover, then appears once past it. Hides on
+  // scroll-down, returns on scroll-up.
   const headerCls = (isHome && overHero) ? "hd-hidden"
-    : isHome ? "hd-float"
-    : (hidden && !menuOpen) ? "hd-hidden" : "";
+    : "hd-float" + ((hidden && !menuOpen) ? " hd-hidden" : "");
   const nav = (fn) => { setMenuOpen(false); fn(); };
   const Link = ({ to, children, active }) => (
     <a href="#" className={active ? "active" : ""}
@@ -105,9 +105,6 @@ function Splash({ onRead, onContact, lit }) {
       <span className="hero-speedlines" aria-hidden="true"></span>
       <span className="hero-halftone" aria-hidden="true"></span>
       <HeroField />
-      <Organic variant="morph" size={26} className="hf-orb hf-orb-a" />
-      <Organic variant="wave" size={34} className="hf-orb hf-orb-b" />
-      <Organic variant="morph" size={20} className="hf-orb hf-orb-c" />
       <span className="splash-kana" aria-hidden="true">ボリューム 2026</span>
       <div className="shell splash-center">
         <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / Product Designer <b>· Pleno</b></div>
