@@ -215,7 +215,8 @@
 /* hero: sits where the old splash blob did, behind the copy */
 .splash-org { position: absolute; z-index: 1; top: -26px; right: 6.5%; }
 @media (min-width: 900px) { .splash-org { top: -20px; right: 2px; } }
-@media (max-width: 600px) { .splash-org .fig { --org-scale: 0.62 !important; } }
+@media (max-width: 880px) { .splash-org { top: -14px; right: 3%; } .splash-org .fig { --org-scale: 0.72 !important; } }
+@media (max-width: 600px) { .splash-org { top: -6px; right: 2%; } .splash-org .fig { --org-scale: 0.55 !important; } }
 
 /* processo: replaces the old vermilion pv-blob in the panel corner */
 .proc-org { position: absolute; right: 7%; bottom: 8%; }

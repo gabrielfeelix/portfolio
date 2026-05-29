@@ -29,6 +29,21 @@
   55%  { transform: scale(.86) rotate(2deg); opacity: 1; }
   100% { transform: scale(1) rotate(0); opacity: 1; }
 }
+/* topbar logo: the hanko seal stamps + spins on hover, wordmark inks red */
+.v-brand { cursor: pointer; }
+.v-brand .seal-wrap { will-change: transform; }
+.v-brand:hover .seal-wrap { animation: sealspin 620ms cubic-bezier(.4,0,.2,1); }
+@keyframes sealspin {
+  0%   { transform: rotate(0) scale(1); }
+  45%  { transform: rotate(170deg) scale(1.16); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.v-brand:active .seal-wrap { transform: scale(.9) rotate(4deg); }
+.v-brand .wm { transition: color var(--cut), letter-spacing var(--cut); }
+.v-brand:hover .wm { color: var(--vermilion); letter-spacing: .05em; }
+@media (prefers-reduced-motion: reduce) {
+  .v-brand:hover .seal-wrap { animation: none; }
+}
 .v-rule { height: var(--ink-stroke-hi); background: var(--ink); }
 .v-volline {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -792,4 +807,10 @@
   .emp-switch-side, .emp-switch-side.right { justify-content: flex-start; }
   .emp-navbtn.al-r { text-align: left; align-items: flex-start; }
   .emp-switch .btn { justify-content: center; order: -1; }
+  /* polish: processo + posfácio on phones */
+  .proc-cta-row .btn { width: 100%; justify-content: center; }
+  .proc-visual { max-width: 200px; }
+  .pt-photo { margin-inline: auto; }
+  .pos-companies, .pos-certs, .pos-traj { margin-top: var(--ma-5); }
+  .pos-org { margin: var(--ma-4) 0; }
 }

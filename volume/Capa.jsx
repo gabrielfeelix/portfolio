@@ -288,7 +288,7 @@ function QuemSou({ onSobre, onEmpresa }) {
       <div className="shell qs-grid">
         <div className="qs-left">
           <div className="qk">Quem sou</div>
-          <p className="qs-bio">UX/Product Designer pleno. Larguei o Direito por isso. Leio mangá desde criança e construo do protótipo ao ar, com IA no fluxo.</p>
+          <p className="qs-bio">UX/Product Designer pleno. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar com IA no fluxo.</p>
           <a className="btn btn-ghost gl" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>Ver posfácio <span className="arr">→</span></a>
         </div>
 
