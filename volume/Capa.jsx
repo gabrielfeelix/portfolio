@@ -57,34 +57,65 @@ function Nav({ view, go, onContact }) {
 }
 
 /* ---------- [B] SPLASH / TOBIRA-E ---------- */
+/* decorative hero backdrop — dashed ink curves + red dots + × register marks */
+function HeroField() {
+  return (
+    <svg className="hero-field" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path className="hf-path" d="M-40 170 C 200 50, 410 320, 650 200 S 1050 110, 1260 250" />
+      <path className="hf-red"  d="M-40 360 C 250 470, 450 170, 710 360 S 1110 490, 1290 300" />
+      <path className="hf-path" d="M-40 470 C 300 360, 600 540, 900 420 S 1160 360, 1260 470" />
+      <circle className="hf-dot" cx="150" cy="330" r="9" />
+      <circle className="hf-dot" cx="820" cy="445" r="11" />
+      <circle className="hf-dot" cx="1040" cy="150" r="7" />
+      <g className="hf-x"><line x1="262" y1="142" x2="280" y2="160" /><line x1="280" y1="142" x2="262" y2="160" /></g>
+      <g className="hf-x"><line x1="552" y1="267" x2="570" y2="285" /><line x1="570" y1="267" x2="552" y2="285" /></g>
+      <g className="hf-x"><line x1="277" y1="382" x2="295" y2="400" /><line x1="295" y1="382" x2="277" y2="400" /></g>
+    </svg>
+  );
+}
+
+/* rotating word — letters spring up with stagger (TextRotate-style, vanilla) */
+function RotateWord({ items, interval = 2300 }) {
+  const [i, setI] = useState(0);
+  const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setI((x) => (x + 1) % items.length), interval);
+    return () => clearInterval(id);
+  }, [items, interval, reduced]);
+  const chars = [...items[i]];
+  return (
+    <span className="rotw" aria-label={items[i]}>
+      <span className="rotw-box" key={i} aria-hidden="true">
+        {chars.map((c, idx) => (
+          <span className="rotw-ch" key={idx} style={{ animationDelay: `${idx * 0.022}s` }}>{c === " " ? " " : c}</span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 function Splash({ onRead, onContact, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
-      <span className="splash-kanji" aria-hidden="true">間</span>
-      <span className="splash-tone" aria-hidden="true"></span>
-      <Organic variant="magatama" size={86} className="splash-mark" />
-      <div className="shell">
-        <div className="splash-eyebrow"><span className="se-mark">※</span> Manifesto · {VOL}</div>
-        <h1 className="splash-manifesto">
-          <Brush as="span" className="ml">Eu desenho.</Brush>
-          <Brush as="span" className="ml red" delay={150}>E construo.</Brush>
+      <HeroField />
+      <span className="splash-kana" aria-hidden="true">ボリューム 2026</span>
+      <div className="shell splash-center">
+        <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / Product Designer <b>· Pleno</b></div>
+        <h1 className="splash-h">
+          <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
+          <span className="sh-line">que leva <RotateWord items={["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"]} /></span>
         </h1>
-        <p className="splash-thesis">Do protótipo navegável ao produto no ar, com <span className="red">IA dentro do fluxo</span>. Um portfólio que se lê como um volume.</p>
-        <div className="splash-surfaces" aria-label="Superfícies">
-          <span>SaaS</span><i>·</i><span>Apps</span><i>·</i><span>Desktop</span><i>·</i><span>Web</span>
-        </div>
+        <p className="splash-sub">Do protótipo navegável ao produto publicado, com <span className="red">IA dentro do fluxo</span>.</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>Começar a ler <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
         </div>
       </div>
-      <div className="splash-colophon">
-        <Seal size={30} alt="Selo de Gabriel" />
-        <div className="sc-meta">
-          <span className="sc-name">{AUTOR}</span>
-          <span className="sc-role">UX / Product Designer · <b>Pleno</b></span>
-        </div>
-      </div>
+      <button className="splash-scroll" onClick={onRead} aria-label="Rolar para ler">
+        <span className="ss-mouse"><span className="ss-wheel"></span></span>
+        <span className="ss-label">Role para ler</span>
+      </button>
     </section>
   );
 }

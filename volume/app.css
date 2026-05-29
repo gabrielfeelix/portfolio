@@ -58,66 +58,65 @@
 /* =====================================================================
    [B] SPLASH / TOBIRA-E
    ===================================================================== */
-.splash { position: relative; overflow: hidden; padding: clamp(var(--ma-5), 9vh, var(--ma-7)) 0 var(--ma-6); }
+.splash { position: relative; overflow: hidden; min-height: clamp(560px, 86vh, 860px);
+  display: grid; place-items: center; text-align: center; padding: var(--ma-6) 0 var(--ma-7); }
 .splash .shell { position: relative; z-index: 2; }
+.splash-center { display: flex; flex-direction: column; align-items: center; gap: var(--ma-3); max-width: 1000px; margin: 0 auto; }
 
-/* manga DNA: giant faint kanji 間 (ma — the charged space between panels) */
-.splash-kanji {
-  position: absolute; z-index: 0; right: -1vw; top: 50%; transform: translateY(-50%);
-  font-family: var(--font-display); font-size: clamp(280px, 50vh, 560px); line-height: 1;
-  color: var(--ink); opacity: .045; pointer-events: none; user-select: none;
-}
-/* screentone bleeding in from the right */
-.splash-tone {
-  position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: var(--tone-op, .15);
-  background-image: radial-gradient(var(--ink) 1.15px, transparent 1.25px); background-size: 7px 7px;
-  -webkit-mask-image: linear-gradient(125deg, transparent 48%, #000);
-          mask-image: linear-gradient(125deg, transparent 48%, #000);
-}
-/* small comma-blob ink mark (magatama) */
-.splash-mark { position: absolute; z-index: 1; top: clamp(64px, 11vh, 116px); right: 7%; opacity: .9; }
+/* backdrop: dashed ink curves + red dots + × register marks (ref-style) */
+.hero-field { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-field .hf-path { fill: none; stroke: var(--wash-2); stroke-width: 2; stroke-dasharray: 6 9; opacity: .5; }
+.hero-field .hf-red  { fill: none; stroke: var(--vermilion); stroke-width: 2; stroke-dasharray: 5 10; opacity: .55; }
+.hero-field .hf-dot  { fill: var(--vermilion); }
+.hero-field .hf-x    { stroke: var(--wash-3); stroke-width: 2.4; }
+.splash.lit .hero-field { animation: hf-drift 20s ease-in-out infinite alternate; }
+@keyframes hf-drift { from { transform: translateY(-12px); } to { transform: translateY(12px); } }
+.splash.lit .hf-path, .splash.lit .hf-red { animation: hf-march 9s linear infinite; }
+@keyframes hf-march { to { stroke-dashoffset: -120; } }
 
-.splash-eyebrow {
-  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .28em; font-size: 13px; color: var(--fg-2);
-  display: flex; align-items: center; gap: 10px;
-}
-.splash-eyebrow .se-mark { color: var(--vermilion); font-size: 1.1em; }
+/* vertical katakana accent (ボリューム = volume) */
+.splash-kana { position: absolute; z-index: 1; right: clamp(12px, 3vw, 44px); top: 50%; transform: translateY(-50%);
+  writing-mode: vertical-rl; font-family: var(--font-condensed); letter-spacing: .3em; font-size: 13px;
+  color: var(--wash-2); opacity: .85; pointer-events: none; user-select: none; }
 
-.splash-manifesto {
-  font-family: var(--font-display); text-transform: uppercase;
-  font-size: var(--t-splash); line-height: .82; letter-spacing: -.02em;
-  margin: var(--ma-3) 0 0;
-}
-.splash-manifesto .ml { display: block; position: relative; width: fit-content; }
-.splash-manifesto .red { color: var(--vermilion); }
-/* an ink brush-stroke wipes in under the red line */
-.splash-manifesto .red::after {
-  content: ""; position: absolute; left: 0; bottom: -.04em; height: .085em; width: 100%;
-  background: var(--vermilion); border-radius: 3px 7px 4px 8px / 5px;
-  transform: scaleX(0); transform-origin: left;
-}
-.splash.lit .splash-manifesto .red::after { animation: inkstroke 520ms 380ms cubic-bezier(.72,.02,.28,1) forwards; }
-@keyframes inkstroke { to { transform: scaleX(1); } }
+.splash-id { display: inline-flex; align-items: center; gap: 9px; justify-content: center;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em;
+  font-size: 12.5px; color: var(--fg-2); }
+.splash-id i { color: var(--wash-2); font-style: normal; }
+.splash-id b { color: var(--vermilion); font-weight: 600; }
 
-.splash-thesis { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.45; max-width: 38ch; margin: var(--ma-4) 0 var(--ma-3); color: var(--fg); }
-.splash-thesis .red { color: var(--vermilion); font-weight: 700; }
+/* less brutalist, more modern grotesk ("tokyo") — Hanken heavy, title case */
+.splash-h { font-family: var(--font-body); font-weight: 800; letter-spacing: -.02em;
+  font-size: clamp(2.5rem, 6.4vw, 5.2rem); line-height: 1.0; margin: var(--ma-2) 0 0; color: var(--ink);
+  display: flex; flex-direction: column; align-items: center; gap: .08em; }
+.splash-h .sh-line { display: inline-flex; align-items: center; gap: .3em; flex-wrap: wrap; justify-content: center; }
+.splash-h .sh-ghost { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+.splash.lit .splash-h { animation: sh-in 560ms cubic-bezier(.2,.9,.1,1) both; }
+@keyframes sh-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
-.splash-surfaces {
-  display: flex; align-items: center; gap: 12px; margin-bottom: var(--ma-4);
-  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .14em; font-size: 14px; color: var(--ink);
-}
-.splash-surfaces i { color: var(--wash-2); font-style: normal; }
+/* rotating word (vanilla TextRotate) */
+.rotw { display: inline-flex; overflow: hidden; vertical-align: bottom; }
+.rotw-box { display: inline-flex; background: var(--vermilion); color: var(--paper);
+  padding: .02em .2em .08em; border-radius: 5px; overflow: hidden; box-shadow: 4px 4px 0 var(--ink); }
+.rotw-ch { display: inline-block; transform: translateY(115%); white-space: pre;
+  animation: rotw-in .52s cubic-bezier(.22,1.2,.32,1) both; }
+@keyframes rotw-in { to { transform: translateY(0); } }
 
-.splash-cta { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.splash-sub { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.5; max-width: 46ch; margin: var(--ma-2) auto 0; color: var(--fg); }
+.splash-sub .red { color: var(--vermilion); font-weight: 700; }
 
-/* colophon — tankōbon title-page credit, bottom-right */
-.splash-colophon { position: absolute; z-index: 2; right: var(--gutter); bottom: var(--ma-5); display: flex; align-items: center; gap: 12px; }
-.splash-colophon .sc-meta { display: flex; flex-direction: column; line-height: 1.18; }
-.splash-colophon .sc-name { font-family: var(--font-display); text-transform: uppercase; font-size: 15px; letter-spacing: .02em; }
-.splash-colophon .sc-role { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .12em; font-size: 11px; color: var(--fg-2); }
-.splash-colophon .sc-role b { color: var(--vermilion); }
+.splash-cta { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; justify-content: center; margin-top: var(--ma-3); }
+
+/* scroll cue */
+.splash-scroll { position: absolute; z-index: 2; bottom: var(--ma-4); left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 9px; background: none; border: 0; cursor: pointer;
+  font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .2em; font-size: 11px; color: var(--fg-2);
+  transition: color var(--cut); }
+.splash-scroll:hover { color: var(--ink); }
+.ss-mouse { width: 22px; height: 34px; border: 2px solid currentColor; border-radius: 12px; position: relative; }
+.ss-wheel { position: absolute; left: 50%; top: 6px; width: 3px; height: 6px; background: var(--vermilion);
+  border-radius: 2px; transform: translateX(-50%); animation: ss-wheel 1.5s ease-in-out infinite; }
+@keyframes ss-wheel { 0% { opacity: 0; transform: translate(-50%, 0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, 11px); } }
 
 /* =====================================================================
    [C] DIFERENCIAL — desenho e construo
@@ -472,7 +471,9 @@
     animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important;
   }
   .splash-title .ln, .splash-title .trail { opacity: 1 !important; transform: none !important; }
-  .splash.lit .splash-manifesto .red::after { animation: none !important; transform: scaleX(1) !important; }
+  .splash.lit .hero-field, .splash.lit .hf-path, .splash.lit .hf-red, .splash.lit .splash-h,
+  .rotw-ch, .ss-wheel { animation: none !important; }
+  .rotw-ch { transform: none !important; }
   .pageturn { display: none !important; }
 }
 
@@ -842,9 +843,10 @@
   .pt-photo { margin-inline: auto; }
   .pos-companies, .pos-certs, .pos-traj { margin-top: var(--ma-5); }
   .pos-org { margin: var(--ma-4) 0; }
-  /* hero manifesto on phones */
-  .splash-kanji { font-size: clamp(170px, 38vh, 300px); right: -9vw; opacity: .05; }
-  .splash-mark { display: none; }
-  .splash-colophon { position: static; margin: var(--ma-5) 0 0; }
-  .splash-surfaces { flex-wrap: wrap; }
+  /* hero cover on phones */
+  .splash { min-height: 82vh; }
+  .splash-kana { display: none; }
+  .splash-h { font-size: clamp(2.1rem, 9.5vw, 3rem); }
+  .splash-id { flex-wrap: wrap; font-size: 11px; letter-spacing: .14em; }
+  .hero-field .hf-x { display: none; }
 }
