@@ -905,6 +905,12 @@
 
 /* ---- rail: clip off-screen covers so they never cause horizontal scroll ---- */
 .rail-stage { overflow: hidden; }
+/* mobile: drop the peeking side covers so the coverflow doesn't read as a
+   horizontal scroll fighting the vertical finger swipe — focused cover + arrows */
+@media (max-width: 760px) {
+  .rail .rail-cover.side { display: none; }
+  .rail-stage { touch-action: pan-y; }
+}
 
 /* ---- filter bar: scroll horizontally instead of wrapping on small screens ---- */
 @media (max-width: 760px) {
