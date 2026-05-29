@@ -122,7 +122,7 @@ function Solucao({ chap }) {
     <>
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
         <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>A solução</Brush>
-        <span className="kicker live" style={{ color: "var(--vermilion)" }}>no ar</span>
+        <span className="kicker live" style={{ color: "var(--vermilion-ink)" }}>no ar</span>
       </div>
       <Beat>
         <div className="c5 text-col">

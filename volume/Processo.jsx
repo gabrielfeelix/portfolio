@@ -52,10 +52,10 @@ function Processo({ onContact }) {
           <div className="shell proc-grid">
             <div className="proc-left">
               <div className="proc-step-k">Passo <b>{cur.n}</b> <i>/</i> {String(n).padStart(2, "0")}</div>
-              <div className="proc-bars" role="tablist" aria-label="Passos do método">
+              <div className="proc-bars" role="group" aria-label="Passos do método">
                 {steps.map((s, i) => (
                   <button type="button" key={s.n} className={`proc-bar ${i === active ? "on" : ""} ${i < active ? "done" : ""}`}
-                          aria-label={`Passo ${s.n}: ${s.t}`} aria-selected={i === active}
+                          aria-label={`Passo ${s.n}: ${s.t}`} aria-current={i === active ? "step" : undefined}
                           onClick={() => goTo(i)}></button>
                 ))}
               </div>
