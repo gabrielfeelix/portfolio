@@ -11,6 +11,7 @@ const SFX_RO = {
   "ドン": "DON", "カチッ": "KACHI", "ゴゴゴ": "GOGOGO", "バーン": "BAAN",
   "シャキーン": "SHAKIIN", "ザッ": "ZAH", "スッ": "SU", "パッ": "PA", "キラッ": "KIRA", "バッ": "BA",
   "ガチャ": "GACHA", "ドガッ": "DOGA", "ピカッ": "PIKA",
+  "コチ": "KOCHI", "ガラッ": "GARA", "チャリン": "CHARIN",
 };
 const SYNTH_SFX = ["ザッ", "スッ", "パッ", "キラッ", "バッ"];
 function sfxRo(jp) { return SFX_RO[jp] || ""; }
@@ -252,6 +253,105 @@ const CHAPTERS = [
     },
   },
   {
+    id: "ponto", num: "", cap: "PEÇA", domain: "SAAS · GESTÃO DE PONTO", cat: "saas",
+    project: "Worklife", descriptor: "Gestão de ponto: SaaS do gestor + app do diarista", title: "Worklife",
+    sfx: "コチ", cover: "volume/assets/projetos/ponto/cover.png",
+    links: { vercel: "https://ponto-snowy.vercel.app", figma: null },
+    premise: "Cada minuto, contado com precisão — dos dois lados.",
+    role: "Produto, UX e build do SaaS de gestão + app, com Supabase.",
+    surface: "Web (SaaS) + App", year: "2026",
+    fact: "Painel do gestor + app do diarista, mesma base (Supabase)",
+    tldr: {
+      papel: "Design e build do admin (SaaS) e do app, backend Supabase",
+      oque: "Gestão de ponto de diaristas: o gestor coordena a operação, o diarista registra",
+      resultado: "Fonte única de horas pros dois lados [confirmar uso]",
+    },
+    problema: {
+      t: "Ponto de diarista no papel e no WhatsApp",
+      p: ["Quem coordena diaristas controla horas no caderno e na conversa: o gestor não confia no registro, o diarista não tem comprovação, e ninguém tem uma fonte única.",
+          "A restrição: o registro precisa ser confiável o bastante pra fechar pagamento, e simples o bastante pro diarista usar no celular."],
+    },
+    decisoes: [
+      { d: "Dois produtos, uma base: painel do gestor + app do diarista", r: "porque as regras de horas são as mesmas dos dois lados — uma base Supabase única evita divergência e disputa." },
+      { d: "'Cada minuto contado com precisão': registro confiável acima de tela bonita", r: "porque ponto é dinheiro — a interface existe pra dar confiança no número, não pra enfeitar." },
+      { d: "Login e painel desenhados pra 'coordenar a operação'", r: "porque o gestor entra pra resolver, não pra explorar — abri direto no que importa." },
+    ],
+    solucao: {
+      t: "Gestor coordena, diarista registra",
+      p: ["Painel SaaS pro gestor coordenar a operação e fechar horas, e app pro diarista bater ponto — mesma base de dados (Supabase), registro preciso e comprovável dos dois lados."],
+      slots: 2,
+    },
+    resultado: {
+      t: "Hora vira dado, não discussão",
+      p: ["O 'achismo' das horas vira registro único e confiável. [confirmar adoção / fechamento de pagamento]"],
+    },
+  },
+  {
+    id: "dropchina", num: "", cap: "PEÇA", domain: "E-COMMERCE · SHOPIFY", cat: "ecommerce",
+    project: "DropChina", descriptor: "Loja própria de vendedor Mercado Livre Platinum", title: "DropChina",
+    sfx: "ガラッ", links: { vercel: null, figma: null },
+    premise: "Transformar reputação de marketplace em marca própria.",
+    role: "Loja Shopify (tema Liquid) + automação de catálogo.",
+    surface: "E-commerce · Shopify", year: "2026",
+    fact: "Migração de vendedor Mercado Livre Platinum (50k+ vendas) pra canal próprio",
+    tldr: {
+      papel: "Setup e customização da loja Shopify + scripts de catálogo (Admin API)",
+      oque: "Loja própria de suprimentos de informática, saindo da dependência do marketplace",
+      resultado: "Canal direto com o cliente, com a confiança do Platinum [confirmar vendas]",
+    },
+    problema: {
+      t: "Refém do marketplace",
+      p: ["Vendedor Platinum com 50k+ vendas preso ao Mercado Livre: taxa alta, zero relação direta com o cliente, sem marca própria e em guerra de preço.",
+          "E o anti-padrão clássico de quem migra: tema genérico, SKU cadastrado na mão e nenhuma identidade — o cliente não percebe que saiu do marketplace."],
+    },
+    decisoes: [
+      { d: "Canal próprio COM marca, não mais um clone genérico", r: "porque a reputação tinha que virar marca: identidade consistente (azul DropChina, laranja queimado) e badge Mercado Livre Platinum pra transferir a confiança que já existia." },
+      { d: "Coleções inteligentes por tag, não categoria na mão", r: "porque 7 coleções auto-populadas escalam o merchandising sem trabalho manual — o anti-padrão de categoria manual trava a operação." },
+      { d: "Catálogo automatizado via Admin API (scripts CLI)", r: "porque cadastrar 28 SKUs com descrição estruturada (visão, specs, compatibilidade) na mão é erro e lentidão garantidos." },
+    ],
+    solucao: {
+      t: "Marketplace vira marca",
+      p: ["Loja Shopify (tema Tinker customizado) com 7 coleções inteligentes, 28 SKUs migrados e descritos de forma estruturada, header/footer em PT com selo Platinum e paleta de marca — catálogo montado por scripts, sem digitação manual."],
+      slots: 3,
+    },
+    resultado: {
+      t: "Da prateleira alugada à loja própria",
+      p: ["O vendedor passa a ter relação direta com o cliente e marca reconhecível, sem largar a confiança do Platinum. [confirmar vendas no canal próprio]"],
+    },
+  },
+  {
+    id: "kitamo-app", num: "", cap: "PEÇA", domain: "APP · FINANÇAS", cat: "mobile",
+    project: "Kitamo", descriptor: "App de finanças pessoais", title: "Kitamo",
+    sfx: "チャリン", links: { vercel: null, figma: null },
+    premise: "Controlar o próprio dinheiro sem planilha e sem culpa.",
+    role: "Produto, UX e construção do app (Vue).",
+    surface: "App · Finanças pessoais", year: "2026",
+    fact: "Aplicativo de finanças pessoais (Vue)",
+    tldr: {
+      papel: "Design e build do app (Vue)",
+      oque: "App pra organizar finanças pessoais no dia a dia",
+      resultado: "[confirmar status / funcionalidades]",
+    },
+    problema: {
+      t: "Dinheiro pessoal espalhado",
+      p: ["Controlar finanças pessoais costuma virar planilha abandonada ou app cheio demais. Falta algo simples que caiba na rotina.",
+          "[confirmar a dor específica que o Kitamo ataca]"],
+    },
+    decisoes: [
+      { d: "Foco no hábito, não em virar um ERP pessoal", r: "porque app de finanças morre por excesso — desenhei pro registro rápido do dia a dia. [confirmar]" },
+      { d: "[confirmar decisão de produto]", r: "porque [confirmar]" },
+    ],
+    solucao: {
+      t: "Finanças que cabem na rotina",
+      p: ["App de finanças pessoais construído em Vue, focado em registro simples. [confirmar telas/funcionalidades principais]"],
+      slots: 2,
+    },
+    resultado: {
+      t: "[confirmar resultado]",
+      p: ["[confirmar aprendizado / status do app]"],
+    },
+  },
+  {
     id: "oderco-checkout", num: "", cap: "PEÇA", domain: "E-COMMERCE · B2B", cat: "ecommerce",
     project: "Checkout Oderço", descriptor: "Checkout B2B por nota fiscal (Grupo Oderço)", title: "Checkout Oderço",
     sfx: "ザッ", cover: "volume/assets/projetos/checkout/cover.png",
@@ -472,13 +572,13 @@ const PROJECTS = [
   { id: "solar-saas",  title: "Solar Buy-Side",cat: "saas",      domain: "SaaS · Plataforma",   fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "signamais",   title: "Signamais",     cat: "saas",      domain: "SaaS · Assinaturas",  fav: false, chapterId: null,      cover: "volume/assets/projetos/signamais/cover.png", links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null } },
   { id: "immo",        title: "IMMO",          cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "ponto-admin", title: "Gestão de Ponto",cat: "saas",     domain: "SaaS · Admin",        fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "ponto-admin", title: "Worklife",       cat: "saas",     domain: "SaaS · Gestão de Ponto", fav: false, chapterId: "ponto", cover: "volume/assets/projetos/ponto/cover.png", links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
   { id: "hub-oderco",  title: "Hub Oderço",    cat: "saas",      domain: "SaaS · Ferramenta",   fav: false, chapterId: "hub-oderco", cover: "volume/assets/projetos/hub/cover.png", links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null } },
   // MOBILE  (favorito: Rodapé)
   { id: "rodape",      title: "Rodapé",        cat: "mobile",    domain: "App · iOS & Android", fav: true,  chapterId: "rodape",  links: { vercel: null, figma: null } },
-  { id: "kitamo-app",  title: "Kitamo",        cat: "mobile",    domain: "App · Mobile",        fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "kitamo-app",  title: "Kitamo",        cat: "mobile",    domain: "App · Finanças",      fav: false, chapterId: "kitamo-app", links: { vercel: null, figma: null } },
   { id: "argel",       title: "Argel Riboli",  cat: "mobile",    domain: "App · Boxe",          fav: false, chapterId: "argel",   links: { vercel: null, figma: null } },
-  { id: "ponto-diar",  title: "Gestão de Ponto",cat: "mobile",   domain: "App · Diaristas",     fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "ponto-diar",  title: "Worklife · App",cat: "mobile",   domain: "App · Diaristas",     fav: false, chapterId: "ponto",   cover: "volume/assets/projetos/ponto/cover.png", links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
   // DESKTOP  (favorito: Remoctrl)
   { id: "remoctrl",    title: "Remoctrl",      cat: "desktop",   domain: "App nativo · Desktop",fav: true,  chapterId: "remoctrl",links: { vercel: null, figma: null } },
   // WEB  (favorito: Portfólio)
@@ -493,7 +593,7 @@ const PROJECTS = [
   { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: "oderco-checkout", cover: "volume/assets/projetos/checkout/cover.png", links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
   { id: "tonante",     title: "Tonante",       cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "odex-ec",     title: "Odex",          cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: "dropchina", links: { vercel: null, figma: null } },
 ];
 
 /* tag shown on a project cover: chapters carry their CAP number */
