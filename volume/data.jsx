@@ -10,6 +10,7 @@ const { useState, useEffect, useRef, useCallback } = React;
 const SFX_RO = {
   "ドン": "DON", "カチッ": "KACHI", "ゴゴゴ": "GOGOGO", "バーン": "BAAN",
   "シャキーン": "SHAKIIN", "ザッ": "ZAH", "スッ": "SU", "パッ": "PA", "キラッ": "KIRA", "バッ": "BA",
+  "ガチャ": "GACHA", "ドガッ": "DOGA",
 };
 const SYNTH_SFX = ["ザッ", "スッ", "パッ", "キラッ", "バッ"];
 function sfxRo(jp) { return SFX_RO[jp] || ""; }
@@ -105,33 +106,34 @@ const CHAPTERS = [
     title: "Traxium",
     sfx: "ゴゴゴ",                      // gogogo — looming scale (SaaS platform)
     links: { vercel: null, figma: null },
-    premise: "[premissa, a linha que abre o capítulo]",
-    role: "[seu papel]",
+    premise: "Compliance agrologística não devia depender de planilha e boa vontade.",
+    role: "Concepção, UX e protótipo navegável — do conceito à versão validável.",
     surface: "Web · SaaS",
     year: "2026",
-    fact: null,
+    fact: "Back-office da transportadora + preview do app do motorista, num protótipo navegável",
     tldr: {
-      papel: "[seu papel]",
-      oque: "[o que é, em 1 linha]",
-      resultado: "[resultado]",
+      papel: "Pesquisa, design e protótipo navegável (Next.js + shadcn/ui)",
+      oque: "SaaS de compliance agrologística: gestão pra transportadora + app do motorista",
+      resultado: "Protótipo pronto pra benchmarking e validação com stakeholders [confirmar iteração]",
     },
     problema: {
-      t: "[o problema em 3–5 palavras]",
-      p: ["[a situação: pra quem, qual a restrição real, o que travava]"],
+      t: "Compliance que mora na planilha",
+      p: ["Gestores de transportadora tocavam compliance e benchmarking no braço: planilha solta, risco de multa, retrabalho e nenhuma visão única do que estava em dia.",
+          "A restrição real: o valor só aparece quando o escritório (gestor) e a estrada (motorista) falam a mesma língua, em tempo real."],
     },
     decisoes: [
-      { d: "[escolhi ___]", r: "porque [___]" },
-      { d: "[escolhi ___]", r: "porque [___]" },
-      { d: "[escolhi ___]", r: "porque [___]" },
+      { d: "Comecei por reunião com stakeholders e entrevistas, não por telas", r: "porque em compliance o que trava não é a interface, é o processo. Desenhei depois de entender o fluxo real." },
+      { d: "Back-office web + preview do app do motorista no mesmo protótipo", r: "porque o ganho só fica óbvio quando os dois lados conversam. Testei o fluxo de ponta a ponta antes de prometer." },
+      { d: "shadcn/ui + Recharts, com IA dentro do fluxo", r: "porque dado de compliance precisa ser lido num relance, e o protótipo navegável sai em dias pra validar com critério real." },
     ],
     solucao: {
-      t: "[a solução em 3–5 palavras]",
-      p: ["[o produto SaaS no ar, o que foi construído]"],
+      t: "Protótipo navegável, ponta a ponta",
+      p: ["Back-office completo pro gestor (Next.js 16, shadcn/ui, gráficos em Recharts) e preview do app do motorista, num protótipo clicável pra benchmarking — do conceito à versão que dá pra testar de verdade."],
       slots: 3,
     },
     resultado: {
-      t: "[o que aconteceu / o que aprendi]",
-      p: ["[reflexão honesta]"],
+      t: "Da planilha ao protótipo testável",
+      p: ["Stakeholder discute o produto tocando nele, não imaginando. O protótipo virou a base pra iterar pra a próxima versão. [confirmar decisão de seguir / números]"],
     },
   },
   {
@@ -141,33 +143,34 @@ const CHAPTERS = [
     title: "PCYES",
     sfx: "バーン",                      // baan — boom (e-commerce)
     links: { vercel: null, figma: null },
-    premise: "[premissa, a linha que abre o capítulo]",
-    role: "[seu papel]",
+    premise: "Vender hardware pra quem entende de hardware exige mais que vitrine.",
+    role: "UX/UI e construção do e-commerce (v3), com leitura de comportamento no fluxo.",
     surface: "Site · E-commerce",
     year: "2026",
-    fact: null,
+    fact: "E-commerce de games & hardware do Grupo Oderço (versão 3)",
     tldr: {
-      papel: "[seu papel]",
-      oque: "[o que é, em 1 linha]",
-      resultado: "[resultado]",
+      papel: "Design e build do e-commerce + leitura de comportamento (Clarity/Hotjar)",
+      oque: "Loja de games, periféricos e setups da PCYES — identidade dark, foco em conversão",
+      resultado: "Loja no ar; iterações guiadas por mapa de calor [confirmar métricas]",
     },
     problema: {
-      t: "[o problema em 3–5 palavras]",
-      p: ["[a situação: pra quem, qual a restrição real, o que travava]"],
+      t: "Público exigente, vitrine genérica",
+      p: ["O gamer escaneia rápido e desconfia de loja sem alma. A versão anterior não puxava o público nem deixava claro o que a PCYES tem de melhor: setups, lançamentos, periférico bom.",
+          "Restrição: segurar a identidade dark forte da marca sem sacrificar leitura nem velocidade de compra."],
     },
     decisoes: [
-      { d: "[escolhi ___]", r: "porque [___]" },
-      { d: "[escolhi ___]", r: "porque [___]" },
-      { d: "[escolhi ___]", r: "porque [___]" },
+      { d: "Identidade dark como padrão, não exceção", r: "porque é a cara da PCYES e do público gamer — a loja tinha que parecer parte do setup, não um genérico claro." },
+      { d: "Home de banners de jogos + vitrines de setup", r: "porque é o que esse público quer ver primeiro. Testei a hierarquia no protótipo antes de construir." },
+      { d: "Mapa de calor + Clarity/Hotjar pra decidir", r: "porque em e-commerce eu não chuto layout: leio pra onde o olho e o clique vão, e itero pra a próxima versão." },
     ],
     solucao: {
-      t: "[a solução em 3–5 palavras]",
-      p: ["[a loja no ar, o que foi construído]"],
+      t: "Loja dark, rápida e orientada a dado",
+      p: ["E-commerce v3 com home de banners (lançamentos), vitrines de setup e fluxo de compra enxuto. Comportamento monitorado com Clarity/Hotjar pra afiar a decisão a cada ciclo."],
       slots: 3,
     },
     resultado: {
-      t: "[o que aconteceu / o que aprendi]",
-      p: ["[reflexão honesta]"],
+      t: "Decisão por dado, não por achismo",
+      p: ["O calor da página virou argumento de design: o que ninguém via, saiu; o que convertia, ganhou peso. [confirmar conversão / resultado de venda]"],
     },
   },
   {
@@ -206,6 +209,105 @@ const CHAPTERS = [
     resultado: {
       t: "Você está lendo o resultado",
       p: ["A leitura te trouxe até aqui. Se a navegação funcionou, o argumento se provou sozinho."],
+    },
+  },
+  {
+    id: "hub-oderco", num: "", cap: "PEÇA", domain: "SAAS · FERRAMENTA", cat: "saas",
+    project: "Hub Oderço", descriptor: "Hub multi-marca de marketing", title: "Hub Oderço",
+    sfx: "ガチャ", links: { vercel: null, figma: null },
+    premise: "Sete marcas, um padrão visual, zero retrabalho.",
+    role: "Concepção, UX e construção da ferramenta interna, com IA no fluxo.",
+    surface: "Web · Ferramenta interna", year: "2026",
+    fact: "Atende 7 marcas do grupo: PCYES, Azux, Odex, Tonante, Quati, Skul, Vinik",
+    tldr: {
+      papel: "Design e build do hub + geração de conteúdo via IA",
+      oque: "Hub de produtos & serviços: gera material promocional e descrição técnica pra 7 marcas",
+      resultado: "Padronização e agilidade pras marcas do grupo [confirmar ganho de tempo]",
+    },
+    problema: {
+      t: "Cada marca, um jeito; nenhum padrão",
+      p: ["Sete marcas criavam material promocional e descrição de produto na mão. Lento, inconsistente, e cada um reinventava o template do zero.",
+          "A restrição: padronizar sem engessar — sete identidades diferentes precisavam caber numa ferramenta só."],
+    },
+    decisoes: [
+      { d: "Comecei resolvendo a dor de quem usa todo dia", r: "porque a ferramenta nasceu interna (PCYES) — entrevistei quem sofria com o processo manual antes de desenhar." },
+      { d: "Geração de descrição técnica via IA no fluxo", r: "porque o gargalo era escrever texto de produto repetido. A IA tira o trabalho chato e mantém o padrão." },
+      { d: "Um hub, sete temas de marca", r: "porque centralizar o motor e trocar só a pele garante coerência visual sem travar nenhuma marca." },
+    ],
+    solucao: {
+      t: "Um motor, sete marcas no ar",
+      p: ["Plataforma que centraliza criação de material promocional, gera descrições via IA e dá ferramentas de e-mail marketing — virou de ferramenta interna da PCYES a hub do grupo inteiro."],
+      slots: 3,
+    },
+    resultado: {
+      t: "De ferramenta interna a plataforma do grupo",
+      p: ["O que era um atalho da PCYES escalou pra sete marcas. Padronização virou default, não esforço. [confirmar números de uso / tempo economizado]"],
+    },
+  },
+  {
+    id: "argel", num: "", cap: "PEÇA", domain: "APP · BOXE", cat: "mobile",
+    project: "CT Argel Riboli", descriptor: "App de gestão de CT de boxe", title: "CT Argel Riboli",
+    sfx: "ドガッ", links: { vercel: null, figma: null },
+    premise: "Gerir um centro de treino não devia tirar tempo do treino.",
+    role: "Produto, UX e construção — web de gestão + app do aluno.",
+    surface: "App · Web + Mobile", year: "2026",
+    fact: "Sistema do Centro de Treinamento de Boxe — Equipe Argel Riboli",
+    tldr: {
+      papel: "Design e build do monorepo (web de gestão + app mobile)",
+      oque: "Gestão de alunos, treinos e rotina do CT, com app pro aluno",
+      resultado: "Sistema completo desenhado e construído [confirmar status de uso]",
+    },
+    problema: {
+      t: "CT no caderno e no WhatsApp",
+      p: ["Alunos, treinos e pagamentos do CT eram tocados no manual, espalhados entre caderno e conversa. Difícil de escalar, fácil de perder informação.",
+          "A restrição: tinha que ser simples o bastante pro professor usar entre uma luva e outra, e leve pro aluno no celular."],
+    },
+    decisoes: [
+      { d: "Entrevistei professor e alunos antes de desenhar", r: "porque quem ia usar tinha rotina específica — testei o protótipo com eles e iterei pra a primeira versão." },
+      { d: "Monorepo: web de gestão + app do aluno, código compartilhado", r: "porque as regras de negócio são as mesmas dos dois lados — compartilhar evita divergência e retrabalho." },
+      { d: "React Native (Expo) pro app", r: "porque o aluno vive no celular, e Expo me deixa construir e publicar do protótipo ao app real rápido." },
+    ],
+    solucao: {
+      t: "Gestão no escritório, treino no bolso",
+      p: ["Plataforma web pro professor administrar alunos, treinos e rotina, e um app mobile pro aluno acompanhar — mesma base de código, duas superfícies."],
+      slots: 2,
+    },
+    resultado: {
+      t: "Do caderno ao sistema",
+      p: ["O CT ganhou uma fonte única de verdade no lugar de cadernos soltos. [confirmar adoção / publicação na loja]"],
+    },
+  },
+  {
+    id: "solar-site", num: "", cap: "PEÇA", domain: "WEBSITE · LP", cat: "web",
+    project: "Solar Buy-Side", descriptor: "Landing page de captação", title: "Solar Buy-Side",
+    sfx: "パッ", links: { vercel: null, figma: null },
+    premise: "Uma landing que vende o método antes do produto.",
+    role: "UX/UI e construção da landing (React + Vite).",
+    surface: "Website · Landing page", year: "2026",
+    fact: "Landing page de alto desempenho, mobile-first",
+    tldr: {
+      papel: "Design e build da landing (React/TS/Tailwind, Vite)",
+      oque: "LP de captação da Solar Buy-Side, focada em conversão",
+      resultado: "Landing no ar, mobile-first e rápida [confirmar conversão/leads]",
+    },
+    problema: {
+      t: "Explicar o buy-side em segundos",
+      p: ["O visitante chega sem entender a proposta e vai embora rápido. A LP precisava traduzir o valor do buy-side e capturar o lead antes do scroll cansar.",
+          "A restrição: performance e clareza num público que decide no celular, em poucos segundos."],
+    },
+    decisoes: [
+      { d: "Estrutura clássica de conversão, sem firula", r: "porque o que vende é clareza: hero com promessa, prova, preço e CTA — testei a ordem antes de fechar." },
+      { d: "Mobile-first e Vite pra velocidade", r: "porque LP lenta perde lead. Construí pensando no celular primeiro e na nota de performance." },
+      { d: "Um CTA dominante por dobra", r: "porque atenção dividida não converte — cada seção empurra pra a mesma ação." },
+    ],
+    solucao: {
+      t: "Hero, prova, preço, CTA",
+      p: ["Landing responsiva com hero de promessa clara, seção de features, tabela de preços e CTAs — construída pra carregar rápido e guiar o visitante até o contato."],
+      slots: 2,
+    },
+    resultado: {
+      t: "Clareza que converte",
+      p: ["A leitura leva o visitante do 'não entendi' ao 'quero falar' sem atrito. [confirmar leads / taxa de conversão]"],
     },
   },
 ];
@@ -295,11 +397,11 @@ const PROJECTS = [
   { id: "signamais",   title: "Signamais",     cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "immo",        title: "IMMO",          cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "ponto-admin", title: "Gestão de Ponto",cat: "saas",     domain: "SaaS · Admin",        fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "hub-oderco",  title: "Hub Oderço",    cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "hub-oderco",  title: "Hub Oderço",    cat: "saas",      domain: "SaaS · Ferramenta",   fav: false, chapterId: "hub-oderco", links: { vercel: null, figma: null } },
   // MOBILE  (favorito: Rodapé)
   { id: "rodape",      title: "Rodapé",        cat: "mobile",    domain: "App · iOS & Android", fav: true,  chapterId: "rodape",  links: { vercel: null, figma: null } },
   { id: "kitamo-app",  title: "Kitamo",        cat: "mobile",    domain: "App · Mobile",        fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "argel",       title: "Argel Riboli",  cat: "mobile",    domain: "App · Boxe",          fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "argel",       title: "Argel Riboli",  cat: "mobile",    domain: "App · Boxe",          fav: false, chapterId: "argel",   links: { vercel: null, figma: null } },
   { id: "ponto-diar",  title: "Gestão de Ponto",cat: "mobile",   domain: "App · Diaristas",     fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   // DESKTOP  (favorito: Remoctrl)
   { id: "remoctrl",    title: "Remoctrl",      cat: "desktop",   domain: "App nativo · Desktop",fav: true,  chapterId: "remoctrl",links: { vercel: null, figma: null } },
@@ -307,7 +409,7 @@ const PROJECTS = [
   { id: "portfolio",   title: "Portfólio",     cat: "web",       domain: "Website · Manifesto", fav: true,  chapterId: "portfolio", links: { vercel: null, figma: null } },
   { id: "locarmais",   title: "Locarmais",     cat: "web",       domain: "Website",             fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "isabella",    title: "Isabella Pires",cat: "web",       domain: "Website · Arquitetura",fav: false, chapterId: null,     links: { vercel: null, figma: null } },
-  { id: "solar-site",  title: "Solar Buy-Side",cat: "web",       domain: "Website",             fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  { id: "solar-site",  title: "Solar Buy-Side",cat: "web",       domain: "Website · LP",        fav: false, chapterId: "solar-site", links: { vercel: null, figma: null } },
   { id: "kitamo-site", title: "Kitamo",        cat: "web",       domain: "Website",             fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   { id: "4yu",         title: "4YU MKT",       cat: "web",       domain: "Website",             fav: false, chapterId: null,      links: { vercel: null, figma: null } },
   // E-COMMERCE  (favorito: PCYES)
