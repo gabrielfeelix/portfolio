@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Organic Loaders</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --paper: #F6F3EC;
+    --hairline: #DEDAD0;
+    --wash-3: #76726A;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  body {
+    min-height: 100vh;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    font-family: 'Oswald', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 200px);
+    gap: clamp(1rem, 2.5vw, 2rem);
+    justify-content: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .cell {
+    width: 200px;
+    height: 200px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+  }
+
+  /* faint corner ticks — panel register marks, not full frames */
+  .cell::before,
+  .cell::after {
+    content: "";
+    position: absolute;
+    width: 9px; height: 9px;
+    border: 1px solid var(--hairline);
+  }
+  .cell::before { top: 7px; left: 7px; border-right: 0; border-bottom: 0; }
+  .cell::after  { bottom: 7px; right: 7px; border-left: 0; border-top: 0; }
+
+  .stage {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .ink { background: var(--ink); }
+
+  /* ============================================================
+     SHARED ORGANIC MORPH KEYFRAMES
+     ============================================================ */
+  @keyframes morphA {
+    0%,100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+    33%     { border-radius: 67% 33% 38% 62% / 58% 62% 38% 42%; }
+    66%     { border-radius: 38% 62% 56% 44% / 64% 33% 67% 36%; }
+  }
+  @keyframes morphB {
+    0%,100% { border-radius: 60% 40% 55% 45% / 55% 48% 52% 45%; }
+    50%     { border-radius: 40% 60% 42% 58% / 42% 60% 40% 58%; }
+  }
+  @keyframes spin    { to { transform: rotate(360deg); } }
+  @keyframes spinRev { to { transform: rotate(-360deg); } }
+
+  /* ============================================================
+     01 · MORPH — solid ink blob, morph + slow turn
+     ============================================================ */
+  .l01 {
+    width: 92px; height: 92px;
+    background: var(--ink);
+    animation: morphA 4s ease-in-out infinite, spin 9s linear infinite;
+  }
+
+  /* ============================================================
+     02 · CONTOUR — morphing outline only
+     ============================================================ */
+  .l02 {
+    width: 92px; height: 92px;
+    border: 7px solid var(--ink);
+    animation: morphA 3.4s ease-in-out infinite, spinRev 8s linear infinite;
+  }
+
+  /* ============================================================
+     03 · PULSE — single blob breathing in and out
+     ============================================================ */
+  .l03 {
+    width: 86px; height: 86px;
+    background: var(--ink);
+    animation: morphB 3s ease-in-out infinite, breathe 2.2s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: scale(0.62); }
+    50%     { transform: scale(1); }
+  }
+
+  /* ============================================================
+     04 · GOO ORBIT — core blob with a satellite, gooey merge
+     ============================================================ */
+  .l04 { width: 120px; height: 120px; filter: url(#goo); }
+  .l04 .core {
+    position: absolute; inset: 50% auto auto 50%;
+    width: 46px; height: 46px; margin: -23px 0 0 -23px;
+    background: var(--ink); border-radius: 50%;
+  }
+  .l04 .sat {
+    position: absolute; inset: 50% auto auto 50%;
+    width: 60px; height: 60px; margin: -30px 0 0 -30px;
+    transform-origin: center;
+    animation: spin 2.4s cubic-bezier(.6,0,.4,1) infinite;
+  }
+  .l04 .sat::after {
+    content: ""; position: absolute; top: 0; left: 50%;
+    width: 24px; height: 24px; margin-left: -12px;
+    background: var(--ink); border-radius: 50%;
+  }
+
+  /* ============================================================
+     05 · MERGE — two blobs drift together & apart (goo)
+     ============================================================ */
+  .l05 { width: 120px; height: 80px; filter: url(#goo); }
+  .l05 span {
+    position: absolute; top: 50%; width: 40px; height: 40px;
+    margin-top: -20px; background: var(--ink); border-radius: 50%;
+  }
+  .l05 .a { left: 12px; animation: mergeA 1.9s ease-in-out infinite; }
+  .l05 .b { right: 12px; animation: mergeB 1.9s ease-in-out infinite; }
+  @keyframes mergeA {
+    0%,100% { transform: translateX(0)   scale(1); }
+    50%     { transform: translateX(28px) scale(0.8); }
+  }
+  @keyframes mergeB {
+    0%,100% { transform: translateX(0)    scale(1); }
+    50%     { transform: translateX(-28px) scale(0.8); }
+  }
+
+  /* ============================================================
+     06 · THREE — gooey dots swell in sequence
+     ============================================================ */
+  .l06 { width: 120px; height: 48px; filter: url(#goo); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .l06 span {
+    width: 28px; height: 28px; background: var(--ink); border-radius: 50%;
+    animation: swell 1.4s ease-in-out infinite;
+  }
+  .l06 span:nth-child(2) { animation-delay: .18s; }
+  .l06 span:nth-child(3) { animation-delay: .36s; }
+  @keyframes swell {
+    0%,100% { transform: scale(0.55); }
+    40%     { transform: scale(1.25); }
+  }
+
+  /* ============================================================
+     07 · AMOEBA — turbulence-displaced ring, breathing
+     ============================================================ */
+  .l07 svg { width: 120px; height: 120px; }
+  .l07 circle {
+    fill: none; stroke: var(--ink); stroke-width: 9;
+    transform-origin: center;
+    animation: breathe 2.6s ease-in-out infinite;
+  }
+
+  /* ============================================================
+     08 · SPLIT — one blob pinches into two and rejoins (goo)
+     ============================================================ */
+  .l08 { width: 120px; height: 70px; filter: url(#goo); }
+  .l08 span {
+    position: absolute; top: 50%; left: 50%; width: 44px; height: 44px;
+    margin: -22px 0 0 -22px; background: var(--ink); border-radius: 50%;
+  }
+  .l08 .a { animation: splitA 2.1s ease-in-out infinite; }
+  .l08 .b { animation: splitB 2.1s ease-in-out infinite; }
+  @keyframes splitA {
+    0%,100% { transform: translateX(0) scale(1); }
+    50%     { transform: translateX(-26px) scale(0.78); }
+  }
+  @keyframes splitB {
+    0%,100% { transform: translateX(0) scale(1); }
+    50%     { transform: translateX(26px) scale(0.78); }
+  }
+
+  /* ============================================================
+     09 · MAGATAMA — comma blob revolving
+     ============================================================ */
+  .l09 { width: 100px; height: 100px; animation: spin 1.6s cubic-bezier(.5,.1,.5,.9) infinite; }
+  .l09 svg { width: 100%; height: 100%; }
+  .l09 path { fill: var(--ink); }
+
+  /* ============================================================
+     10 · DRIP — drop forms, falls, gooey tail
+     ============================================================ */
+  .l10 { width: 90px; height: 120px; filter: url(#goo); }
+  .l10 .src {
+    position: absolute; top: 8px; left: 50%; width: 40px; height: 30px;
+    margin-left: -20px; background: var(--ink); border-radius: 50% 50% 45% 45%;
+  }
+  .l10 .drop {
+    position: absolute; top: 18px; left: 50%; width: 26px; height: 26px;
+    margin-left: -13px; background: var(--ink); border-radius: 50%;
+    animation: drip 1.8s cubic-bezier(.5,0,.7,.4) infinite;
+  }
+  @keyframes drip {
+    0%      { transform: translateY(0) scale(0.6); opacity: 1; }
+    55%     { transform: translateY(46px) scale(1); }
+    100%    { transform: translateY(86px) scale(0.7); opacity: 0; }
+  }
+
+  /* ============================================================
+     11 · CLUSTER — gooey dots pulse out from a core
+     ============================================================ */
+  @property --d11 { syntax: '<length>'; inherits: false; initial-value: 0px; }
+  .l11 { width: 120px; height: 120px; filter: url(#goo); }
+  .l11 .hub {
+    position: absolute; inset: 50% auto auto 50%; width: 30px; height: 30px;
+    margin: -15px 0 0 -15px; background: var(--ink); border-radius: 50%;
+  }
+  .l11 i {
+    position: absolute; inset: 50% auto auto 50%; width: 20px; height: 20px;
+    margin: -10px 0 0 -10px; background: var(--ink); border-radius: 50%;
+    transform: rotate(var(--a)) translateY(var(--d11));
+    animation: orbitOut 2.2s ease-in-out infinite;
+  }
+  .l11 i:nth-child(2) { --a: 0deg;   }
+  .l11 i:nth-child(3) { --a: 72deg;  animation-delay: .12s; }
+  .l11 i:nth-child(4) { --a: 144deg; animation-delay: .24s; }
+  .l11 i:nth-child(5) { --a: 216deg; animation-delay: .36s; }
+  .l11 i:nth-child(6) { --a: 288deg; animation-delay: .48s; }
+  @keyframes orbitOut {
+    0%,100% { --d11: -6px; }
+    50%     { --d11: -38px; }
+  }
+
+  /* ============================================================
+     12 · JELLY — blob squishes against a floor
+     ============================================================ */
+  .l12 {
+    width: 84px; height: 84px; background: var(--ink); border-radius: 50%;
+    animation: jelly 1.3s cubic-bezier(.45,0,.35,1) infinite;
+  }
+  @keyframes jelly {
+    0%,100% { transform: translateY(-22px) scaleX(1)   scaleY(1); }
+    50%     { transform: translateY(20px)  scaleX(1.25) scaleY(0.78); }
+    58%     { transform: translateY(18px)  scaleX(1.2)  scaleY(0.82); }
+  }
+
+  /* ============================================================
+     13 · TRAIL — three dots orbit, goo welds a tail
+     ============================================================ */
+  .l13 { width: 120px; height: 120px; filter: url(#goo); animation: spin 2.2s linear infinite; }
+  .l13 i {
+    position: absolute; inset: 50% auto auto 50%; width: 26px; height: 26px;
+    margin: -13px 0 0 -13px; background: var(--ink); border-radius: 50%;
+  }
+  .l13 i:nth-child(1) { transform: rotate(0deg)   translateY(-40px); }
+  .l13 i:nth-child(2) { transform: rotate(40deg)  translateY(-40px); width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+  .l13 i:nth-child(3) { transform: rotate(75deg)  translateY(-40px); width: 14px; height: 14px; margin: -7px 0 0 -7px; }
+
+  /* ============================================================
+     14 · WAVE — blob morph with rolling phase
+     ============================================================ */
+  .l14 {
+    width: 96px; height: 96px; background: var(--ink);
+    animation: wave 3.6s linear infinite;
+  }
+  @keyframes wave {
+    0%   { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+    25%  { border-radius: 58% 42% 45% 55% / 38% 60% 40% 62%; }
+    50%  { border-radius: 70% 30% 42% 58% / 55% 55% 45% 45%; }
+    75%  { border-radius: 45% 55% 58% 42% / 60% 38% 62% 40%; }
+    100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  }
+
+  /* ============================================================
+     15 · YIN — two blobs interlocked, revolving
+     ============================================================ */
+  .l15 { width: 110px; height: 110px; filter: url(#goo); animation: spin 2.6s cubic-bezier(.6,0,.4,1) infinite; }
+  .l15 span {
+    position: absolute; top: 50%; left: 50%; width: 48px; height: 48px;
+    margin: -24px 0 0 -24px; background: var(--ink); border-radius: 50%;
+  }
+  .l15 .a { animation: nudge 1.3s ease-in-out infinite alternate; transform: translateX(-20px); }
+  .l15 .b { animation: nudge 1.3s ease-in-out infinite alternate-reverse; transform: translateX(20px); }
+  @keyframes nudge {
+    from { scale: 0.7; }
+    to   { scale: 1.05; }
+  }
+
+  /* ============================================================
+     16 · BOUNCE — gooey blob bounds, squashes (goo)
+     ============================================================ */
+  .l16 { width: 120px; height: 120px; filter: url(#goo); }
+  .l16 .puddle {
+    position: absolute; bottom: 14px; left: 50%; width: 56px; height: 16px;
+    margin-left: -28px; background: var(--ink); border-radius: 50%;
+  }
+  .l16 .ball {
+    position: absolute; bottom: 14px; left: 50%; width: 40px; height: 40px;
+    margin-left: -20px; background: var(--ink); border-radius: 50%;
+    animation: bounce 1.2s cubic-bezier(.5,.05,.5,.95) infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0)    scaleY(0.7) scaleX(1.15); }
+    15%     { transform: translateY(-12px) scaleY(1)   scaleX(1); }
+    50%     { transform: translateY(-72px) scaleY(1.08) scaleX(0.94); }
+    85%     { transform: translateY(-12px) scaleY(1)   scaleX(1); }
+  }
+
+  /* ============================================================
+     17 · RIPPLE — concentric blob rings expand out
+     ============================================================ */
+  .l17 { width: 120px; height: 120px; }
+  .l17 span {
+    position: absolute; inset: 50% auto auto 50%; width: 30px; height: 30px;
+    margin: -15px 0 0 -15px; border: 6px solid var(--ink);
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    animation: ripple 2.4s cubic-bezier(.2,.6,.3,1) infinite;
+    opacity: 0;
+  }
+  .l17 span:nth-child(2) { animation-delay: .8s; }
+  .l17 span:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes ripple {
+    0%   { transform: scale(0.3) rotate(0deg);   opacity: 0; }
+    20%  { opacity: 1; }
+    100% { transform: scale(2.4) rotate(140deg); opacity: 0; }
+  }
+
+  /* ============================================================
+     18 · SPREAD — irregular ink blot blooms and recedes
+     ============================================================ */
+  .l18 {
+    width: 96px; height: 96px; background: var(--ink);
+    animation: morphA 5s ease-in-out infinite, spread 2.4s ease-in-out infinite;
+  }
+  @keyframes spread {
+    0%,100% { transform: scale(0.35); }
+    45%     { transform: scale(1); }
+  }
+
+  /* ============================================================
+     19 · ARC — blobby half-ring rotates & morphs
+     ============================================================ */
+  .l19 {
+    width: 92px; height: 92px;
+    border: 8px solid var(--ink);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    animation: morphB 2.8s ease-in-out infinite, spin 1.4s linear infinite;
+  }
+
+  /* ============================================================
+     20 · TWIN — two morphing lobes counter-rotate (goo)
+     ============================================================ */
+  .l20 { width: 120px; height: 120px; filter: url(#goo); }
+  .l20 span {
+    position: absolute; inset: 50% auto auto 50%; width: 54px; height: 54px;
+    margin: -27px 0 0 -27px; background: var(--ink);
+  }
+  .l20 .a { animation: morphA 3s ease-in-out infinite, spin 2.4s linear infinite; }
+  .l20 .b { animation: morphB 2.4s ease-in-out infinite, spinRev 2.4s linear infinite; width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Shared SVG filters: gooey metaball weld + organic turbulence -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+    </filter>
+    <filter id="wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="3" result="noise">
+        <animate attributeName="baseFrequency" dur="9s"
+          values="0.018;0.03;0.018" repeatCount="indefinite" />
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" />
+    </filter>
+  </defs>
+</svg>
+
+<div class="grid">
+
+  <div class="cell"><div class="stage"><div class="l01"></div></div></div>
+  <div class="cell"><div class="stage"><div class="l02"></div></div></div>
+  <div class="cell"><div class="stage"><div class="l03"></div></div></div>
+
+  <div class="cell"><div class="stage l04">
+    <div class="core"></div><div class="sat"></div>
+  </div></div>
+
+  <div class="cell"><div class="stage l05">
+    <span class="a"></span><span class="b"></span>
+  </div></div>
+
+  <div class="cell"><div class="stage l06">
+    <span></span><span></span><span></span>
+  </div></div>
+
+  <div class="cell"><div class="stage l07">
+    <svg viewBox="0 0 120 120" style="filter:url(#wobble)">
+      <circle cx="60" cy="60" r="42" />
+    </svg>
+  </div></div>
+
+  <div class="cell"><div class="stage l08">
+    <span class="a"></span><span class="b"></span>
+  </div></div>
+
+  <div class="cell"><div class="stage l09">
+    <svg viewBox="0 0 100 100">
+      <path d="M50 6
+               C 26 6 6 26 6 50
+               C 6 74 26 94 50 94
+               C 66 94 78 84 78 70
+               C 78 58 68 50 56 50
+               C 48 50 42 56 42 64
+               C 42 70 46 74 52 74
+               C 44 80 30 76 26 64
+               C 20 46 32 26 52 24
+               C 70 22 86 34 90 52
+               C 92 28 74 6 50 6 Z" />
+    </svg>
+  </div></div>
+
+  <div class="cell"><div class="stage l10">
+    <div class="src"></div><div class="drop"></div>
+  </div></div>
+
+  <div class="cell"><div class="stage l11">
+    <div class="hub"></div>
+    <i></i><i></i><i></i><i></i><i></i>
+  </div></div>
+
+  <div class="cell"><div class="stage"><div class="l12"></div></div></div>
+
+  <div class="cell"><div class="stage l13">
+    <i></i><i></i><i></i>
+  </div></div>
+
+  <div class="cell"><div class="stage"><div class="l14"></div></div></div>
+
+  <div class="cell"><div class="stage l15">
+    <span class="a"></span><span class="b"></span>
+  </div></div>
+
+  <div class="cell"><div class="stage l16">
+    <div class="puddle"></div><div class="ball"></div>
+  </div></div>
+
+  <div class="cell"><div class="stage l17">
+    <span></span><span></span><span></span>
+  </div></div>
+
+  <div class="cell"><div class="stage"><div class="l18"></div></div></div>
+
+  <div class="cell"><div class="stage"><div class="l19"></div></div></div>
+
+  <div class="cell"><div class="stage l20">
+    <span class="a"></span><span class="b"></span>
+  </div></div>
+
+</div>
+
+</body>
+</html>

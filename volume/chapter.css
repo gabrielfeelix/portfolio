@@ -1,0 +1,106 @@
+/* =====================================================================
+   VOLUME — Portfolio UI Kit
+   chapter.css — the project-chapter reading layout
+   ===================================================================== */
+
+/* page transition: a hard cut with speed lines */
+.cut-overlay {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none;
+  background: var(--ink);
+  background-image: repeating-conic-gradient(from 0deg at 50% 50%, var(--paper) 0deg .3deg, transparent .3deg 2.2deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 60%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 60%);
+  animation: cutflash 340ms cubic-bezier(.85,0,.9,.2) both;
+}
+@keyframes cutflash {
+  0% { opacity: 0; transform: scale(.6); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+.view { animation: viewcut var(--cut) cubic-bezier(.85,0,.9,.2) both; }
+@keyframes viewcut { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.chapter-back {
+  position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px var(--gutter); background: var(--paper); border-bottom: var(--ink-stroke) solid var(--ink);
+}
+.chapter-back a.back { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
+.chapter-back a.back .arr { transition: transform var(--cut); }
+.chapter-back a.back:hover .arr { transform: translateX(-5px); }
+.chapter-back .cap { font-family: var(--font-condensed); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-2); }
+
+/* ---- chapter cover (splash, inverted) ---- */
+.cover { position: relative; background: var(--ink); color: var(--paper); overflow: hidden; }
+.cover .shell { position: relative; z-index: 2; padding-top: var(--ma-6); padding-bottom: var(--ma-6); display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--gutter); align-items: center; }
+.cover-art { position: relative; border: var(--ink-stroke-hi) solid var(--paper); aspect-ratio: 4/5; overflow: hidden; background: var(--wash-4); }
+.cover-art image-slot { width: 100%; height: 100%; }
+.cover-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .24em; font-size: 14px; color: var(--vermilion); }
+.cover-title { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-splash); line-height: .88; margin: 16px 0 var(--ma-3); }
+.cover-lead { font-size: var(--t-lead); max-width: 32ch; color: var(--paper); line-height: 1.45; opacity: .92; }
+.cover-tone { position: absolute; inset: 0; z-index: 1; background-image: radial-gradient(var(--paper) 1px, transparent 1.2px); background-size: 8px 8px; opacity: .07; }
+.cover-scroll { display: flex; align-items: center; gap: 10px; margin-top: var(--ma-4); font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--wash-2); }
+.cover-scroll .dn { animation: bob 1.6s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.cover-meta { display: flex; gap: 26px; margin-top: var(--ma-4); }
+.cover-meta .m .l { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--wash-2); }
+.cover-meta .m .v { font-family: var(--font-condensed); font-weight: 600; font-size: 17px; margin-top: 3px; }
+
+/* ---- chapter body: panels revealed on scroll ---- */
+.chapter-body { padding: var(--ma-6) 0 var(--ma-5); }
+.beat { display: grid; grid-template-columns: repeat(12,1fr); gap: var(--gutter); align-items: center; margin-bottom: var(--ma-6); }
+.beat .panel {
+  border: var(--ink-stroke) solid var(--ink); background: var(--paper); position: relative; overflow: hidden;
+  /* reveal: ma pause then a dry cut */
+  opacity: 0; transform: translateY(26px);
+  transition: opacity var(--cut), transform var(--cut);
+}
+.beat.in .panel { opacity: 1; transform: none; }
+.beat .panel.text { padding: var(--ma-4); border: 0; }
+.beat .panel.art { aspect-ratio: 4/3; background: var(--wash-1); }
+.beat .panel.art image-slot { width: 100%; height: 100%; }
+.beat .panel-tone { position: absolute; inset: 0; background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 7px 7px; opacity: .14; pointer-events: none; }
+.beat-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
+.beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: .92; margin: 10px 0 var(--ma-3); }
+.beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 46ch; color: var(--fg); }
+.beat-p + .beat-p { margin-top: var(--ma-3); }
+
+/* layout variants for rhythm */
+.beat .c7 { grid-column: span 7; }
+.beat .c5 { grid-column: span 5; }
+.beat .c6 { grid-column: span 6; }
+.beat .c8 { grid-column: span 8; }
+.beat .c4 { grid-column: span 4; }
+.beat.rev .text-col { order: 2; }
+
+/* the SFX burst that punctuates a key beat */
+.beat-sfx { grid-column: span 12; display: flex; justify-content: center; margin: calc(-1 * var(--ma-3)) 0 var(--ma-4); }
+.beat-sfx .word {
+  font-family: var(--font-sfx); text-transform: uppercase; font-size: clamp(3.5rem,10vw,8rem);
+  transform: skewX(-5deg); letter-spacing: .01em; line-height: 1;
+  color: var(--ink);
+  opacity: 0;
+}
+.beat-sfx .word em { color: var(--vermilion); }
+.beat.in .beat-sfx .word { animation: sfxpop 200ms cubic-bezier(.85,0,.9,.2) both; animation-delay: var(--ma-hold); }
+@keyframes sfxpop { from { opacity: 0; transform: skewX(-5deg) scale(.7); } to { opacity: 1; transform: skewX(-5deg) scale(1); } }
+
+/* dialogue aside */
+.aside-dia { font-family: var(--font-hand); font-weight: 600; font-size: 1.5rem; line-height: 1.25; color: var(--fg-2); margin-top: var(--ma-3); }
+
+/* ---- next chapter ---- */
+.next-chap { border-top: var(--ink-stroke) solid var(--ink); padding: var(--ma-5) 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; cursor: pointer; }
+.next-chap .nc-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--fg-2); }
+.next-chap .nc-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d1); line-height: .9; margin-top: 8px; transition: color var(--cut); }
+.next-chap:hover .nc-t { color: var(--vermilion); }
+.next-chap .nc-arr { font-family: var(--font-display); font-size: clamp(3rem,8vw,6rem); transition: transform var(--cut); }
+.next-chap:hover .nc-arr { transform: translateX(12px); color: var(--vermilion); }
+
+@media (prefers-reduced-motion: reduce) {
+  .view, .beat .panel, .beat-sfx .word, .cover-scroll .dn { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+@media (max-width: 880px) {
+  .cover .shell { grid-template-columns: 1fr; }
+  .beat { grid-template-columns: 1fr; }
+  .beat .c7,.beat .c5,.beat .c6,.beat .c8,.beat .c4 { grid-column: 1 / -1; }
+  .beat.rev .text-col { order: 0; }
+}

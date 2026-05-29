@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="320" viewBox="0 0 420 320" role="img" aria-label="Ink splatter">
+  <defs>
+    <filter id="spl" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="turbulence" baseFrequency="0.018 0.022" numOctaves="3" seed="11" result="n"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="42" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+  </defs>
+  <g fill="#0A0A0A" filter="url(#spl)">
+    <ellipse cx="200" cy="160" rx="96" ry="70"></ellipse>
+    <circle cx="92" cy="96" r="20"></circle>
+    <circle cx="320" cy="84" r="26"></circle>
+    <circle cx="350" cy="210" r="16"></circle>
+    <circle cx="70" cy="220" r="13"></circle>
+    <circle cx="300" cy="250" r="22"></circle>
+    <circle cx="140" cy="60" r="9"></circle>
+    <circle cx="380" cy="150" r="7"></circle>
+    <circle cx="46" cy="150" r="6"></circle>
+    <circle cx="250" cy="40" r="8"></circle>
+    <circle cx="190" cy="290" r="11"></circle>
+  </g>
+</svg>

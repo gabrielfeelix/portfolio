@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <defs>
+    <pattern id="tone" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="10" height="10" fill="#F6F3EC"></rect>
+      <circle cx="5" cy="5" r="1.8" fill="#0A0A0A"></circle>
+    </pattern>
+  </defs>
+  <rect width="60" height="60" fill="url(#tone)"></rect>
+</svg>

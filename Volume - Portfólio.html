@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volume — Portfólio · Gabriel Felix Barbosa</title>
+<link rel="stylesheet" href="volume/colors_and_type.css">
+<link rel="stylesheet" href="volume/kit.css">
+<link rel="stylesheet" href="volume/chapter.css">
+<link rel="stylesheet" href="volume/app.css">
+<style>
+  /* critical boot styles — inline so the loader paints before anything compiles */
+  #boot{position:fixed;inset:0;z-index:9999;background:#F6F3EC;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:30px;}
+  #boot .boot-stage{position:relative;width:130px;height:130px;display:grid;place-items:center;}
+  #boot .boot-sl{position:absolute;inset:-46px;opacity:.13;animation:boot-spin 9s linear infinite;
+        background:repeating-conic-gradient(from 0deg at 50% 50%,#0A0A0A 0 .4deg,transparent .4deg 3deg);
+        -webkit-mask-image:radial-gradient(circle,transparent 40%,#000 72%);
+                mask-image:radial-gradient(circle,transparent 40%,#000 72%);}
+  #boot .boot-seal{position:relative;width:88px;height:88px;box-shadow:7px 7px 0 #0A0A0A;
+        animation:boot-pulse 1.5s ease-in-out infinite;}
+  #boot .boot-seal img{width:100%;height:100%;display:block;}
+  #boot .boot-label{font-family:'Oswald',system-ui,sans-serif;font-weight:500;text-transform:uppercase;
+        letter-spacing:.34em;font-size:12px;color:#76726A;}
+  #boot .boot-label b{color:#0A0A0A;font-weight:600;}
+  #boot .boot-label i{font-style:normal;display:inline-block;width:1.4em;text-align:left;}
+  @keyframes boot-spin{to{transform:rotate(360deg);}}
+  @keyframes boot-pulse{0%,100%{transform:translate(0,0);box-shadow:7px 7px 0 #0A0A0A;}
+        50%{transform:translate(-2px,-2px);box-shadow:10px 10px 0 #0A0A0A;}}
+  #boot.boot-done{animation:boot-out 560ms cubic-bezier(.85,0,.9,.2) forwards;}
+  #boot.boot-done .boot-seal{animation:boot-stamp 300ms cubic-bezier(.2,1.5,.3,1) both;}
+  @keyframes boot-stamp{0%{transform:scale(1);}40%{transform:scale(1.18) translate(-3px,-3px);}100%{transform:scale(1);}}
+  @keyframes boot-out{to{opacity:0;visibility:hidden;}}
+  @media (prefers-reduced-motion: reduce){
+    #boot .boot-sl,#boot .boot-seal{animation:none;}
+    #boot.boot-done{animation:boot-out 1ms linear forwards;}
+  }
+</style>
+</head>
+<body>
+<div id="boot" role="status" aria-label="Carregando">
+  <div class="boot-stage">
+    <span class="boot-sl"></span>
+    <span class="boot-seal"><img src="volume/assets/seal.svg" alt="" draggable="false"></span>
+  </div>
+  <div class="boot-label">Abrindo o volume<i id="boot-dots">·</i></div>
+</div>
+<script>
+  (function(){var el=document.getElementById('boot-dots');if(el){var n=1;
+    window.__bootDots=setInterval(function(){n=n%3+1;el.textContent='·'.repeat(n);},430);}
+    // hard fallback: never let the loader get stuck if the app fails to signal
+    setTimeout(function(){var b=document.getElementById('boot');
+      if(b&&!b.classList.contains('boot-done')){if(window.__bootDots)clearInterval(window.__bootDots);
+        b.classList.add('boot-done');setTimeout(function(){b&&b.remove();},640);}},6500);})();
+</script>
+<div id="root"></div>
+
+<!-- gooey ink filter — used by the hero word-morph -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ink-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"></feGaussianBlur>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"></feColorMatrix>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+    </filter>
+  </defs>
+</svg>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="volume/tweaks-panel.jsx"></script>
+<script type="text/babel" src="volume/data.jsx"></script>
+<script type="text/babel" src="volume/Capa.jsx"></script>
+<script type="text/babel" src="volume/Capitulo.jsx"></script>
+<script type="text/babel" src="volume/Processo.jsx"></script>
+<script type="text/babel" src="volume/Posfacio.jsx"></script>
+<script type="text/babel" src="volume/EmpresaPage.jsx"></script>
+<script type="text/babel" src="volume/app.jsx"></script>
+</body>
+</html>

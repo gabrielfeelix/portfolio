@@ -1,0 +1,233 @@
+/* =====================================================================
+   VOLUME — Manga Portfolio Design System
+   colors_and_type.css — Foundational tokens (color · type · space)
+   ---------------------------------------------------------------------
+   Concept: a portfolio read like a manga volume. The world is printed
+   ink on cream paper — monochrome at rest. Color is INTENT: a single
+   vermilion seal-red appears only on interaction, the live state, and
+   the signature stamp. Never as decorative fill.
+   ===================================================================== */
+
+/* ---- Fonts ---------------------------------------------------------
+   Self-hosted (user-uploaded .ttf): Anton, Bangers, Cinzel.
+   CDN (Google Fonts): Oswald, Hanken Grotesk, Caveat. */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Caveat:wght@500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Anton';
+  src: url('fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Bangers';
+  src: url('fonts/Bangers-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Cinzel';
+  src: url('fonts/Cinzel-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* ============================================================
+     COLOR — monochrome + 1 red. Nothing else.
+     ============================================================ */
+
+  /* Ink & Paper — the two poles of the world */
+  --ink:        #0A0A0A;   /* print black, never pure #000 */
+  --paper:      #F6F3EC;   /* off-white, faintly cream manga stock */
+
+  /* Ink-wash grays — sumi-e dilution, 4 tones for depth.
+     Warm-leaning so they read as diluted ink on cream, not cold UI gray. */
+  --wash-1:     #DEDAD0;   /* faintest wash — hairlines, tone fills   */
+  --wash-2:     #B4AFA3;   /* light wash — muted captions, disabled    */
+  --wash-3:     #76726A;   /* mid wash — secondary text, metadata      */
+  --wash-4:     #38362F;   /* deep wash — near-ink, panel shade        */
+
+  /* Vermilion — the seal. INTENT ONLY.
+     Use on: the screen's single primary action · the live/active state ·
+     the signature stamp. NEVER a background or decorative fill. */
+  --vermilion:     #E4231B;
+  --vermilion-ink: #B01510;   /* pressed / on-paper darker variant     */
+  --vermilion-tint:#F2C9C5;   /* the ONE allowed soft red — focus halo  */
+
+  /* ---- Semantic color roles -------------------------------------- */
+  --bg:          var(--paper);
+  --bg-invert:   var(--ink);     /* splash/chapter-cover inversions     */
+  --fg:          var(--ink);     /* primary text on paper               */
+  --fg-2:        var(--wash-3);  /* secondary text                      */
+  --fg-3:        var(--wash-2);  /* tertiary / captions                 */
+  --fg-invert:   var(--paper);   /* text on ink                         */
+  --line:        var(--ink);     /* panel ink stroke                    */
+  --hairline:    var(--wash-1);  /* faint structural rule               */
+  --intent:      var(--vermilion);
+  --intent-press:var(--vermilion-ink);
+
+  /* ============================================================
+     TYPE
+     Display/impact : Anton  — heavy condensed grotesque (titles + SFX)
+     Condensed UI   : Oswald — nav, labels, kickers, metadata
+     Body/dialogue  : Hanken Grotesk — humanist sans, the reading voice
+     Hand (sparing) : Caveat — only true "dialogue" asides
+     ============================================================ */
+  --font-display: 'Anton', 'Oswald', Impact, sans-serif;
+  --font-sfx:     'Bangers', 'Anton', Impact, cursive;     /* onomatopoeia only */
+  --font-editorial:'Cinzel', 'Times New Roman', Georgia, serif; /* edition accents, numerals */
+  --font-condensed:'Oswald', 'Anton', sans-serif;
+  --font-body:    'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-hand:    'Caveat', cursive;
+
+  /* Type scale — manga page rhythm: a few very large, the rest quiet.
+     Fluid via clamp so splash sizes survive any viewport. */
+  --t-sfx:    clamp(5rem, 14vw, 13rem);   /* onomatopoeia / kinetic SFX  */
+  --t-splash: clamp(3.5rem, 9vw, 8rem);   /* splash-page hero title       */
+  --t-d1:     clamp(2.75rem, 5.5vw, 5rem);/* chapter title                */
+  --t-d2:     clamp(2rem, 3.5vw, 3.25rem);/* section title                */
+  --t-d3:     1.75rem;                    /* panel heading                */
+  --t-lead:   1.375rem;                   /* lede / standfirst            */
+  --t-body:   1.0625rem;                  /* reading body                 */
+  --t-small:  0.9375rem;                  /* caption / dialogue aside     */
+  --t-kicker: 0.8125rem;                  /* eyebrow / nav / label        */
+
+  --lh-tight: 0.92;   /* display — set tight, panels stack            */
+  --lh-snug:  1.12;
+  --lh-body:  1.62;   /* reading column — generous                    */
+
+  --tr-display: -0.01em;
+  --tr-kicker:  0.22em;   /* letterspaced uppercase eyebrows          */
+
+  /* ============================================================
+     SPACE — MA (間). Whitespace is the gutter between panels:
+     a pause, a breath. Never area to fill.
+     ============================================================ */
+  --ma-1: 0.5rem;
+  --ma-2: 1rem;
+  --ma-3: 1.5rem;
+  --ma-4: 2.5rem;
+  --ma-5: 4rem;
+  --ma-6: 6.5rem;     /* the held silence before a reveal             */
+  --ma-7: 10rem;
+  --gutter: clamp(1.25rem, 4vw, 4rem); /* panel-to-panel calha         */
+
+  /* ============================================================
+     INK STROKE — panel borders. Thick, used with PARSIMONY.
+     ============================================================ */
+  --ink-stroke:    3px;    /* standard panel edge                      */
+  --ink-stroke-hi: 5px;    /* splash / emphatic panel                  */
+  --ink-hair:      1.5px;  /* structural rule                          */
+  --radius:        0px;    /* manga panels are sharp. No rounding.     */
+
+  /* ============================================================
+     MOTION — anime cut, not float. Decisive, dry, high-contrast.
+     ============================================================ */
+  --cut:    180ms cubic-bezier(0.2, 0.9, 0.1, 1);   /* snap into place  */
+  --cut-in: 120ms cubic-bezier(0.85, 0, 0.9, 0.2);  /* hard attack      */
+  --ma-hold: 380ms; /* the pause before a reveal resolves              */
+}
+
+/* =====================================================================
+   SEMANTIC ELEMENT STYLES
+   ===================================================================== */
+.ds-h1, h1.ds {
+  font-family: var(--font-display);
+  font-size: var(--t-d1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-display);
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.ds-splash {
+  font-family: var(--font-display);
+  font-size: var(--t-splash);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-display);
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.ds-h2, h2.ds {
+  font-family: var(--font-display);
+  font-size: var(--t-d2);
+  line-height: var(--lh-snug);
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0;
+}
+.ds-h3, h3.ds {
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: var(--t-d3);
+  line-height: var(--lh-snug);
+  color: var(--fg);
+  margin: 0;
+}
+.ds-kicker {
+  font-family: var(--font-condensed);
+  font-weight: 500;
+  font-size: var(--t-kicker);
+  letter-spacing: var(--tr-kicker);
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.ds-lead {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.ds-body, p.ds {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--fg);
+  text-wrap: pretty;
+}
+.ds-caption {
+  font-family: var(--font-condensed);
+  font-weight: 400;
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--fg-2);
+}
+.ds-dialogue {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  color: var(--fg);
+}
+
+/* =====================================================================
+   SCREENTONE — manga halftone. Subtle: texture, not pollution.
+   Apply .tone-* to a layer; modulate density with --tone-size.
+   ===================================================================== */
+.tone-dots {
+  --tone-size: 6px;
+  --tone-color: var(--ink);
+  background-image: radial-gradient(var(--tone-color) 1.1px, transparent 1.2px);
+  background-size: var(--tone-size) var(--tone-size);
+}
+.tone-dots-fine { --tone-size: 4px; }
+.tone-dots-bold { --tone-size: 9px; }
+
+/* A soft tone band — for shading the foot of a panel (gradient mask) */
+.tone-shade {
+  background-image: radial-gradient(var(--ink) 1px, transparent 1.2px);
+  background-size: 6px 6px;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+          mask-image: linear-gradient(to top, #000, transparent);
+}
+
+/* Speed lines — radial motion. Use on transition/hover, never static decor. */
+.tone-speedlines {
+  background-image: repeating-conic-gradient(
+    from 0deg at var(--sl-x, 50%) var(--sl-y, 50%),
+    var(--ink) 0deg 0.35deg, transparent 0.35deg 2.4deg);
+  -webkit-mask-image: radial-gradient(circle at var(--sl-x,50%) var(--sl-y,50%), transparent 28%, #000 64%);
+          mask-image: radial-gradient(circle at var(--sl-x,50%) var(--sl-y,50%), transparent 28%, #000 64%);
+}
