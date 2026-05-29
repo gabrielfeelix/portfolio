@@ -41,9 +41,11 @@ function Nav({ view, go, onContact }) {
           <Link to="sumario" active={view === "home"}>Capítulos</Link>
           <Link to="sobre" active={view === "sobre"}>Sobre</Link>
           <Link to="processo" active={view === "processo"}>Processo</Link>
-          <a href="#" className="btn btn-secondary nav-contact" style={{ padding: "9px 16px", fontSize: 13 }}
+          <a href="#" className="btn btn-secondary nav-contact nav-contact-m"
              onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
         </div>
+        <a href="#" className="btn btn-secondary nav-contact nav-contact-d"
+           onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
       </nav>
       <div className="v-rule"></div>
       <div className="v-volline">

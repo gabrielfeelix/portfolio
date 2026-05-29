@@ -746,12 +746,14 @@
   .v-burger.x span:nth-child(2) { opacity: 0; }
   .v-burger.x span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
   .v-navlinks {
-    position: absolute; top: 100%; left: 0; right: 0;
+    position: absolute; top: 100%; left: 0; right: 0; transform: none;
     flex-direction: column; align-items: stretch; gap: 0; padding: 0;
     background: var(--paper); border-bottom: var(--ink-stroke) solid var(--ink);
     max-height: 0; overflow: hidden; transition: max-height 260ms var(--cut);
   }
   .v-navlinks.open { max-height: 75vh; }
+  .nav-contact-d { display: none; }      /* desktop contact hidden; lives in burger */
+  .nav-contact-m { display: flex; }
   .v-navlinks a { padding: 17px var(--gutter); border-top: var(--ink-hair) solid var(--ink); font-size: 15px; letter-spacing: .16em; }
   .v-navlinks a.active::after { display: none; }
   .v-navlinks a.active { color: var(--vermilion); }
