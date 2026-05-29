@@ -88,7 +88,8 @@ function RotateWord({ items, interval = 2300 }) {
   }, [items, interval, reduced]);
   const chars = [...items[i]];
   return (
-    <span className="rotw" aria-label={items[i]}>
+    <span className="rotw">
+      <span className="sr-only">{items[i]}</span>
       <span className="rotw-box" key={i} aria-hidden="true">
         {chars.map((c, idx) => (
           <span className="rotw-ch" key={idx} style={{ animationDelay: `${idx * 0.022}s` }}>{c === " " ? " " : c}</span>

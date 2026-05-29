@@ -17,9 +17,9 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject }) {
           <p className="pos-hand">oi, eu sou o Gabriel.</p>
 
           <div className="pos-block">
-            <p className="pos-p">Você já percebeu: esse portfólio é um mangá. Não é firula de tendência. Eu leio desde criança, e fazia sentido a minha história ter a cara das histórias que eu amo.</p>
-            <p className="pos-p">Fora da tela, treino boxe há dois anos (capoeira e muay thai vieram antes). Corro. {perfumeSoft ? "Tenho um fraco confesso por perfume." : "Coleciono perfume sem pedir desculpa por isso."} E construo app por hobby: sim, faço de graça o que faço no trabalho. Ando até começando a mexer com jogos.</p>
-            <p className="pos-p">O que eu mais protejo, no fim, é o tempo com a namorada, a família e os amigos. E sou tio. Do tipo babão, que enche o rolo de foto de criança.</p>
+            <p className="pos-p">Esse portfólio é um mangá de propósito. Leio desde criança, e guiar bem a leitura é justamente a competência de UX que eu quero provar: se a navegação te trouxe até aqui, o argumento já se provou sozinho.</p>
+            <p className="pos-p"><b>No que eu acredito:</b> design e código são a mesma vontade. Eu desenho <em>e</em> construo, do protótipo navegável ao produto no ar, com IA dentro do fluxo. Decido por teste e dado, não por achismo: escuto o stakeholder, valido o protótipo com gente de verdade e itero pra uma versão. E trato restrição como o que afia a decisão, nunca como desculpa.</p>
+            <p className="pos-p">Fora da tela, treino boxe{perfumeSoft ? "" : " há dois anos"} — disciplina e leitura de tempo que levo pro trabalho. E construo app por hobby: faço de graça o que faço no trabalho, porque gosto mesmo.</p>
           </div>
         </div>
 

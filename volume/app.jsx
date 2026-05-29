@@ -136,7 +136,7 @@ function App() {
       <CursorDot />
       <Nav view={view} go={handleNav} onContact={goContact} />
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
-      {body}
+      <div id="conteudo" tabIndex={-1}>{body}</div>
 
       <TweaksPanel title="Tweaks">
         <TweakSection label="Tipografia" />
