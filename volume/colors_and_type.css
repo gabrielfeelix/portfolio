@@ -42,7 +42,7 @@
      Warm-leaning so they read as diluted ink on cream, not cold UI gray. */
   --wash-1:     #DEDAD0;   /* faintest wash — hairlines, tone fills   */
   --wash-2:     #B4AFA3;   /* light wash — muted captions, disabled    */
-  --wash-3:     #696458;   /* mid wash — secondary text, metadata (AA on paper) */
+  --wash-3:     #635e52;   /* mid wash — secondary text, metadata (AA on paper) */
   --wash-4:     #38362F;   /* deep wash — near-ink, panel shade        */
 
   /* Vermilion — the seal. INTENT ONLY.

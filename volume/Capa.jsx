@@ -269,7 +269,7 @@ function FocusRail({ items, onOpen }) {
       </div>
 
       <div className="rail-foot">
-        <div className="rail-info" key={activeItem.id}>
+        <div className="rail-info" key={activeItem.id} aria-live="polite">
           <div className="ri-cat">{activeItem.fav ? <span className="ri-fav">◆ Favorito</span> : null}{projTag(activeItem)} · {activeItem.domain}</div>
           <div className="ri-title">{activeItem.title}</div>
           {projDescriptor(activeItem)
@@ -288,6 +288,46 @@ function FocusRail({ items, onOpen }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/* viewport hook — switch coverflow (desktop) ↔ vertical list (mobile) */
+function useIsMobile(bp = 760) {
+  const q = `(max-width: ${bp}px)`;
+  const [m, setM] = useState(window.matchMedia && window.matchMedia(q).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(q);
+    const on = () => setM(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [q]);
+  return m;
+}
+
+/* mobile: a plain vertical list of project cards — scrolls with the page,
+   real list semantics, keyboard/screen-reader friendly (no coverflow) */
+function ProjectList({ items, onOpen }) {
+  return (
+    <ul className="proj-list">
+      {items.map((p) => {
+        const isChapter = !!p.chapterId;
+        return (
+          <li key={p.id}>
+            <button type="button" className="proj-card" onClick={() => onOpen(p.id)}>
+              <span className="pc-art">
+                {p.cover ? <img src={p.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}
+                {p.fav ? <span className="pc-fav">Favorito</span> : null}
+              </span>
+              <span className="pc-meta">
+                <span className="pc-tag">{projTag(p)} · {p.domain}</span>
+                <span className="pc-title">{p.title}</span>
+                <span className="pc-go">{isChapter ? "Ler capítulo" : "Ver projeto"} <span className="arr" aria-hidden="true">→</span></span>
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 

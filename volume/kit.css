@@ -80,7 +80,7 @@ a { color: inherit; text-decoration: none; }
 }
 .btn .arr { transition: transform var(--cut); }
 .btn:hover .arr { transform: translateX(5px); }
-.btn-primary { background: var(--vermilion); color: var(--paper); box-shadow: 6px 6px 0 var(--ink); }
+.btn-primary { background: var(--vermilion); color: #fff; box-shadow: 6px 6px 0 var(--ink); }
 .btn-primary:hover { transform: translate(2px,2px); box-shadow: 4px 4px 0 var(--ink); background: var(--vermilion-ink); }
 .btn-primary:active { transform: translate(6px,6px); box-shadow: 0 0 0 var(--ink); }
 .btn-secondary:hover { background: var(--ink); color: var(--paper); }
