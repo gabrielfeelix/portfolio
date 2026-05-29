@@ -8,27 +8,36 @@
 function Nav({ view, go, onContact }) {
   const [stamped, setStamped] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);   // hide on scroll-down, show on scroll-up
+  const [hidden, setHidden] = useState(false);   // hide on scroll-down (non-home bar)
+  const [overHero, setOverHero] = useState(view === "home");   // sitting over the home cover
   useEffect(() => { const t = setTimeout(() => setStamped(true), 60); return () => clearTimeout(t); }, []);
   useEffect(() => {
     let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
-      if (Math.abs(y - last) < 6) return;        // ignore jitter
-      setHidden(y > last && y > 90);             // down past a threshold = hide
-      last = y;
+      setOverHero(view === "home" && y < window.innerHeight * 0.82);
+      if (Math.abs(y - last) >= 6) { setHidden(y > last && y > 90); last = y; }
     };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+  }, [view]);
+
+  const isHome = view === "home";
+  // home: hidden over the cover, then a floating centered pill once past it.
+  // other views: the normal bar, hidden on scroll-down.
+  const headerCls = (isHome && overHero) ? "hd-hidden"
+    : isHome ? "hd-float"
+    : (hidden && !menuOpen) ? "hd-hidden" : "";
   const nav = (fn) => { setMenuOpen(false); fn(); };
   const Link = ({ to, children, active }) => (
     <a href="#" className={active ? "active" : ""}
        onClick={(e) => { e.preventDefault(); nav(() => go(to)); }}>{children}</a>
   );
   return (
-    <header>
-      <nav className={`v-nav ${hidden && !menuOpen ? "nav-hidden" : ""}`}>
+    <header className={headerCls}>
+      <nav className="v-nav">
         <a className="v-brand" href="#" onClick={(e) => { e.preventDefault(); nav(() => go("home")); }}>
           <span className={`seal-wrap ${stamped ? "stamp-in" : ""}`}><Seal size={34} alt="Selo de Gabriel" /></span>
           <span className="wm">Volume</span>
@@ -67,9 +76,7 @@ function HeroField() {
       <circle className="hf-dot" cx="150" cy="330" r="9" />
       <circle className="hf-dot" cx="820" cy="445" r="11" />
       <circle className="hf-dot" cx="1040" cy="150" r="7" />
-      <g className="hf-x"><line x1="262" y1="142" x2="280" y2="160" /><line x1="280" y1="142" x2="262" y2="160" /></g>
       <g className="hf-x"><line x1="552" y1="267" x2="570" y2="285" /><line x1="570" y1="267" x2="552" y2="285" /></g>
-      <g className="hf-x"><line x1="277" y1="382" x2="295" y2="400" /><line x1="295" y1="382" x2="277" y2="400" /></g>
     </svg>
   );
 }
@@ -98,6 +105,8 @@ function RotateWord({ items, interval = 2300 }) {
 function Splash({ onRead, onContact, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
+      <Organic onInk variant="wave" size={360} className="hf-blob hf-blob-a" />
+      <Organic onInk variant="morph" size={280} className="hf-blob hf-blob-b" />
       <HeroField />
       <span className="splash-kana" aria-hidden="true">ボリューム 2026</span>
       <div className="shell splash-center">
@@ -382,12 +391,14 @@ function Colofao({ onContact }) {
 function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter }) {
   const pick = (cat) => { setFilter(cat); onRead(); };
   return (
-    <main className="viewcut" key="home">
+    <main className="home-main" key="home">
       <Splash onRead={onRead} onContact={onContact} lit={lit} />
-      <Diferencial onPick={pick} active={filter === "todos" ? null : filter} />
-      <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />
-      <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
-      <Colofao onContact={onContact} />
+      <div className="post-hero">
+        <Diferencial onPick={pick} active={filter === "todos" ? null : filter} />
+        <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />
+        <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
+        <Colofao onContact={onContact} />
+      </div>
     </main>
   );
 }
