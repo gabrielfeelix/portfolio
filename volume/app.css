@@ -320,6 +320,9 @@
 .pageturn .pt-sfx .pt-ro { font-size: clamp(.7rem, 1.8vw, 1.2rem); }
 .beat-sfx .word { display: inline-flex; flex-direction: column; align-items: center; line-height: .9; }
 .beat-sfx .word .sfx-ro { font-size: .26em; margin-top: .4em; }
+/* mangaká-hand JP fonts for the kana (latin romaji stays Oswald) */
+.pageturn .pt-sfx [lang="ja"], .beat-sfx .word [lang="ja"] { font-family: 'Reggae One', var(--font-sfx), Impact, sans-serif; }
+.splash-kana { font-family: 'Yuji Mai', var(--font-condensed), sans-serif; font-size: 17px; letter-spacing: .12em; }
 @keyframes ptsfx {
   0%, 30% { opacity: 0; transform: skewX(-6deg) scale(.8); }
   44% { opacity: 1; transform: skewX(-6deg) scale(1.04); }

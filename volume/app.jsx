@@ -21,7 +21,7 @@ function PageTurn({ sfx }) {
     <div className="pageturn" aria-hidden="true">
       <div className="sheet"></div>
       <div className="pt-blob"></div>
-      <div className="pt-sfx">{jp}<i className="pt-ro">{sfxRo(jp)}</i></div>
+      <div className="pt-sfx"><span lang="ja" translate="no">{jp}</span><i className="pt-ro">{sfxRo(jp)}</i></div>
     </div>
   );
 }

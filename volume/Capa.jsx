@@ -104,7 +104,7 @@ function Splash({ onRead, onContact, lit }) {
       <span className="hero-speedlines" aria-hidden="true"></span>
       <span className="hero-halftone" aria-hidden="true"></span>
       <HeroField />
-      <span className="splash-kana" aria-hidden="true">ボリューム 2026</span>
+      <span className="splash-kana" lang="ja" translate="no" aria-hidden="true">ガブリエル</span>
       <div className="shell splash-center">
         <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / Product Designer <b>· Pleno</b></div>
         <h1 className="splash-h">

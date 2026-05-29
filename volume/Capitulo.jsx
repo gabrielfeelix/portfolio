@@ -84,7 +84,7 @@ function Problema({ chap }) {
 function SfxBeat({ word }) {
   return (
     <Beat>
-      <div className="beat-sfx"><div className="word">{word}<i className="sfx-ro">{sfxRo(word)}</i></div></div>
+      <div className="beat-sfx"><div className="word"><span lang="ja" translate="no">{word}</span><i className="sfx-ro">{sfxRo(word)}</i></div></div>
     </Beat>
   );
 }
