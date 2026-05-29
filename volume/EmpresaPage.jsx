@@ -33,7 +33,7 @@ function EmpresaQuick({ company, onProject }) {
   );
 }
 
-function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onContact }) {
+function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onContact, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [company.id]);
   const idx = companies.findIndex((c) => c.id === company.id);
   const older = companies[idx - 1];   // earlier in time (left)
@@ -101,7 +101,7 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
         </div>
       </div>
 
-      <Colofao onContact={onContact} />
+      <Colofao onContact={onContact} onNav={onNav} />
     </main>
   );
 }

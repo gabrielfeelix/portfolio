@@ -396,10 +396,18 @@ function QuemSou({ onSobre, onEmpresa }) {
 }
 
 /* ---------- [F] COLOFÃO / CONTATO (shared footer) ---------- */
-function Colofao({ onContact }) {
+function Colofao({ onContact, onNav }) {
+  const navTo = (e, to) => { e.preventDefault(); if (onNav) onNav(to); };
   return (
     <footer className="v-foot" id="fim">
       <div className="shell">
+        {onNav && (
+          <nav className="foot-nav" aria-label="Navegação do rodapé">
+            <a href="#" onClick={(e) => navTo(e, "home")}>Início</a>
+            <a href="#" onClick={(e) => navTo(e, "sumario")}>Projetos</a>
+            <a href="#" onClick={(e) => navTo(e, "sobre")}>Sobre</a>
+          </nav>
+        )}
         <div className="foot-top">
           <h2 className="foot-cta">Vamos abrir<br /><a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">o próximo capítulo</a>.</h2>
           <div className="foot-meta">
@@ -426,7 +434,7 @@ function Colofao({ onContact }) {
 }
 
 /* ---------- the assembled cover ---------- */
-function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter }) {
+function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter, onNav }) {
   const pick = (cat) => { setFilter(cat); onRead(); };
   return (
     <main className="home-main" key="home">
@@ -435,7 +443,7 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setF
         <Diferencial onPick={pick} active={filter === "todos" ? null : filter} />
         <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />
         <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
-        <Colofao onContact={onContact} />
+        <Colofao onContact={onContact} onNav={onNav} />
       </div>
     </main>
   );

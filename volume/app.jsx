@@ -117,18 +117,18 @@ function App() {
 
   let body;
   if (chap) {
-    body = <Capitulo chap={chap} next={next} onOpen={openChapter} onHome={() => goHome("sumario")} />;
+    body = <Capitulo chap={chap} next={next} onOpen={openChapter} onHome={() => goHome("sumario")} onNav={handleNav} />;
   } else if (empresa) {
     body = <EmpresaPage company={empresa} companies={COMPANIES} onHome={() => goHome()}
-                        onEmpresa={openEmpresa} onProject={openProject} onContact={goContact} />;
+                        onEmpresa={openEmpresa} onProject={openProject} onContact={goContact} onNav={handleNav} />;
   } else if (view === "processo") {
-    body = <Processo onContact={goContact} />;
+    body = <Processo onContact={goContact} onNav={handleNav} />;
   } else if (view === "sobre") {
-    body = <Posfacio onContact={goContact} t={t} onEmpresa={openEmpresa} onProject={openProject} />;
+    body = <Posfacio onContact={goContact} t={t} onEmpresa={openEmpresa} onProject={openProject} onNav={handleNav} />;
   } else {
     body = <Capa onOpen={openChapter} onContact={goContact} onSobre={() => goView("sobre")}
                  onEmpresa={openEmpresa} filter={filter} setFilter={setFilter}
-                 onRead={() => scrollTo("sumario", true)} lit={lit} />;
+                 onRead={() => scrollTo("sumario", true)} lit={lit} onNav={handleNav} />;
   }
 
   return (

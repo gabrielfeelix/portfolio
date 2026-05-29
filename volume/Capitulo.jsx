@@ -197,7 +197,7 @@ function NextChapter({ next, onOpen, onHome }) {
 }
 
 /* ---- the assembled chapter ---- */
-function Capitulo({ chap, next, onOpen, onHome }) {
+function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
   return (
     <main key={chap.id} className="chapter-main">
@@ -223,7 +223,7 @@ function Capitulo({ chap, next, onOpen, onHome }) {
       </div>
 
       {next && <NextChapter next={next} onOpen={onOpen} onHome={onHome} />}
-      <Colofao />
+      <Colofao onNav={onNav} />
     </main>
   );
 }

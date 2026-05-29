@@ -173,6 +173,9 @@ a { color: inherit; text-decoration: none; }
 .foot-meta a.s:hover { opacity: 1; color: var(--vermilion); }
 .foot-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: var(--ma-5); padding-top: var(--ma-3); border-top: var(--ink-hair) solid var(--wash-4); font-family: var(--font-condensed); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--wash-2); }
 .foot-bottom img { width: 34px; height: 34px; }
+.foot-nav { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: var(--ma-4); padding-bottom: var(--ma-3); border-bottom: var(--ink-hair) solid var(--wash-4); font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .16em; font-size: 13px; }
+.foot-nav a { color: var(--paper); opacity: .85; transition: opacity var(--cut), color var(--cut); }
+.foot-nav a:hover, .foot-nav a:focus-visible { opacity: 1; color: var(--vermilion); }
 
 @media (max-width: 880px) {
   .hero-grid { grid-template-columns: 1fr; }

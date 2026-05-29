@@ -7,7 +7,7 @@
 /* one organic ink loader per method step — motion that reads as "working" */
 const PROC_ORG = ["split", "bounce", "trail", "merge", "jelly", "drip"];
 
-function Processo({ onContact }) {
+function Processo({ onContact, onNav }) {
   const steps = PROCESSO;                 // 6 steps, read top→bottom
   const n = steps.length;
   const wrapRef = useRef(null);
@@ -91,7 +91,7 @@ function Processo({ onContact }) {
         <Brush as="h2" className="proc-msg">Protótipo vira produto. <span className="red">Eu construo.</span></Brush>
       </section>
 
-      <Colofao onContact={onContact} />
+      <Colofao onContact={onContact} onNav={onNav} />
     </main>
   );
 }

@@ -4,7 +4,7 @@
    trabalho, a trajetória (Direito > Design > Produto) com foto que colore
    no hover, a identidade dupla e o próximo capítulo. Sem travessões.
    ===================================================================== */
-function Posfacio({ onContact, t = {}, onEmpresa, onProject }) {
+function Posfacio({ onContact, t = {}, onEmpresa, onProject, onNav }) {
   const perfumeSoft = t.perfume === "Fraco confesso";
   const showCursos = !!t.cursos;
   return (
@@ -101,6 +101,7 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject }) {
           </div>
         </div>
       </div>
+      <Colofao onContact={onContact} onNav={onNav} />
     </main>
   );
 }
