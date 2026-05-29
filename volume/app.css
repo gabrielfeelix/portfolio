@@ -821,7 +821,7 @@
 .rail-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--gutter); flex-wrap: wrap; border-top: var(--ink-stroke) solid var(--ink); padding-top: var(--ma-3); }
 .rail-info { min-width: 0; animation: riin 320ms var(--cut) both; }
 @keyframes riin { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
-.ri-cat { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--vermilion); }
+.ri-cat { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); }
 .ri-title { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: .92; margin: 6px 0 4px; }
 .ri-desc { font-family: var(--font-body); font-size: var(--t-body); color: var(--wash-4); }
 .ri-desc.dim { color: var(--wash-3); font-style: italic; font-size: var(--t-small); }
@@ -909,6 +909,13 @@
    page scroll to win when the finger moves mostly vertically */
 @media (max-width: 760px) {
   .rail-stage { touch-action: pan-y; }
+  /* center the rail footer (project info + nav + CTA) on mobile */
+  .rail-foot { align-items: center; text-align: center; }
+  .rail-info { text-align: center; width: 100%; }
+  .rail-ctrls { width: 100%; flex-direction: column; align-items: center; gap: 12px; }
+  .rail-nav { justify-content: center; }
+  .rail-arr { min-width: 44px; min-height: 44px; }
+  .rail-open { width: 100%; justify-content: center; }
 }
 
 /* mobile project list — vertical cards, scrolls with the page (a11y-friendly) */
