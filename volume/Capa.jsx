@@ -60,31 +60,31 @@ function Nav({ view, go, onContact }) {
 function Splash({ onRead, onContact, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
+      <span className="splash-kanji" aria-hidden="true">間</span>
+      <span className="splash-tone" aria-hidden="true"></span>
+      <Organic variant="magatama" size={86} className="splash-mark" />
       <div className="shell">
-        <Organic variant="cluster" size={150} className="splash-org" />
-        <div className="splash-charpanel" aria-hidden="true">
-          <img className="splash-char" src="volume/assets/gabriel.png" alt="Ilustração de Gabriel" draggable="false" />
-          <span className="scp-tone"></span>
+        <div className="splash-eyebrow"><span className="se-mark">※</span> Manifesto · {VOL}</div>
+        <h1 className="splash-manifesto">
+          <Brush as="span" className="ml">Eu desenho.</Brush>
+          <Brush as="span" className="ml red" delay={150}>E construo.</Brush>
+        </h1>
+        <p className="splash-thesis">Do protótipo navegável ao produto no ar, com <span className="red">IA dentro do fluxo</span>. Um portfólio que se lê como um volume.</p>
+        <div className="splash-surfaces" aria-label="Superfícies">
+          <span>SaaS</span><i>·</i><span>Apps</span><i>·</i><span>Desktop</span><i>·</i><span>Web</span>
         </div>
-        <div className="splash-copy">
-          <div className="splash-greet">Oi! Me chamo Gabriel.</div>
-          <div className="splash-kicker">UX / Product Designer · <span className="live">Pleno</span></div>
-          <h1 className="splash-title">
-            <Brush as="span" className="ln">Desenho.</Brush>
-            <Brush as="span" className="ln ghost" delay={130}>E construo.</Brush>
-          </h1>
-          <div className="splash-morph" aria-hidden="true">
-            <span className="sm-pre">Para</span>
-            <MorphWord words={["SaaS", "Apps", "Desktop", "Web"]} />
-          </div>
-          <p className="splash-lead">Este é um portfólio que se lê como um volume. Quatro capítulos: problema, decisão, resultado. Tudo em painéis. É só começar a ler.</p>
-          <div className="splash-cta">
-            <button className="btn btn-primary" onClick={onRead}>Comece a ler <span className="arr">→</span></button>
-            <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
-          </div>
+        <div className="splash-cta">
+          <button className="btn btn-primary" onClick={onRead}>Começar a ler <span className="arr">→</span></button>
+          <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
         </div>
       </div>
-      <div className="splash-vol">{VOL}</div>
+      <div className="splash-colophon">
+        <Seal size={30} alt="Selo de Gabriel" />
+        <div className="sc-meta">
+          <span className="sc-name">{AUTOR}</span>
+          <span className="sc-role">UX / Product Designer · <b>Pleno</b></span>
+        </div>
+      </div>
     </section>
   );
 }

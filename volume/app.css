@@ -58,40 +58,66 @@
 /* =====================================================================
    [B] SPLASH / TOBIRA-E
    ===================================================================== */
-.splash { position: relative; overflow: hidden; padding: var(--ma-6) 0 var(--ma-5); }
+.splash { position: relative; overflow: hidden; padding: clamp(var(--ma-5), 9vh, var(--ma-7)) 0 var(--ma-6); }
 .splash .shell { position: relative; z-index: 2; }
-.splash-greet { font-family: var(--font-hand); font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.15rem); line-height: 1; color: var(--fg-2); margin-bottom: var(--ma-2); }
-.splash-kicker { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .24em; font-size: 14px; color: var(--fg-2); }
-.splash-kicker .live { color: var(--vermilion); }
-.splash-title {
-  font-family: var(--font-display); text-transform: uppercase;
-  font-size: var(--t-splash); line-height: .84; letter-spacing: -.015em;
-  margin: var(--ma-3) 0 0; max-width: 16ch;
-}
-.splash-title .ln { display: block; position: relative; }
-.splash-title .ghost { -webkit-text-stroke: 2.5px var(--ink); color: transparent; }
-/* the title cuts in with a speed-line trail (enhancement only — visible at rest) */
-.splash.lit .splash-title .ln { animation: titlecut 220ms cubic-bezier(.85,0,.9,.2); }
-.splash.lit .splash-title .ln:nth-child(2) { animation-delay: 110ms; }
-@keyframes titlecut { from { transform: translateX(44px); } to { transform: none; } }
-.splash-title .trail {
-  position: absolute; right: 100%; top: 6%; bottom: 6%; width: 42vw; pointer-events: none;
-  background-image: repeating-linear-gradient(0deg, var(--ink) 0 2px, transparent 2px 9px);
-  -webkit-mask-image: linear-gradient(to left, #000, transparent);
-          mask-image: linear-gradient(to left, #000, transparent);
-  opacity: 0;
-}
-.splash.lit .splash-title .trail { animation: trailpass 420ms cubic-bezier(.85,0,.9,.2) both; }
-@keyframes trailpass { 0% { opacity: .5; transform: translateX(30px); } 100% { opacity: 0; transform: translateX(-40px); } }
 
-.splash-lead { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.4; max-width: 30ch; margin: var(--ma-4) 0 var(--ma-4); color: var(--fg); }
-.splash-cta { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
-.splash-splat { position: absolute; z-index: 1; pointer-events: none; width: 230px; top: -36px; right: 6%; opacity: .9; }
-.splash-vol {
-  position: absolute; right: calc(var(--gutter) - 4px); bottom: var(--ma-5); z-index: 2;
-  writing-mode: vertical-rl; font-family: var(--font-editorial); font-weight: 600;
-  letter-spacing: .34em; text-transform: uppercase; font-size: 13px; color: var(--fg-2);
+/* manga DNA: giant faint kanji 間 (ma — the charged space between panels) */
+.splash-kanji {
+  position: absolute; z-index: 0; right: -1vw; top: 50%; transform: translateY(-50%);
+  font-family: var(--font-display); font-size: clamp(280px, 50vh, 560px); line-height: 1;
+  color: var(--ink); opacity: .045; pointer-events: none; user-select: none;
 }
+/* screentone bleeding in from the right */
+.splash-tone {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: var(--tone-op, .15);
+  background-image: radial-gradient(var(--ink) 1.15px, transparent 1.25px); background-size: 7px 7px;
+  -webkit-mask-image: linear-gradient(125deg, transparent 48%, #000);
+          mask-image: linear-gradient(125deg, transparent 48%, #000);
+}
+/* small comma-blob ink mark (magatama) */
+.splash-mark { position: absolute; z-index: 1; top: clamp(64px, 11vh, 116px); right: 7%; opacity: .9; }
+
+.splash-eyebrow {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .28em; font-size: 13px; color: var(--fg-2);
+  display: flex; align-items: center; gap: 10px;
+}
+.splash-eyebrow .se-mark { color: var(--vermilion); font-size: 1.1em; }
+
+.splash-manifesto {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: var(--t-splash); line-height: .82; letter-spacing: -.02em;
+  margin: var(--ma-3) 0 0;
+}
+.splash-manifesto .ml { display: block; position: relative; width: fit-content; }
+.splash-manifesto .red { color: var(--vermilion); }
+/* an ink brush-stroke wipes in under the red line */
+.splash-manifesto .red::after {
+  content: ""; position: absolute; left: 0; bottom: -.04em; height: .085em; width: 100%;
+  background: var(--vermilion); border-radius: 3px 7px 4px 8px / 5px;
+  transform: scaleX(0); transform-origin: left;
+}
+.splash.lit .splash-manifesto .red::after { animation: inkstroke 520ms 380ms cubic-bezier(.72,.02,.28,1) forwards; }
+@keyframes inkstroke { to { transform: scaleX(1); } }
+
+.splash-thesis { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.45; max-width: 38ch; margin: var(--ma-4) 0 var(--ma-3); color: var(--fg); }
+.splash-thesis .red { color: var(--vermilion); font-weight: 700; }
+
+.splash-surfaces {
+  display: flex; align-items: center; gap: 12px; margin-bottom: var(--ma-4);
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .14em; font-size: 14px; color: var(--ink);
+}
+.splash-surfaces i { color: var(--wash-2); font-style: normal; }
+
+.splash-cta { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+
+/* colophon — tankōbon title-page credit, bottom-right */
+.splash-colophon { position: absolute; z-index: 2; right: var(--gutter); bottom: var(--ma-5); display: flex; align-items: center; gap: 12px; }
+.splash-colophon .sc-meta { display: flex; flex-direction: column; line-height: 1.18; }
+.splash-colophon .sc-name { font-family: var(--font-display); text-transform: uppercase; font-size: 15px; letter-spacing: .02em; }
+.splash-colophon .sc-role { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .12em; font-size: 11px; color: var(--fg-2); }
+.splash-colophon .sc-role b { color: var(--vermilion); }
 
 /* =====================================================================
    [C] DIFERENCIAL — desenho e construo
@@ -446,6 +472,7 @@
     animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important;
   }
   .splash-title .ln, .splash-title .trail { opacity: 1 !important; transform: none !important; }
+  .splash.lit .splash-manifesto .red::after { animation: none !important; transform: scaleX(1) !important; }
   .pageturn { display: none !important; }
 }
 
@@ -752,8 +779,8 @@
     max-height: 0; overflow: hidden; transition: max-height 260ms var(--cut);
   }
   .v-navlinks.open { max-height: 75vh; }
-  .nav-contact-d { display: none; }      /* desktop contact hidden; lives in burger */
-  .nav-contact-m { display: flex; }
+  .v-nav .nav-contact-d { display: none; }   /* desktop contact hidden; lives in burger */
+  .v-nav .nav-contact-m { display: flex; }
   .v-navlinks a { padding: 17px var(--gutter); border-top: var(--ink-hair) solid var(--ink); font-size: 15px; letter-spacing: .16em; }
   .v-navlinks a.active::after { display: none; }
   .v-navlinks a.active { color: var(--vermilion); }
@@ -815,4 +842,9 @@
   .pt-photo { margin-inline: auto; }
   .pos-companies, .pos-certs, .pos-traj { margin-top: var(--ma-5); }
   .pos-org { margin: var(--ma-4) 0; }
+  /* hero manifesto on phones */
+  .splash-kanji { font-size: clamp(170px, 38vh, 300px); right: -9vw; opacity: .05; }
+  .splash-mark { display: none; }
+  .splash-colophon { position: static; margin: var(--ma-5) 0 0; }
+  .splash-surfaces { flex-wrap: wrap; }
 }
