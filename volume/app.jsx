@@ -44,6 +44,17 @@ function App() {
   useEffect(() => { const id = setTimeout(() => setLit(true), 120); return () => clearTimeout(id); }, []);
   useEffect(() => { applyTweaks(t); }, [t]);
 
+  // SPA focus management: on view change (not initial mount), move keyboard/SR
+  // focus to the content region so Tab resumes from a known point and the new
+  // page is announced. Without this, activating a link drops focus to <body>
+  // and Tab skips the skip-link + header. preventScroll: top() already handles it.
+  const firstView = useRef(true);
+  useEffect(() => {
+    if (firstView.current) { firstView.current = false; return; }
+    const el = document.getElementById("conteudo");
+    if (el) el.focus({ preventScroll: true });
+  }, [view]);
+
   // dismiss the boot loader once fonts are ready (kills the font-swap flash)
   // and a minimum beat has passed, then dry-cut into the volume.
   useEffect(() => {
