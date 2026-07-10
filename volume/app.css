@@ -178,6 +178,9 @@
 
 /* real company logos (fallback to the [logo] placeholder if missing) */
 .co-logo-img { max-width: 82%; max-height: 78%; object-fit: contain; display: block; }
+/* logo de marca no card "Projetos por aqui": chip de papel, contido */
+.eq-logo { width: 100%; height: 100%; object-fit: contain; padding: 12px; background: var(--paper); display: block; }
+html.ink .eq-logo, html.ink .co-logo-img { background: var(--paper); }   /* logo mantém chip claro no modo tinta */
 
 /* real project covers (screenshots) — fill the panel, fallback is MangaPlate */
 .rc-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }

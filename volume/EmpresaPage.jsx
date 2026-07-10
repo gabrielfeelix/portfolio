@@ -17,9 +17,12 @@ function EmpresaQuick({ company, onProject }) {
         {company.related.map((id) => {
           const p = projById(id);
           if (!p) return null;
+          const logo = brandLogo(id);
           return (
             <button type="button" className="eq-card" key={id} onClick={() => onProject(p)}>
-              <span className="eq-art"><MangaPlate /></span>
+              <span className="eq-art">
+                {logo ? <img className="eq-logo" src={logo} alt={`Logo ${p.title}`} loading="lazy" draggable="false" /> : <MangaPlate />}
+              </span>
               <span className="eq-meta">
                 <span className="eq-cat">{p.domain}</span>
                 <span className="eq-title">{p.title}</span>

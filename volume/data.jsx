@@ -687,6 +687,18 @@ const CERTS = [
   { id: "design-g",  title: "Design Gráfico",       issuer: "Graduação",     href: null },
 ];
 
+/* ---- logos de marca (buscados dos sites oficiais, chip fundo papel) ----
+   Só marcas reais de cliente/grupo — projetos pessoais não têm logo. */
+const BRAND_LOGOS = {
+  pcyes:     "volume/assets/marcas/pcyes.png",
+  odex:      "volume/assets/marcas/odex.png",
+  tonante:   "volume/assets/marcas/tonante.png",
+  locarmais: "volume/assets/marcas/locarmais.png",
+  vinik:     "volume/assets/marcas/vinik.png",
+  isabella:  "volume/assets/marcas/isabella.png",
+};
+function brandLogo(id) { return BRAND_LOGOS[id] || null; }
+
 /* category filter, narrows the Sumário rail */
 const CATS = [
   { key: "todos",     label: "Todos" },
@@ -889,4 +901,4 @@ function CompanyLogo({ company, kind = "qsc" }) {
            <span className={`${kind}-logo-cap`}>[ logo ]</span></>);
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo });
