@@ -13,6 +13,10 @@ body {
 }
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
+/* buttons don't inherit text color by default — force it so card/button
+   text follows the ink/paper tokens (critical in modo tinta, else dark
+   text stays dark on the inverted dark card). */
+button { color: inherit; }
 ::selection { background: var(--vermilion); color: var(--paper); }
 
 .shell { max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }

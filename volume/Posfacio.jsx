@@ -66,7 +66,9 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject, onNav }) {
           <div className="certs-grid">
             {CERTS.map((c) => (
               <div className="cert" key={c.id}>
-                <div className="cert-thumb"><MangaPlate /></div>
+                <div className="cert-thumb">
+                  {c.logo ? <img className="cert-logo" src={c.logo} alt={`Logo ${c.title}`} loading="lazy" draggable="false" /> : <MangaPlate />}
+                </div>
                 <div className="cert-meta">
                   <div className="cert-title">{c.title}</div>
                   <div className="cert-issuer">{c.issuer}</div>

@@ -180,6 +180,8 @@
 .co-logo-img { max-width: 82%; max-height: 78%; object-fit: contain; display: block; }
 /* logo de marca no card "Projetos por aqui": chip de papel, contido */
 .eq-logo { width: 100%; height: 100%; object-fit: contain; padding: 12px; background: var(--paper); display: block; }
+.cert-logo { width: 100%; height: 100%; object-fit: contain; padding: 16px; background: var(--paper); display: block; }
+html.ink .cert-logo { background: var(--paper); }
 html.ink .eq-logo, html.ink .co-logo-img { background: var(--paper); }   /* logo mantém chip claro no modo tinta */
 
 /* real project covers (screenshots) — fill the panel, fallback is MangaPlate */
@@ -303,8 +305,8 @@ html.ink .eq-logo, html.ink .co-logo-img { background: var(--paper); }   /* logo
 .qsc-logo { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 116px; height: 116px; border: var(--ink-hair) solid var(--ink); background: var(--wash-1); }
 .qsc-logo-mark { font-family: var(--font-display); text-transform: uppercase; font-size: 1.15rem; line-height: .95; text-align: center; padding: 0 8px; }
 .qsc-logo-cap { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 9px; color: var(--wash-3); }
-.qsc-name { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: .95; }
-.qsc-role { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 12px; color: var(--fg-2); margin-top: 6px; }
+.qsc-name { display: block; font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: .95; }
+.qsc-role { display: block; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 12px; color: var(--fg-2); margin-top: 6px; }
 .qsc-go { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 12px; transition: color var(--cut); }
 .qsc-card:hover .qsc-go { color: var(--vermilion); }
 .qsc-card:hover .qsc-go .arr { transform: translateX(5px); }
@@ -533,6 +535,7 @@ html.ink .eq-logo, html.ink .co-logo-img { background: var(--paper); }   /* logo
 .emp-logo-cap { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .16em; font-size: 10px; color: var(--wash-2); }
 .emp-meta { position: relative; z-index: 2; display: flex; gap: 0; border-top: var(--ink-hair) solid var(--wash-4); padding: 0 var(--gutter); margin-top: var(--ma-4); }
 .emp-meta .m { flex: 1; padding: var(--ma-3) var(--ma-3) 0 0; }
+.emp-cover { padding-bottom: var(--ma-4); }
 .emp-meta .m + .m { border-left: var(--ink-hair) solid var(--wash-4); padding-left: var(--ma-3); }
 .emp-meta .l { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: var(--wash-2); }
 .emp-meta .v { font-family: var(--font-condensed); font-weight: 600; font-size: 16px; color: var(--paper); margin-top: 4px; }

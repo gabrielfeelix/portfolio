@@ -680,11 +680,11 @@ const COMPANIES = [
 
 /* ---- certificados (Posfácio). Gabriel troca por links/imagens ------ */
 const CERTS = [
-  { id: "ux-balas",  title: "UX à prova de balas",  issuer: "Certificação",  href: null },
-  { id: "circuit",   title: "Design Circuit",       issuer: "Formação UX",   href: null },
-  { id: "coderhouse",title: "Coderhouse · UX/UI",   issuer: "Certificação",  href: null },
-  { id: "scrum",     title: "Certificação Scrum",   issuer: "Ágil",          href: null },
-  { id: "design-g",  title: "Design Gráfico",       issuer: "Graduação",     href: null },
+  { id: "ux-balas",  title: "UX à prova de balas",  issuer: "Certificação",  href: null, logo: null },
+  { id: "circuit",   title: "Design Circuit",       issuer: "Formação UX",   href: null, logo: "volume/assets/certs/circuit.png" },
+  { id: "coderhouse",title: "Coderhouse · UX/UI",   issuer: "Certificação",  href: null, logo: "volume/assets/certs/coderhouse.png" },
+  { id: "scrum",     title: "Certificação Scrum",   issuer: "Ágil",          href: null, logo: "volume/assets/certs/scrum.png" },
+  { id: "design-g",  title: "Design Gráfico",       issuer: "Graduação",     href: null, logo: "volume/assets/certs/uninter.png" },
 ];
 
 /* ---- logos de marca (buscados dos sites oficiais, chip fundo papel) ----
