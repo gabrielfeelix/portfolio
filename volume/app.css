@@ -67,6 +67,10 @@
 .splash { position: fixed; inset: 0; z-index: 0; height: 100vh; height: 100svh; overflow: hidden;
   display: grid; place-items: center; text-align: center; padding: var(--ma-5) 0 var(--ma-6);
   background: var(--vermilion); color: var(--paper); }
+/* vignette de tinta: centro vivo, bordas escurecem em sumi — quebra o campo
+   chapado sem perder a capa vermelha (escolha do Gabriel, 2026-07-10) */
+.splash::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 42%, transparent 46%, rgba(120,8,4,.38) 100%); }
 .splash .shell { position: relative; z-index: 2; }
 .splash-center { display: flex; flex-direction: column; align-items: center; gap: var(--ma-3); max-width: 1000px; margin: 0 auto; }
 /* deeper-red screentone so the fill reads as ink, not a flat scream */
