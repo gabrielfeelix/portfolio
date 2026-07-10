@@ -4,8 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Volume — Portfólio · Gabriel Felix Barbosa</title>
+<meta name="description" content="Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Cases de SaaS, mobile, desktop e e-commerce — do protótipo navegável ao produto no ar, lido como um volume de mangá.">
+<link rel="canonical" href="https://portfolio-volume.vercel.app/">
+<meta name="theme-color" content="#E4231B">
+
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Volume">
+<meta property="og:title" content="Volume — Portfólio · Gabriel Felix Barbosa">
+<meta property="og:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado. Um portfólio lido como um volume de mangá.">
+<meta property="og:url" content="https://portfolio-volume.vercel.app/">
+<meta property="og:image" content="https://portfolio-volume.vercel.app/volume/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Volume — portfólio em forma de mangá de Gabriel Felix Barbosa">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Volume — Portfólio · Gabriel Felix Barbosa">
+<meta name="twitter:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado.">
+<meta name="twitter:image" content="https://portfolio-volume.vercel.app/volume/assets/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Gabriel Felix Barbosa",
+  "jobTitle": "UX / Product Designer",
+  "url": "https://portfolio-volume.vercel.app/",
+  "email": "mailto:gab.feelix@gmail.com",
+  "sameAs": [
+    "https://www.linkedin.com/in/gabrielfeelix/",
+    "https://www.instagram.com/gaabriel.feelix/"
+  ]
+}
+</script>
+
 <link rel="icon" type="image/svg+xml" href="volume/assets/seal.svg">
 <link rel="apple-touch-icon" href="volume/assets/seal.svg">
+
+<!-- Google Fonts via <link> (parallel; was an @import waterfall inside the CSS) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reggae+One&family=Yuji+Mai&family=Oswald:wght@300;400;500;600;700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Caveat:wght@500;600;700&display=swap">
+
 <link rel="stylesheet" href="volume/colors_and_type.css">
 <link rel="stylesheet" href="volume/kit.css">
 <link rel="stylesheet" href="volume/chapter.css">
@@ -50,6 +91,11 @@
   <div class="boot-label">Abrindo o volume<i id="boot-dots">·</i></div>
 </div>
 <script>
+  // repeat visit in the same session: skip the boot beat entirely
+  (function(){try{
+    if(sessionStorage.getItem('vol-seen')){var b=document.getElementById('boot');if(b)b.remove();}
+    else sessionStorage.setItem('vol-seen','1');
+  }catch(e){}})();
   (function(){var el=document.getElementById('boot-dots');if(el){var n=1;
     window.__bootDots=setInterval(function(){n=n%3+1;el.textContent='·'.repeat(n);},430);}
     // hard fallback: never let the loader get stuck if the app fails to signal
