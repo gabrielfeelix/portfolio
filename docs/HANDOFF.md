@@ -46,6 +46,14 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
   - **A11y**: `.dec .n` wash-2→wash-3 (1.97→5.82); `100svh` com fallback `100vh` (splash, post-hero, proc-sticky); `RotateWord` pára após 3 voltas (WCAG 2.2.2), reduced-motion nunca cicla.
   - **Perf**: capas PNG→WebP (6.4MB→882KB, q82); Google Fonts via `<link>` preconnect (era `@import` na cascata CSS); **Chonburi removida** (runtime sempre setava Anton via applyTweaks — nunca renderizava); boot pulado em revisita na mesma sessão (`sessionStorage vol-seen`). Yuji Mai/Reggae One mantidas (kana intencional).
 
+- **Rodada 5 (2026-07-10, pente-fino com Gabriel):**
+  - **REGRA DURA DO GABRIEL: ZERO travessões (—) em texto do site** ("cara de IA"). 60+ ocorrências viraram dois-pontos/vírgula/ponto. Títulos/OG usam "·".
+  - **IA-detox**: de 17 menções pra ~5. IA fica só onde é feature (Hub Oderço), 1 filosofia no Posfácio ("uso IA como uso régua") e 1 razão no Rodapé. Não re-adicionar.
+  - **Modo tinta** (`html.ink`): polos trocam (`--ink`/`--paper`), washes invertem, vermilion-ink vira #F4695C no escuro. Toggle 墨 no nav (glifo via Reggae One), localStorage `vol-ink`, aplicado pré-paint no template. Capa/hero continua vermelha nos dois modos.
+  - **Momentos**: hanko carimba no "Fale comigo" (`.seal-stamp`, skip reduced-motion); 404 mangá (`#/404`, SFX シーン); barra de progresso de leitura (4px vermilion, só views de leitura); blob da virada REMOVIDO (Gabriel odiou o círculo; sheet+kana ficam).
+  - **Grifo do headline**: pincelada de cantos orgânicos (variante C escolhida entre 4 mockups).
+  - Hero sub: "Desenho, construo e publico. Design e código na mesma mão." (a anterior com travessão era "cringe", palavra dele).
+
 ## PENDENTE (continuar aqui)
 1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
 2. ✅ FEITO — Passe teclado/leitor (focus mgmt + Tab order nas 5 views + landmarks).
