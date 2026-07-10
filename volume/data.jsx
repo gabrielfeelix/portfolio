@@ -145,7 +145,7 @@ const CHAPTERS = [
     descriptor: "Site · e-commerce",
     title: "PCYES",
     sfx: "バーン",                      // baan — boom (e-commerce)
-    cover: "volume/assets/projetos/pcyes/cover.png",
+    cover: "volume/assets/projetos/pcyes/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null },
     premise: "Vender hardware pra quem entende de hardware exige mais que vitrine.",
     role: "UX/UI e construção do e-commerce (v3), com leitura de comportamento no fluxo.",
@@ -172,7 +172,7 @@ const CHAPTERS = [
       p: ["E-commerce v3 (SPA React/Vite) com home retrabalhada de banners e vitrines de setup, fluxo 'Monte seu PC' guiado, perfil com pontuação e premiação na sidebar, e checkout em steps com revisão.",
           "Comportamento monitorado com Clarity/Hotjar e validado em teste com funcionários e clientes, pra afiar a decisão a cada ciclo."],
       slots: 3,
-      shots: ["volume/assets/projetos/pcyes/cover.png", "volume/assets/projetos/pcyes/s1.png", "volume/assets/projetos/pcyes/s2.png"],
+      shots: ["volume/assets/projetos/pcyes/cover.webp", "volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp"],
     },
     resultado: {
       t: "Decisão por dado, não por achismo",
@@ -220,7 +220,7 @@ const CHAPTERS = [
   {
     id: "odex", num: "", cap: "PEÇA", domain: "SAAS · SOLAR", cat: "saas",
     project: "Odex", descriptor: "Plataforma do integrador solar (v3 do Hub)", title: "Odex",
-    sfx: "ピカッ", cover: "volume/assets/projetos/odex/cover.png",
+    sfx: "ピカッ", cover: "volume/assets/projetos/odex/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: null },
     premise: "Redesenhar a plataforma do integrador solar com cara de loja, não de sistema.",
     role: "Redesign completo (UX/UI), build do mockup navegável e condução da validação.",
@@ -246,7 +246,7 @@ const CHAPTERS = [
       p: ["Home comercial, navegação por categoria, carrinho sempre acessível na topbar e um 'Monte seu kit' em steps. Por trás: busca de cliente que pré-popula o orçamento, validade editável com share no WhatsApp, pedido com download de NF (PDF/XML/DANFE), PDP com calculadora, Prêmio Venda Direta e Relatórios.",
           "Mock editável no lugar de backend, pra validar cedo e gerar variações na frente do cliente — backend pareado por iteração, sem suposição escondida no código."],
       slots: 3,
-      shots: ["volume/assets/projetos/odex/cover.png", "volume/assets/projetos/odex/s1.png", "volume/assets/projetos/odex/s2.png"],
+      shots: ["volume/assets/projetos/odex/cover.webp", "volume/assets/projetos/odex/s1.webp", "volume/assets/projetos/odex/s2.webp"],
     },
     resultado: {
       t: "Comprar ficou impulso, não missão",
@@ -256,7 +256,7 @@ const CHAPTERS = [
   {
     id: "ponto", num: "", cap: "PEÇA", domain: "SAAS · GESTÃO DE PONTO", cat: "saas",
     project: "Worklife", descriptor: "Gestão de ponto: SaaS do gestor + app do diarista", title: "Worklife",
-    sfx: "コチ", cover: "volume/assets/projetos/ponto/cover.png",
+    sfx: "コチ", cover: "volume/assets/projetos/ponto/cover.webp",
     links: { vercel: "https://ponto-snowy.vercel.app", figma: null },
     premise: "Cada minuto, contado com precisão — dos dois lados.",
     role: "Produto, UX e build do SaaS de gestão + app, com Supabase.",
@@ -323,7 +323,7 @@ const CHAPTERS = [
   {
     id: "isabella", num: "", cap: "PEÇA", domain: "WEBSITE · ARQUITETURA", cat: "web",
     project: "Isabella Pires", descriptor: "Site da arquiteta Isabella Pires", title: "Isabella Pires",
-    sfx: "スゥ", cover: "volume/assets/projetos/isabella/cover.png",
+    sfx: "スゥ", cover: "volume/assets/projetos/isabella/cover.webp",
     links: { vercel: "https://isabellapiresarquitetura.com.br/", figma: null },
     premise: "Bons projetos não começam com plantas, começam com escuta.",
     role: "Concepção, UX e build do site institucional.",
@@ -454,7 +454,7 @@ const CHAPTERS = [
   {
     id: "kitamo-app", num: "", cap: "PEÇA", domain: "SAAS · FINANÇAS", cat: "mobile",
     project: "Kitamo", descriptor: "SaaS de finanças pessoais (mobile)", title: "Kitamo",
-    sfx: "チャリン", cover: "volume/assets/projetos/kitamo/cover.png",
+    sfx: "チャリン", cover: "volume/assets/projetos/kitamo/cover.webp",
     links: { vercel: "https://kitamo.com.br/", figma: null },
     premise: "O fim das planilhas: seu dinheiro, visível hoje.",
     role: "Produto, UX e build (Laravel 12 + Vue 3/Inertia).",
@@ -479,7 +479,7 @@ const CHAPTERS = [
       t: "Seu mês, visível antes de acontecer",
       p: ["SaaS mobile (Laravel 12 + Vue 3/Inertia) que dá visibilidade de dívida, entendimento de gastos, projeção de fatura e planejamento das contas do mês seguinte — registro manual confiável, totalmente online."],
       slots: 2,
-      shots: ["volume/assets/projetos/kitamo/cover.png", "volume/assets/projetos/kitamo/s1.png"],
+      shots: ["volume/assets/projetos/kitamo/cover.webp", "volume/assets/projetos/kitamo/s1.webp"],
     },
     resultado: {
       t: "Fecha o mês com tranquilidade",
@@ -489,7 +489,7 @@ const CHAPTERS = [
   {
     id: "oderco-checkout", num: "", cap: "PEÇA", domain: "E-COMMERCE · B2B", cat: "ecommerce",
     project: "Checkout Oderço", descriptor: "Checkout B2B por nota fiscal (Grupo Oderço)", title: "Checkout Oderço",
-    sfx: "ザッ", cover: "volume/assets/projetos/checkout/cover.png",
+    sfx: "ザッ", cover: "volume/assets/projetos/checkout/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null },
     premise: "Compra B2B de nota fiscal não pode ser um formulário de fé.",
     role: "UX e construção do fluxo de checkout (steps + revisão).",
@@ -514,7 +514,7 @@ const CHAPTERS = [
       t: "Checkout B2B em steps, sem susto",
       p: ["Fluxo por filial e nota fiscal: logística (CIF/FOB/retirada) com opções de frete, uso de crédito (RMA/depósito), forma de pagamento e revisão final — com resumo da filial e progresso do pedido sempre visíveis."],
       slots: 2,
-      shots: ["volume/assets/projetos/checkout/cover.png", "volume/assets/projetos/checkout/s1.png"],
+      shots: ["volume/assets/projetos/checkout/cover.webp", "volume/assets/projetos/checkout/s1.webp"],
     },
     resultado: {
       t: "Confiança pra fechar pedido grande",
@@ -524,7 +524,7 @@ const CHAPTERS = [
   {
     id: "hub-oderco", num: "", cap: "PEÇA", domain: "SAAS · FERRAMENTA", cat: "saas",
     project: "Hub Oderço", descriptor: "Hub multi-marca de marketing", title: "Hub Oderço",
-    sfx: "ガチャ", cover: "volume/assets/projetos/hub/cover.png",
+    sfx: "ガチャ", cover: "volume/assets/projetos/hub/cover.webp",
     links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null },
     premise: "Sete marcas, um padrão visual, zero retrabalho.",
     role: "Concepção, UX e construção da ferramenta interna, com IA no fluxo.",
@@ -701,35 +701,33 @@ const CATS = [
    The 4 with a `chapterId` open a full chapter (deep case). The rest are
    covers in the rail, protótipo/Figma links to fill (placeholders). */
 const PROJECTS = [
-  // SAAS  (favorito: Traxium)
-  { id: "traxium",     title: "Traxium",       cat: "saas",      domain: "SaaS",                fav: true,  chapterId: "traxium", links: { vercel: null, figma: null } },
-  { id: "odex",        title: "Odex",          cat: "saas",      domain: "SaaS · Solar",        fav: false, chapterId: "odex",    cover: "volume/assets/projetos/odex/cover.png",      links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: null } },
-  { id: "solar-saas",  title: "Solar Buy-Side",cat: "saas",      domain: "SaaS · Plataforma",   fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "signamais",   title: "Signamais",     cat: "saas",      domain: "SaaS · Assinaturas",  fav: false, chapterId: null,      cover: "volume/assets/projetos/signamais/cover.png", links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null } },
-  { id: "immo",        title: "IMMO",          cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
-  { id: "ponto-admin", title: "Worklife",       cat: "saas",     domain: "SaaS · Gestão de Ponto", fav: false, chapterId: "ponto", cover: "volume/assets/projetos/ponto/cover.png", links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
-  { id: "hub-oderco",  title: "Hub Oderço",    cat: "saas",      domain: "SaaS · Ferramenta",   fav: false, chapterId: "hub-oderco", cover: "volume/assets/projetos/hub/cover.png", links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null } },
-  // MOBILE  (favorito: Rodapé)
+  /* ---- os 5 capítulos primeiro: a leitura abre nos favoritos -------- */
   { id: "rodape",      title: "Rodapé",        cat: "mobile",    domain: "App · iOS & Android", fav: true,  chapterId: "rodape",  links: { vercel: null, figma: null } },
-  { id: "kitamo-app",  title: "Kitamo",        cat: "mobile",    domain: "SaaS · Finanças",     fav: false, chapterId: "kitamo-app", cover: "volume/assets/projetos/kitamo/cover.png", links: { vercel: "https://kitamo.com.br/", figma: null } },
-  { id: "argel",       title: "Argel Riboli",  cat: "mobile",    domain: "App · Boxe",          fav: false, chapterId: "argel",   links: { vercel: null, figma: null } },
-  { id: "ponto-diar",  title: "Worklife · App",cat: "mobile",   domain: "App · Diaristas",     fav: false, chapterId: "ponto",   cover: "volume/assets/projetos/ponto/cover.png", links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
-  // DESKTOP  (favorito: Remoctrl)
   { id: "remoctrl",    title: "Remoctrl",      cat: "desktop",   domain: "App nativo · Desktop",fav: true,  chapterId: "remoctrl",links: { vercel: null, figma: null } },
-  // WEB  (favorito: Portfólio)
+  { id: "traxium",     title: "Traxium",       cat: "saas",      domain: "SaaS",                fav: true,  chapterId: "traxium", links: { vercel: null, figma: null } },
+  { id: "pcyes",       title: "PCYES",         cat: "ecommerce", domain: "E-commerce",          fav: true,  chapterId: "pcyes",   cover: "volume/assets/projetos/pcyes/cover.webp",     links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null } },
   { id: "portfolio",   title: "Portfólio",     cat: "web",       domain: "Website · Manifesto", fav: true,  chapterId: "portfolio", links: { vercel: null, figma: null } },
+  /* ---- as peças, na sequência da leitura ---------------------------- */
+  { id: "odex",        title: "Odex",          cat: "saas",      domain: "SaaS · Solar",        fav: false, chapterId: "odex",    cover: "volume/assets/projetos/odex/cover.webp",      links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: null } },
+  { id: "hub-oderco",  title: "Hub Oderço",    cat: "saas",      domain: "SaaS · Ferramenta",   fav: false, chapterId: "hub-oderco", cover: "volume/assets/projetos/hub/cover.webp", links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null } },
+  { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: "oderco-checkout", cover: "volume/assets/projetos/checkout/cover.webp", links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
+  { id: "ponto-admin", title: "Worklife",      cat: "saas",      domain: "SaaS + App · Gestão de Ponto", fav: false, chapterId: "ponto", cover: "volume/assets/projetos/ponto/cover.webp", links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
+  { id: "kitamo-app",  title: "Kitamo",        cat: "mobile",    domain: "SaaS · Finanças",     fav: false, chapterId: "kitamo-app", cover: "volume/assets/projetos/kitamo/cover.webp", links: { vercel: "https://kitamo.com.br/", figma: null } },
+  { id: "isabella",    title: "Isabella Pires",cat: "web",       domain: "Website · Arquitetura",fav: false, chapterId: "isabella", cover: "volume/assets/projetos/isabella/cover.webp", links: { vercel: "https://isabellapiresarquitetura.com.br/", figma: null } },
   { id: "locarmais",   title: "Locarmais",     cat: "web",       domain: "Website · Fiança",    fav: false, chapterId: "locarmais", links: { vercel: "https://site.locarmais.com/", figma: null } },
-  { id: "isabella",    title: "Isabella Pires",cat: "web",       domain: "Website · Arquitetura",fav: false, chapterId: "isabella", cover: "volume/assets/projetos/isabella/cover.png", links: { vercel: "https://isabellapiresarquitetura.com.br/", figma: null } },
-  { id: "solar-site",  title: "Solar Buy-Side",cat: "web",       domain: "Website · LP",        fav: false, chapterId: "solar-site", links: { vercel: null, figma: null } },
-  { id: "kitamo-site", title: "Kitamo · Site", cat: "web",       domain: "Website",             fav: false, chapterId: "kitamo-app", cover: "volume/assets/projetos/kitamo/cover.png", links: { vercel: "https://kitamo.com.br/", figma: null } },
-  { id: "4yu",         title: "4YU MKT",       cat: "web",       domain: "Website · LP",        fav: false, chapterId: "4yu",     links: { vercel: null, figma: null } },
+  { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: "dropchina", links: { vercel: null, figma: null } },
   { id: "web2design",  title: "Web2Design",    cat: "web",       domain: "Ferramenta · Design", fav: false, chapterId: "web2design", links: { vercel: null, figma: null } },
-  // E-COMMERCE  (favorito: PCYES)
-  { id: "pcyes",       title: "PCYES",         cat: "ecommerce", domain: "E-commerce",          fav: true,  chapterId: "pcyes",   cover: "volume/assets/projetos/pcyes/cover.png",     links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null } },
-  { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: "oderco-checkout", cover: "volume/assets/projetos/checkout/cover.png", links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
+  { id: "argel",       title: "Argel Riboli",  cat: "mobile",    domain: "App · Boxe",          fav: false, chapterId: "argel",   links: { vercel: null, figma: null } },
+  { id: "solar-site",  title: "Solar Buy-Side",cat: "web",       domain: "Website · LP",        fav: false, chapterId: "solar-site", links: { vercel: null, figma: null } },
+  { id: "4yu",         title: "4YU MKT",       cat: "web",       domain: "Website · LP",        fav: false, chapterId: "4yu",     links: { vercel: null, figma: null } },
+  { id: "signamais",   title: "Signamais",     cat: "saas",      domain: "SaaS · Assinaturas",  fav: false, chapterId: null,      cover: "volume/assets/projetos/signamais/cover.webp", links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null } },
+  { id: "immo",        title: "IMMO",          cat: "saas",      domain: "SaaS",                fav: false, chapterId: null,      links: { vercel: null, figma: null } },
+  /* ocultos do rail */
   { id: "tonante",     title: "Tonante",       cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      hidden: true, links: { vercel: null, figma: null } },
   { id: "odex-ec",     title: "Odex",          cat: "ecommerce", domain: "E-commerce",          fav: false, chapterId: null,      hidden: true, links: { vercel: null, figma: null } },
-  { id: "dropchina",   title: "DropChina",     cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: "dropchina", links: { vercel: null, figma: null } },
+  /* removidos do rail (duplicatas do mesmo produto): a superfície extra
+     vira nota dentro do case — Worklife·App (ponto-diar), Kitamo·Site
+     (kitamo-site), Solar Buy-Side SaaS (solar-saas). */
 ];
 
 /* tag shown on a project cover: chapters carry their CAP number */
