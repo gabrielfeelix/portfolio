@@ -130,7 +130,7 @@ function Solucao({ chap }) {
             <div className="beat-k">Solução</div>
             <Brush as="h2" className="beat-t">{renderPH(chap.solucao.t)}</Brush>
             {chap.solucao.p.map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
-            <div className="ai-note"><span className="b"></span> Protótipo → produto, com IA no fluxo</div>
+            <div className="ai-note"><span className="b"></span> Protótipo → produto no ar</div>
             <ProtoLinks links={chap.links} />
           </div>
         </div>

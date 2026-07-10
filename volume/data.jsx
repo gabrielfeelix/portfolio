@@ -41,23 +41,23 @@ const CHAPTERS = [
     year: "2026",
     fact: "Publicado na Play Store",   // real, confirmed
     tldr: {
-      papel: "Concepção, design e construção (Android), com IA no fluxo",
+      papel: "Concepção, design e construção (Android), solo",
       oque: "App de clube de leitura: organizar leituras e o que rola no clube",
       resultado: "Publicado na Play Store [confirmar números/uso]",
     },
     problema: {
       t: "Clube de leitura espalhado",
       p: ["Quem toca um clube de leitura vive entre grupo de mensagem, lista solta e memória: o que ler, até quando, quem leu. Falta um lugar só pra isso.",
-          "A restrição que abracei: levar do conceito ao app publicado sozinho — design e construção — usando IA no fluxo pra acelerar sem perder o controle."],
+          "A restrição que abracei: levar do conceito ao app publicado sozinho, do design ao código."],
     },
     decisoes: [
       { d: "Foco no ritual do clube, não em virar mais um app de livros", r: "porque o valor está em organizar a leitura coletiva — desenhei em torno desse ritual. [confirmar features principais]" },
-      { d: "Android nativo, com IA dentro do fluxo de construção", r: "porque dava pra ir do protótipo ao publicado mais rápido, mantendo a mão no design." },
+      { d: "Android nativo, construção enxuta", r: "porque com IA no fluxo de construção dava pra ir do protótipo ao publicado mais rápido, sem tirar a mão do design." },
       { d: "Escopo enxuto pra publicar de verdade", r: "porque app publicado prova mais que protótipo bonito — cortei o que não era essencial pra chegar na Play Store." },
     ],
     solucao: {
       t: "Do conceito à Play Store",
-      p: ["App de clube de leitura desenhado e construído do zero, com IA no fluxo, até a publicação na Play Store. [confirmar telas/funcionalidades principais]"],
+      p: ["App de clube de leitura desenhado e construído do zero até a publicação na Play Store. [confirmar telas/funcionalidades principais]"],
       slots: 3,
     },
     resultado: {
@@ -126,7 +126,7 @@ const CHAPTERS = [
     decisoes: [
       { d: "Princípio: clareza acima de estética, sinal regulatório nunca ambíguo", r: "porque é um motor de risco — status crítico (bloqueio, NC, certificação vencida) usa cor, ícone E rótulo ao mesmo tempo, nunca só cor." },
       { d: "Back-office denso + preview do app do motorista no mesmo protótipo", r: "porque o valor só aparece quando os dois lados falam a mesma língua. Modelei viagem bloqueada (motor de regras IDTF, T-3) pra provar o fluxo de ponta a ponta." },
-      { d: "Protótipo client-side com mock-data editável, IA no fluxo", r: "porque dá pra gerar variações e validar com stakeholder em dias — o protótipo navegável vira a mesa de decisão antes de queimar backend." },
+      { d: "Protótipo client-side com mock-data editável", r: "porque dá pra gerar variações e validar com stakeholder em dias — o protótipo navegável vira a mesa de decisão antes de queimar backend." },
     ],
     solucao: {
       t: "O motor de risco, navegável",
@@ -209,7 +209,7 @@ const CHAPTERS = [
     solucao: {
       t: "Capa, capítulos, processo e posfácio",
       p: ["Um coverflow de projetos, virada de página estilo mangá, motion de tinta e screentone. Caminho rápido pro recrutador, caminho profundo pra quem quer ler o case inteiro.",
-          "Construído de verdade, com IA dentro do fluxo: do protótipo navegável ao site publicado."],
+          "Construído de verdade: do protótipo navegável ao site publicado."],
       slots: 3,
     },
     resultado: {
@@ -527,7 +527,7 @@ const CHAPTERS = [
     sfx: "ガチャ", cover: "volume/assets/projetos/hub/cover.webp",
     links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null },
     premise: "Sete marcas, um padrão visual, zero retrabalho.",
-    role: "Concepção, UX e construção da ferramenta interna, com IA no fluxo.",
+    role: "Concepção, UX e construção da ferramenta interna.",
     surface: "Web · Ferramenta interna", year: "2026",
     fact: "Atende 7 marcas do grupo: PCYES, Azux, Odex, Tonante, Quati, Skul, Vinik",
     tldr: {
@@ -755,7 +755,7 @@ function synthChapter(p) {
     tldr: { papel: "[seu papel]", oque: "[o que é, em 1 linha]", resultado: "[resultado]" },
     problema: { t: "[o problema em 3 a 5 palavras]", p: ["[a situação: pra quem, qual a restrição real, o que travava]"] },
     decisoes: [{ d: "[escolhi ___]", r: "porque [___]" }, { d: "[escolhi ___]", r: "porque [___]" }, { d: "[escolhi ___]", r: "porque [___]" }],
-    solucao: { t: "[a solução em 3 a 5 palavras]", p: ["[o que foi construído, e como a IA entrou no fluxo]"], slots: 2 },
+    solucao: { t: "[a solução em 3 a 5 palavras]", p: ["[o que foi construído]"], slots: 2 },
     resultado: { t: "[o que aconteceu / o que aprendi]", p: ["[reflexão honesta, número real quando houver]"] },
   };
 }

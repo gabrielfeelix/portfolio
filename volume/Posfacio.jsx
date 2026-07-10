@@ -18,7 +18,7 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject, onNav }) {
 
           <div className="pos-block">
             <p className="pos-p">Esse portfólio é um mangá de propósito. Leio desde criança, e guiar bem a leitura é justamente a competência de UX que eu quero provar: se a navegação te trouxe até aqui, o argumento já se provou sozinho.</p>
-            <p className="pos-p"><b>No que eu acredito:</b> design e código são a mesma vontade. Eu desenho <em>e</em> construo, do protótipo navegável ao produto no ar, com IA dentro do fluxo. Decido por teste e dado, não por achismo: escuto o stakeholder, valido o protótipo com gente de verdade e itero pra uma versão. E trato restrição como o que afia a decisão, nunca como desculpa.</p>
+            <p className="pos-p"><b>No que eu acredito:</b> design e código são a mesma vontade. Eu desenho <em>e</em> construo, do protótipo navegável ao produto no ar. Uso IA como uso régua: pra chegar mais rápido do rascunho ao protótipo — a decisão continua minha. Decido por teste e dado, não por achismo: escuto o stakeholder, valido o protótipo com gente de verdade e itero pra uma versão. E trato restrição como o que afia a decisão, nunca como desculpa.</p>
             <p className="pos-p">Fora da tela, treino boxe{perfumeSoft ? "" : " há dois anos"} — disciplina e leitura de tempo que levo pro trabalho. E construo app por hobby: faço de graça o que faço no trabalho, porque gosto mesmo.</p>
           </div>
         </div>
@@ -81,7 +81,7 @@ function Posfacio({ onContact, t = {}, onEmpresa, onProject, onNav }) {
 
         <div className="pos-col">
           <div className="pos-block">
-            <p className="pos-p"><b>A identidade, sem rodeio: desenho e construo.</b> Projeto a experiência e levo ela até o ar, com IA dentro do fluxo, do protótipo navegável ao produto publicado.</p>
+            <p className="pos-p"><b>A identidade, sem rodeio: desenho e construo.</b> Projeto a experiência e levo ela até o ar, do protótipo navegável ao produto publicado.</p>
             <p className="pos-p">Aquele e-commerce da pandemia me ensinou cedo: desenhar e construir são a mesma vontade. Nunca separei.</p>
           </div>
 

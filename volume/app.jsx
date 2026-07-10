@@ -14,16 +14,35 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "cursos": false
 }/*EDITMODE-END*/;
 
-/* the RTL page-turn overlay with kinetic SFX */
+/* the RTL page-turn overlay with kinetic SFX (sheet wipe + kana; no blob) */
 function PageTurn({ sfx }) {
   const jp = sfx || "ザッ";
   return (
     <div className="pageturn" aria-hidden="true">
       <div className="sheet"></div>
-      <div className="pt-blob"></div>
       <div className="pt-sfx"><span lang="ja" translate="no">{jp}</span><i className="pt-ro">{sfxRo(jp)}</i></div>
     </div>
   );
+}
+
+/* manga reading progress: a thin vermilion rule at the very top that fills
+   as you read the page. Only on reading views (chapter/sobre/processo/
+   empresa) — the home cover isn't "a page being read". */
+function ReadProgress({ view }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const on = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      const p = total > 0 ? Math.min(1, window.scrollY / total) : 0;
+      el.style.transform = `scaleX(${p})`;
+    };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
+  }, [view]);
+  return <div className="read-progress" aria-hidden="true"><span ref={ref}></span></div>;
 }
 
 function applyTweaks(t) {
@@ -207,6 +226,7 @@ function App() {
     <>
       <CursorDot />
       <Nav view={view} go={handleNav} onContact={goContact} />
+      {view !== "home" && <ReadProgress view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       <div id="conteudo" tabIndex={-1}>{body}</div>
 

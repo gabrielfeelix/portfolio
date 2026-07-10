@@ -119,7 +119,7 @@ function Splash({ onRead, onContact, lit }) {
           <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
           <span className="sh-line">que leva <RotateWord items={["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"]} /></span>
         </h1>
-        <p className="splash-sub">Do protótipo navegável ao produto publicado, com <span className="red">IA dentro do fluxo</span>.</p>
+        <p className="splash-sub">Desenho, construo e publico — <span className="red">sem handoff</span> se perdendo no caminho.</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>Começar a ler <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
@@ -141,9 +141,8 @@ function Diferencial({ onPick, active }) {
     <section className="dif">
       <div className="shell">
         <p className="dif-statement">
-          Desenho a experiência <b>e construo de verdade</b>: do protótipo navegável ao
-          produto no ar, com <span className="red">IA dentro do fluxo</span>. Range que pega
-          recrutador e cliente de freela no mesmo gesto.
+          Desenho a experiência <b>e construo de verdade</b>: do protótipo navegável
+          ao produto no ar. <span className="red">Entrego o produto</span>, não só o Figma.
         </p>
         <div className="dif-right">
           <div className="dif-eyebrow">Minhas frentes</div>
@@ -378,7 +377,7 @@ function QuemSou({ onSobre, onEmpresa }) {
       <div className="shell qs-grid">
         <div className="qs-left">
           <div className="qk">Quem sou</div>
-          <p className="qs-bio">UX/Product Designer pleno. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar com IA no fluxo.</p>
+          <p className="qs-bio">UX/Product Designer pleno. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar.</p>
           <a className="btn btn-ghost gl" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>Ver posfácio <span className="arr">→</span></a>
         </div>
 
