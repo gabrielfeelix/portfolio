@@ -95,6 +95,18 @@ function hashToView(hash) {
   }
   return "404";
 }
+/* initial view: the SPA is hash-routed, but Vercel's SPA-fallback serves
+   index.html for ANY path (e.g. /teste). A direct hit on a non-root path
+   is a URL that doesn't exist → normalize the bar to /#/404 and open the
+   blank-page chapter. Root path defers to the hash. */
+function initialView() {
+  const p = window.location.pathname;
+  if (p && p !== "/" && p !== "/index.html") {
+    try { window.history.replaceState(null, "", "/#/404"); } catch (e) {}
+    return "404";
+  }
+  return hashToView(window.location.hash);
+}
 function viewTitle(view) {
   const BASE = "Volume · Portfólio de " + AUTOR;
   if (view === "home") return BASE;
@@ -111,7 +123,7 @@ function viewTitle(view) {
 
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [view, setView] = useState(() => hashToView(window.location.hash));  // "home" | chapterId | "processo" | "sobre" | "empresa:<id>"
+  const [view, setView] = useState(initialView);  // "home" | chapterId | "processo" | "sobre" | "empresa:<id>" | "404"
   const [turn, setTurn] = useState(null);          // {key, sfx}
   const [lit, setLit] = useState(false);
   const [filter, setFilter] = useState("todos");   // sumário category (lifted so quick-links can set it)

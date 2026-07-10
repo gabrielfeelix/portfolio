@@ -88,7 +88,7 @@ async function bundleAnalytics() {
 }
 
 function analyticsSnippet() {
-  const vercel = `\n<script defer src="analytics.js"></script>`;
+  const vercel = `\n<script defer src="/analytics.js"></script>`;
   const id = process.env.CLARITY_ID;
   const clarity = id
     ? `
@@ -104,9 +104,9 @@ function analyticsSnippet() {
 async function generateHtml() {
   const tpl = await readFile(path.join(ROOT, "index.template.html"), "utf8");
   const tags = [
-    `<script src="vendor/react.production.min.js"></script>`,
-    `<script src="vendor/react-dom.production.min.js"></script>`,
-    ...SCRIPTS.map((f) => `<script src="volume/${f.replace(/\.jsx$/, ".js")}"></script>`),
+    `<script src="/vendor/react.production.min.js"></script>`,
+    `<script src="/vendor/react-dom.production.min.js"></script>`,
+    ...SCRIPTS.map((f) => `<script src="/volume/${f.replace(/\.jsx$/, ".js")}"></script>`),
   ].join("\n");
   const html = tpl
     .replace("<!--VENDOR_AND_APP_SCRIPTS-->", tags)
