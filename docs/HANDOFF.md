@@ -37,7 +37,14 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
 - **Footer no Sobre** (era a única view sem Colofão) + **footer nav** (Início/Projetos/Sobre) via prop `onNav` no Colofão, threaded do App em todas as 5 páginas.
 - **Tablet 641–1024 validado** (screenshots 768+1024 das 5 views): layouts seguram nos breakpoints existentes (880/760/640), sem breakpoint dedicado novo. Bug corrigido: `.emp-meta` (`.shell` com `padding:0`) colava no canto < 1240px → `padding: 0 var(--gutter)`.
 - **Breadcrumb chapter/empresa:** era `position:sticky` (congelava como barra sobre a capa escura ao rolar) → `static`. Nav flutuante já navega.
-- **axe home: 1 regra restante = 8 nós das capas laterais esmaecidas do coverflow.** DECISÃO do Gabriel (2026-05-29): **ACEITAR** (preview periférico decorativo, borrado/cinza/fade; a capa focada carrega o texto legível). Exceção consciente WCAG 1.4.3. Não mexer.
+- **axe home: 1 regra restante = nós das capas laterais esmaecidas do coverflow** (8→10 nós após a reordenação do rail; mesmos elementos). DECISÃO do Gabriel (2026-05-29): **ACEITAR** (preview periférico decorativo, borrado/cinza/fade; a capa focada carrega o texto legível). Exceção consciente WCAG 1.4.3. Não mexer.
+- **Rodada 4 (2026-07-10, auditoria /design-portfolio-audit):**
+  - **Hash routing**: `#/`, `#/cap/<id>`, `#/sobre`, `#/processo`, `#/empresa/<id>` (app.jsx). Deep link, F5, back/forward funcionam; `document.title` por view; skip-link `#conteudo` não vira rota. Validado headless (14/14 PASS).
+  - **SEO/social**: meta description, OG completo, Twitter card, JSON-LD Person, canonical, theme-color no template. `og-image.png` (1200×630, estilo capa vermelha) em `volume/assets/` — gerada com PIL (script era do scratchpad; regenerável).
+  - **Mobile sumário**: `ProjectList` (já existia, estava sem uso) agora ligada ≤760px; coverflow segue no desktop/tablet. Kicker "arraste ou ← →" só desktop.
+  - **Curadoria do rail**: capítulos 01–05 primeiro (Rodapé abre o rail), depois peças; removidas 3 duplicatas (`ponto-diar`, `kitamo-site`, `solar-saas`) — 19 capas.
+  - **A11y**: `.dec .n` wash-2→wash-3 (1.97→5.82); `100svh` com fallback `100vh` (splash, post-hero, proc-sticky); `RotateWord` pára após 3 voltas (WCAG 2.2.2), reduced-motion nunca cicla.
+  - **Perf**: capas PNG→WebP (6.4MB→882KB, q82); Google Fonts via `<link>` preconnect (era `@import` na cascata CSS); **Chonburi removida** (runtime sempre setava Anton via applyTweaks — nunca renderizava); boot pulado em revisita na mesma sessão (`sessionStorage vol-seen`). Yuji Mai/Reggae One mantidas (kana intencional).
 
 ## PENDENTE (continuar aqui)
 1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
