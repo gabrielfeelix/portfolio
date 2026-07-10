@@ -77,15 +77,22 @@ function HeroField() {
   );
 }
 
-/* rotating word — letters spring up with stagger (TextRotate-style, vanilla) */
-function RotateWord({ items, interval = 2300 }) {
+/* rotating word — letters spring up with stagger (TextRotate-style, vanilla).
+   WCAG 2.2.2: auto-cycling stops after 3 full loops, settling on the first
+   (strongest) phrase; reduced-motion never cycles at all. */
+function RotateWord({ items, interval = 2300, loops = 3 }) {
   const [i, setI] = useState(0);
+  const ticks = useRef(0);
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   useEffect(() => {
     if (reduced) return;
-    const id = setInterval(() => setI((x) => (x + 1) % items.length), interval);
+    const id = setInterval(() => {
+      ticks.current += 1;
+      if (ticks.current >= items.length * loops) { clearInterval(id); setI(0); return; }
+      setI((x) => (x + 1) % items.length);
+    }, interval);
     return () => clearInterval(id);
-  }, [items, interval, reduced]);
+  }, [items, interval, reduced, loops]);
   const chars = [...items[i]];
   return (
     <span className="rotw">
@@ -344,16 +351,19 @@ function FilterBar({ filter, setFilter }) {
 }
 
 function Sumario({ onOpen, filter, setFilter }) {
+  const mobile = useIsMobile();
   const shown = PROJECTS.filter((p) => !p.hidden);
   const items = filter === "todos" ? shown : shown.filter((p) => p.cat === filter);
   return (
     <section className="shell" style={{ paddingTop: "var(--ma-6)" }}>
       <div className="sec-head" id="sumario">
         <Brush as="h2">Sumário</Brush>
-        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? "projeto" : "projetos"} · ※ arraste ou use ← →</span>
+        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? "projeto" : "projetos"}{mobile ? "" : " · ※ arraste ou use ← →"}</span>
       </div>
       <FilterBar filter={filter} setFilter={setFilter} />
-      <FocusRail key={filter} items={items} onOpen={onOpen} />
+      {mobile
+        ? <ProjectList items={items} onOpen={onOpen} />
+        : <FocusRail key={filter} items={items} onOpen={onOpen} />}
     </section>
   );
 }
