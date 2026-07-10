@@ -34,15 +34,76 @@ function applyTweaks(t) {
   document.body.classList.toggle("rtl-off", t.rtlGesture === false);
 }
 
+/* ---- hash routing: every view has a shareable URL --------------------
+   #/            home        #/sobre       posfácio
+   #/processo    processo    #/empresa/id  company page
+   #/cap/id      chapter (deep case or peça)
+   Back/forward work (popstate), refresh restores the view, links can be
+   shared. Unknown hashes fall back to home. */
+function viewToHash(view) {
+  if (view === "home") return "#/";
+  if (view === "sobre" || view === "processo") return "#/" + view;
+  if (view.indexOf("empresa:") === 0) return "#/empresa/" + view.slice(8);
+  return "#/cap/" + view;
+}
+function hashToView(hash) {
+  const h = (hash || "").replace(/^#\/?/, "");
+  if (!h) return "home";
+  if (h === "sobre" || h === "processo") return h;
+  if (h.indexOf("empresa/") === 0) {
+    const id = h.slice(8);
+    return COMPANIES.some((c) => c.id === id) ? "empresa:" + id : "home";
+  }
+  if (h.indexOf("cap/") === 0) {
+    const id = h.slice(4);
+    return chapterFor(id) ? id : "home";
+  }
+  return "home";
+}
+function viewTitle(view) {
+  const BASE = "Volume — Portfólio · " + AUTOR;
+  if (view === "home") return BASE;
+  if (view === "sobre") return "Posfácio · " + BASE;
+  if (view === "processo") return "Processo · " + BASE;
+  if (view.indexOf("empresa:") === 0) {
+    const c = COMPANIES.find((x) => x.id === view.slice(8));
+    return c ? c.name + " · " + BASE : BASE;
+  }
+  const chap = chapterFor(view);
+  return chap ? chap.title + " · " + BASE : BASE;
+}
+
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [view, setView] = useState("home");      // "home" | chapterId | "processo" | "sobre" | "empresa:<id>"
+  const [view, setView] = useState(() => hashToView(window.location.hash));  // "home" | chapterId | "processo" | "sobre" | "empresa:<id>"
   const [turn, setTurn] = useState(null);          // {key, sfx}
   const [lit, setLit] = useState(false);
   const [filter, setFilter] = useState("todos");   // sumário category (lifted so quick-links can set it)
 
   useEffect(() => { const id = setTimeout(() => setLit(true), 120); return () => clearTimeout(id); }, []);
   useEffect(() => { applyTweaks(t); }, [t]);
+
+  // keep the URL + tab title in sync with the view; browser back/forward
+  // (popstate) restores the view without pushing a duplicate entry.
+  useEffect(() => {
+    const h = viewToHash(view);
+    if (window.location.hash !== h) {
+      // same view under a different hash (initial load, normalization) →
+      // replace; a real navigation → push a history entry.
+      const fn = hashToView(window.location.hash) === view ? "replaceState" : "pushState";
+      window.history[fn](null, "", h);
+    }
+    document.title = viewTitle(view);
+  }, [view]);
+  useEffect(() => {
+    const onPop = () => {
+      const h = window.location.hash;
+      if (h && h.indexOf("#/") !== 0) return;   // in-page anchor (e.g. skip-link #conteudo), not a route
+      setView(hashToView(h)); window.scrollTo(0, 0);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   // SPA focus management: on view change (not initial mount), move keyboard/SR
   // focus to the content region so Tab resumes from a known point and the new
