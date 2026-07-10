@@ -45,6 +45,21 @@ function ReadProgress({ view }) {
   return <div className="read-progress" aria-hidden="true"><span ref={ref}></span></div>;
 }
 
+/* 404: a blank page in the volume. The manga SFX for silence. */
+function NotFound({ onHome }) {
+  return (
+    <main className="nf viewcut" key="nf">
+      <div className="shell nf-shell">
+        <div className="nf-sfx" aria-hidden="true"><span lang="ja" translate="no">シーン</span><i className="sfx-ro">SHIIN</i></div>
+        <div className="nf-k">Erro 404 · página em branco</div>
+        <Brush as="h1" className="nf-t">Esse capítulo não existe.</Brush>
+        <p className="nf-p">Ou ainda não foi desenhado. O volume continua no sumário.</p>
+        <button className="btn btn-primary" onClick={onHome}>Voltar ao volume <span className="arr">→</span></button>
+      </div>
+    </main>
+  );
+}
+
 function applyTweaks(t) {
   const root = document.documentElement;
   root.style.setProperty("--font-display",
@@ -61,6 +76,7 @@ function applyTweaks(t) {
    shared. Unknown hashes fall back to home. */
 function viewToHash(view) {
   if (view === "home") return "#/";
+  if (view === "404") return "#/404";
   if (view === "sobre" || view === "processo") return "#/" + view;
   if (view.indexOf("empresa:") === 0) return "#/empresa/" + view.slice(8);
   return "#/cap/" + view;
@@ -71,19 +87,20 @@ function hashToView(hash) {
   if (h === "sobre" || h === "processo") return h;
   if (h.indexOf("empresa/") === 0) {
     const id = h.slice(8);
-    return COMPANIES.some((c) => c.id === id) ? "empresa:" + id : "home";
+    return COMPANIES.some((c) => c.id === id) ? "empresa:" + id : "404";
   }
   if (h.indexOf("cap/") === 0) {
     const id = h.slice(4);
-    return chapterFor(id) ? id : "home";
+    return chapterFor(id) ? id : "404";
   }
-  return "home";
+  return "404";
 }
 function viewTitle(view) {
-  const BASE = "Volume — Portfólio · " + AUTOR;
+  const BASE = "Volume · Portfólio de " + AUTOR;
   if (view === "home") return BASE;
   if (view === "sobre") return "Posfácio · " + BASE;
   if (view === "processo") return "Processo · " + BASE;
+  if (view === "404") return "Página em branco · " + BASE;
   if (view.indexOf("empresa:") === 0) {
     const c = COMPANIES.find((x) => x.id === view.slice(8));
     return c ? c.name + " · " + BASE : BASE;
@@ -98,6 +115,14 @@ function App() {
   const [turn, setTurn] = useState(null);          // {key, sfx}
   const [lit, setLit] = useState(false);
   const [filter, setFilter] = useState("todos");   // sumário category (lifted so quick-links can set it)
+  const [ink, setInk] = useState(() => {             // modo tinta: o volume lido de noite
+    try { return localStorage.getItem("vol-ink") === "1"; } catch (e) { return false; }
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("ink", ink);
+    try { localStorage.setItem("vol-ink", ink ? "1" : "0"); } catch (e) {}
+  }, [ink]);
 
   useEffect(() => { const id = setTimeout(() => setLit(true), 120); return () => clearTimeout(id); }, []);
   useEffect(() => { applyTweaks(t); }, [t]);
@@ -189,7 +214,9 @@ function App() {
   const goView = (v) => { setView(v); top(); };
   const openEmpresa = (id) => { setView("empresa:" + id); top(); };
   const openProject = (p) => { if (p) openChapter(p.id); };
+  const [stamp, setStamp] = useState(0);           // hanko press no CTA de contato
   const goContact = () => {
+    if (!REDUCED) { setStamp(Date.now()); setTimeout(() => setStamp(0), 900); }
     if (view !== "home") { setView("home"); top(); setTimeout(() => scrollTo("fim", false), 90); }
     else scrollTo("fim", true);
   };
@@ -201,7 +228,7 @@ function App() {
     else if (to === "processo") goView("processo");
   };
 
-  const chap = chapterFor(view);
+  const chap = (view === "404") ? null : chapterFor(view);
   const next = chap ? chapterFor(nextProjectId(view)) : null;
   const empId = view.indexOf("empresa:") === 0 ? view.slice(8) : null;
   const empresa = empId ? COMPANIES.find((c) => c.id === empId) : null;
@@ -214,6 +241,8 @@ function App() {
                         onEmpresa={openEmpresa} onProject={openProject} onContact={goContact} onNav={handleNav} />;
   } else if (view === "processo") {
     body = <Processo onContact={goContact} onNav={handleNav} />;
+  } else if (view === "404") {
+    body = <NotFound onHome={() => goHome()} />;
   } else if (view === "sobre") {
     body = <Posfacio onContact={goContact} t={t} onEmpresa={openEmpresa} onProject={openProject} onNav={handleNav} />;
   } else {
@@ -225,7 +254,8 @@ function App() {
   return (
     <>
       <CursorDot />
-      <Nav view={view} go={handleNav} onContact={goContact} />
+      <Nav view={view} go={handleNav} onContact={goContact} ink={ink} onInk={() => setInk((v) => !v)} />
+      {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
       {view !== "home" && <ReadProgress view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       <div id="conteudo" tabIndex={-1}>{body}</div>

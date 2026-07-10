@@ -5,7 +5,7 @@
    ===================================================================== */
 
 /* ---------- [A] HEADER (shared) ---------- */
-function Nav({ view, go, onContact }) {
+function Nav({ view, go, onContact, ink, onInk }) {
   const [stamped, setStamped] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);   // hide on scroll-down (non-home bar)
@@ -53,6 +53,11 @@ function Nav({ view, go, onContact }) {
           <a href="#" className="btn btn-secondary nav-contact nav-contact-m"
              onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
         </div>
+        <button type="button" className={`ink-toggle ${ink ? "on" : ""}`} onClick={onInk}
+                aria-pressed={!!ink} aria-label={ink ? "Voltar ao modo papel" : "Ler no modo tinta"}
+                title={ink ? "Modo papel" : "Modo tinta"}>
+          <span lang="ja" translate="no" aria-hidden="true">墨</span>
+        </button>
         <a href="#" className="btn btn-secondary nav-contact nav-contact-d"
            onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
       </nav>
@@ -119,7 +124,7 @@ function Splash({ onRead, onContact, lit }) {
           <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
           <span className="sh-line">que leva <RotateWord items={["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"]} /></span>
         </h1>
-        <p className="splash-sub">Desenho, construo e publico — <span className="red">sem handoff</span> se perdendo no caminho.</p>
+        <p className="splash-sub">Desenho, construo e publico. <span className="red">Design e código</span> na mesma mão.</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>Começar a ler <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
@@ -414,6 +419,7 @@ function Colofao({ onContact, onNav }) {
           <nav className="foot-nav" aria-label="Navegação do rodapé">
             <a href="#" onClick={(e) => navTo(e, "home")}>Início</a>
             <a href="#" onClick={(e) => navTo(e, "sumario")}>Projetos</a>
+            <a href="#" onClick={(e) => navTo(e, "processo")}>Processo</a>
             <a href="#" onClick={(e) => navTo(e, "sobre")}>Sobre</a>
           </nav>
         )}

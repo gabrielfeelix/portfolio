@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Volume — Portfólio · Gabriel Felix Barbosa</title>
+<title>Volume · Portfólio de Gabriel Felix Barbosa</title>
 <meta name="description" content="Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Cases de SaaS, mobile, desktop e e-commerce — do protótipo navegável ao produto no ar, lido como um volume de mangá.">
 <link rel="canonical" href="https://portfolio-volume.vercel.app/">
 <meta name="theme-color" content="#E4231B">
@@ -11,16 +11,16 @@
 <!-- Open Graph / social preview -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Volume">
-<meta property="og:title" content="Volume — Portfólio · Gabriel Felix Barbosa">
+<meta property="og:title" content="Volume · Portfólio de Gabriel Felix Barbosa">
 <meta property="og:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado. Um portfólio lido como um volume de mangá.">
 <meta property="og:url" content="https://portfolio-volume.vercel.app/">
 <meta property="og:image" content="https://portfolio-volume.vercel.app/volume/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Volume — portfólio em forma de mangá de Gabriel Felix Barbosa">
+<meta property="og:image:alt" content="Volume, o portfólio em forma de mangá de Gabriel Felix Barbosa">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Volume — Portfólio · Gabriel Felix Barbosa">
+<meta name="twitter:title" content="Volume · Portfólio de Gabriel Felix Barbosa">
 <meta name="twitter:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado.">
 <meta name="twitter:image" content="https://portfolio-volume.vercel.app/volume/assets/og-image.png">
 
@@ -75,6 +75,10 @@
   #boot.boot-done .boot-seal{animation:boot-stamp 300ms cubic-bezier(.2,1.5,.3,1) both;}
   @keyframes boot-stamp{0%{transform:scale(1);}40%{transform:scale(1.18) translate(-3px,-3px);}100%{transform:scale(1);}}
   @keyframes boot-out{to{opacity:0;visibility:hidden;}}
+  html.ink #boot{background:#161310;}
+  html.ink #boot .boot-label{color:#8A8477;}
+  html.ink #boot .boot-label b{color:#F2EFE7;}
+  html.ink #boot .boot-seal{box-shadow:7px 7px 0 #000;}
   @media (prefers-reduced-motion: reduce){
     #boot .boot-sl,#boot .boot-seal{animation:none;}
     #boot.boot-done{animation:boot-out 1ms linear forwards;}
@@ -91,6 +95,8 @@
   <div class="boot-label">Abrindo o volume<i id="boot-dots">·</i></div>
 </div>
 <script>
+  // modo tinta persistido: aplica antes do primeiro paint
+  (function(){try{if(localStorage.getItem('vol-ink')==='1')document.documentElement.classList.add('ink');}catch(e){}})();
   // repeat visit in the same session: skip the boot beat entirely
   (function(){try{
     if(sessionStorage.getItem('vol-seen')){var b=document.getElementById('boot');if(b)b.remove();}

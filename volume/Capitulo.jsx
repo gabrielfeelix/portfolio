@@ -143,7 +143,7 @@ function Solucao({ chap }) {
               return (
                 <div className={cls} key={i} style={style}>
                   {shots[i]
-                    ? <img className="sol-img" src={shots[i]} alt={`${chap.title} — tela ${i + 1}`} loading="lazy" draggable="false" />
+                    ? <img className="sol-img" src={shots[i]} alt={`${chap.title} · tela ${i + 1}`} loading="lazy" draggable="false" />
                     : <MangaPlate />}
                 </div>
               );
