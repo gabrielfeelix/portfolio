@@ -50,16 +50,17 @@ function Nav({ view, go, onContact, ink, onInk }) {
           <Link to="sumario" active={view === "home"}>Capítulos</Link>
           <Link to="sobre" active={view === "sobre"}>Sobre</Link>
           <Link to="processo" active={view === "processo"}>Processo</Link>
-          <a href="#" className="btn btn-secondary nav-contact nav-contact-m"
-             onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
+          <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
+             className="btn btn-secondary nav-contact nav-contact-m"
+             onClick={() => setMenuOpen(false)}>Fale comigo</a>
         </div>
         <button type="button" className={`ink-toggle ${ink ? "on" : ""}`} onClick={onInk}
                 aria-pressed={!!ink} aria-label={ink ? "Voltar ao modo papel" : "Ler no modo tinta"}
                 title={ink ? "Modo papel" : "Modo tinta"}>
           <span lang="ja" translate="no" aria-hidden="true">墨</span>
         </button>
-        <a href="#" className="btn btn-secondary nav-contact nav-contact-d"
-           onClick={(e) => { e.preventDefault(); nav(onContact); }}>Fale comigo</a>
+        <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
+           className="btn btn-secondary nav-contact nav-contact-d">Fale comigo</a>
       </nav>
       <div className="v-rule"></div>
       <div className="v-volline">
