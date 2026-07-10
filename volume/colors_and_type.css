@@ -10,8 +10,11 @@
 
 /* ---- Fonts ---------------------------------------------------------
    Self-hosted (user-uploaded .ttf): Anton, Bangers, Cinzel.
-   CDN (Google Fonts): Oswald, Hanken Grotesk, Caveat. */
-@import url('https://fonts.googleapis.com/css2?family=Chonburi&family=Reggae+One&family=Yuji+Mai&family=Oswald:wght@300;400;500;600;700&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Caveat:wght@500;600;700&display=swap');
+   CDN (Google Fonts): Reggae One (SFX kana), Yuji Mai (katakana),
+   Oswald, Hanken Grotesk, Caveat — loaded via <link> in index.template.html
+   (parallel with CSS, no @import waterfall). Chonburi dropped: runtime
+   always sets --font-display to Anton/Oswald (applyTweaks), it never
+   rendered. */
 
 @font-face {
   font-family: 'Anton';
@@ -71,7 +74,7 @@
      Body/dialogue  : Hanken Grotesk — humanist sans, the reading voice
      Hand (sparing) : Caveat — only true "dialogue" asides
      ============================================================ */
-  --font-display: 'Chonburi', 'Anton', 'Oswald', Impact, sans-serif;
+  --font-display: 'Anton', 'Oswald', Impact, sans-serif;
   --font-sfx:     'Bangers', 'Anton', Impact, cursive;     /* onomatopoeia only */
   --font-editorial:'Cinzel', 'Times New Roman', Georgia, serif; /* edition accents, numerals */
   --font-condensed:'Oswald', 'Anton', sans-serif;

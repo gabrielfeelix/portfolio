@@ -60,11 +60,11 @@
    ===================================================================== */
 /* home reveal: the red cover is pinned; paper content scrolls up over it */
 .home-main { position: relative; }
-.post-hero { position: relative; z-index: 1; margin-top: 100vh; background: var(--paper);
+.post-hero { position: relative; z-index: 1; margin-top: 100vh; margin-top: 100svh; background: var(--paper);
   box-shadow: 0 -34px 70px rgba(10,10,10,.22); }
 
 /* THE COVER — full viewport, 100% vermelho, tinta branca */
-.splash { position: fixed; inset: 0; z-index: 0; height: 100vh; overflow: hidden;
+.splash { position: fixed; inset: 0; z-index: 0; height: 100vh; height: 100svh; overflow: hidden;
   display: grid; place-items: center; text-align: center; padding: var(--ma-5) 0 var(--ma-6);
   background: var(--vermilion); color: var(--paper); }
 .splash .shell { position: relative; z-index: 2; }
@@ -364,7 +364,7 @@
 .beat.in .dec { opacity: 1; transform: none; }
 .beat.in .dec:nth-child(2) { transition-delay: 80ms; }
 .beat.in .dec:nth-child(3) { transition-delay: 160ms; }
-.dec .n { font-family: var(--font-editorial); font-weight: 700; font-size: 1.5rem; color: var(--wash-2); }
+.dec .n { font-family: var(--font-editorial); font-weight: 700; font-size: 1.5rem; color: var(--wash-3); }
 .dec .d { font-family: var(--font-display); text-transform: uppercase; font-size: 1.5rem; line-height: .98; margin: 10px 0 10px; }
 .dec .r { font-family: var(--font-body); font-size: var(--t-body); line-height: 1.5; color: var(--fg-2); }
 .dec .r b { color: var(--fg); font-weight: 700; }
@@ -395,7 +395,7 @@
 .proc-scrollhint .dn { font-family: var(--font-display); animation: bob 1.6s ease-in-out infinite; }
 
 .proc-scroll { position: relative; }
-.proc-sticky { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden;
+.proc-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; align-items: center; overflow: hidden;
   border-top: var(--ink-stroke) solid var(--ink); border-bottom: var(--ink-stroke) solid var(--ink); background: var(--paper); }
 .proc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gutter); align-items: center; width: 100%;
   padding-top: clamp(120px, 16vh, 150px); padding-bottom: var(--ma-4); }
