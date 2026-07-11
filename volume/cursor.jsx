@@ -34,6 +34,20 @@ function CursorDot() {
     window.addEventListener("mousemove", move);
     document.addEventListener("mouseover", over);
 
+    // respingo de tinta no clique: um pingo + gotículas que somem num beat.
+    // Sutil, pointer-events off; herda branco sobre a capa vermelha.
+    const splat = (e) => {
+      if (e.button !== 0 || !e.isPrimary) return;
+      const el = document.createElement("span");
+      const red = e.target && e.target.closest && e.target.closest(".splash");
+      el.className = "ink-splat" + (red ? " on-red" : "");
+      el.style.left = e.clientX + "px";
+      el.style.top = e.clientY + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 640);
+    };
+    window.addEventListener("pointerdown", splat);
+
     const lerp = (a, b, f) => a + (b - a) * f;
     let raf;
     const tick = () => {
@@ -50,6 +64,7 @@ function CursorDot() {
     return () => {
       window.removeEventListener("mousemove", move);
       document.removeEventListener("mouseover", over);
+      window.removeEventListener("pointerdown", splat);
       cancelAnimationFrame(raf);
       document.body.classList.remove("cursor-none");
     };

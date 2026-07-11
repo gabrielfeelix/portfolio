@@ -744,9 +744,10 @@ const PROJECTS = [
 
 /* tag shown on a project cover: chapters carry their CAP number */
 function projTag(p) {
-  if (!p.chapterId) return "PEÇA";
+  const piece = LANG === "en" ? "PIECE" : "PEÇA";   // LANG: i18n.jsx, resolved at call time
+  if (!p.chapterId) return piece;
   const c = CHAPTERS.find((x) => x.id === p.chapterId);
-  return c ? c.cap : "PEÇA";
+  return c ? c.cap : piece;
 }
 function projDescriptor(p) {
   if (!p.chapterId) return "";
@@ -775,7 +776,14 @@ function chapterFor(id) {
   const c = CHAPTERS.find((x) => x.id === id);
   if (c) return c;
   const p = PROJECTS.find((x) => x.id === id);
-  return p ? synthChapter(p) : null;
+  if (!p) return null;
+  // a rail item whose PROJECTS id differs from its chapterId (e.g.
+  // ponto-admin → ponto) must open the AUTHORED chapter, not a synth one
+  if (p.chapterId) {
+    const cc = CHAPTERS.find((x) => x.id === p.chapterId);
+    if (cc) return cc;
+  }
+  return synthChapter(p);
 }
 function nextProjectId(id) {
   const i = PROJECTS.findIndex((p) => p.id === id);
@@ -794,6 +802,9 @@ function useReveal(opts = {}) {
   const [seen, setSeen] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
+    // sem IntersectionObserver (impressão, motores antigos): nunca esconda
+    // conteúdo atrás de um reveal que não vai disparar
+    if (!("IntersectionObserver" in window)) { setSeen(true); return; }
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setSeen(true); io.disconnect(); }
     }, { threshold: opts.threshold ?? 0.22, rootMargin: opts.rootMargin ?? "0px 0px -8% 0px" });
@@ -878,14 +889,14 @@ function ProtoLinks({ links = {}, onInk }) {
     <div className="proto-links">
       {vercel
         ? <a className="btn btn-primary proto-live" href={vercel} target="_blank" rel="noreferrer" onClick={handle}>
-            Ver protótipo <span className="ext" aria-hidden="true">↗</span></a>
+            {t("Ver protótipo", "See prototype")} <span className="ext" aria-hidden="true">↗</span></a>
         : <span className="btn btn-primary proto-live is-ph" role="link" aria-disabled="true">
-            Ver protótipo <span className="ph-tag">[Vercel]</span></span>}
+            {t("Ver protótipo", "See prototype")} <span className="ph-tag">[Vercel]</span></span>}
       {figma
         ? <a className="btn proto-figma" href={figma} target="_blank" rel="noreferrer">
-            Abrir no Figma <span className="ext" aria-hidden="true">↗</span></a>
+            {t("Abrir no Figma", "Open in Figma")} <span className="ext" aria-hidden="true">↗</span></a>
         : <span className="btn proto-figma is-ph" role="link" aria-disabled="true">
-            Abrir no Figma <span className="ph-tag">[Figma]</span></span>}
+            {t("Abrir no Figma", "Open in Figma")} <span className="ph-tag">[Figma]</span></span>}
     </div>
   );
 }

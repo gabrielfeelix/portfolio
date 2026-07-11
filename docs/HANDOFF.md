@@ -54,6 +54,18 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
   - **Grifo do headline**: pincelada de cantos orgânicos (variante C escolhida entre 4 mockups).
   - Hero sub: "Desenho, construo e publico. Design e código na mesma mão." (a anterior com travessão era "cringe", palavra dele).
 
+- **Rodada 6 (2026-07-11, experiência premium + i18n):**
+  - **4 bugs corrigidos**: Tobira renderizava premise/role reais como `<PH>` (Capitulo.jsx); `.chapter-body` matava o gutter lateral ≤1240px (chapter.css); hero quebrado no modo tinta (tokens invertíveis → literais no splash); pill do nav começava escondida ao entrar em capítulo rolado (reset em `view` change). Bônus: `chapterFor` agora resolve `p.chapterId` (Worklife abria capítulo synth em vez do case autoral "ponto").
+  - **"Pleno" removido** do hero e do Quem Sou (decisão de posicionamento).
+  - **Capítulos**: Resultado = painel de impacto (fato real em Anton sobre preto literal, kana fantasma, link "No ar"); thumb do próximo capítulo; TL;DR com célula "Ao vivo"; dobra "O sistema por trás do volume" no CAP. 05.
+  - **Momentos**: marcador de página (localStorage `vol-marker`, fita no topo da capa, retoma scroll); modo tinta com View Transition circular a partir do 墨; assinatura SVG que se desenha no Posfácio; respingo de tinta no clique (cursor.jsx); scrollbar de tinta; capas laterais do rail acordam no hover.
+  - **Processo**: 82vh→58vh por passo + recap "De relance" (grade dos 6 passos).
+  - **i18n PT/EN completo**: `volume/i18n.jsx` (novo, na ordem de scripts após data.jsx) com `LANG`/`t(pt,en)`/`toggleLang` + mutação in-place dos globals de conteúdo em EN (lexical consts, window-swap não alcança). Toggle PT/EN no nav = localStorage `vol-lang` + reload. TODA a UI chrome traduzida via `t()`. CUIDADO: prop `t` (tweaks) do Posfacio foi renomeada localmente pra não sombrear o `t()` global (derrubava o root).
+  - **Leitura rápida**: rota `#/rapido` (TL;DRs dos 5 capítulos + links vivos + CTA), atalho no hero ("Sem tempo? O volume em 2 minutos").
+  - **Brand strip** no Diferencial (chips marca+nome, assets/marcas).
+  - **ErrorBoundary** temático (`VolumeBoundary`): erro de render mostra página rasgada + recarregar, nunca root em branco.
+  - **A11y re-auditada** (axe 3 viewports × 8 views): corrigidos `.beat-k`/`.sfx-ro` (vermilion→vermilion-ink no papel), `.emp-now` (bg vermilion-ink), 404 SFX (wash-3), impact panel literal; nav escondida ganhou `visibility:hidden` (fora do Tab). **Único restante = capas laterais do coverflow (exceção aceita, não mexer).** Boot 600ms; useReveal com guard de IO.
+
 ## PENDENTE (continuar aqui)
 1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
 2. ✅ FEITO — Passe teclado/leitor (focus mgmt + Tab order nas 5 views + landmarks).

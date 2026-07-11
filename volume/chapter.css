@@ -46,7 +46,9 @@
 .cover-meta .m .v { font-family: var(--font-condensed); font-weight: 600; font-size: 17px; margin-top: 3px; }
 
 /* ---- chapter body: panels revealed on scroll ---- */
-.chapter-body { padding: var(--ma-6) 0 var(--ma-5); }
+/* NB: keep the .shell side gutters — a bare `padding: X 0 Y` wipes them and
+   the chapter content touches the screen edge below the 1240px max-width */
+.chapter-body { padding: var(--ma-6) var(--gutter) var(--ma-5); }
 .beat { display: grid; grid-template-columns: repeat(12,1fr); gap: var(--gutter); align-items: center; margin-bottom: var(--ma-6); }
 .beat .panel {
   border: var(--ink-stroke) solid var(--ink); background: var(--paper); position: relative; overflow: hidden;

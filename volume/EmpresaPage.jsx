@@ -10,8 +10,8 @@ function EmpresaQuick({ company, onProject }) {
   return (
     <div className="emp-quick">
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>Projetos por aqui</Brush>
-        <span className="kicker">acesso rápido</span>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Projetos por aqui", "Projects around here")}</Brush>
+        <span className="kicker">{t("acesso rápido", "quick access")}</span>
       </div>
       <div className="eq-grid">
         {company.related.map((id) => {
@@ -26,7 +26,7 @@ function EmpresaQuick({ company, onProject }) {
               <span className="eq-meta">
                 <span className="eq-cat">{p.domain}</span>
                 <span className="eq-title">{p.title}</span>
-                <span className="eq-go">{p.chapterId ? "Ler capítulo" : "Ver projeto"} <span className="arr" aria-hidden="true">→</span></span>
+                <span className="eq-go">{p.chapterId ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr" aria-hidden="true">→</span></span>
               </span>
             </button>
           );
@@ -46,9 +46,9 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
     <main className="empresa viewcut" key={company.id}>
       <div className="chapter-back">
         <a className="back" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>
-          <span className="arr">←</span> Voltar ao volume
+          <span className="arr">←</span> {t("Voltar ao volume", "Back to the volume")}
         </a>
-        <span className="cap">Empresa · {VOL}</span>
+        <span className="cap">{t("Empresa", "Company")} · {VOL}</span>
       </div>
 
       <section className="emp-cover">
@@ -57,7 +57,7 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
         <div className="shell emp-cover-shell">
           <div className="emp-cover-copy">
             <div className="emp-k">
-              {company.atual ? <span className="emp-now">Empresa atual</span> : <span className="emp-past">Trajetória · cap. {String(idx + 1).padStart(2, "0")}</span>}
+              {company.atual ? <span className="emp-now">{t("Empresa atual", "Current company")}</span> : <span className="emp-past">{t("Trajetória · cap. ", "Journey · ch. ")}{String(idx + 1).padStart(2, "0")}</span>}
             </div>
             <Brush as="h1" className="emp-title">{company.name}</Brush>
             <div className="emp-role">{company.role}</div>
@@ -68,9 +68,9 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
           </div>
         </div>
         <div className="shell emp-meta">
-          <div className="m"><div className="l">Papel</div><div className="v">{company.role}</div></div>
-          <div className="m"><div className="l">Período</div><div className="v">{company.period}</div></div>
-          <div className="m"><div className="l">Projetos</div><div className="v">{projCount ? String(projCount).padStart(2, "0") : "diversos"}</div></div>
+          <div className="m"><div className="l">{t("Papel", "Role")}</div><div className="v">{company.role}</div></div>
+          <div className="m"><div className="l">{t("Período", "Period")}</div><div className="v">{company.period}</div></div>
+          <div className="m"><div className="l">{t("Projetos", "Projects")}</div><div className="v">{projCount ? String(projCount).padStart(2, "0") : t("diversos", "several")}</div></div>
         </div>
       </section>
 
@@ -92,13 +92,13 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
         <div className="emp-switch">
           <div className="emp-switch-side left">
             {older ? <button type="button" className="emp-navbtn" onClick={() => onEmpresa(older.id)}>
-              <span className="ens-k">Antes</span><span className="ens-n"><span className="arr" style={{ display: "inline-block", transform: "scaleX(-1)" }}>→</span> {older.name}</span>
+              <span className="ens-k">{t("Antes", "Before")}</span><span className="ens-n"><span className="arr" style={{ display: "inline-block", transform: "scaleX(-1)" }}>→</span> {older.name}</span>
             </button> : null}
           </div>
-          <button type="button" className="btn btn-primary" onClick={onContact}>Fale comigo <span className="arr">→</span></button>
+          <button type="button" className="btn btn-primary" onClick={onContact}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></button>
           <div className="emp-switch-side right">
             {newer ? <button type="button" className="emp-navbtn al-r" onClick={() => onEmpresa(newer.id)}>
-              <span className="ens-k">Depois</span><span className="ens-n">{newer.name} <span className="arr">→</span></span>
+              <span className="ens-k">{t("Depois", "After")}</span><span className="ens-n">{newer.name} <span className="arr">→</span></span>
             </button> : null}
           </div>
         </div>

@@ -11,6 +11,7 @@ const DIST = path.join(ROOT, "dist");
 const SCRIPTS = [
   "tweaks-panel.jsx",
   "data.jsx",
+  "i18n.jsx",
   "organic.jsx",
   "cursor.jsx",
   "Capa.jsx",

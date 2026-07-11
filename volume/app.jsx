@@ -45,16 +45,76 @@ function ReadProgress({ view }) {
   return <div className="read-progress" aria-hidden="true"><span ref={ref}></span></div>;
 }
 
+/* ---- marcador de página (栞): resume where the reader stopped -------
+   While a chapter is being read, the position is saved (throttled). Back
+   on the cover, a hanging ribbon offers "continuar de onde parou". */
+function Bookmark({ marker, onGo, onDismiss }) {
+  return (
+    <div className="bookmark" role="complementary" aria-label={t("Marcador de leitura", "Reading bookmark")}>
+      <button type="button" className="bm-go" onClick={onGo}>
+        <span className="bm-k">{t("Marcador de página", "Bookmark")}</span>
+        <span className="bm-t">{marker.title}</span>
+        <span className="bm-c">{t("Continuar de onde parou", "Pick up where you left off")} <span className="arr">→</span></span>
+      </button>
+      <button type="button" className="bm-x" onClick={onDismiss} aria-label={t("Descartar marcador", "Dismiss bookmark")}>×</button>
+    </div>
+  );
+}
+
+/* ---- leitura rápida (#/rapido): os 5 capítulos em 2 minutos ----------
+   The fast path the recruiter was promised: every numbered chapter's
+   TL;DR stacked on one page, live links included, contact at the end. */
+function Rapido({ onOpen, onContact, onNav }) {
+  const caps = CHAPTERS.filter((c) => c.num);
+  return (
+    <main className="rapido viewcut" key="rapido">
+      <div className="shell">
+        <div className="pos-k">{t("Leitura rápida", "Quick read")}</div>
+        <Brush as="h1" className="rap-title">{t("O volume em 2 minutos", "The volume in 2 minutes")}</Brush>
+        <p className="rap-lead">{t("Os 5 capítulos, só o essencial: papel, o quê e resultado. O case completo está a um clique.", "The 5 chapters, essentials only: role, what and result. The full case is one click away.")}</p>
+
+        <ol className="rap-list">
+          {caps.map((c) => (
+            <li className="rap-item" key={c.id}>
+              <div className="rap-head">
+                <span className="rap-cap">{c.cap} · {c.domain}</span>
+                <h2 className="rap-t">{c.title}</h2>
+              </div>
+              <div className="rap-cells">
+                <div className="rc"><div className="l">{t("Papel", "Role")}</div><div className="v">{renderPH(c.tldr.papel)}</div></div>
+                <div className="rc"><div className="l">{t("O quê", "What")}</div><div className="v">{renderPH(c.tldr.oque)}</div></div>
+                <div className="rc"><div className="l">{t("Resultado", "Result")}</div><div className="v">{renderPH(c.tldr.resultado)}</div></div>
+              </div>
+              <div className="rap-actions">
+                <button type="button" className="btn btn-ghost" onClick={() => onOpen(c.id)}>{t("Ler o capítulo", "Read the chapter")} <span className="arr">→</span></button>
+                {c.links && c.links.vercel
+                  ? <a className="rap-live" href={c.links.vercel} target="_blank" rel="noreferrer">{t("Ver no ar", "See it live")} <span className="ext" aria-hidden="true">↗</span></a>
+                  : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <div className="rap-cta">
+          <p className="rap-lead">{t("Dois minutos e você já sabe como eu trabalho.", "Two minutes and you already know how I work.")}</p>
+          <button className="btn btn-primary" onClick={onContact}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></button>
+        </div>
+      </div>
+      <Colofao onContact={onContact} onNav={onNav} />
+    </main>
+  );
+}
+
 /* 404: a blank page in the volume. The manga SFX for silence. */
 function NotFound({ onHome }) {
   return (
     <main className="nf viewcut" key="nf">
       <div className="shell nf-shell">
         <div className="nf-sfx" aria-hidden="true"><span lang="ja" translate="no">シーン</span><i className="sfx-ro">SHIIN</i></div>
-        <div className="nf-k">Erro 404 · página em branco</div>
-        <Brush as="h1" className="nf-t">Esse capítulo não existe.</Brush>
-        <p className="nf-p">Ou ainda não foi desenhado. O volume continua no sumário.</p>
-        <button className="btn btn-primary" onClick={onHome}>Voltar ao volume <span className="arr">→</span></button>
+        <div className="nf-k">{t("Erro 404 · página em branco", "Error 404 · blank page")}</div>
+        <Brush as="h1" className="nf-t">{t("Esse capítulo não existe.", "This chapter doesn't exist.")}</Brush>
+        <p className="nf-p">{t("Ou ainda não foi desenhado. O volume continua no sumário.", "Or it hasn't been drawn yet. The volume continues at the contents.")}</p>
+        <button className="btn btn-primary" onClick={onHome}>{t("Voltar ao volume", "Back to the volume")} <span className="arr">→</span></button>
       </div>
     </main>
   );
@@ -77,14 +137,14 @@ function applyTweaks(t) {
 function viewToHash(view) {
   if (view === "home") return "#/";
   if (view === "404") return "#/404";
-  if (view === "sobre" || view === "processo") return "#/" + view;
+  if (view === "sobre" || view === "processo" || view === "rapido") return "#/" + view;
   if (view.indexOf("empresa:") === 0) return "#/empresa/" + view.slice(8);
   return "#/cap/" + view;
 }
 function hashToView(hash) {
   const h = (hash || "").replace(/^#\/?/, "");
   if (!h) return "home";
-  if (h === "sobre" || h === "processo") return h;
+  if (h === "sobre" || h === "processo" || h === "rapido") return h;
   if (h.indexOf("empresa/") === 0) {
     const id = h.slice(8);
     return COMPANIES.some((c) => c.id === id) ? "empresa:" + id : "404";
@@ -108,11 +168,12 @@ function initialView() {
   return hashToView(window.location.hash);
 }
 function viewTitle(view) {
-  const BASE = "Volume · Portfólio de " + AUTOR;
+  const BASE = t("Volume · Portfólio de ", "Volume · Portfolio of ") + AUTOR;
   if (view === "home") return BASE;
-  if (view === "sobre") return "Posfácio · " + BASE;
-  if (view === "processo") return "Processo · " + BASE;
-  if (view === "404") return "Página em branco · " + BASE;
+  if (view === "sobre") return t("Posfácio · ", "Afterword · ") + BASE;
+  if (view === "processo") return t("Processo · ", "Process · ") + BASE;
+  if (view === "rapido") return t("Leitura rápida · ", "Quick read · ") + BASE;
+  if (view === "404") return t("Página em branco · ", "Blank page · ") + BASE;
   if (view.indexOf("empresa:") === 0) {
     const c = COMPANIES.find((x) => x.id === view.slice(8));
     return c ? c.name + " · " + BASE : BASE;
@@ -135,6 +196,66 @@ function App() {
     document.documentElement.classList.toggle("ink", ink);
     try { localStorage.setItem("vol-ink", ink ? "1" : "0"); } catch (e) {}
   }, [ink]);
+
+  // modo tinta com virada de tinta: o tema novo se espalha num círculo a
+  // partir do botão 墨 (View Transitions API; fallback = troca seca).
+  const onInkToggle = (e) => {
+    const next = !ink;
+    const apply = () => {
+      document.documentElement.classList.toggle("ink", next);
+      setInk(next);
+    };
+    if (REDUCED || !document.startViewTransition || !ReactDOM.flushSync) { apply(); return; }
+    let x = window.innerWidth - 60, y = 40;
+    if (e && e.currentTarget && e.currentTarget.getBoundingClientRect) {
+      const r = e.currentTarget.getBoundingClientRect();
+      x = r.left + r.width / 2; y = r.top + r.height / 2;
+    }
+    const vt = document.startViewTransition(() => { ReactDOM.flushSync(apply); });
+    vt.ready.then(() => {
+      const rad = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] },
+        { duration: 560, easing: "cubic-bezier(.2,.9,.1,1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    }).catch(() => {});
+  };
+
+  // marcador de página: salva a posição de leitura do capítulo atual
+  // (throttle 600ms, só depois de rolar de verdade)
+  useEffect(() => {
+    const chapNow = chapterFor(view);
+    if (!chapNow) return;
+    let t = null;
+    const save = () => {
+      const y = window.scrollY;
+      if (y < 500) return;
+      try { localStorage.setItem("vol-marker", JSON.stringify({ id: view, y, title: chapNow.title, ts: Date.now() })); } catch (e) {}
+    };
+    const on = () => { if (t) return; t = setTimeout(() => { t = null; save(); }, 600); };
+    window.addEventListener("scroll", on, { passive: true });
+    return () => { window.removeEventListener("scroll", on); if (t) clearTimeout(t); };
+  }, [view]);
+
+  // de volta à capa: oferece o marcador (se houver um válido)
+  const [marker, setMarker] = useState(null);
+  useEffect(() => {
+    if (view !== "home") { setMarker(null); return; }
+    try {
+      const m = JSON.parse(localStorage.getItem("vol-marker") || "null");
+      setMarker(m && m.id && m.y > 500 && chapterFor(m.id) ? m : null);
+    } catch (e) { setMarker(null); }
+  }, [view]);
+  const dismissMarker = () => {
+    try { localStorage.removeItem("vol-marker"); } catch (e) {}
+    setMarker(null);
+  };
+  const resumeMarker = () => {
+    if (!marker) return;
+    const y = marker.y;
+    openChapter(marker.id);
+    setTimeout(() => window.scrollTo(0, y), REDUCED ? 80 : 700);
+  };
 
   useEffect(() => { const id = setTimeout(() => setLit(true), 120); return () => clearTimeout(id); }, []);
   useEffect(() => { applyTweaks(t); }, [t]);
@@ -178,7 +299,7 @@ function App() {
     const boot = document.getElementById("boot");
     if (!boot) return;
     const fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-    const minBeat = new Promise((r) => setTimeout(r, 1000));
+    const minBeat = new Promise((r) => setTimeout(r, 600));
     let killed = false;
     Promise.all([fonts, minBeat]).then(() => {
       if (killed) return;
@@ -253,6 +374,8 @@ function App() {
                         onEmpresa={openEmpresa} onProject={openProject} onContact={goContact} onNav={handleNav} />;
   } else if (view === "processo") {
     body = <Processo onContact={goContact} onNav={handleNav} />;
+  } else if (view === "rapido") {
+    body = <Rapido onOpen={openChapter} onContact={goContact} onNav={handleNav} />;
   } else if (view === "404") {
     body = <NotFound onHome={() => goHome()} />;
   } else if (view === "sobre") {
@@ -260,13 +383,15 @@ function App() {
   } else {
     body = <Capa onOpen={openChapter} onContact={goContact} onSobre={() => goView("sobre")}
                  onEmpresa={openEmpresa} filter={filter} setFilter={setFilter}
-                 onRead={() => scrollTo("sumario", true)} lit={lit} onNav={handleNav} />;
+                 onRead={() => scrollTo("sumario", true)} lit={lit} onNav={handleNav}
+                 onRapido={() => goView("rapido")} />;
   }
 
   return (
     <>
       <CursorDot />
-      <Nav view={view} go={handleNav} onContact={goContact} ink={ink} onInk={() => setInk((v) => !v)} />
+      <Nav view={view} go={handleNav} onContact={goContact} ink={ink} onInk={onInkToggle} />
+      {view === "home" && marker ? <Bookmark marker={marker} onGo={resumeMarker} onDismiss={dismissMarker} /> : null}
       {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
       {view !== "home" && <ReadProgress view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
@@ -298,4 +423,25 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+/* the volume never dies blank: a render error shows a themed blank-page
+   state with a reload action instead of unmounting the whole root */
+class VolumeBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { err: false }; }
+  static getDerivedStateFromError() { return { err: true }; }
+  render() {
+    if (!this.state.err) return this.props.children;
+    return (
+      <main className="nf">
+        <div className="shell nf-shell">
+          <div className="nf-sfx" aria-hidden="true"><span lang="ja" translate="no">ドサッ</span><i className="sfx-ro">DOSA</i></div>
+          <div className="nf-k">{t("Erro · o volume caiu no chão", "Error · the volume hit the floor")}</div>
+          <h1 className="nf-t">{t("Algo rasgou esta página.", "Something tore this page.")}</h1>
+          <p className="nf-p">{t("Recarregue pra voltar ao volume.", "Reload to get back to the volume.")}</p>
+          <button className="btn btn-primary" onClick={() => window.location.reload()}>{t("Recarregar", "Reload")} <span className="arr">→</span></button>
+        </div>
+      </main>
+    );
+  }
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<VolumeBoundary><App /></VolumeBoundary>);

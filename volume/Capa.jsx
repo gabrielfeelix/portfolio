@@ -13,6 +13,10 @@ function Nav({ view, go, onContact, ink, onInk }) {
   useEffect(() => { const t = setTimeout(() => setStamped(true), 60); return () => clearTimeout(t); }, []);
   useEffect(() => {
     let last = window.scrollY;
+    // view change: the hide-on-scroll state from the previous page must not
+    // leak in (arriving on a chapter from a scrolled position kept the pill
+    // hidden until the user scrolled up)
+    setHidden(false);
     const onScroll = () => {
       const y = window.scrollY;
       setOverHero(view === "home" && y < window.innerHeight * 0.82);
@@ -47,25 +51,29 @@ function Nav({ view, go, onContact, ink, onInk }) {
           <span></span><span></span><span></span>
         </button>
         <div className={`v-navlinks ${menuOpen ? "open" : ""}`}>
-          <Link to="sumario" active={view === "home"}>Capítulos</Link>
-          <Link to="sobre" active={view === "sobre"}>Sobre</Link>
-          <Link to="processo" active={view === "processo"}>Processo</Link>
+          <Link to="sumario" active={view === "home"}>{t("Capítulos", "Chapters")}</Link>
+          <Link to="sobre" active={view === "sobre"}>{t("Sobre", "About")}</Link>
+          <Link to="processo" active={view === "processo"}>{t("Processo", "Process")}</Link>
           <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
              className="btn btn-secondary nav-contact nav-contact-m"
-             onClick={() => setMenuOpen(false)}>Fale comigo</a>
+             onClick={() => setMenuOpen(false)}>{t("Fale comigo", "Get in touch")}</a>
         </div>
+        <button type="button" className="lang-toggle" onClick={toggleLang}
+                aria-label={t("Read in English", "Ler em português")} title={t("English", "Português")}>
+          {t("EN", "PT")}
+        </button>
         <button type="button" className={`ink-toggle ${ink ? "on" : ""}`} onClick={onInk}
-                aria-pressed={!!ink} aria-label={ink ? "Voltar ao modo papel" : "Ler no modo tinta"}
-                title={ink ? "Modo papel" : "Modo tinta"}>
+                aria-pressed={!!ink} aria-label={ink ? t("Voltar ao modo papel", "Back to paper mode") : t("Ler no modo tinta", "Read in ink mode")}
+                title={ink ? t("Modo papel", "Paper mode") : t("Modo tinta", "Ink mode")}>
           <span lang="ja" translate="no" aria-hidden="true">墨</span>
         </button>
         <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
-           className="btn btn-secondary nav-contact nav-contact-d">Fale comigo</a>
+           className="btn btn-secondary nav-contact nav-contact-d">{t("Fale comigo", "Get in touch")}</a>
       </nav>
       <div className="v-rule"></div>
       <div className="v-volline">
         <span>{VOL}</span>
-        <span className="rtl">※ Leitura da direita para a esquerda</span>
+        <span className="rtl">{t("※ Leitura da direita para a esquerda", "※ Read right to left")}</span>
       </div>
     </header>
   );
@@ -112,7 +120,7 @@ function RotateWord({ items, interval = 2300, loops = 3 }) {
   );
 }
 
-function Splash({ onRead, onContact, lit }) {
+function Splash({ onRead, onContact, onRapido, lit }) {
   return (
     <section className={`splash ${lit ? "lit" : ""}`}>
       <span className="hero-speedlines" aria-hidden="true"></span>
@@ -120,20 +128,27 @@ function Splash({ onRead, onContact, lit }) {
       <HeroField />
       <span className="splash-kana" lang="ja" translate="no" aria-hidden="true">ガブリエル</span>
       <div className="shell splash-center">
-        <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / Product Designer <b>· Pleno</b></div>
+        <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / <b>Product Designer</b></div>
         <h1 className="splash-h">
           <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
-          <span className="sh-line">que leva <RotateWord items={["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"]} /></span>
+          <span className="sh-line">{t("que leva", "who takes")} <RotateWord items={t(
+            ["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"],
+            ["the idea live", "the prototype to product", "the screen to shipping", "design into code"])} /></span>
         </h1>
-        <p className="splash-sub">Desenho, construo e publico. <span className="red">Design e código</span> na mesma mão.</p>
+        <p className="splash-sub">{t("Desenho, construo e publico.", "I design, build and ship.")} <span className="red">{t("Design e código", "Design and code")}</span> {t("na mesma mão.", "in the same hand.")}</p>
         <div className="splash-cta">
-          <button className="btn btn-primary" onClick={onRead}>Começar a ler <span className="arr">→</span></button>
-          <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>Fale comigo</a>
+          <button className="btn btn-primary" onClick={onRead}>{t("Começar a ler", "Start reading")} <span className="arr">→</span></button>
+          <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Fale comigo", "Get in touch")}</a>
         </div>
+        {onRapido ? (
+          <a className="splash-rapido" href="#/rapido" onClick={(e) => { e.preventDefault(); onRapido(); }}>
+            {t("Sem tempo? O volume em 2 minutos", "In a hurry? The volume in 2 minutes")} <span className="arr" aria-hidden="true">→</span>
+          </a>
+        ) : null}
       </div>
-      <button className="splash-scroll" onClick={onRead} aria-label="Rolar para ler">
+      <button className="splash-scroll" onClick={onRead} aria-label={t("Rolar para ler", "Scroll to read")}>
         <span className="ss-mouse"><span className="ss-wheel"></span></span>
-        <span className="ss-label">Role para ler</span>
+        <span className="ss-label">{t("Role para ler", "Scroll to read")}</span>
       </button>
     </section>
   );
@@ -146,13 +161,15 @@ function Diferencial({ onPick, active }) {
   return (
     <section className="dif">
       <div className="shell">
-        <p className="dif-statement">
-          Desenho a experiência <b>e construo de verdade</b>: do protótipo navegável
-          ao produto no ar. <span className="red">Entrego o produto</span>, não só o Figma.
-        </p>
+        <div className="dif-left">
+          <p className="dif-statement">
+            {t("Desenho a experiência", "I design the experience")} <b>{t("e construo de verdade", "and actually build it")}</b>: {t("do protótipo navegável ao produto no ar.", "from navigable prototype to product, live.")} <span className="red">{t("Entrego o produto", "I ship the product")}</span>, {t("não só o Figma.", "not just the Figma.")}
+          </p>
+          <BrandStrip />
+        </div>
         <div className="dif-right">
-          <div className="dif-eyebrow">Minhas frentes</div>
-          <div className="dif-tags" role="group" aria-label="Filtrar o sumário por categoria">
+          <div className="dif-eyebrow">{t("Minhas frentes", "My fronts")}</div>
+          <div className="dif-tags" role="group" aria-label={t("Filtrar o sumário por categoria", "Filter the contents by category")}>
             {tags.map(([key, label]) => {
               const list = byCat(key);
               const a = list[0], b = list[1] || list[0];
@@ -176,10 +193,39 @@ function Diferencial({ onPick, active }) {
               );
             })}
           </div>
-          <p className="dif-hint"><span className="arr" aria-hidden="true">↓</span> Toque uma categoria para filtrar o sumário</p>
+          <p className="dif-hint"><span className="arr" aria-hidden="true">↓</span> {t("Toque uma categoria para filtrar o sumário", "Tap a category to filter the contents")}</p>
         </div>
       </div>
     </section>
+  );
+}
+
+/* a quiet strip of real client/brand marks under the statement — instant
+   credibility on the first paper fold. Marks are the brand PNGs already in
+   assets/marcas; each fails soft (hidden) if the file is missing. */
+function BrandMark({ id, name }) {
+  const [err, setErr] = useState(false);
+  const src = brandLogo(id);
+  if (!src || err) return null;
+  return (
+    <span className="bs-chip">
+      <img className="bs-logo" src={src} alt="" loading="lazy" draggable="false" onError={() => setErr(true)} />
+      <span className="bs-name">{name}</span>
+    </span>
+  );
+}
+function BrandStrip() {
+  const marks = [
+    ["pcyes", "PCYES"], ["odex", "Odex"], ["vinik", "Vinik"],
+    ["isabella", "Isabella Pires"], ["locarmais", "Locarmais"], ["tonante", "Tonante"],
+  ];
+  return (
+    <div className="brand-strip">
+      <div className="bs-k">{t("Meu design passou por", "My design has run through")}</div>
+      <div className="bs-row">
+        {marks.map(([id, name]) => <BrandMark key={id} id={id} name={name} />)}
+      </div>
+    </div>
   );
 }
 
@@ -195,8 +241,8 @@ function RailCover({ proj, off, dist, hidden, focused, hovered, unit, onClick, o
   const style = {
     width: unit, height: Math.round(unit * 1.36),
     transform: `translate(-50%, -50%) translateX(${off * spacing}px) translateZ(${-dist * depth}px) rotateY(${off * -angle}deg) scale(${scale})`,
-    opacity: hidden ? 0 : (focused ? 1 : Math.max(0.18, 1 - dist * 0.4)),
-    filter: focused ? "none" : `grayscale(${hovered ? 0.15 : 1}) blur(${hovered ? 0 : Math.min(5, dist * 3.5)}px)`,
+    opacity: hidden ? 0 : (focused || hovered ? 1 : Math.max(0.18, 1 - dist * 0.4)),
+    filter: focused ? "none" : `grayscale(${hovered ? 0 : 1}) blur(${hovered ? 0 : Math.min(5, dist * 3.5)}px)`,
     zIndex: focused ? 100 : (hovered ? 90 : 80 - dist),
     pointerEvents: hidden ? "none" : "auto",
   };
@@ -205,12 +251,12 @@ function RailCover({ proj, off, dist, hidden, focused, hovered, unit, onClick, o
             style={style} onClick={onClick}
             onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}
             tabIndex={focused ? 0 : -1} aria-hidden={focused ? undefined : true}
-            aria-label={focused ? `Abrir ${proj.title}` : `Focar ${proj.title}`}>
+            aria-label={focused ? t(`Abrir ${proj.title}`, `Open ${proj.title}`) : t(`Focar ${proj.title}`, `Focus ${proj.title}`)}>
       <span className="rc-head">
         <span className="rc-vol">{projTag(proj)}</span>
         <span className="rc-cat">{proj.domain}</span>
       </span>
-      <span className="rc-art">{proj.cover ? <img className="rc-cover" src={proj.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}{(focused || hovered) ? <span className="rc-sl"></span> : null}{proj.fav ? <span className="rc-fav">Favorito</span> : null}</span>
+      <span className="rc-art">{proj.cover ? <img className="rc-cover" src={proj.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}{(focused || hovered) ? <span className="rc-sl"></span> : null}{proj.fav ? <span className="rc-fav">{t("Favorito", "Favorite")}</span> : null}</span>
       <span className="rc-spine" aria-hidden="true"></span>
       <span className="rc-obi">
         <span className="rc-title">{proj.title}</span>
@@ -263,7 +309,7 @@ function FocusRail({ items, onOpen }) {
 
   return (
     <div className="rail" ref={wrapRef} tabIndex={0} onKeyDown={onKey}
-         onPointerDown={onDown} onPointerUp={onUp} role="group" aria-label="Navegador de projetos">
+         onPointerDown={onDown} onPointerUp={onUp} role="group" aria-label={t("Navegador de projetos", "Project navigator")}>
       <div className="rail-stage" style={{ height: Math.round(unit * 1.36) + 40 }}>
         {items.map((proj, idx) => {
           let off = idx - active;
@@ -282,20 +328,20 @@ function FocusRail({ items, onOpen }) {
 
       <div className="rail-foot">
         <div className="rail-info" key={activeItem.id} aria-live="polite">
-          <div className="ri-cat">{activeItem.fav ? <span className="ri-fav">◆ Favorito</span> : null}{projTag(activeItem)} · {activeItem.domain}</div>
+          <div className="ri-cat">{activeItem.fav ? <span className="ri-fav">◆ {t("Favorito", "Favorite")}</span> : null}{projTag(activeItem)} · {activeItem.domain}</div>
           <div className="ri-title">{activeItem.title}</div>
           {projDescriptor(activeItem)
             ? <div className="ri-desc">{projDescriptor(activeItem)}</div>
-            : <div className="ri-desc dim">Protótipo navegável + Figma · links a preencher</div>}
+            : <div className="ri-desc dim">{t("Protótipo navegável + Figma · links a preencher", "Navigable prototype + Figma · links to fill")}</div>}
         </div>
         <div className="rail-ctrls">
           <div className="rail-nav">
-            <button type="button" className="rail-arr" onClick={() => go(-1)} disabled={count < 2} aria-label="Anterior">←</button>
+            <button type="button" className="rail-arr" onClick={() => go(-1)} disabled={count < 2} aria-label={t("Anterior", "Previous")}>←</button>
             <span className="rail-idx">{String(active + 1).padStart(2, "0")} <i>/</i> {String(count).padStart(2, "0")}</span>
-            <button type="button" className="rail-arr" onClick={() => go(1)} disabled={count < 2} aria-label="Próximo">→</button>
+            <button type="button" className="rail-arr" onClick={() => go(1)} disabled={count < 2} aria-label={t("Próximo", "Next")}>→</button>
           </div>
           <button type="button" className="btn btn-primary rail-open" onClick={() => select(activeItem)}>
-            {isChapter ? "Ler capítulo" : "Ver projeto"} <span className="arr">→</span>
+            {isChapter ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr">→</span>
           </button>
         </div>
       </div>
@@ -333,7 +379,7 @@ function ProjectList({ items, onOpen }) {
               <span className="pc-meta">
                 <span className="pc-tag">{projTag(p)} · {p.domain}</span>
                 <span className="pc-title">{p.title}</span>
-                <span className="pc-go">{isChapter ? "Ler capítulo" : "Ver projeto"} <span className="arr" aria-hidden="true">→</span></span>
+                <span className="pc-go">{isChapter ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr" aria-hidden="true">→</span></span>
               </span>
             </button>
           </li>
@@ -345,9 +391,9 @@ function ProjectList({ items, onOpen }) {
 
 function FilterBar({ filter, setFilter }) {
   return (
-    <div className="vol-filter" role="tablist" aria-label="Categorias">
+    <div className="vol-filter" role="group" aria-label={t("Categorias", "Categories")}>
       {CATS.map((c) => (
-        <button type="button" key={c.key} role="tab" aria-selected={filter === c.key}
+        <button type="button" key={c.key} aria-pressed={filter === c.key}
                 className={`vf-tab ${filter === c.key ? "on" : ""}`}
                 onClick={() => setFilter(c.key)}>{c.label}</button>
       ))}
@@ -362,8 +408,8 @@ function Sumario({ onOpen, filter, setFilter }) {
   return (
     <section className="shell" style={{ paddingTop: "var(--ma-6)" }}>
       <div className="sec-head" id="sumario">
-        <Brush as="h2">Sumário</Brush>
-        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? "projeto" : "projetos"}{mobile ? "" : " · ※ arraste ou use ← →"}</span>
+        <Brush as="h2">{t("Sumário", "Contents")}</Brush>
+        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? t("projeto", "project") : t("projetos", "projects")}{mobile ? "" : t(" · ※ arraste ou use ← →", " · ※ drag or use ← →")}</span>
       </div>
       <FilterBar filter={filter} setFilter={setFilter} />
       {mobile
@@ -382,26 +428,26 @@ function QuemSou({ onSobre, onEmpresa }) {
     <section className="quemsou" style={{ marginTop: "var(--ma-6)" }}>
       <div className="shell qs-grid">
         <div className="qs-left">
-          <div className="qk">Quem sou</div>
-          <p className="qs-bio">UX/Product Designer pleno. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar.</p>
-          <a className="btn btn-ghost gl" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>Ver posfácio <span className="arr">→</span></a>
+          <div className="qk">{t("Quem sou", "Who I am")}</div>
+          <p className="qs-bio">{t("UX/Product Designer. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar.", "UX/Product Designer. I left law behind when I found out I could design and build real product. I've read manga since I was a kid, and I take every project from prototype to live.")}</p>
+          <a className="btn btn-ghost gl" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>{t("Ver posfácio", "Read the afterword")} <span className="arr">→</span></a>
         </div>
 
         <div className="qs-company">
           <div className="qsc-head">
-            <span className="qsc-k">{c.atual ? <span className="qsc-now">Empresa atual</span> : <span>Já passei por</span>}</span>
+            <span className="qsc-k">{c.atual ? <span className="qsc-now">{t("Empresa atual", "Current company")}</span> : <span>{t("Já passei por", "I've worked at")}</span>}</span>
             <div className="qsc-nav">
-              <button type="button" className="qsc-arr" aria-label="Empresa anterior" onClick={() => move(-1)}>←</button>
+              <button type="button" className="qsc-arr" aria-label={t("Empresa anterior", "Previous company")} onClick={() => move(-1)}>←</button>
               <span className="qsc-idx">{String(ci + 1).padStart(2, "0")} <i>/</i> {String(COMPANIES.length).padStart(2, "0")}</span>
-              <button type="button" className="qsc-arr" aria-label="Próxima empresa" onClick={() => move(1)}>→</button>
+              <button type="button" className="qsc-arr" aria-label={t("Próxima empresa", "Next company")} onClick={() => move(1)}>→</button>
             </div>
           </div>
-          <button type="button" className="qsc-card" onClick={() => onEmpresa(c.id)} aria-label={`Ver minha história na ${c.name}`}>
+          <button type="button" className="qsc-card" onClick={() => onEmpresa(c.id)} aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
             <span className="qsc-logo"><CompanyLogo company={c} kind="qsc" /></span>
             <span className="qsc-body">
               <span className="qsc-name">{c.name}</span>
               <span className="qsc-role">{c.role}</span>
-              <span className="qsc-go">Ver minha história <span className="arr" aria-hidden="true">→</span></span>
+              <span className="qsc-go">{t("Ver minha história", "See my story")} <span className="arr" aria-hidden="true">→</span></span>
             </span>
           </button>
         </div>
@@ -417,20 +463,20 @@ function Colofao({ onContact, onNav }) {
     <footer className="v-foot" id="fim">
       <div className="shell">
         {onNav && (
-          <nav className="foot-nav" aria-label="Navegação do rodapé">
-            <a href="#" onClick={(e) => navTo(e, "home")}>Início</a>
-            <a href="#" onClick={(e) => navTo(e, "sumario")}>Projetos</a>
-            <a href="#" onClick={(e) => navTo(e, "processo")}>Processo</a>
-            <a href="#" onClick={(e) => navTo(e, "sobre")}>Sobre</a>
+          <nav className="foot-nav" aria-label={t("Navegação do rodapé", "Footer navigation")}>
+            <a href="#" onClick={(e) => navTo(e, "home")}>{t("Início", "Home")}</a>
+            <a href="#" onClick={(e) => navTo(e, "sumario")}>{t("Projetos", "Projects")}</a>
+            <a href="#" onClick={(e) => navTo(e, "processo")}>{t("Processo", "Process")}</a>
+            <a href="#" onClick={(e) => navTo(e, "sobre")}>{t("Sobre", "About")}</a>
           </nav>
         )}
         <div className="foot-top">
-          <h2 className="foot-cta">Vamos abrir<br /><a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">o próximo capítulo</a>.</h2>
+          <h2 className="foot-cta">{t("Vamos abrir", "Let's open")}<br /><a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">{t("o próximo capítulo", "the next chapter")}</a>.</h2>
           <div className="foot-meta">
-            <div className="row"><span className="kicker" style={{ color: "var(--wash-2)" }}>Disponível para freela &amp; full-time</span></div>
+            <div className="row"><span className="kicker" style={{ color: "var(--wash-2)" }}>{t("Disponível para freela & full-time", "Available for freelance & full-time")}</span></div>
             <div className="row" style={{ marginTop: 4 }}>
               <a className="btn btn-primary" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
-                 style={{ padding: "11px 20px", fontSize: 14 }}>Fale comigo <span className="arr">→</span></a>
+                 style={{ padding: "11px 20px", fontSize: 14 }}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></a>
             </div>
             <div className="row" style={{ marginTop: 10, gap: 18, flexWrap: "wrap" }}>
               <a className="s" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">WhatsApp · {CONTATO.whatsapp.display}</a>
@@ -450,11 +496,11 @@ function Colofao({ onContact, onNav }) {
 }
 
 /* ---------- the assembled cover ---------- */
-function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter, onNav }) {
+function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter, onNav, onRapido }) {
   const pick = (cat) => { setFilter(cat); onRead(); };
   return (
     <main className="home-main" key="home">
-      <Splash onRead={onRead} onContact={onContact} lit={lit} />
+      <Splash onRead={onRead} onContact={onContact} onRapido={onRapido} lit={lit} />
       <div className="post-hero">
         <Diferencial onPick={pick} active={filter === "todos" ? null : filter} />
         <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />

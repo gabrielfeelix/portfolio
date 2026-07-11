@@ -39,23 +39,23 @@ function Processo({ onContact, onNav }) {
   return (
     <main className="processo viewcut" key="processo">
       <section className="shell proc-intro">
-        <div className="splash-kicker">O método</div>
-        <Brush as="h1" className="proc-h1">Do objetivo ao protótipo,<br />em dias.</Brush>
+        <div className="splash-kicker">{t("O método", "The method")}</div>
+        <Brush as="h1" className="proc-h1">{t("Do objetivo ao protótipo,", "From goal to prototype,")}<br />{t("em dias.", "in days.")}</Brush>
         <p className="splash-lead" style={{ maxWidth: "46ch", margin: "var(--ma-3) 0 var(--ma-4)" }}>
-          Honesto e veloz. Sem teatro de discovery. Valido com critério real e construo de verdade.
+          {t("Honesto e veloz. Sem teatro de discovery. Valido com critério real e construo de verdade.", "Honest and fast. No discovery theater. I validate with real criteria and actually build.")}
         </p>
-        <div className="proc-scrollhint"><span className="dn">↓</span> Role para seguir o método</div>
+        <div className="proc-scrollhint"><span className="dn">↓</span> {t("Role para seguir o método", "Scroll to follow the method")}</div>
       </section>
 
-      <div className="proc-scroll" ref={wrapRef} style={{ height: `${n * 82}vh` }}>
+      <div className="proc-scroll" ref={wrapRef} style={{ height: `${n * 58}vh` }}>
         <div className="proc-sticky">
           <div className="shell proc-grid">
             <div className="proc-left">
-              <div className="proc-step-k">Passo <b>{cur.n}</b> <i>/</i> {String(n).padStart(2, "0")}</div>
-              <div className="proc-bars" role="group" aria-label="Passos do método">
+              <div className="proc-step-k">{t("Passo", "Step")} <b>{cur.n}</b> <i>/</i> {String(n).padStart(2, "0")}</div>
+              <div className="proc-bars" role="group" aria-label={t("Passos do método", "Method steps")}>
                 {steps.map((s, i) => (
                   <button type="button" key={s.n} className={`proc-bar ${i === active ? "on" : ""} ${i < active ? "done" : ""}`}
-                          aria-label={`Passo ${s.n}: ${s.t}`} aria-current={i === active ? "step" : undefined}
+                          aria-label={t(`Passo ${s.n}: ${s.t}`, `Step ${s.n}: ${s.t}`)} aria-current={i === active ? "step" : undefined}
                           onClick={() => goTo(i)}></button>
                 ))}
               </div>
@@ -68,7 +68,7 @@ function Processo({ onContact, onNav }) {
                 ))}
               </div>
               <div className="proc-cta-row">
-                <button className="btn btn-primary" onClick={onContact}>Comece um capítulo comigo <span className="arr">→</span></button>
+                <button className="btn btn-primary" onClick={onContact}>{t("Comece um capítulo comigo", "Start a chapter with me")} <span className="arr">→</span></button>
               </div>
             </div>
 
@@ -87,8 +87,24 @@ function Processo({ onContact, onNav }) {
         </div>
       </div>
 
+      <section className="shell proc-recap">
+        <div className="sec-head" style={{ margin: "var(--ma-5) 0 var(--ma-3)" }}>
+          <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("De relance", "At a glance")}</Brush>
+          <span className="kicker">{t("o método inteiro numa página", "the whole method on one page")}</span>
+        </div>
+        <ol className="recap-grid">
+          {steps.map((s) => (
+            <li className="recap" key={s.n}>
+              <span className="rec-n">{s.n}</span>
+              <span className="rec-t">{s.t}</span>
+              <span className="rec-p">{s.p}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="shell proc-close">
-        <Brush as="h2" className="proc-msg">Protótipo vira produto. <span className="red">Eu construo.</span></Brush>
+        <Brush as="h2" className="proc-msg">{t("Protótipo vira produto.", "Prototype becomes product.")} <span className="red">{t("Eu construo.", "I build it.")}</span></Brush>
       </section>
 
       <Colofao onContact={onContact} onNav={onNav} />
