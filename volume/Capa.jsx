@@ -389,6 +389,34 @@ function ProjectList({ items, onOpen }) {
   );
 }
 
+/* ---------- 目次 · the volume index ----------
+   A real manga index page under the coverflow: dotted leaders and page
+   numbers. The recruiter scans all 19 projects in five seconds; the rail
+   stays the moment, the mokuji is the map. Desktop only (mobile already
+   reads as a list). */
+function Mokuji({ items, onOpen }) {
+  return (
+    <nav className="mokuji" aria-label={t("Índice do volume", "Volume index")}>
+      <div className="mo-head">
+        <span className="mo-kanji" lang="ja" translate="no" aria-hidden="true">目次</span>
+        <span className="kicker">{t("Índice do volume", "Volume index")}</span>
+      </div>
+      <ol className="mo-list">
+        {items.map((p, i) => (
+          <li className="mo-item" key={p.id}>
+            <button type="button" className="mo-row" onClick={() => onOpen(p.id)}>
+              <span className="mo-cap">{projTag(p)}</span>
+              <span className="mo-title">{p.title}</span>
+              <span className="mo-dots" aria-hidden="true"></span>
+              <span className="mo-page">p. {String(8 + i * 14).padStart(3, "0")}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 function FilterBar({ filter, setFilter }) {
   return (
     <div className="vol-filter" role="group" aria-label={t("Categorias", "Categories")}>
@@ -414,7 +442,12 @@ function Sumario({ onOpen, filter, setFilter }) {
       <FilterBar filter={filter} setFilter={setFilter} />
       {mobile
         ? <ProjectList items={items} onOpen={onOpen} />
-        : <FocusRail key={filter} items={items} onOpen={onOpen} />}
+        : (
+          <>
+            <FocusRail key={filter} items={items} onOpen={onOpen} />
+            <Mokuji items={items} onOpen={onOpen} />
+          </>
+        )}
     </section>
   );
 }

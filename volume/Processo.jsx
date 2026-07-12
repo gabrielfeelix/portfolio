@@ -4,8 +4,16 @@
    cuts in (text + manga panel), pagination bars track progress, a beat of
    vermilion for energy. Honest and fast: preempts "qual seu processo?".
    ===================================================================== */
-/* one organic ink loader per method step — motion that reads as "working" */
-const PROC_ORG = ["split", "bounce", "trail", "merge", "jelly", "drip"];
+/* each step carries its own kanji (the method, written): giant vertical
+   outline in the panel, romaji below — the SFX language applied to work */
+const PROC_JA = [
+  ["目標", "MOKUHYŌ"],   // objective
+  ["参照", "SANSHŌ"],    // reference
+  ["試作", "SHISAKU"],   // prototype
+  ["提示", "TEIJI"],     // present
+  ["調整", "CHŌSEI"],    // adjust
+  ["構築", "KŌCHIKU"],   // build
+];
 
 function Processo({ onContact, onNav }) {
   const steps = PROCESSO;                 // 6 steps, read top→bottom
@@ -75,10 +83,11 @@ function Processo({ onContact, onNav }) {
             <div className="proc-right">
               <div className="proc-visual" key={active}>
                 <span className="pv-frame">
-                  <MangaPlate />
+                  <span className="pv-tone" aria-hidden="true"></span>
+                  <span className="pv-step" aria-hidden="true">{cur.n}</span>
+                  <span className="pv-kanji" lang="ja" translate="no" aria-hidden="true">{PROC_JA[active][0]}</span>
+                  <span className="pv-ro" aria-hidden="true">{PROC_JA[active][1]}</span>
                   <span className="pv-sl"></span>
-                  <span className="pv-num" aria-hidden="true">{cur.n}</span>
-                  <Organic variant={PROC_ORG[active % PROC_ORG.length]} size={92} className="proc-org" />
                 </span>
                 <span className="pv-cap">{cur.t}</span>
               </div>

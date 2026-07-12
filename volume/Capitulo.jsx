@@ -68,19 +68,23 @@ function renderPH(str) {
   );
 }
 
-/* ---- [2] PROBLEMA ---- */
+/* ---- [2] PROBLEMA ----
+   The arc-opening panel: the problem title shouted in display type inside
+   a thick manga frame, the seal kanji 問 (question) ghosted vertically
+   behind. The title lives IN the panel; the text column carries the story. */
 function Problema({ chap }) {
   return (
     <Beat>
       <div className="c7">
-        <div className="panel art">
-          <MangaPlate />
+        <div className="panel art prob">
+          <span className="prob-tone" aria-hidden="true"></span>
+          <span className="prob-kanji" lang="ja" translate="no" aria-hidden="true">問題</span>
+          <Brush as="h2" className="prob-t">{renderPH(chap.problema.t)}</Brush>
         </div>
       </div>
       <div className="c5 text-col">
         <div className="panel text">
           <div className="beat-k">{t("Problema", "Problem")}</div>
-          <Brush as="h2" className="beat-t">{renderPH(chap.problema.t)}</Brush>
           {chap.problema.p.map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
         </div>
       </div>

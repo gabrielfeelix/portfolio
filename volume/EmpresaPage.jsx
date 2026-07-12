@@ -54,6 +54,9 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
       <section className="emp-cover">
         <div className="cover-tone"></div>
         <span className="emp-cover-sl" aria-hidden="true"></span>
+        {company.logo
+          ? <img className="emp-wm" src={company.logo} alt="" aria-hidden="true" draggable="false" />
+          : <span className="emp-wm-txt" aria-hidden="true">{company.name}</span>}
         <div className="shell emp-cover-shell">
           <div className="emp-cover-copy">
             <div className="emp-k">

@@ -1328,3 +1328,88 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
 /* nav escondida (hide-on-scroll / sobre a capa) sai da ordem de Tab:
    foco nunca pousa em controle invisível */
 .hd-hidden .v-nav { visibility: hidden; transition-property: transform, box-shadow, visibility; }
+
+/* =====================================================================
+   v4 — O VOLUME COMPLETO · kanji do método · 目次 · número de página ·
+   painel do problema · lift das decisões · marca d'água da empresa
+   ===================================================================== */
+
+/* ---- PROCESSO: o método escrito em kanji vertical ---- */
+.pv-frame { background: var(--paper); }
+.pv-tone { position: absolute; right: 0; top: 0; width: 46%; height: 40%; pointer-events: none; opacity: .16;
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 7px 7px;
+  -webkit-mask-image: linear-gradient(215deg, #000, transparent 62%);
+          mask-image: linear-gradient(215deg, #000, transparent 62%); }
+.pv-step { position: absolute; left: 14px; top: 12px; font-family: var(--font-editorial);
+  font-weight: 700; font-size: 15px; letter-spacing: .1em; color: var(--vermilion-ink); }
+.pv-kanji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  writing-mode: vertical-rl; font-family: 'Reggae One', var(--font-sfx), sans-serif;
+  font-size: clamp(5.5rem, 19vh, 9rem); line-height: 1; letter-spacing: .08em;
+  color: transparent; -webkit-text-stroke: 3px var(--ink);
+  animation: pvk-in 260ms cubic-bezier(.2,.9,.1,1) both; }
+@keyframes pvk-in { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: none; } }
+.pv-ro { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .4em; text-indent: .4em; font-size: 12px; color: var(--vermilion-ink); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .pv-kanji { animation: none; } }
+
+/* ---- 目次 · índice do volume (desktop, sob o coverflow) ---- */
+.mokuji { margin-top: var(--ma-5); border-top: var(--ink-stroke) solid var(--ink); padding-top: var(--ma-4); }
+.mo-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: var(--ma-3); }
+.mo-kanji { font-family: 'Reggae One', var(--font-sfx), sans-serif; font-size: 1.7rem; line-height: 1; color: var(--ink); }
+.mo-list { list-style: none; margin: 0; padding: 0;
+  columns: 2; column-gap: calc(var(--gutter) * 1.6); }
+.mo-item { break-inside: avoid; }
+.mo-row { -webkit-appearance: none; appearance: none; background: transparent; border: 0; cursor: pointer;
+  width: 100%; display: flex; align-items: baseline; gap: 12px; padding: 9px 2px; text-align: left; }
+.mo-cap { flex: 0 0 auto; font-family: var(--font-editorial); font-weight: 700; font-size: 11px;
+  letter-spacing: .06em; color: var(--wash-3); min-width: 58px; }
+.mo-title { flex: 0 0 auto; font-family: var(--font-display); text-transform: uppercase;
+  font-size: 1.15rem; line-height: 1; color: var(--ink); transition: color var(--cut); }
+.mo-dots { flex: 1 1 auto; border-bottom: 2px dotted var(--wash-2); transform: translateY(-4px);
+  transition: border-color var(--cut); min-width: 24px; }
+.mo-page { flex: 0 0 auto; font-family: var(--font-editorial); font-weight: 700; font-size: 12px;
+  letter-spacing: .08em; color: var(--wash-3); transition: color var(--cut); }
+.mo-row:hover .mo-title { color: var(--vermilion); }
+.mo-row:hover .mo-dots { border-color: var(--vermilion); }
+.mo-row:hover .mo-page { color: var(--vermilion-ink); }
+.mo-row:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 1024px) { .mo-list { columns: 1; } }
+
+/* ---- NÚMERO DE PÁGINA na margem (views de leitura) ---- */
+/* wash-3 sobre papel = AA; em página escura o número mergulha na tinta,
+   como a numeração some nas páginas full-bleed de um volume real */
+.page-num { position: fixed; right: 14px; bottom: 12px; z-index: 90; pointer-events: none;
+  font-family: var(--font-editorial); font-weight: 700; font-size: 11px; letter-spacing: .18em;
+  color: var(--wash-3); }
+@media (max-width: 640px) { .page-num { right: 10px; bottom: 8px; font-size: 10px; } }
+
+/* ---- PROBLEMA: painel de abertura de arco (tipográfico) ---- */
+.beat .panel.art.prob { background: var(--paper); border: var(--ink-stroke-hi) solid var(--ink);
+  display: flex; align-items: flex-end; padding: var(--ma-4); }
+.prob-tone { position: absolute; right: 0; top: 0; width: 52%; height: 46%; pointer-events: none; opacity: .18;
+  background-image: radial-gradient(var(--ink) 1.15px, transparent 1.25px); background-size: 7px 7px;
+  -webkit-mask-image: linear-gradient(215deg, #000, transparent 60%);
+          mask-image: linear-gradient(215deg, #000, transparent 60%); }
+.prob-kanji { position: absolute; right: 6%; top: 8%; writing-mode: vertical-rl;
+  font-family: 'Reggae One', var(--font-sfx), sans-serif;
+  font-size: clamp(4rem, 9vw, 7.5rem); line-height: 1; letter-spacing: .06em;
+  color: transparent; -webkit-text-stroke: 2px var(--wash-1); pointer-events: none; user-select: none; }
+.prob-t { position: relative; z-index: 2; font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.9rem, 3.8vw, 3.2rem); line-height: .96; margin: 0; max-width: 14ch; color: var(--ink); }
+@media (max-width: 880px) { .beat .panel.art.prob { aspect-ratio: auto; min-height: 260px; } }
+
+/* ---- DECISÕES: os cards acordam no hover como o resto do mundo ---- */
+.dec { transition: opacity var(--cut), transform var(--cut), box-shadow var(--cut); }
+.beat.in .dec:hover { transform: translateY(-4px); box-shadow: 7px 7px 0 var(--ink); }
+
+/* ---- EMPRESA: logo como marca d'água halftone na capa escura ---- */
+.emp-wm { position: absolute; right: -4%; bottom: -14%; width: 52%; max-width: 640px; z-index: 1;
+  opacity: .08; filter: grayscale(1) brightness(2.6); pointer-events: none; user-select: none;
+  -webkit-mask-image: radial-gradient(#000 1.3px, transparent 1.5px);
+          mask-image: radial-gradient(#000 1.3px, transparent 1.5px);
+  -webkit-mask-size: 7px 7px; mask-size: 7px 7px; }
+.emp-wm-txt { position: absolute; right: -2%; bottom: 2%; z-index: 1; pointer-events: none; user-select: none;
+  font-family: var(--font-display); text-transform: uppercase; line-height: .8;
+  font-size: clamp(6rem, 16vw, 13rem); color: transparent;
+  -webkit-text-stroke: 2px color-mix(in srgb, var(--paper) 10%, transparent); }

@@ -66,6 +66,15 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
   - **ErrorBoundary** temático (`VolumeBoundary`): erro de render mostra página rasgada + recarregar, nunca root em branco.
   - **A11y re-auditada** (axe 3 viewports × 8 views): corrigidos `.beat-k`/`.sfx-ro` (vermilion→vermilion-ink no papel), `.emp-now` (bg vermilion-ink), 404 SFX (wash-3), impact panel literal; nav escondida ganhou `visibility:hidden` (fora do Tab). **Único restante = capas laterais do coverflow (exceção aceita, não mexer).** Boot 600ms; useReveal com guard de IO.
 
+- **Rodada 7 (2026-07-12, UI "uau" aprovada pelo Gabriel; hero NÃO mexer, ele recusou o obi):**
+  - **Processo**: painel por passo virou kanji vertical gigante em outline (目標/参照/試作/提示/調整/構築 + romaji, `PROC_JA` em Processo.jsx). Organic/plate/número grande removidos.
+  - **Sumário**: índice **目次** sob o coverflow (desktop; mobile segue com a lista) — pontilhado + nº de página fake (p. 008 + i×14), 2 colunas via `columns` (fluxo coluna), respeita o filtro. `Mokuji` em Capa.jsx.
+  - **Número de página** `p. 034` fixo no canto inferior direito das views de leitura (`PageNum` em app.jsx, ~0.85 viewport por "página"). Cor wash-3: some em seção escura de propósito (comportamento de mangá real; NÃO usar blend-difference, axe flaga).
+  - **Problema**: placa cinza morreu — painel tipográfico com o título do case em Anton dentro de moldura `--ink-stroke-hi`, 問題 vertical fantasma e screentone no canto. O h2 MUDOU pro painel; a coluna de texto ficou com kicker+parágrafos (Capitulo.jsx `Problema`).
+  - **Decisões**: cards com lift no hover (translateY -4px + sombra 7px).
+  - **Empresa**: logo como marca d'água halftone na capa escura (mask radial-gradient 7px; fallback = nome em outline p/ empresa sem logo).
+  - axe revalidado nas views alteradas: limpo (exceção do coverflow segue).
+
 ## PENDENTE (continuar aqui)
 1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
 2. ✅ FEITO — Passe teclado/leitor (focus mgmt + Tab order nas 5 views + landmarks).

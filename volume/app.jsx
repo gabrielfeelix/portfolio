@@ -45,6 +45,25 @@ function ReadProgress({ view }) {
   return <div className="read-progress" aria-hidden="true"><span ref={ref}></span></div>;
 }
 
+/* the page number in the margin: increments as you leaf through the view.
+   Decorative (aria-hidden); blend-difference keeps it legible over paper,
+   ink covers and the dark footer alike. */
+function PageNum({ view }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const on = () => {
+      const page = 1 + Math.floor(window.scrollY / (window.innerHeight * 0.85));
+      el.textContent = "p. " + String(page).padStart(3, "0");
+    };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
+  }, [view]);
+  return <div className="page-num" aria-hidden="true"><span ref={ref}>p. 001</span></div>;
+}
+
 /* ---- marcador de página (栞): resume where the reader stopped -------
    While a chapter is being read, the position is saved (throttled). Back
    on the cover, a hanging ribbon offers "continuar de onde parou". */
@@ -394,6 +413,7 @@ function App() {
       {view === "home" && marker ? <Bookmark marker={marker} onGo={resumeMarker} onDismiss={dismissMarker} /> : null}
       {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
       {view !== "home" && <ReadProgress view={view} />}
+      {view !== "home" && <PageNum view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       <div id="conteudo" tabIndex={-1}>{body}</div>
 
