@@ -5,6 +5,32 @@
    that ran through it. Inverted cover + manga panels. Chronological nav:
    older company on the left, newer on the right (no wraparound).
    ===================================================================== */
+/* ---- O que desenvolvi aqui ----------------------------------------
+   As habilidades saem da empresa, não de uma lista genérica: cada uma vem
+   com onde foi exercida. Painel de mangá numerado, mesma moldura de tinta
+   do resto do volume, com a retícula na quina. */
+function EmpresaSkills({ company }) {
+  if (!company.skills || !company.skills.length) return null;
+  return (
+    <div className="emp-skills">
+      <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("O que desenvolvi aqui", "What I built up here")}</Brush>
+        <span className="kicker">{String(company.skills.length).padStart(2, "0")} {t("frentes", "areas")}</span>
+      </div>
+      <ul className="esk-grid">
+        {company.skills.map((sk, i) => (
+          <li className="esk" key={i} style={{ animationDelay: (i * 70) + "ms" }}>
+            <span className="esk-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <span className="esk-tone" aria-hidden="true"></span>
+            <span className="esk-k">{sk.k}</span>
+            <span className="esk-p">{renderPH(sk.p)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function EmpresaQuick({ company, onProject }) {
   if (!company.related || !company.related.length) return null;
   return (
@@ -18,18 +44,26 @@ function EmpresaQuick({ company, onProject }) {
           const p = projById(id);
           if (!p) return null;
           const logo = brandLogo(id);
-          return (
-            <button type="button" className="eq-card" key={id} onClick={() => onProject(p)}>
+          const live = p.links && p.links.vercel;
+          const opensCase = isCase(p);
+          const inner = (
+            <>
               <span className="eq-art">
-                {logo ? <img className="eq-logo" src={logo} alt={`Logo ${p.title}`} loading="lazy" draggable="false" /> : <MangaPlate />}
+                {logo ? <img className="eq-logo" src={logo} alt={`Logo ${p.title}`} loading="lazy" draggable="false" /> : <MangaPlate label={false} />}
               </span>
               <span className="eq-meta">
                 <span className="eq-cat">{p.domain}</span>
                 <span className="eq-title">{p.title}</span>
-                <span className="eq-go">{p.chapterId ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr" aria-hidden="true">→</span></span>
+                <span className="eq-go">
+                  {opensCase ? t("Ler capítulo", "Read chapter") : live ? t("Ver no ar", "See it live") : t("No volume", "In the volume")}
+                  <span className="arr" aria-hidden="true">{opensCase || live ? "→" : ""}</span>
+                </span>
               </span>
-            </button>
+            </>
           );
+          if (opensCase) return <button type="button" className="eq-card" key={id} onClick={() => onProject(p)}>{inner}</button>;
+          if (live) return <a className="eq-card" key={id} href={live} target="_blank" rel="noreferrer">{inner}</a>;
+          return <span className="eq-card is-flat" key={id}>{inner}</span>;
         })}
       </div>
     </div>
@@ -54,8 +88,8 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
       <section className="emp-cover">
         <div className="cover-tone"></div>
         <span className="emp-cover-sl" aria-hidden="true"></span>
-        {company.logo
-          ? <img className="emp-wm" src={company.logo} alt="" aria-hidden="true" draggable="false" />
+        {company.logoInv || company.logo
+          ? <img className="emp-wm" src={company.logoInv || company.logo} alt="" aria-hidden="true" draggable="false" />
           : <span className="emp-wm-txt" aria-hidden="true">{company.name}</span>}
         <div className="shell emp-cover-shell">
           <div className="emp-cover-copy">
@@ -67,7 +101,7 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
             <p className="emp-blurb">{company.blurb}</p>
           </div>
           <div className="emp-logo" aria-label={`Logo ${company.name}`}>
-            <CompanyLogo company={company} kind="emp" />
+            <CompanyLogo company={company} kind="emp" dark />
           </div>
         </div>
         <div className="shell emp-meta">
@@ -90,6 +124,8 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
           ))}
         </div>
 
+        <EmpresaSkills company={company} />
+
         <EmpresaQuick company={company} onProject={onProject} />
 
         <div className="emp-switch">
@@ -111,4 +147,4 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
     </main>
   );
 }
-Object.assign(window, { EmpresaQuick, EmpresaPage });
+Object.assign(window, { EmpresaQuick, EmpresaSkills, EmpresaPage });
