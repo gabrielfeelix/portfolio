@@ -1631,8 +1631,19 @@ html.ink .mk-word { color: var(--wash-4); }
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom;
   filter: grayscale(1) contrast(1.06); transition: filter 420ms var(--cut);
 }
+/* O .ap-wash é uma chapa de vermilion em multiply sobre a foto inteira:
+   servia pro estado sem foto, mas com foto pintava tudo de vermelho no
+   hover. Some quando existe foto de verdade. */
+.about-photo.has-photo .ap-wash { display: none; }
+
+/* Hover: a cor volta, mas sem chapa por cima. A camiseta já é #C81414 no
+   arquivo e a roupa é neutra (saturação 0), então saturate() só morde o
+   vermelho e deixa o preto quieto; quem escurece a roupa é o par
+   brightness/contrast. Resultado: camiseta vermelha, roupa mais densa. */
 .about-photo.has-photo:hover .ap-img,
-.about-photo.has-photo:focus-visible .ap-img { filter: none; }
+.about-photo.has-photo:focus-visible .ap-img {
+  filter: saturate(1.22) contrast(1.1) brightness(.94);
+}
 html.ink .about-photo.has-photo { background: var(--wash-1); }
 
 /* ---- responsivo ---------------------------------------------------- */
