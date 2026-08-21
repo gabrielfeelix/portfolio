@@ -75,9 +75,6 @@ function Processo({ onContact, onNav }) {
                   </div>
                 ))}
               </div>
-              <div className="proc-cta-row">
-                <button className="btn btn-primary" onClick={onContact}>{t("Comece um capítulo comigo", "Start a chapter with me")} <span className="arr">→</span></button>
-              </div>
             </div>
 
             <div className="proc-right">
@@ -114,6 +111,11 @@ function Processo({ onContact, onNav }) {
 
       <section className="shell proc-close">
         <Brush as="h2" className="proc-msg">{t("Protótipo vira produto.", "Prototype becomes product.")} <span className="red">{t("Eu construo.", "I build it.")}</span></Brush>
+        {/* uma chamada só, no fim. Antes ela vivia dentro do painel sticky,
+            então reaparecia colada nos 6 passos. */}
+        <div className="proc-cta-row">
+          <button className="btn btn-primary" onClick={onContact}>{t("Comece um capítulo comigo", "Start a chapter with me")} <span className="arr">→</span></button>
+        </div>
       </section>
 
       <Colofao onContact={onContact} onNav={onNav} />

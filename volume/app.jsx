@@ -10,7 +10,6 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "screentone": 16,
   "entryTransition": "virada",
   "rtlGesture": true,
-  "perfume": "Sem desculpa",
   "cursos": false
 }/*EDITMODE-END*/;
 
@@ -84,13 +83,15 @@ function Bookmark({ marker, onGo, onDismiss }) {
    The fast path the recruiter was promised: every numbered chapter's
    TL;DR stacked on one page, live links included, contact at the end. */
 function Rapido({ onOpen, onContact, onNav }) {
-  const caps = CHAPTERS.filter((c) => c.num);
+  // a espinha de leitura, na ordem — não a ordem de escrita do CHAPTERS
+  const caps = CASE_IDS.map((id) => chapterFor(id)).filter(Boolean);
+  const nCaps = caps.length;
   return (
     <main className="rapido viewcut" key="rapido">
       <div className="shell">
         <div className="pos-k">{t("Leitura rápida", "Quick read")}</div>
         <Brush as="h1" className="rap-title">{t("O volume em 2 minutos", "The volume in 2 minutes")}</Brush>
-        <p className="rap-lead">{t("Os 5 capítulos, só o essencial: papel, o quê e resultado. O case completo está a um clique.", "The 5 chapters, essentials only: role, what and result. The full case is one click away.")}</p>
+        <p className="rap-lead">{t(`Os ${nCaps} capítulos, só o essencial: papel e resultado. O case completo está a um clique.`, `All ${nCaps} chapters, essentials only: role and result. The full case is one click away.`)}</p>
 
         <ol className="rap-list">
           {caps.map((c) => (
@@ -350,6 +351,7 @@ function App() {
 
   const openChapter = (id) => {
     const chap = chapterFor(id);
+    if (!chap) return;          // peça não abre case: a navegação simplesmente não acontece
     const mode = REDUCED ? "off" : t.entryTransition;
     if (mode === "off") { setView(id); top(); return; }
     if (mode === "corte") { setView(id); top(); return; }
@@ -367,10 +369,11 @@ function App() {
   const openEmpresa = (id) => { setView("empresa:" + id); top(); };
   const openProject = (p) => { if (p) openChapter(p.id); };
   const [stamp, setStamp] = useState(0);           // hanko press no CTA de contato
+  // todo "Fale comigo" / "Comece um capítulo comigo" abre o WhatsApp com a
+  // mensagem pronta. Antes rolava até o rodapé, que só adiava o contato.
   const goContact = () => {
     if (!REDUCED) { setStamp(Date.now()); setTimeout(() => setStamp(0), 900); }
-    if (view !== "home") { setView("home"); top(); setTimeout(() => scrollTo("fim", false), 90); }
-    else scrollTo("fim", true);
+    window.open(CONTATO.whatsapp.href, "_blank", "noopener,noreferrer");
   };
 
   const handleNav = (to) => {
@@ -433,9 +436,6 @@ function App() {
                     options={["virada", "corte", "off"]}
                     onChange={(v) => setTweak("entryTransition", v)} />
         <TweakSection label="Posfácio" />
-        <TweakRadio label="Perfume (tom)" value={t.perfume}
-                    options={["Sem desculpa", "Fraco confesso"]}
-                    onChange={(v) => setTweak("perfume", v)} />
         <TweakToggle label="Nomear cursos" value={t.cursos}
                      onChange={(v) => setTweak("cursos", v)} />
       </TweaksPanel>
