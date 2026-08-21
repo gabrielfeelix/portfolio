@@ -168,7 +168,7 @@ button { color: inherit; }
 .v-foot { margin-top: var(--ma-7); border-top: var(--ink-stroke) solid var(--ink); background: var(--ink); color: var(--paper); }
 .v-foot .shell { padding-top: var(--ma-5); padding-bottom: var(--ma-4); }
 .foot-top { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--gutter); align-items: start; }
-.foot-cta { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(2.5rem,6vw,5rem); line-height: .9; margin: 0; }
+.foot-cta { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(2.5rem,6vw,5rem); line-height: 1.1; margin: 0; }
 .foot-cta a { color: var(--paper); border-bottom: 4px solid var(--vermilion); transition: color var(--cut); }
 .foot-cta a:hover { color: var(--vermilion); }
 .foot-meta { display: flex; flex-direction: column; gap: 12px; font-family: var(--font-condensed); }

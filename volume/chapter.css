@@ -62,7 +62,7 @@
 .beat .panel.art image-slot { width: 100%; height: 100%; }
 .beat .panel-tone { position: absolute; inset: 0; background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 7px 7px; opacity: .14; pointer-events: none; }
 .beat-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
-.beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: .92; margin: 10px 0 var(--ma-3); }
+.beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.06; margin: 10px 0 var(--ma-3); }
 .beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 46ch; color: var(--fg); }
 .beat-p + .beat-p { margin-top: var(--ma-3); }
 
