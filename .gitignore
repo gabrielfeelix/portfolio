@@ -4,3 +4,10 @@ dist/
 .DS_Store
 *.log
 .thumbnail
+.vercel
+
+# material pessoal e sensível: não vai pro repo nem pro deploy
+dossie-profissional-gabriel.md
+*Curriculo*.pdf
+*.Zone.Identifier
+*Zone.Identifier
