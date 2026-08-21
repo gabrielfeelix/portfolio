@@ -95,26 +95,34 @@ function HeroField() {
    WCAG 2.2.2: auto-cycling stops after 3 full loops, settling on the first
    (strongest) phrase; reduced-motion never cycles at all. */
 function RotateWord({ items, interval = 2300, loops = 3 }) {
-  const [i, setI] = useState(0);
+  // `from` is the outgoing phrase. It stays painted (absolutely, so it never
+  // widens the box) while the incoming one springs up: the red box is never
+  // empty mid-swap. `from === null` is the first paint — no animation at
+  // all, so the very first frame already carries text.
+  const [{ i, from }, setPos] = useState({ i: 0, from: null });
   const ticks = useRef(0);
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   useEffect(() => {
     if (reduced) return;
     const id = setInterval(() => {
       ticks.current += 1;
-      if (ticks.current >= items.length * loops) { clearInterval(id); setI(0); return; }
-      setI((x) => (x + 1) % items.length);
+      if (ticks.current >= items.length * loops) { clearInterval(id); setPos((s) => ({ i: 0, from: s.i })); return; }
+      setPos((s) => ({ i: (s.i + 1) % items.length, from: s.i }));
     }, interval);
     return () => clearInterval(id);
   }, [items, interval, reduced, loops]);
   const chars = [...items[i]];
+  const moving = from !== null && from !== i;
   return (
     <span className="rotw">
       <span className="sr-only">{items[i]}</span>
-      <span className="rotw-box" key={i} aria-hidden="true">
-        {chars.map((c, idx) => (
-          <span className="rotw-ch" key={idx} style={{ animationDelay: `${idx * 0.022}s` }}>{c === " " ? " " : c}</span>
-        ))}
+      <span className="rotw-box" aria-hidden="true">
+        {moving ? <span className="rotw-out" key={`o${from}-${i}`}>{items[from]}</span> : null}
+        <span className={`rotw-word ${moving ? "anim" : ""}`} key={i}>
+          {chars.map((c, idx) => (
+            <span className="rotw-ch" key={idx} style={{ animationDelay: `${idx * 0.022}s` }}>{c === " " ? " " : c}</span>
+          ))}
+        </span>
       </span>
     </span>
   );
@@ -146,7 +154,9 @@ function Splash({ onRead, onContact, onRapido, lit }) {
           </a>
         ) : null}
       </div>
-      <button className="splash-scroll" onClick={onRead} aria-label={t("Rolar para ler", "Scroll to read")}>
+      {/* terceira chamada do hero: fica, mas com peso de dica — o botão
+          primário e o atalho de 2 minutos carregam a navegação */}
+      <button className="splash-scroll quiet" onClick={onRead} aria-label={t("Rolar para ler", "Scroll to read")}>
         <span className="ss-mouse"><span className="ss-wheel"></span></span>
         <span className="ss-label">{t("Role para ler", "Scroll to read")}</span>
       </button>
@@ -154,10 +164,45 @@ function Splash({ onRead, onContact, onRapido, lit }) {
   );
 }
 
-/* ---------- [C] DIFERENCIAL — categories that filter + reveal ------- */
-function Diferencial({ onPick, active }) {
-  const tags = [["saas", "SaaS"], ["mobile", "Mobile"], ["desktop", "Desktop"], ["web", "Web"], ["ecommerce", "E-commerce"]];
-  const byCat = (k) => PROJECTS.filter((p) => p.cat === k && !p.hidden);
+/* ---------- [C] DIFERENCIAL — a frase + a faixa de marcas ----------
+   A lista "Minhas frentes" saiu daqui: navegação por categoria pertence
+   a Outras peças, junto do que ela filtra. O lado direito agora carrega
+   a prova social — toda empresa e cliente por onde o design passou. */
+
+/* uma marca: logo real quando o arquivo existe, wordmark quando não.
+   Sempre monocromática — cor no volume é intenção, não decoração. */
+function Mark({ mark }) {
+  const [err, setErr] = useState(false);
+  const showLogo = mark.logo && !err;
+  return (
+    <span className={`mk ${showLogo ? "has-logo" : "is-word"}`} title={mark.name}>
+      {showLogo
+        ? <img className="mk-logo" src={mark.logo} alt={mark.name} loading="lazy" draggable="false" onError={() => setErr(true)} />
+        : <span className="mk-word">{mark.name}</span>}
+    </span>
+  );
+}
+
+/* The strip runs as a slow, continuous marquee: 16 marks never fit two
+   tidy rows at every width. The track is duplicated so the loop is
+   seamless; reduced-motion drops the animation and wraps into a grid,
+   losing nothing. Hover pauses it so a name can actually be read. */
+function MarkStrip() {
+  const marks = ALL_MARKS;
+  return (
+    <div className="mkstrip">
+      <div className="mk-k">{t("Meu design passou por", "My design has run through")}</div>
+      <div className="mk-viewport">
+        <div className="mk-track">
+          {marks.map((m) => <Mark key={m.id} mark={m} />)}
+          <span className="mk-dup">{marks.map((m) => <Mark key={m.id + "-b"} mark={m} />)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Diferencial() {
   return (
     <section className="dif">
       <div className="shell">
@@ -165,290 +210,162 @@ function Diferencial({ onPick, active }) {
           <p className="dif-statement">
             {t("Desenho a experiência", "I design the experience")} <b>{t("e construo de verdade", "and actually build it")}</b>: {t("do protótipo navegável ao produto no ar.", "from navigable prototype to product, live.")} <span className="red">{t("Entrego o produto", "I ship the product")}</span>, {t("não só o Figma.", "not just the Figma.")}
           </p>
-          <BrandStrip />
         </div>
         <div className="dif-right">
-          <div className="dif-eyebrow">{t("Minhas frentes", "My fronts")}</div>
-          <div className="dif-tags" role="group" aria-label={t("Filtrar o sumário por categoria", "Filter the contents by category")}>
-            {tags.map(([key, label]) => {
-              const list = byCat(key);
-              const a = list[0], b = list[1] || list[0];
-              return (
-                <button type="button" className={`dif-tag ${active === key ? "on" : ""}`} key={key}
-                        onClick={() => onPick(key)}>
-                  <span className="dt-label">{label}</span>
-                  <span className="dt-count" aria-hidden="true">{String(list.length).padStart(2, "0")}</span>
-                  <span className="dt-dot" aria-hidden="true"></span>
-                  <span className="dif-reveal" aria-hidden="true">
-                    <span className="pic back">
-                      <span className="pic-tone"></span>
-                      <span className="pic-name">{b.title}</span>
-                    </span>
-                    <span className="pic front">
-                      <span className="pic-tone"></span>
-                      <span className="pic-name">{a.title}</span>
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          <p className="dif-hint"><span className="arr" aria-hidden="true">↓</span> {t("Toque uma categoria para filtrar o sumário", "Tap a category to filter the contents")}</p>
+          <MarkStrip />
         </div>
       </div>
     </section>
   );
 }
 
-/* a quiet strip of real client/brand marks under the statement — instant
-   credibility on the first paper fold. Marks are the brand PNGs already in
-   assets/marcas; each fails soft (hidden) if the file is missing. */
-function BrandMark({ id, name }) {
-  const [err, setErr] = useState(false);
-  const src = brandLogo(id);
-  if (!src || err) return null;
-  return (
-    <span className="bs-chip">
-      <img className="bs-logo" src={src} alt="" loading="lazy" draggable="false" onError={() => setErr(true)} />
-      <span className="bs-name">{name}</span>
-    </span>
-  );
-}
-function BrandStrip() {
-  const marks = [
-    ["pcyes", "PCYES"], ["odex", "Odex"], ["vinik", "Vinik"],
-    ["isabella", "Isabella Pires"], ["locarmais", "Locarmais"], ["tonante", "Tonante"],
-  ];
-  return (
-    <div className="brand-strip">
-      <div className="bs-k">{t("Meu design passou por", "My design has run through")}</div>
-      <div className="bs-row">
-        {marks.map(([id, name]) => <BrandMark key={id} id={id} name={name} />)}
-      </div>
-    </div>
-  );
-}
+/* ---------- [D] SUMÁRIO — 4 capítulos + o extra, em lista ----------
+   O coverflow saiu: capa em perspectiva com blur nas laterais escondia
+   três quartos do que devia vender. Agora cada capítulo ocupa um bloco
+   largo, com capa grande, contexto e resultado legíveis de primeira. */
 
-/* ---------- [D] SUMÁRIO — the volume rail (coverflow) ---------- */
-
-/* one tankōbon cover, placed in 3D by its signed offset from the focus.
-   B&W at rest; the focused cover comes alive (red), hovered sides warm up. */
-function RailCover({ proj, off, dist, hidden, focused, hovered, unit, onClick, onHover }) {
-  const spacing = unit * (unit < 200 ? 0.86 : 1.02);
-  const depth = unit * 0.6;
-  const angle = unit < 200 ? 28 : 21;
-  const scale = focused ? 1 : (hovered ? 0.91 : 0.84);
-  const style = {
-    width: unit, height: Math.round(unit * 1.36),
-    transform: `translate(-50%, -50%) translateX(${off * spacing}px) translateZ(${-dist * depth}px) rotateY(${off * -angle}deg) scale(${scale})`,
-    opacity: hidden ? 0 : (focused || hovered ? 1 : Math.max(0.18, 1 - dist * 0.4)),
-    filter: focused ? "none" : `grayscale(${hovered ? 0 : 1}) blur(${hovered ? 0 : Math.min(5, dist * 3.5)}px)`,
-    zIndex: focused ? 100 : (hovered ? 90 : 80 - dist),
-    pointerEvents: hidden ? "none" : "auto",
-  };
+function ChapterBlock({ proj, chap, onOpen }) {
+  const contexto = (chap && chap.descriptor) || proj.domain;
+  const resultado = chap && chap.tldr ? chap.tldr.resultado : "";
   return (
-    <button type="button" className={`rail-cover ${focused ? "focus" : "side"} ${hovered && !focused ? "hot" : ""}`}
-            style={style} onClick={onClick}
-            onMouseEnter={() => onHover(true)} onMouseLeave={() => onHover(false)}
-            tabIndex={focused ? 0 : -1} aria-hidden={focused ? undefined : true}
-            aria-label={focused ? t(`Abrir ${proj.title}`, `Open ${proj.title}`) : t(`Focar ${proj.title}`, `Focus ${proj.title}`)}>
-      <span className="rc-head">
-        <span className="rc-vol">{projTag(proj)}</span>
-        <span className="rc-cat">{proj.domain}</span>
-      </span>
-      <span className="rc-art">{proj.cover ? <img className="rc-cover" src={proj.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}{(focused || hovered) ? <span className="rc-sl"></span> : null}{proj.fav ? <span className="rc-fav">{t("Favorito", "Favorite")}</span> : null}</span>
-      <span className="rc-spine" aria-hidden="true"></span>
-      <span className="rc-obi">
-        <span className="rc-title">{proj.title}</span>
-      </span>
-    </button>
+    <li className="chapline">
+      <button type="button" className="cl-btn" onClick={() => onOpen(proj.id)}
+              aria-label={t(`Ler ${proj.title}`, `Read ${proj.title}`)}>
+        <span className="cl-art">
+          {proj.cover
+            ? <img className="cl-img" src={proj.cover} alt="" loading="lazy" draggable="false" />
+            : <MangaPlate />}
+          <span className="cl-cap">{projTag(proj)}</span>
+        </span>
+        <span className="cl-copy">
+          <span className="cl-dom">{proj.domain}</span>
+          <span className="cl-t">{proj.title}</span>
+          <span className="cl-ctx">{renderPH(contexto)}</span>
+          <span className="cl-res"><i>{t("Resultado", "Result")}</i> {renderPH(resultado)}</span>
+          <span className="cl-go">{t("Ler o capítulo", "Read the chapter")} <span className="arr" aria-hidden="true">→</span></span>
+        </span>
+      </button>
+    </li>
   );
 }
 
-function FocusRail({ items, onOpen }) {
-  const [active, setActive] = useState(0);
-  const [hover, setHover] = useState(null);
-  const [unit, setUnit] = useState(240);
-  const wrapRef = useRef(null);
-  const count = items.length;
-  const firstId = items[0] && items[0].id;
-
-  useEffect(() => { setActive(0); }, [count, firstId]);   // reset on filter change
-
-  useEffect(() => {
-    const measure = () => {
-      const el = wrapRef.current; if (!el) return;
-      const w = el.clientWidth;
-      setUnit(Math.round(Math.max(150, Math.min(280, w * (w < 640 ? 0.56 : 0.3)))));
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
-  const select = (p) => {
-    onOpen(p.id);
-  };
-  const go = (d) => setActive((p) => (p + d + count) % count);
-  const onKey = (e) => {
-    if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
-    else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
-    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(items[active]); }
-  };
-  const drag = useRef(null);
-  const onDown = (e) => { drag.current = e.clientX; };
-  const onUp = (e) => {
-    if (drag.current == null) return;
-    const dx = e.clientX - drag.current; drag.current = null;
-    if (Math.abs(dx) > 44 && count > 1) go(dx < 0 ? 1 : -1);
-  };
-
-  const maxSide = count >= 4 ? 2 : 1;
-  const activeItem = items[active] || items[0];
-  const isChapter = !!(activeItem && activeItem.chapterId);
-
+function ChapterList({ onOpen }) {
+  const items = caseProjects();
   return (
-    <div className="rail" ref={wrapRef} tabIndex={0} onKeyDown={onKey}
-         onPointerDown={onDown} onPointerUp={onUp} role="group" aria-label={t("Navegador de projetos", "Project navigator")}>
-      <div className="rail-stage" style={{ height: Math.round(unit * 1.36) + 40 }}>
-        {items.map((proj, idx) => {
-          let off = idx - active;
-          if (off > count / 2) off -= count;
-          if (off < -count / 2) off += count;
-          const dist = Math.abs(off);
-          if (dist > maxSide + 1) return null;   // mount visible + 1 buffer each side for slide-in
-          return (
-            <RailCover key={proj.id} proj={proj} off={off} dist={dist}
-                       hidden={dist > maxSide} focused={off === 0} hovered={hover === idx} unit={unit}
-                       onHover={(v) => setHover(v ? idx : (h) => (h === idx ? null : h))}
-                       onClick={() => (off === 0 ? select(proj) : setActive(idx))} />
-          );
-        })}
-      </div>
-
-      <div className="rail-foot">
-        <div className="rail-info" key={activeItem.id} aria-live="polite">
-          <div className="ri-cat">{activeItem.fav ? <span className="ri-fav">◆ {t("Favorito", "Favorite")}</span> : null}{projTag(activeItem)} · {activeItem.domain}</div>
-          <div className="ri-title">{activeItem.title}</div>
-          {projDescriptor(activeItem)
-            ? <div className="ri-desc">{projDescriptor(activeItem)}</div>
-            : <div className="ri-desc dim">{t("Protótipo navegável + Figma · links a preencher", "Navigable prototype + Figma · links to fill")}</div>}
-        </div>
-        <div className="rail-ctrls">
-          <div className="rail-nav">
-            <button type="button" className="rail-arr" onClick={() => go(-1)} disabled={count < 2} aria-label={t("Anterior", "Previous")}>←</button>
-            <span className="rail-idx">{String(active + 1).padStart(2, "0")} <i>/</i> {String(count).padStart(2, "0")}</span>
-            <button type="button" className="rail-arr" onClick={() => go(1)} disabled={count < 2} aria-label={t("Próximo", "Next")}>→</button>
-          </div>
-          <button type="button" className="btn btn-primary rail-open" onClick={() => select(activeItem)}>
-            {isChapter ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr">→</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <ol className="chaplist">
+      {items.map((p) => (
+        <ChapterBlock key={p.id} proj={p} chap={chapterFor(p.id)} onOpen={onOpen} />
+      ))}
+    </ol>
   );
 }
 
-/* viewport hook — switch coverflow (desktop) ↔ vertical list (mobile) */
-function useIsMobile(bp = 760) {
-  const q = `(max-width: ${bp}px)`;
-  const [m, setM] = useState(window.matchMedia && window.matchMedia(q).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(q);
-    const on = () => setM(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, [q]);
-  return m;
-}
-
-/* mobile: a plain vertical list of project cards — scrolls with the page,
-   real list semantics, keyboard/screen-reader friendly (no coverflow) */
-function ProjectList({ items, onOpen }) {
+/* the category nav that used to sit in "Minhas frentes". It filters the
+   Outras peças index only — the chapters are the spine and never move. */
+function CatNav({ filter, setFilter, items }) {
+  const byCat = (k) => (k === "todos" ? items : items.filter((p) => p.cat === k));
   return (
-    <ul className="proj-list">
-      {items.map((p) => {
-        const isChapter = !!p.chapterId;
+    <div className="catnav" role="group" aria-label={t("Filtrar as outras peças por categoria", "Filter the other pieces by category")}>
+      {CATS.map((c) => {
+        const list = byCat(c.key);
+        const a = list[0], b = list[1] || list[0];
+        const on = filter === c.key;
         return (
-          <li key={p.id}>
-            <button type="button" className="proj-card" onClick={() => onOpen(p.id)}>
-              <span className="pc-art">
-                {p.cover ? <img src={p.cover} alt="" loading="lazy" draggable="false" /> : <MangaPlate />}
-                {p.fav ? <span className="pc-fav">Favorito</span> : null}
+          <button type="button" key={c.key} className={`cat-tag ${on ? "on" : ""}`} aria-pressed={on}
+                  disabled={!list.length}
+                  onClick={() => setFilter(on && c.key !== "todos" ? "todos" : c.key)}>
+            <span className="ct-label">{c.label}</span>
+            <span className="ct-count" aria-hidden="true">{String(list.length).padStart(2, "0")}</span>
+            <span className="ct-dot" aria-hidden="true"></span>
+            {a ? (
+              <span className="cat-reveal" aria-hidden="true">
+                <span className="pic back"><span className="pic-tone"></span><span className="pic-name">{b.title}</span></span>
+                <span className="pic front"><span className="pic-tone"></span><span className="pic-name">{a.title}</span></span>
               </span>
-              <span className="pc-meta">
-                <span className="pc-tag">{projTag(p)} · {p.domain}</span>
-                <span className="pc-title">{p.title}</span>
-                <span className="pc-go">{isChapter ? t("Ler capítulo", "Read chapter") : t("Ver projeto", "See project")} <span className="arr" aria-hidden="true">→</span></span>
-              </span>
-            </button>
-          </li>
+            ) : null}
+          </button>
         );
       })}
-    </ul>
-  );
-}
-
-/* ---------- 目次 · the volume index ----------
-   A real manga index page under the coverflow: dotted leaders and page
-   numbers. The recruiter scans all 19 projects in five seconds; the rail
-   stays the moment, the mokuji is the map. Desktop only (mobile already
-   reads as a list). */
-function Mokuji({ items, onOpen }) {
-  return (
-    <nav className="mokuji" aria-label={t("Índice do volume", "Volume index")}>
-      <div className="mo-head">
-        <span className="mo-kanji" lang="ja" translate="no" aria-hidden="true">目次</span>
-        <span className="kicker">{t("Índice do volume", "Volume index")}</span>
-      </div>
-      <ol className="mo-list">
-        {items.map((p, i) => (
-          <li className="mo-item" key={p.id}>
-            <button type="button" className="mo-row" onClick={() => onOpen(p.id)}>
-              <span className="mo-cap">{projTag(p)}</span>
-              <span className="mo-title">{p.title}</span>
-              <span className="mo-dots" aria-hidden="true"></span>
-              <span className="mo-page">p. {String(8 + i * 14).padStart(3, "0")}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
-
-function FilterBar({ filter, setFilter }) {
-  return (
-    <div className="vol-filter" role="group" aria-label={t("Categorias", "Categories")}>
-      {CATS.map((c) => (
-        <button type="button" key={c.key} aria-pressed={filter === c.key}
-                className={`vf-tab ${filter === c.key ? "on" : ""}`}
-                onClick={() => setFilter(c.key)}>{c.label}</button>
-      ))}
     </div>
+  );
+}
+
+/* ---------- 目次 · Outras peças ----------
+   The manga index page: dotted leaders and page numbers. These don't open
+   a case — they link out to the thing itself when it's on the air. */
+function catLabel(key) {
+  const c = CATS.find((x) => x.key === key);
+  return c ? c.label : key;
+}
+
+function OutrasPecas({ filter, setFilter }) {
+  const all = pieceProjects();
+  const items = filter === "todos" ? all : all.filter((p) => p.cat === filter);
+  return (
+    <section className="outras" id="outras">
+      <div className="sec-head">
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Outras peças", "Other pieces")}</Brush>
+        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
+      </div>
+      <CatNav filter={filter} setFilter={setFilter} items={all} />
+      <nav className="mokuji" aria-label={t("Índice de outras peças", "Index of other pieces")}>
+        <div className="mo-head">
+          <span className="mo-kanji" lang="ja" translate="no" aria-hidden="true">目次</span>
+          <span className="kicker">{t("Cada item leva direto ao trabalho publicado", "Each item goes straight to the published work")}</span>
+        </div>
+        <ol className="mo-list">
+          {items.map((p, i) => {
+            const live = pieceLink(p);
+            const dest = p.destino || "ar";
+            return (
+              <li className="mo-item" key={p.id}>
+                <a className="mo-row" href={live} target="_blank" rel="noreferrer">
+                  <span className="mo-top">
+                    <span className="mo-cap">{catLabel(p.cat)}</span>
+                    <span className="mo-title">{p.title}</span>
+                    <span className="mo-dots" aria-hidden="true"></span>
+                    <span className={`mo-destino is-${dest}`}>
+                      {dest === "proto" ? t("Protótipo", "Prototype") : dest === "figma" ? "Figma" : t("No ar", "Live")}
+                      <span className="ext" aria-hidden="true">↗</span>
+                    </span>
+                    <span className="mo-page">p. {String(8 + i * 14).padStart(3, "0")}</span>
+                  </span>
+                  {p.desc ? <span className="mo-desc">{p.desc}</span> : null}
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+        {items.length === 0
+          ? <p className="mo-empty">{t("Nada nessa categoria ainda.", "Nothing in this category yet.")}</p>
+          : null}
+      </nav>
+    </section>
   );
 }
 
 function Sumario({ onOpen, filter, setFilter }) {
-  const mobile = useIsMobile();
-  const shown = PROJECTS.filter((p) => !p.hidden);
-  const items = filter === "todos" ? shown : shown.filter((p) => p.cat === filter);
+  const n = caseProjects().length;
   return (
-    <section className="shell" style={{ paddingTop: "var(--ma-6)" }}>
-      <div className="sec-head" id="sumario">
-        <Brush as="h2">{t("Sumário", "Contents")}</Brush>
-        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? t("projeto", "project") : t("projetos", "projects")}{mobile ? "" : t(" · ※ arraste ou use ← →", " · ※ drag or use ← →")}</span>
-      </div>
-      <FilterBar filter={filter} setFilter={setFilter} />
-      {mobile
-        ? <ProjectList items={items} onOpen={onOpen} />
-        : (
-          <>
-            <FocusRail key={filter} items={items} onOpen={onOpen} />
-            <Mokuji items={items} onOpen={onOpen} />
-          </>
-        )}
-    </section>
+    <>
+      {/* a cabeça continua na medida do texto (.shell, 1240px) */}
+      <section className="shell sumario-sec" style={{ paddingTop: "var(--ma-6)" }}>
+        <div className="sec-head" id="sumario">
+          <Brush as="h2">{t("Sumário", "Contents")}</Brush>
+          <span className="kicker">{String(n).padStart(2, "0")} {n === 1 ? t("capítulo", "chapter") : t("capítulos", "chapters")}</span>
+        </div>
+      </section>
+
+      {/* os capítulos saem da .shell pra tomar a tela inteira. Fora do
+          container é de propósito: sangria de verdade, sem o truque de
+          margin negativa com 100vw (que abre scroll horizontal quando a
+          barra de rolagem ocupa espaço, o caso do Windows). */}
+      <RevealChapters onOpen={onOpen} />
+
+      <section className="shell">
+        <OutrasPecas filter={filter} setFilter={setFilter} />
+      </section>
+    </>
   );
 }
 
@@ -476,7 +393,9 @@ function QuemSou({ onSobre, onEmpresa }) {
             </div>
           </div>
           <button type="button" className="qsc-card" onClick={() => onEmpresa(c.id)} aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
-            <span className="qsc-logo"><CompanyLogo company={c} kind="qsc" /></span>
+            <span className="qsc-logo">
+              {c.capa ? <BrandPlate capa={c.capa} className="bp-qsc" /> : <CompanyLogo company={c} kind="qsc" />}
+            </span>
             <span className="qsc-body">
               <span className="qsc-name">{c.name}</span>
               <span className="qsc-role">{c.role}</span>
@@ -498,7 +417,7 @@ function Colofao({ onContact, onNav }) {
         {onNav && (
           <nav className="foot-nav" aria-label={t("Navegação do rodapé", "Footer navigation")}>
             <a href="#" onClick={(e) => navTo(e, "home")}>{t("Início", "Home")}</a>
-            <a href="#" onClick={(e) => navTo(e, "sumario")}>{t("Projetos", "Projects")}</a>
+            <a href="#" onClick={(e) => navTo(e, "sumario")}>{t("Capítulos", "Chapters")}</a>
             <a href="#" onClick={(e) => navTo(e, "processo")}>{t("Processo", "Process")}</a>
             <a href="#" onClick={(e) => navTo(e, "sobre")}>{t("Sobre", "About")}</a>
           </nav>
@@ -506,8 +425,7 @@ function Colofao({ onContact, onNav }) {
         <div className="foot-top">
           <h2 className="foot-cta">{t("Vamos abrir", "Let's open")}<br /><a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">{t("o próximo capítulo", "the next chapter")}</a>.</h2>
           <div className="foot-meta">
-            <div className="row"><span className="kicker" style={{ color: "var(--wash-2)" }}>{t("Disponível para freela & full-time", "Available for freelance & full-time")}</span></div>
-            <div className="row" style={{ marginTop: 4 }}>
+            <div className="row">
               <a className="btn btn-primary" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
                  style={{ padding: "11px 20px", fontSize: 14 }}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></a>
             </div>
@@ -515,7 +433,7 @@ function Colofao({ onContact, onNav }) {
               <a className="s" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">WhatsApp · {CONTATO.whatsapp.display}</a>
               <a className="s" href={CONTATO.linkedin.href} target="_blank" rel="noreferrer">LinkedIn</a>
               <a className="s" href={CONTATO.instagram.href} target="_blank" rel="noreferrer">Instagram</a>
-              <a className="s" href={CONTATO.email.href}>E-mail</a>
+              <a className="s" href={CONTATO.email.href}>{CONTATO.email.display}</a>
             </div>
           </div>
         </div>
@@ -530,12 +448,11 @@ function Colofao({ onContact, onNav }) {
 
 /* ---------- the assembled cover ---------- */
 function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter, onNav, onRapido }) {
-  const pick = (cat) => { setFilter(cat); onRead(); };
   return (
     <main className="home-main" key="home">
       <Splash onRead={onRead} onContact={onContact} onRapido={onRapido} lit={lit} />
       <div className="post-hero">
-        <Diferencial onPick={pick} active={filter === "todos" ? null : filter} />
+        <Diferencial />
         <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />
         <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
         <Colofao onContact={onContact} onNav={onNav} />
@@ -544,4 +461,4 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setF
   );
 }
 
-Object.assign(window, { Nav, Splash, Diferencial, Sumario, FocusRail, RailCover, FilterBar, QuemSou, Colofao, Capa });
+Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, CatNav, OutrasPecas, QuemSou, Colofao, Capa });
