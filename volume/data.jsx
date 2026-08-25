@@ -38,7 +38,7 @@ const CHAPTERS = [
     capa: { logo: "volume/assets/marcas/branco/pcyes.png", bg: "#B00000", accent: "#FF0000" },   /* capa de marca */
     cover: "volume/assets/projetos/pcyes/cover.webp",
     coverTall: "volume/assets/projetos/pcyes/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
-    links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null },
+    links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" },
     premise: "Uma vitrine que ficou bonita e ficou lenta de comprar.",
     role: "UX/UI Designer, responsável pelo projeto",
     surface: "E-commerce · Magento",
@@ -190,7 +190,7 @@ const CHAPTERS = [
     sfx: "キラッ", cover: "volume/assets/projetos/odex/cover.webp",   /* kira: brilho — redesign visual */
     capa: { logo: "volume/assets/marcas/branco/odex.png", bg: "#0D1D52", accent: "#005AFF" },   /* capa de marca: o print não fecha em 4:5 */
     coverTall: "volume/assets/projetos/odex/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
-    links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: null },
+    links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: "https://www.figma.com/design/0nApyM8W4IgRwr64pSOfWg/DS--ODEX-?node-id=0-1&t=vAP1IrCmMOrbbiEy-1" },
     premise: "A plataforma funcionava há anos. Era a interface que tinha envelhecido.",
     role: "UX/UI Designer",
     surface: "Plataforma · aplicativo · site",
@@ -509,12 +509,12 @@ const PROJECTS = [
   /* ---- os 5 capítulos, na ordem de leitura ------------------------- */
   { id: "pcyes", title: "PCYES V2", cat: "ecommerce", domain: "E-commerce · Magento", fav: true, chapterId: "pcyes",
     desc: "Redesign do e-commerce", cover: "volume/assets/projetos/pcyes/cover.webp",
-    links: { vercel: "https://ux-oderco.vercel.app/pcyes/pcyes-v2/v3", figma: null } },
+    links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" } },
   { id: "locarmais-conciliacao", title: "Locar Mais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
     desc: "Módulo de conciliação financeira", links: { vercel: null, figma: null } },
   { id: "odex", title: "ODEX", cat: "desktop", domain: "Desktop e Web", fav: true, chapterId: "odex",
     desc: "Redesign de interface", cover: "volume/assets/projetos/odex/cover.webp",
-    links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: null } },
+    links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: "https://www.figma.com/design/0nApyM8W4IgRwr64pSOfWg/DS--ODEX-?node-id=0-1&t=vAP1IrCmMOrbbiEy-1" } },
   { id: "oderco-revenda", title: "Oderço", cat: "web", domain: "Web · Landing page", fav: true, chapterId: "oderco-revenda",
     desc: "Página de cadastro de revenda", cover: "volume/assets/projetos/oderco-revenda/cover.webp", links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null } },
   { id: "portfolio", title: "Portfólio", cat: "web", domain: "Website · Manifesto", fav: false, chapterId: "portfolio",
@@ -771,18 +771,27 @@ function CertThumb({ cert }) {
               loading="lazy" draggable="false" onError={() => setErr(true)} />;
 }
 
-/* Só o protótipo. O botão do Figma saiu: nenhum capítulo tem link de Figma,
-   e o placeholder "[Figma]" ocupava metade da chamada prometendo um destino
-   que não existe. Sem link publicado, a chamada inteira não renderiza. */
+/* Protótipo e design system, cada um só quando existe link publicado. O
+   placeholder "[Figma]" continua fora: botão sem destino prometia o que não
+   havia. Sem nenhum dos dois links, a chamada inteira não renderiza. */
 function ProtoLinks({ links = {}, onInk }) {
   const vercel = links && links.vercel;
-  if (!vercel) return null;
+  const figma = links && links.figma;
+  if (!vercel && !figma) return null;
   return (
     <div className="proto-links">
-      <a className="btn btn-primary proto-live" href={vercel} target="_blank" rel="noreferrer"
-         onClick={() => { if (onInk) onInk(); }}>
-        {t("Ver protótipo", "See prototype")} <span className="ext" aria-hidden="true">↗</span>
-      </a>
+      {vercel ? (
+        <a className="btn btn-primary proto-live" href={vercel} target="_blank" rel="noreferrer"
+           onClick={() => { if (onInk) onInk(); }}>
+          {t("Ver protótipo", "See prototype")} <span className="ext" aria-hidden="true">↗</span>
+        </a>
+      ) : null}
+      {figma ? (
+        <a className="btn proto-figma" href={figma} target="_blank" rel="noreferrer"
+           onClick={() => { if (onInk) onInk(); }}>
+          {t("Ver design system", "See design system")} <span className="ext" aria-hidden="true">↗</span>
+        </a>
+      ) : null}
     </div>
   );
 }
