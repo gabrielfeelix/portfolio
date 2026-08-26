@@ -273,6 +273,107 @@ function Recusei({ dados }) {
   );
 }
 
+/* ---- PAINEL DE NÚMEROS ------------------------------------------------
+   Print de dashboard é foto de ferramenta, não argumento. Aqui o dado é
+   desenhado: mil pontos de retícula com os poucos que compraram acesos,
+   contadores que sobem e barras que crescem quando o bloco entra na tela.
+   Cada bloco carrega a sua fonte e o seu período, porque número sem
+   procedência em portfólio é decoração. */
+function ContaAte({ alvo, decimais = 0, sufixo = "", ligado }) {
+  const [n, setN] = useState(ligado ? alvo : 0);
+  useEffect(() => {
+    if (!ligado) return;
+    if (REDUCED) { setN(alvo); return; }
+    let raf, inicio;
+    const dur = 1100;
+    const passo = (t) => {
+      if (!inicio) inicio = t;
+      const p = Math.min(1, (t - inicio) / dur);
+      setN(alvo * (1 - Math.pow(1 - p, 3)));   // desacelera no fim
+      if (p < 1) raf = requestAnimationFrame(passo);
+    };
+    raf = requestAnimationFrame(passo);
+    return () => cancelAnimationFrame(raf);
+  }, [ligado, alvo]);
+  const fmt = decimais
+    ? n.toLocaleString(LANG === "en" ? "en-US" : "pt-BR", { minimumFractionDigits: decimais, maximumFractionDigits: decimais })
+    : Math.round(n).toLocaleString(LANG === "en" ? "en-US" : "pt-BR");
+  return <span>{fmt}{sufixo}</span>;
+}
+
+/* a retícula de mil: cada ponto é uma pessoa que entrou na loja */
+function Mil({ acesos, ligado }) {
+  const total = 1000;
+  const marcados = useRef(null);
+  if (!marcados.current) {
+    // posições fixas e espalhadas, para o olho ver que são poucos e onde
+    marcados.current = new Set([137, 481, 803].slice(0, Math.max(1, Math.round(acesos))));
+  }
+  return (
+    <div className={`mil ${ligado ? "on" : ""}`} aria-hidden="true">
+      {Array.from({ length: total }, (_, i) => (
+        <i key={i} className={marcados.current.has(i) ? "aceso" : ""}
+           style={{ transitionDelay: `${Math.min(700, (i % 50) * 8 + Math.floor(i / 50) * 14)}ms` }}></i>
+      ))}
+    </div>
+  );
+}
+
+function Painel({ dados }) {
+  if (!dados) return null;
+  const [ref, seen] = useReveal({ threshold: 0.25 });
+  const on = seen || REDUCED;
+  return (
+    <Beat>
+      <div className="painel" ref={ref} style={{ gridColumn: "1 / -1" }}>
+        <div className="pn-topo">
+          <div>
+            <div className="beat-k">{dados.k}</div>
+            <Brush as="h2" className="pn-t">{renderPH(dados.t)}</Brush>
+          </div>
+          {dados.fonte ? <div className="pn-fonte">{renderPH(dados.fonte)}</div> : null}
+        </div>
+
+        <div className="pn-grade">
+          <div className="pn-mil">
+            <Mil acesos={dados.acesos || 2} ligado={on} />
+            <p className="pn-mil-legenda">{renderPH(dados.milLegenda)}</p>
+          </div>
+
+          <div className="pn-lado">
+            <div className="pn-numeros">
+              {(dados.numeros || []).map((num, i) => (
+                <div className="pn-num" key={i}>
+                  <div className="pn-v">
+                    <ContaAte alvo={num.v} decimais={num.d || 0} sufixo={num.s || ""} ligado={on} />
+                  </div>
+                  <div className="pn-l">{renderPH(num.l)}</div>
+                </div>
+              ))}
+            </div>
+
+            <ul className="pn-barras">
+              {(dados.barras || []).map((bar, i) => (
+                <li key={i}>
+                  <div className="pb-topo">
+                    <span className="pb-l">{renderPH(bar.l)}</span>
+                    <span className="pb-v"><ContaAte alvo={bar.v} decimais={bar.d || 0} sufixo="%" ligado={on} /></span>
+                  </div>
+                  <div className="pb-trilho">
+                    <span className="pb-fill" style={{ width: on ? `${bar.v}%` : 0, transitionDelay: `${140 + i * 110}ms` }}></span>
+                  </div>
+                  {bar.n ? <span className="pb-n">{renderPH(bar.n)}</span> : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        {dados.nota ? <p className="pn-nota">{renderPH(dados.nota)}</p> : null}
+      </div>
+    </Beat>
+  );
+}
+
 /* ---- MÓDULOS: as partes do produto que merecem beat próprio ---------
    Pré-venda, Monte seu PC e o que a V2 ganhou de novo. Cada módulo é um
    argumento com as telas dele ao lado; com mais de uma tela, a coluna vira
@@ -909,6 +1010,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <div style={{ height: "var(--ma-6)" }}></div>
         <Abertura chap={chap} figN={figN} />
         <Problema chap={chap} figN={figN} />
+        <Painel dados={chap.painel} />
         <Investigacao chap={chap} figN={figN} />
         <Citacao dados={chap.citacao} />
         <SfxBeat word={chap.sfx} />
@@ -933,4 +1035,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

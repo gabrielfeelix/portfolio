@@ -58,7 +58,6 @@ const CHAPTERS = [
       abertura: { src: "volume/assets/projetos/pcyes/v1-home.webp", ar: "21/9",
         alt: "Home da V1 abrindo em campanha de marca, com o primeiro produto abaixo da dobra",
         legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
-      funil: { legenda: "O funil no período analisado: onde cada etapa perdia gente, e o degrau do checkout no fim." },
       gravacao: { legenda: "Gravação de sessão: a pessoa rola o checkout duas vezes procurando forma de pagamento e sai sem comprar." },
       checkout: { src: "volume/assets/projetos/pcyes/s4.webp",
         alt: "Checkout da V2 com Pix, cartão, boleto e carteiras visíveis antes de qualquer rolagem",
@@ -121,7 +120,26 @@ const CHAPTERS = [
           "As pessoas não chegavam ao checkout. Para comprar qualquer coisa era obrigatório abrir a página do produto: vitrine, home e categoria não deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
           "E quem chegava ao checkout não finalizava. A etapa final concentrava o abandono, e não estava claro por quê.",
           "Somando, o site cobrava três pedágios de quem só queria comprar um mouse: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho e descobrir no escuro se dava para pagar do jeito que a pessoa queria. Cada um desses pedágios tem o seu jeito de sumir com o cliente."],
-      fig: "funil",
+    },
+    /* o tamanho do problema, em número. Print de dashboard vira foto de
+       ferramenta; aqui o dado é desenhado e carrega a fonte junto. */
+    painel: {
+      k: "O tamanho do buraco",
+      t: "Entrava gente. Comprar, quase ninguém",
+      fonte: "GA4 e notas fiscais · 2º trimestre de 2026 · Microsoft Clarity, amostra de 3 dias",
+      acesos: 2,
+      milLegenda: "Cada ponto é uma pessoa que entrou na loja. Os dois acesos são as que compraram: 0,16% de conversão em um trimestre inteiro.",
+      numeros: [
+        { v: 166267, l: "sessões no trimestre" },
+        { v: 273, l: "pedidos faturados" },
+        { v: 0.16, d: 2, s: "%", l: "taxa de conversão" },
+      ],
+      barras: [
+        { l: "Rolagem média da página", v: 25.5, d: 1, n: "Três quartos da página nunca eram vistos." },
+        { l: "Sessões com erro de script", v: 23.5, d: 1, n: "Uma em cada quatro esbarrava em falha técnica." },
+        { l: "Sessões identificadas como robô", v: 41, n: "O que sobrava de gente real era ainda menor." },
+      ],
+      nota: "Os números de comportamento vêm de uma amostra curta do Clarity, e é assim que eles entram aqui: como indício que orientou onde olhar, não como medida definitiva. O que sustenta a decisão é a soma deles com as gravações e com a conversão do trimestre.",
     },
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
