@@ -149,15 +149,25 @@ competir com a principal.
 ## Lista priorizada
 
 **Alto impacto, esforço baixo**
-1. Preencher `tldr.oque` nos 5 capítulos, ou remover a célula do `Rapido`.
-2. Reescrever o `fact` do PCYES no padrão do Locar Mais.
+1. ~~Preencher `tldr.oque` nos 5 capítulos~~ **FEITO** (`192f838`), PT e EN.
+2. ~~Reescrever o `fact` do PCYES~~ **FEITO** (`192f838`). Direção escolhida
+   pelo Gabriel: a decisão que virou a mesa. "Contrariei o briefing com
+   gravação de sessão na mão, e a direção oposta foi a aprovada."
 3. Promover o resultado do Oderço para a abertura do `resultado`.
-4. Corrigir as 5 violações de contraste (a de 1,97:1 primeiro).
+4. ~~Corrigir as 5 violações de contraste~~ **FEITO por outro agente**
+   (`e45aca3`): fechou as 5 do handoff e mais `.cover-k`, `.cover-ficha`,
+   `.cal-k`, `.cal-dow`, `.ad-punho`, `.ad-tag-d`. 0 violação em
+   1920/1700/1440/768/390, nos dois modos.
 
 **Alto impacto, esforço médio**
-5. Decidir e expressar a hierarquia dos capítulos. Hoje está decidida por
-   omissão, e por omissão está errada.
-6. Resolver o `IndiceCapitulo` em 1440px.
+5. ~~Decidir e expressar a hierarquia dos capítulos~~ **DECIDIDO + FEITO**
+   (`192f838`). O Gabriel confirmou: **PCYES é o principal e continua
+   Cap. 01**. O sumário passa a marcar com o selo "Capítulo principal"
+   (`chap.principal` em `data.jsx`, `.rvm-main` em `RevealMask.jsx`).
+6. ~~Resolver o `IndiceCapitulo` em 1440px~~ **FEITO por outro agente**
+   (`e45aca3`): em vez de estreitar a leitura, o corpo sai do centro e
+   anda para a direita; a sobra vira a coluna do índice, e a partir de
+   1530px a coluna volta inteira.
 7. Inverter a abertura do Odex: argumento primeiro, ressalva depois.
 
 **Médio impacto**
@@ -390,12 +400,37 @@ o vídeo conta. Vídeo sobre estrutura instável só multiplica retrabalho.
 
 Nenhuma destas deve ser decidida sem ele:
 
-1. **O PCYES continua Cap. 01?** Posição de honra, mas custa a atenção
-   toda logo de cara. Alternativa: um case curto abre e o PCYES vai para
-   o meio, com marca de principal.
-2. **`IndiceCapitulo` em 1440px.** Aceitar que não apareça, ou estreitar
-   o conteúdo para abrir lugar. Pendente desde a rodada anterior. Uma
-   versão em `grid` que dividia a tela já foi recusada.
+1. ~~**O PCYES continua Cap. 01?**~~ **RESPONDIDO:** sim, é o principal e
+   fica no Cap. 01, com o destaque explícito no sumário.
+2. ~~**`IndiceCapitulo` em 1440px.**~~ **RESOLVIDO** em `e45aca3`.
 3. **Quais artefatos do FigJam mudaram decisão.** O critério está acima;
    a resposta é dele.
-4. **Os quatro prints.** Só ele tem acesso à V1.
+4. **Os quatro prints.** Só ele tem acesso à V1. Combinado: entram depois
+   da rodada de reordenação.
+
+## Registro de execução
+
+| Rodada | Item | Estado | Commit |
+|---|---|---|---|
+| 1 | `tldr.oque` nos 5 capítulos, PT e EN | feito | `192f838` |
+| 1 | `fact` do PCYES reescrito | feito | `192f838` |
+| 1 | Contraste (5 + 6 violações) | feito (outro agente) | `e45aca3` |
+| 1 | Selo de capítulo principal | feito | `192f838` |
+| 1 | Índice em 1440px | feito (outro agente) | `e45aca3` |
+| 2 | Reordenação do PCYES | **próxima** | |
+
+### Armadilha desta rodada
+
+`ChapterBlock`/`ChapterList` em `Capa.jsx` **são código morto**. Quem
+desenha a lista de capítulos da home é `RevealImageMask`/`RevealChapters`
+em `RevealMask.jsx` (`.rvm-*`), chamado pelo `Sumario` via
+`<RevealChapters>`. O selo foi escrito primeiro no componente errado e
+não renderizava. Antes de editar a home, confirmar quem o `Sumario`
+chama de fato.
+
+Segunda armadilha, do mesmo tipo: `--vermilion-lift` **não existe mais**.
+O `e45aca3` trocou por `--vermilion-sobre-ink`, que é o token para fundos
+que pintam `var(--ink)` e **invertem** com o tema. Para fundo `--paper`
+o token certo é `--vermilion-ink`, que já vira sozinho (#B01510 no papel,
+#F4695C sobre tinta). CSS com token inexistente não quebra o build: cai
+no valor herdado e passa despercebido.
