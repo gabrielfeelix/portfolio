@@ -67,15 +67,6 @@ function Tldr({ tldr, links }) {
   );
 }
 
-/* render a string, wrapping any [bracketed] spans as marked placeholders */
-function renderPH(str) {
-  if (typeof str !== "string") return str;
-  const parts = str.split(/(\[[^\]]*\])/g).filter(Boolean);
-  return parts.map((p, i) =>
-    /^\[[^\]]*\]$/.test(p) ? <PH key={i}>{p.slice(1, -1)}</PH> : <span key={i}>{p}</span>
-  );
-}
-
 /* ---- LIGHTBOX: a prova em tamanho cheio ------------------------------
    Print pequeno na página serve para o argumento; quem quiser ler a
    interface abre aqui, em resolução cheia, com zoom seguindo o ponteiro.

@@ -26,6 +26,19 @@ function PH({ children }) {
   return <span className="ph">[{children}]</span>;
 }
 
+/* render a string, wrapping any [bracketed] spans as marked placeholders.
+   Mora aqui, junto do PH que ele usa, e nao no Capitulo: quem chama sao
+   Capa.jsx e RevealMask.jsx, que desenham a HOME. Enquanto ele morava no
+   Capitulo.jsx, tirar aquele arquivo do carregamento inicial derrubava a
+   home inteira com `renderPH is not defined`. */
+function renderPH(str) {
+  if (typeof str !== "string") return str;
+  const parts = str.split(/(\[[^\]]*\])/g).filter(Boolean);
+  return parts.map((p, i) =>
+    /^\[[^\]]*\]$/.test(p) ? <PH key={i}>{p.slice(1, -1)}</PH> : <span key={i}>{p}</span>
+  );
+}
+
 /* ---- THE VOLUME · 4 CHAPTERS -------------------------------------- */
 /* ---- O VOLUME · 5 CAPÍTULOS ---------------------------------------
    Conteúdo redacional de volume-conteudo-dos-capitulos.md. Os projetos que

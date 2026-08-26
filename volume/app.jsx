@@ -182,6 +182,46 @@ function viewTitle(view) {
   return chap ? chap.title + " · " + BASE : BASE;
 }
 
+/* ---------------------------------------------------------------------
+   ROTAS SOB DEMANDA
+   Capitulo.js e EmpresaPage.js saem do HTML inicial (ver build.mjs): sao
+   86 KB que a home nao usa. Aqui eles chegam quando a rota pede.
+   Continuam scripts CLASSICOS que publicam nomes no escopo global, igual
+   a todos os outros -- nao ha import/export nesta base. O que muda e so
+   QUANDO a tag entra no documento.
+   O cache por src garante uma requisicao so, mesmo com varias navegacoes
+   ao mesmo tempo, porque guarda a PROMESSA e nao o resultado.
+   --------------------------------------------------------------------- */
+const ROTA_SCRIPTS = {
+  capitulo: ["/volume/Capitulo.js"],
+  empresa: ["/volume/EmpresaPage.js"],
+};
+const _scriptCache = {};   // src -> promessa em voo
+const _scriptOk = {};      // src -> true quando ja executou
+function carregarScript(src) {
+  if (_scriptOk[src]) return Promise.resolve(src);
+  if (_scriptCache[src]) return _scriptCache[src];
+  _scriptCache[src] = new Promise((resolve, reject) => {
+    const el = document.createElement("script");
+    el.src = src;
+    el.onload = () => { _scriptOk[src] = true; resolve(src); };
+    el.onerror = () => { delete _scriptCache[src]; reject(new Error("falhou: " + src)); };
+    document.head.appendChild(el);
+  });
+  return _scriptCache[src];
+}
+// `false` quando ainda falta baixar algo; o App segura a tela ate resolver.
+// Le o registro de executados, nao a promessa: durante o render a promessa
+// pode existir sem ter rodado ainda, e ai a tela liberava cedo demais.
+function rotaPronta(nome) {
+  const srcs = ROTA_SCRIPTS[nome] || [];
+  return srcs.every((s) => _scriptOk[s] === true);
+}
+function garantirRota(nome) {
+  const srcs = ROTA_SCRIPTS[nome] || [];
+  return Promise.all(srcs.map(carregarScript));
+}
+
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [view, setView] = useState(initialView);  // "home" | chapterId | "processo" | "sobre" | "empresa:<id>" | "404"
@@ -368,8 +408,44 @@ function App() {
   const empId = view.indexOf("empresa:") === 0 ? view.slice(8) : null;
   const empresa = empId ? COMPANIES.find((c) => c.id === empId) : null;
 
+  // as rotas pesadas chegam sob demanda: enquanto o script nao esta no
+  // documento, `pronto` e false e a tela segura. O tick force um re-render
+  // quando o download termina.
+  const rotaNome = chap ? "capitulo" : (empresa ? "empresa" : null);
+  const [, setTick] = useState(0);
+  const pronto = !rotaNome || rotaPronta(rotaNome);
+  useEffect(() => {
+    if (!rotaNome || pronto) return;
+    let vivo = true;
+    garantirRota(rotaNome).then(() => { if (vivo) setTick((n) => n + 1); });
+    return () => { vivo = false; };
+  }, [rotaNome, pronto]);
+
+  // pre-busca ociosa: assim que a home assenta, o capitulo desce em
+  // segundo plano, entao o primeiro clique no sumario ja acha em cache.
+  useEffect(() => {
+    if (rotaNome) return;
+    // espera a primeira dobra assentar de verdade antes de buscar: puxar
+    // cedo demais rouba banda e main thread justamente na janela que o
+    // Lighthouse mede, e o ganho (clique instantaneo no sumario) nao
+    // depende de ser nos primeiros segundos.
+    const ocioso = window.requestIdleCallback || ((fn) => setTimeout(fn, 1200));
+    let id;
+    const atraso = setTimeout(() => {
+      id = ocioso(() => garantirRota("capitulo").catch(() => {}));
+    }, 5000);
+    return () => {
+      clearTimeout(atraso);
+      if (window.cancelIdleCallback && typeof id === "number") window.cancelIdleCallback(id);
+    };
+  }, [rotaNome]);
+
   let body;
-  if (chap) {
+  if (rotaNome && !pronto) {
+    // mesma moldura da pagina, sem conteudo: evita salto de layout quando
+    // o script chega (o CLS estava em 0 e precisa continuar).
+    body = <div className="shell" style={{ minHeight: "70vh" }} aria-busy="true" />;
+  } else if (chap) {
     body = <Capitulo chap={chap} next={next} onOpen={openChapter} onHome={() => goHome("sumario")} onNav={handleNav} />;
   } else if (empresa) {
     body = <EmpresaPage company={empresa} companies={COMPANIES} onHome={() => goHome()}

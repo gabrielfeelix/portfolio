@@ -1,0 +1,32 @@
+# Volume · Portfólio de Gabriel Felix Barbosa
+
+> Portfólio de Gabriel Felix Barbosa, UX/Product Designer brasileiro, lido como um volume de mangá. Reúne cases de e-commerce, SaaS, desktop e web, do protótipo navegável ao produto no ar. O site é uma SPA estática em React, sem backend, e o conteúdo dos capítulos vive no próprio código.
+
+Gabriel desenha e constrói: cada capítulo mostra o problema, o dado que sustentou a decisão, o que foi recusado e o resultado. Números aparecem com procedência (fonte e nota sobre o que a amostra sustenta), e as telas são prova do argumento, não ilustração.
+
+O conteúdo é servido por JavaScript no cliente. Para ler o texto de um capítulo, execute o JS da página ou leia os dados em `volume/data.jsx` no repositório.
+
+## Capítulos
+
+- [PCYES V2 · Redesign de e-commerce](https://portfolio-volume.vercel.app/#/cap/pcyes): loja de hardware que ficou bonita e ficou lenta de comprar. Funil de 1.705 visitas na home para 27 no checkout, busca que exigia ortografia exata, e a V2 com design system, pré-venda e busca tolerante a erro.
+- [Locarmais · Conciliação](https://portfolio-volume.vercel.app/#/cap/locarmais-conciliacao): SaaS de locação, o fluxo de conciliação financeira.
+- [Odex · Desktop e web](https://portfolio-volume.vercel.app/#/cap/odex): produto de desktop e web do Grupo Oderço.
+- [Oderço Revenda · Web](https://portfolio-volume.vercel.app/#/cap/oderco-revenda): canal de revenda.
+- [O próprio portfólio · Manifesto](https://portfolio-volume.vercel.app/#/cap/portfolio): por que um portfólio em forma de mangá, e como ele foi construído.
+
+## Páginas
+
+- [Início](https://portfolio-volume.vercel.app/): capa do volume e índice dos capítulos.
+- [Posfácio](https://portfolio-volume.vercel.app/#/sobre): quem é Gabriel, trajetória e filosofia de trabalho.
+- [Processo](https://portfolio-volume.vercel.app/#/processo): como ele conduz um projeto, da investigação à entrega.
+- [Leitura rápida](https://portfolio-volume.vercel.app/#/rapido): versão curta, para quem tem cinco minutos.
+
+## Contato
+
+- [LinkedIn](https://www.linkedin.com/in/gabrielfeelix/)
+- [Instagram](https://www.instagram.com/gaabriel.feelix/)
+- [E-mail](mailto:gab.feelix@gmail.com)
+
+## Optional
+
+- [Repositório do site](https://github.com/gabrielfeelix/portfolio): código-fonte do portfólio. O conteúdo editorial dos capítulos está em `volume/data.jsx` (português) e `volume/i18n.jsx` (inglês).

@@ -23,6 +23,14 @@ const SCRIPTS = [
   "app.jsx",
 ];
 
+// Estes sao transpilados igual aos outros, mas NAO entram no HTML inicial:
+// o app carrega sob demanda quando a rota precisa (ver `garantirRota` em
+// app.jsx). Sao 86 KB que a home nunca usa -- o Lighthouse media 74 KB de
+// Capitulo.js sem uso na primeira tela.
+// A ordem aqui e a ordem de insercao: RevealMask antes de Capitulo, porque
+// Capitulo usa RevealMask no escopo global.
+const SCRIPTS_SOB_DEMANDA = ["Capitulo.jsx", "EmpresaPage.jsx"];
+
 async function clean() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(path.join(DIST, "volume"), { recursive: true });
@@ -67,9 +75,29 @@ async function copyAssets() {
     const src = path.join(ROOT, "volume", dir);
     if (existsSync(src)) await cp(src, path.join(DIST, "volume", dir), { recursive: true });
   }
-  for (const css of ["colors_and_type.css", "kit.css", "chapter.css", "app.css", "organic.css"]) {
+  // CSS: os cinco arquivos viram UM, minificado. Eram cinco requisicoes
+  // que bloqueavam a renderizacao e iam sem minificar (241 KB); o Lighthouse
+  // cobrava isso em "solicitacoes que bloquearam a renderizacao".
+  // A ORDEM importa: colors_and_type define os tokens que os outros usam,
+  // e app.css/organic.css sobrescrevem chapter.css em varios pontos.
+  // As urls de fonte sao relativas a volume/, e o arquivo final tambem
+  // mora em volume/, entao `fonts/...` continua resolvendo.
+  const cssOrder = ["colors_and_type.css", "kit.css", "chapter.css", "app.css", "organic.css"];
+  const cssParts = [];
+  for (const css of cssOrder) {
     const src = path.join(ROOT, "volume", css);
-    if (existsSync(src)) await cp(src, path.join(DIST, "volume", css));
+    if (existsSync(src)) cssParts.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
+  }
+  const cssOut = await esbuild.transform(cssParts.join("\n"), {
+    loader: "css", minify: true,
+  });
+  await writeFile(path.join(DIST, "volume", "volume.css"), cssOut.code);
+  // llms.txt e robots.txt vao para a raiz do site. Sem isso o rewrite do
+  // vercel.json devolve o index.html para /llms.txt, e o validador le HTML
+  // onde esperava markdown.
+  for (const f of ["llms.txt", "robots.txt"]) {
+    const src = path.join(ROOT, f);
+    if (existsSync(src)) await cp(src, path.join(DIST, f));
   }
   if (existsSync(path.join(ROOT, "uploads"))) {
     await cp(path.join(ROOT, "uploads"), path.join(DIST, "uploads"), { recursive: true });
@@ -105,10 +133,15 @@ function analyticsSnippet() {
 
 async function generateHtml() {
   const tpl = await readFile(path.join(ROOT, "index.template.html"), "utf8");
+  // `defer` em TODOS: eram 14 scripts sincronos que travavam o parser antes
+  // do primeiro paint. defer preserva a ordem de execucao entre eles, que e
+  // exatamente o contrato desta base (os arquivos compartilham estado via
+  // window e nao ha import/export), e so roda depois do HTML pronto.
   const tags = [
-    `<script src="/vendor/react.production.min.js"></script>`,
-    `<script src="/vendor/react-dom.production.min.js"></script>`,
-    ...SCRIPTS.map((f) => `<script src="/volume/${f.replace(/\.jsx$/, ".js")}"></script>`),
+    `<script defer src="/vendor/react.production.min.js"></script>`,
+    `<script defer src="/vendor/react-dom.production.min.js"></script>`,
+    ...SCRIPTS.filter((f) => !SCRIPTS_SOB_DEMANDA.includes(f))
+      .map((f) => `<script defer src="/volume/${f.replace(/\.jsx$/, ".js")}"></script>`),
   ].join("\n");
   const html = tpl
     .replace("<!--VENDOR_AND_APP_SCRIPTS-->", tags)
