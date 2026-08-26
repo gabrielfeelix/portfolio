@@ -2249,3 +2249,7 @@ html.ink .ad-tag-d { background: var(--vermilion); color: var(--paper); }
 @media (max-width: 880px) {
   .dec-beat .db-fig, .dec-beat.par .db-fig { grid-column: 1; }
 }
+
+/* decisão com duas provas: as telas dividem a largura da coluna */
+.dec-beat .db-fig.dupla { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gutter); max-width: none; }
+@media (max-width: 880px) { .dec-beat .db-fig.dupla { grid-template-columns: 1fr; } }

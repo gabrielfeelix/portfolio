@@ -518,7 +518,7 @@ function figOrder(chap) {
   if (chap.abertura) marca(chap.abertura.fig);
   if (chap.problema) marca(chap.problema.fig);
   if (chap.investigacao) marca(chap.investigacao.fig);
-  (chap.decisoes || []).forEach((d) => marca(d.fig));
+  (chap.decisoes || []).forEach((d) => { marca(d.fig); marca(d.figExtra); });
   (chap.modulos || []).forEach((m) => {
     (m.figs || []).forEach(marca);
     (m.caminhos || []).forEach((c) => marca(c.fig));
@@ -723,7 +723,9 @@ function Decisoes({ chap, figN = {} }) {
         {chap.decisoes.map((dec, i) => (
           <DecBeat key={i} n={i + 1} dec={dec} par={i % 2 === 1}
                    fig={dec.fig && chap.figuras ? chap.figuras[dec.fig] : null}
-                   figN={figN[dec.fig]} />
+                   figN={figN[dec.fig]}
+                   figExtra={dec.figExtra && chap.figuras ? chap.figuras[dec.figExtra] : null}
+                   figExtraN={figN[dec.figExtra]} />
         ))}
       </ol>
     </>
@@ -732,7 +734,7 @@ function Decisoes({ chap, figN = {} }) {
 
 /* um beat de decisão: número grande em editorial, a escolha em display e a
    razão em corpo de leitura. Entra em corte seco quando cruza a viewport. */
-function DecBeat({ n, dec, par, fig, figN }) {
+function DecBeat({ n, dec, par, fig, figN, figExtra, figExtraN }) {
   const [ref, seen] = useReveal({ threshold: 0.3 });
   return (
     <li ref={ref} className={`dec-beat ${par ? "par" : ""} ${seen ? "in" : ""}`}>
@@ -743,7 +745,12 @@ function DecBeat({ n, dec, par, fig, figN }) {
       </div>
       {/* a decisão que tem prova mostra a prova aqui mesmo, embaixo do
           argumento, e não num bloco de prints no fim do capítulo */}
-      {fig ? <div className="db-fig"><Figura fig={fig} n={figN} ar="16/9" /></div> : null}
+      {fig ? (
+        <div className={`db-fig ${figExtra ? "dupla" : ""}`}>
+          <Figura fig={fig} n={figN} ar="16/10" />
+          {figExtra ? <Figura fig={figExtra} n={figExtraN} ar="16/10" /> : null}
+        </div>
+      ) : null}
       <span className="db-tone" aria-hidden="true"></span>
     </li>
   );
