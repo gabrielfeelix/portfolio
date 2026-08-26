@@ -52,7 +52,7 @@ button { color: inherit; }
 .v-navlinks { display: flex; align-items: center; gap: 28px;
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .v-nav .nav-contact-m { display: none; }      /* contact lives in the burger on mobile; hidden on desktop (beats .btn) */
-.nav-contact-d { padding: 9px 16px; font-size: 13px; }   /* contact button, right side */
+.nav-contact-d { --btn-h: 38px; --btn-px: 15px; --btn-fs: 13px; }   /* contato: tamanho sm do sistema */
 .v-navlinks a:not(.nav-contact) {
   font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase;
   letter-spacing: .14em; font-size: 13px; padding-bottom: 3px; position: relative;
@@ -74,22 +74,101 @@ button { color: inherit; }
   text-transform: uppercase; color: var(--fg-2);
 }
 
-/* ====================== BUTTONS ====================== */
+/* =====================================================================
+   BOTÕES — o sistema
+   Antes cada lugar redefinia cor, sombra e padding na mão, então o mesmo
+   botão tinha três alturas e a capa precisava de exceção própria. Aqui a
+   caixa é uma só e o que muda é o papel semântico:
+
+   variantes   primary (ação principal, tinta vermelha e elevação)
+               secondary (ação de apoio, contorno)
+               ghost (ação terciária, só sublinhado)
+   tamanhos    sm (barra de navegação) · md (padrão) · lg (chamada de página)
+   superfície  padrão (papel) · .on-ink (sobre tinta) · .on-red (sobre a capa)
+   estados     hover · active · focus-visible · selected · desativado
+
+   Cada superfície só troca as quatro variáveis de cor, e as variantes leem
+   essas variáveis. Botão novo em contexto novo herda tudo sem regra nova.
+   ===================================================================== */
 .btn {
-  display: inline-flex; align-items: center; gap: 10px;
+  /* superfície padrão: papel embaixo, tinta em cima */
+  --btn-fg: var(--ink);          /* cor do texto e do contorno            */
+  --btn-bg: var(--paper);        /* fundo da variante preenchida          */
+  --btn-acento: var(--vermilion);/* cor da ação principal                 */
+  --btn-acento-fg: #fff;         /* texto sobre o acento                  */
+  --btn-elev: var(--ink);        /* cor da sombra dura                    */
+  --btn-h: 46px; --btn-px: 24px; --btn-fs: 15px;
+  --btn-sombra: none;
+
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: var(--btn-h); padding: 0 var(--btn-px);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .08em; font-size: 15px; padding: 14px 26px;
-  border: var(--ink-stroke) solid var(--ink); background: var(--paper); color: var(--ink);
-  cursor: pointer; white-space: nowrap; transition: transform var(--cut), background var(--cut), color var(--cut), box-shadow var(--cut);
+  letter-spacing: .08em; font-size: var(--btn-fs); line-height: 1;
+  border: var(--ink-stroke) solid var(--btn-fg);
+  background: transparent; color: var(--btn-fg);
+  box-shadow: var(--btn-sombra);
+  cursor: pointer; white-space: nowrap; text-decoration: none;
+  transition: transform var(--cut), background var(--cut), color var(--cut),
+              border-color var(--cut), box-shadow var(--cut);
 }
 .btn .arr { transition: transform var(--cut); }
 .btn:hover .arr { transform: translateX(5px); }
-.btn-primary { background: var(--vermilion); color: #fff; box-shadow: 6px 6px 0 var(--ink); }
-.btn-primary:hover { transform: translate(2px,2px); box-shadow: 4px 4px 0 var(--ink); background: var(--vermilion-ink); }
-.btn-primary:active { transform: translate(6px,6px); box-shadow: 0 0 0 var(--ink); }
-.btn-secondary:hover { background: var(--ink); color: var(--paper); }
-.btn-ghost { border: 0; border-bottom: var(--ink-stroke) solid var(--ink); padding: 6px 0; }
-.btn-ghost:hover { color: var(--vermilion); border-bottom-color: var(--vermilion); }
+.btn:focus-visible { outline: var(--ink-stroke) solid var(--btn-acento); outline-offset: 3px; }
+
+/* tamanhos: a altura é do token, nunca do padding solto */
+.btn-sm { --btn-h: 38px; --btn-px: 15px; --btn-fs: 13px; }
+.btn-lg { --btn-h: 54px; --btn-px: 30px; --btn-fs: 16px; }
+
+/* variante 1: a ação principal da tela. Tinta cheia e elevação. */
+.btn-primary {
+  background: var(--btn-acento); color: var(--btn-acento-fg); border-color: var(--btn-acento);
+  --btn-sombra: 5px 5px 0 var(--btn-elev);
+}
+.btn-primary:hover { background: var(--vermilion-ink); border-color: var(--vermilion-ink); transform: translate(2px,2px); --btn-sombra: 3px 3px 0 var(--btn-elev); }
+.btn-primary:active { transform: translate(5px,5px); --btn-sombra: 0 0 0 var(--btn-elev); }
+
+/* variante 2: apoio. Vive de contorno e inverte no hover. */
+.btn-secondary { background: transparent; }
+.btn-secondary:hover { background: var(--btn-fg); color: var(--btn-bg); }
+.btn-secondary:active { transform: translate(2px,2px); }
+
+/* variante 3: terciária. Sem caixa, só a linha embaixo. */
+.btn-ghost {
+  min-height: 0; padding: 6px 0; border: 0; border-bottom: var(--ink-stroke) solid var(--btn-fg);
+  background: transparent;
+}
+.btn-ghost:hover { color: var(--btn-acento); border-bottom-color: var(--btn-acento); }
+
+/* estado selecionado: o botão que representa a escolha ativa */
+.btn[aria-pressed="true"], .btn.is-on {
+  background: var(--btn-fg); color: var(--btn-bg); border-color: var(--btn-fg);
+}
+/* desativado ou placeholder: continua legível, mas não promete clique */
+.btn[aria-disabled="true"], .btn:disabled, .btn.is-ph { cursor: default; opacity: .78; }
+.btn[aria-disabled="true"]:hover, .btn:disabled:hover, .btn.is-ph:hover {
+  transform: none; background: transparent; color: var(--btn-fg);
+}
+.btn-primary.is-ph:hover { background: var(--btn-acento); color: var(--btn-acento-fg); }
+
+/* superfícies: só trocam as cores de base, e as variantes seguem valendo */
+.on-ink {
+  --btn-fg: var(--paper); --btn-bg: var(--ink);
+  --btn-acento: var(--vermilion); --btn-acento-fg: #fff; --btn-elev: var(--paper);
+}
+.on-red {
+  --btn-fg: #F6F3EC; --btn-bg: var(--vermilion);
+  --btn-acento: #F6F3EC; --btn-acento-fg: var(--vermilion); --btn-elev: #0A0A0A;
+}
+.on-red .btn-primary:hover { background: #0A0A0A; color: #F6F3EC; border-color: #0A0A0A; }
+
+/* fila de botões: mesma elevação para todos, senão o primário parece
+   maior que o vizinho e o par lê como desalinhado */
+.btn-row { display: flex; align-items: stretch; flex-wrap: wrap; gap: 14px; }
+.btn-row .btn { --btn-sombra: 5px 5px 0 var(--btn-elev); }
+.btn-row .btn:hover { transform: translate(2px,2px); --btn-sombra: 3px 3px 0 var(--btn-elev); }
+.btn-row .btn:active { transform: translate(5px,5px); --btn-sombra: 0 0 0 var(--btn-elev); }
+.btn-row .btn-ghost { --btn-sombra: none; }
+.btn-row .btn-ghost:hover, .btn-row .btn-ghost:active { transform: none; --btn-sombra: none; }
 
 /* ====================== KICKER ====================== */
 .kicker {

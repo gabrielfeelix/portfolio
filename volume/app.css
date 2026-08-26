@@ -228,9 +228,11 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
 .splash-scroll { color: rgba(246,243,236,.8); }
 .splash-scroll:hover { color: #F6F3EC; }
 .ss-wheel { background: #F6F3EC; }
-.splash .btn-primary { background: #F6F3EC; color: var(--vermilion); box-shadow: 5px 5px 0 #0A0A0A; }
-.splash .btn-primary:hover { background: #0A0A0A; color: #F6F3EC; transform: translate(2px,2px); box-shadow: 3px 3px 0 #0A0A0A; }
-.splash .btn-ghost { background: transparent; color: #F6F3EC; border-bottom-color: #F6F3EC; }
+/* a capa é superfície vermelha: herda as cores de .on-red do kit em vez de
+   redefinir cada variante na mão */
+.splash .btn { --btn-fg: #F6F3EC; --btn-bg: var(--vermilion); --btn-acento: #F6F3EC;
+  --btn-acento-fg: var(--vermilion); --btn-elev: #0A0A0A; }
+.splash .btn-primary:hover { background: #0A0A0A; color: #F6F3EC; border-color: #0A0A0A; }
 .splash .btn-ghost:hover { color: #F6F3EC; opacity: .75; border-bottom-color: #F6F3EC; }
 
 /* chapter pages have their own top bar — push it clear of the floating pill */
@@ -247,7 +249,7 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
   padding: 9px 12px 9px 16px; background: color-mix(in srgb, var(--paper) 94%, transparent);
 }
 .hd-float .v-navlinks { position: static; transform: none; gap: 22px; }
-.hd-float .nav-contact-d { padding: 7px 14px; }
+.hd-float .nav-contact-d { --btn-h: 34px; --btn-px: 13px; }
 .hd-float.hd-hidden .v-nav { transform: translate(-50%, -170%); opacity: 0; pointer-events: none; }
 @media (max-width: 760px) {
   .hd-float .v-nav { left: var(--gutter); right: var(--gutter); transform: none; max-width: none; width: auto; border-radius: 16px; top: 10px; justify-content: space-between; }
@@ -892,11 +894,8 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
 /* =====================================================================
    PROTOTYPE LINKS — live (Vercel, primary red) + Figma (secondary)
    ===================================================================== */
-.proto-links { display: flex; gap: 14px; flex-wrap: wrap; margin-top: var(--ma-4); }
-.proto-live, .proto-figma { padding: 12px 20px; font-size: 14px; }
+.proto-links { margin-top: var(--ma-4); }
 .proto-live .ext, .proto-figma .ext { font-size: .92em; }
-.proto-figma { background: transparent; }
-.proto-figma:hover { background: var(--ink); color: var(--paper); }
 .ph-tag {
   font-family: var(--font-condensed); font-weight: 600; letter-spacing: .03em;
   font-size: .82em; opacity: .9; margin-left: 2px;
@@ -904,12 +903,9 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
 .is-ph { cursor: default; }
 .proto-live.is-ph:hover { transform: none; }
 
-/* prototype links sit on the dark chapter cover — invert the secondary */
-.cover .proto-figma { color: var(--paper); border-color: var(--paper); }
-.cover .proto-figma:hover { background: var(--paper); color: var(--ink); }
-.cover .btn-primary { box-shadow: 5px 5px 0 var(--paper); }
-.cover .btn-primary:hover { box-shadow: 3px 3px 0 var(--paper); }
-.cover .proto-live.is-ph:hover { box-shadow: 5px 5px 0 var(--paper); }
+/* a capa do capítulo é superfície tinta: uma linha resolve as três
+   variantes, no lugar das exceções por botão que existiam aqui */
+.cover .btn { --btn-fg: var(--paper); --btn-bg: var(--ink); --btn-elev: var(--paper); }
 
 /* =====================================================================
    v2 reduced motion + responsive
@@ -1073,13 +1069,11 @@ html.ink {
 html.ink .rc-cover, html.ink .sol-img, html.ink .pc-art img, html.ink .cover-img { opacity: .9; }
 html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel de verdade */
 
-/* toggle 墨 no nav */
-.ink-toggle { width: 38px; height: 38px; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
-  border: var(--ink-hair) solid var(--ink); background: transparent; color: var(--ink);
-  font-size: 17px; line-height: 1; cursor: pointer; transition: background var(--cut), color var(--cut), transform var(--cut); }
+/* toggle 墨 no nav: é um botão secundário pequeno do sistema, só quadrado.
+   O estado ligado usa a mesma regra de selecionado das outras variantes. */
+.ink-toggle { width: var(--btn-h); --btn-px: 0; font-size: 17px; flex: 0 0 auto; }
 .ink-toggle [lang="ja"] { font-family: 'Reggae One', var(--font-sfx), sans-serif; }
-.ink-toggle:hover { background: var(--ink); color: var(--paper); transform: translate(1px,1px); }
-.ink-toggle.on { background: var(--ink); color: var(--paper); }
+.ink-toggle.on { background: var(--btn-fg); color: var(--btn-bg); }
 
 /* =====================================================================
    HANKO PRESS — o selo carimba a tela no "Fale comigo"
@@ -1296,13 +1290,8 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   .sig-wrap.in .sig-text { animation: none; }
 }
 
-/* ---- LANG TOGGLE (PT/EN), par do 墨 no nav ---- */
-.lang-toggle { height: 38px; min-width: 38px; padding: 0 8px; flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: var(--ink-hair) solid var(--ink); background: transparent; color: var(--ink);
-  font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em; font-size: 12px;
-  line-height: 1; cursor: pointer; transition: background var(--cut), color var(--cut), transform var(--cut); }
-.lang-toggle:hover { background: var(--ink); color: var(--paper); transform: translate(1px,1px); }
+/* ---- LANG TOGGLE (PT/EN), par do 墨: mesmo botão, mesma medida ---- */
+.lang-toggle { min-width: var(--btn-h); --btn-px: 8px; --btn-fs: 12px; letter-spacing: .12em; flex: 0 0 auto; }
 
 /* ---- BRAND STRIP: marcas reais sob o statement do diferencial ---- */
 .brand-strip { margin-top: var(--ma-4); }  /* legado: mantido p/ EmpresaPage */

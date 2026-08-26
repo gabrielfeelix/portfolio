@@ -58,11 +58,11 @@ function Nav({ view, go, onContact, ink, onInk }) {
              className="btn btn-secondary nav-contact nav-contact-m"
              onClick={() => setMenuOpen(false)}>{t("Fale comigo", "Get in touch")}</a>
         </div>
-        <button type="button" className="lang-toggle" onClick={toggleLang}
+        <button type="button" className="btn btn-secondary btn-sm lang-toggle" onClick={toggleLang}
                 aria-label={t("Read in English", "Ler em português")} title={t("English", "Português")}>
           {t("EN", "PT")}
         </button>
-        <button type="button" className={`ink-toggle ${ink ? "on" : ""}`} onClick={onInk}
+        <button type="button" className={`btn btn-secondary btn-sm ink-toggle ${ink ? "on" : ""}`} onClick={onInk}
                 aria-pressed={!!ink} aria-label={ink ? t("Voltar ao modo papel", "Back to paper mode") : t("Ler no modo tinta", "Read in ink mode")}
                 title={ink ? t("Modo papel", "Paper mode") : t("Modo tinta", "Ink mode")}>
           <span lang="ja" translate="no" aria-hidden="true">墨</span>

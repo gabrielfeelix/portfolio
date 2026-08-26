@@ -14,7 +14,8 @@ function chapOrg(id) {
 function Tobira({ chap }) {
   return (
     <section className="cover">
-      <div className="cover-tone"></div>
+      <div className="cover-brilho" aria-hidden="true"></div>
+      <div className="cover-tone" aria-hidden="true"></div>
       <div className="shell">
         <div className="cover-copy">
           <div className="cover-k">{chap.cap} · {chap.domain}</div>

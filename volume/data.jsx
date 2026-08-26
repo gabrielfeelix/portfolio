@@ -926,7 +926,7 @@ function ProtoLinks({ links = {}, onInk }) {
   const figma = links && links.figma;
   if (!vercel && !figma) return null;
   return (
-    <div className="proto-links">
+    <div className="proto-links btn-row">
       {vercel ? (
         <a className="btn btn-primary proto-live" href={vercel} target="_blank" rel="noreferrer"
            onClick={() => { if (onInk) onInk(); }}>
@@ -934,7 +934,7 @@ function ProtoLinks({ links = {}, onInk }) {
         </a>
       ) : null}
       {figma ? (
-        <a className="btn proto-figma" href={figma} target="_blank" rel="noreferrer"
+        <a className="btn btn-secondary proto-figma" href={figma} target="_blank" rel="noreferrer"
            onClick={() => { if (onInk) onInk(); }}>
           {t("Ver design system", "See design system")} <span className="ext" aria-hidden="true">↗</span>
         </a>
