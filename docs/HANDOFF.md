@@ -65,12 +65,17 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 - **Hero**: aprovado, não mexer. O obi foi recusado.
 - **Onde entra o Design System** (2026-08-26): depois das Decisões, antes dos Módulos. Nunca no começo. O argumento é "antes de desenhar 40 telas, construí o vocabulário", então o DS chega como resposta a um problema já posto e cada tela vira prova de que o sistema funciona.
 - **Profundidade do DS**: "sistema em uso", não catálogo de swatches. Mostrar token semântico funcionando (mesmo componente em dark/light; cor com função: verde = compra, laranja = pré-venda, dourado = Coin). O argumento: *a V1 tinha cores; a V2 tem um sistema que sabe o que cada cor faz*. `ink-muted` não é cinza, é o papel "texto secundário", e vira sozinho quando o tema flipa.
+- **Índice do capítulo** (2026-08-26): variante **LISTA** escolhida entre três protótipos (lombada fina, lista com títulos, fina que expande no hover). As outras duas e o seletor **já foram removidos** — não reintroduzir. Ele fica na margem esquerda e **o conteúdo não estreita pra abrir lugar**: uma versão em `grid` que dividia a tela foi recusada.
 
 ## Pendente
 
-**1. Aprofundar o Design System (opcional).** A seção base entrou (ver abaixo). O que daria pra somar, se ele quiser: tipografia, espaçamento e raio do mesmo jeito que a cor entrou, e um par antes/depois de um componente real (card de produto na V1 e na V2) provando o sistema em cima de uma tela, não só de token.
+**1. Índice só aparece em 1700px+.** O `.shell` trava em 1240px, então abaixo disso a margem livre (menos de 100px de cada lado) não comporta os 236px do índice sem espremer a leitura ou passar por cima dela. **Na tela do Gabriel (1440px) o índice não aparece.** Decisão pendente dele: aceitar assim, ou estreitar o conteúdo em 1440 pra abrir lugar. Não mexer sem ele decidir.
 
-**2. Prints que só o Gabriel pode dar.** As molduras já existem marcadas como pendentes em `data.jsx`:
+**2. Cinco violações de contraste pré-existentes no capítulo.** Confirmadas contra baseline limpo (`git stash`), não são regressão desta rodada: `.cit-f > span` e `.cam-n` (#e4231b sobre #0a0a0a = 4,29:1, precisa 4,5) e `.db-n` / `.cam-n` claro (#b4afa3 sobre #f6f3ec = 1,97:1). O padrão de correção já existe no repo: trocar `--vermilion` por `--vermilion-ink` e `--wash-2` por `--wash-3`. Ficaram fora de escopo de propósito.
+
+**3. Antes/depois de um componente real (opcional).** O DS prova sistema em cima de token. Faltaria provar em cima de uma tela: card de produto da V1 ao lado do da V2. Não há documentação de token da V1 em lugar nenhum, então o enquadramento honesto é "a V1 não tinha sistema", não inventar números da V1.
+
+**4. Prints que só o Gabriel pode dar.** As molduras já existem marcadas como pendentes em `data.jsx`:
 
 | Chave | O que é |
 |---|---|
@@ -81,17 +86,19 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 Ele mostrou os dois primeiros no chat, mas imagem de chat não serve: precisa de **arquivo em disco**. Falta também o FigJam da análise inicial (10 artefatos: mapa do site, inventário de telas, personas, jornada, fluxos, taxonomia, microcopy, auditoria heurística, service blueprint, wireflows) em resolução alta.
 
-**3. Conteúdo de outros capítulos.** Traxium sem print (ele tem em casa). IMMO sem logo (`logo: null` em `data.jsx:755`) — ele vai mandar o Figma. Um `src: null` restante no par mobile do PCYES (`data.jsx`, o segundo shot da biblioteca do design system).
+**5. Conteúdo de outros capítulos.** Traxium sem print (ele tem em casa). IMMO sem logo (`logo: null` em `data.jsx:755`) — ele vai mandar o Figma. Um `src: null` restante no par mobile do PCYES (`data.jsx`, o segundo shot da biblioteca do design system).
 
-**4. Quirk pré-existente, fora de escopo.** Ao navegar pra um capítulo a partir de uma posição rolada, a pill do nav começa escondida até rolar pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
+**6. Quirk pré-existente, fora de escopo.** Ao navegar pra um capítulo a partir de uma posição rolada, a pill do nav começa escondida até rolar pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
 
 ## Estado do capítulo PCYES
 
 O mais desenvolvido do volume. A leitura hoje:
 
-abertura → problema → painel de números → **funil** → **gesto** → investigação → **busca** → citação → decisões → recusei → **design system** → módulos → solução → resultado
+abertura → problema → painel de números → funil → gesto → investigação → busca → citação → decisões → recusei → **design system** → módulos → solução → antes/depois → resultado → aprendi
 
-Os três beats em negrito são desta rodada e usam dado desenhado:
+São 15 seções, e é o que o índice da esquerda lista.
+
+Três beats usam dado desenhado (nenhum é print de dashboard):
 
 - **Funil**: 1.705 na home → 27 no checkout. Régua comparando os 0,16% da loja com 1,1% da categoria (faixa saudável 0,8–1,5%, [Prax 2025](https://www.prax.ai/blog/benchmark-taxa-de-conversao), mais de mil e-commerces brasileiros).
 - **Gesto**: mapa de calor. 182 cliques em fechar o pop-up contra 5 em comprar.
@@ -104,24 +111,44 @@ Dois componentes de scroll, ambos em `Capitulo.jsx`:
 - **`CenaScroll`** — a cena de abertura entra num quadro pequeno (34% da tela) que cresce até a página inteira. Trilho de 1900px, abertura completa em 70% dele. Calibre por `altura` e `largIni`.
 - **`ModuloPassos`** — texto preso à esquerda que troca quando cada prova cruza o meio da tela (IntersectionObserver, `rootMargin: -45%`), com régua de progresso. No mobile o sticky solta e o texto vai acima de cada figura. Dados em `modulos[].passos[{k,t,p,fig}]`.
 
-### O beat do Design System (`Sistema`, rodada 2026-08-26)
+### O beat do Design System (`Sistema`, 2026-08-26)
 
-Entra entre `Recusei` e `Modulos`, que é a ordem decidida: o vocabulário vem antes das telas, então tudo que vem depois lê como prova. Dados em `chapter.sistema` (`data.jsx`), inglês em `i18n.jsx`.
+Entra entre `Recusei` e `Modulos`: o vocabulário vem antes das telas, então tudo que vem depois lê como prova. Dados em `chapter.sistema` (`data.jsx`), inglês em `i18n.jsx`. **Nada é print** — as amostras são cor renderizada em elemento, no idioma dos beats de dado desenhado.
 
-Nada aqui é print: as amostras são cor renderizada em elemento, no mesmo idioma dos beats de dado desenhado. Três peças, cada uma com uma afirmação:
+Primeira dobra, a cor:
 
 - **`escada`** — o mesmo token nos dois temas, lado a lado. A leitura horizontal é o argumento: valor muda, papel não.
-- **`funcoes`** — cor amarrada a pergunta do cliente (comprar, economizar, esperar, saldo). É o que separa paleta de sistema.
+- **`funcoes`** — cor amarrada a pergunta do cliente (comprar, economizar, esperar, saldo).
 - **`caso`** — o verde de economia guarda dois valores (#15803d claro 5,02:1, #4ade80 escuro 11,08:1) justamente para não trocar de papel.
 
-**Os valores são reais**, tirados de `/home/gabrielbarbosa/dev/v3-codigo-fonte/src/styles/theme.css` (o protótipo, somente leitura), não amostra ilustrativa. De lá saíram também os números citados: 239 tokens, 69 componentes, a sombra copiada em 43 lugares. O Figma expõe só a página Cover pela API; o resto do DS exige seleção no desktop, então o arquivo de tema é a fonte melhor.
+Abaixo, as outras fundações (`CurvaMotion`, `Tipografia`, `EspacoRaio`, `Derivado`):
 
-Duas armadilhas desta seção, ambas já corrigidas:
+- **Motion** — a curva `[0.16,1,0.3,1]` em SVG, com um ponto que percorre o próprio path (`offset-path`) contra a diagonal linear tracejada. `pathLength="1"` é **atributo do SVG**, não CSS, senão o desenho do traço não funciona.
+- **Tipografia** — Figtree/Inter, escala 80/48/40/32/16 em tamanho real. O h2 é o único em light (300), e isso é decisão, não acidente.
+- **Espaço e raio** — ritmo 56/88/128/168 em barra proporcional com a compressão mobile (40/56/72/96) ao lado; 6 raios com o uso escrito.
+- **`Derivado`** — o fecho: o card de produto **não guarda cor nenhuma**. O fundo é `rgba(var(--foreground-rgb), .10 → .03)`, então deriva do tema. É a diferença entre paleta e sistema.
 
-1. Célula de amostra com largura fixa **estoura o painel** quando o valor é uma string `rgba(...)` longa. Resolvido com `min-width: 0` e largura em `clamp()`, mais rótulo curto opcional (`cl`/`el`) separado do valor real que pinta o chip.
-2. `opacity` sobre o texto de apoio diluía o verde e **reprovava no axe** (2,93:1) justo no painel que argumenta sobre contraste. Rótulo e razão agora têm cor neutra explícita por tema (`.sis-par.claro` / `.sis-par.escuro`, via `par.escuro` no dado); só a amostra usa a cor do token.
+**Fonte dos valores:** `/home/gabrielbarbosa/dev/v3-codigo-fonte/src/styles/theme.css` (protótipo, **somente leitura**). De lá saíram 239 tokens, 69 componentes, a sombra copiada em 43 lugares, e os comentários que já documentam as razões de contraste. O Figma expõe **só a página Cover** pela API (`get_metadata` sem nodeId lista as páginas); o resto exige seleção no desktop, então o arquivo de tema é a fonte melhor.
 
-Validado: axe 0 violação em 1440/768/390, em modo papel, modo tinta e EN. Sem elemento focável (é beat de leitura, não mexe no Tab). Hierarquia: H2 da seção, H3 no caso.
+### O índice do capítulo (`IndiceCapitulo`)
+
+Lista agrupada em atos, à esquerda. **Derivada do dado** (`indiceDo` + a constante `ATOS`): ato sem seção some, então serve o volume inteiro sem manutenção por capítulo. Âncoras via `<Sec id>`, que só dá endereço e alvo de foco.
+
+- **Sticky, não fixed.** Mora dentro de `.chapter-body`, então aparece depois da capa e sai quando o capítulo acaba.
+- **Não divide a tela.** `height: 0` + `transform: translateX(...)` põe ele na margem sem ocupar coluna: a leitura continua centrada e na largura de antes. Uma tentativa anterior usou `grid-template-columns` e **espremeu o conteúdo** — o Gabriel recusou. Não repetir.
+- **Ativo por scroll**, medido na faixa de 34% da tela (a última seção cujo topo já passou). IO puro fazia seção alta e baixa disputarem e o marcador piscava.
+- O traço vermelho do ativo **cresce a partir do centro** (`height` de 0 a 20px), então trocar de seção lê como movimento contínuo.
+
+### Armadilhas desta rodada (custaram retrabalho)
+
+1. **`.sis-` já era namespace do `SistemaVolume`** (`app.css`, 9 classes). A colisão em `.sis-motion` deu `display:flex; height:56px` no meu painel e ele **colapsou** — build verde, tela quebrada. Prefixo virou `ds-`. Antes de criar prefixo novo, `grep` no `app.css`.
+2. **`opacity` sobre `--fg-2` reprova no axe.** Aconteceu duas vezes: 2,93:1 no painel que argumenta sobre contraste, e 3,4:1 nos números do índice. Texto de apoio leva **cor neutra explícita**, nunca opacidade.
+3. **Deletar bloco por índice de string come vizinho.** Ao remover o seletor de variantes, o `function Sec` foi junto e a página caiu em `Sec is not defined` (o ErrorBoundary segurou, por isso não ficou em branco). Conferir o que sobrou depois de cortar.
+4. **Cena full bleed passa por cima do índice.** `.cena-scroll` sangra em 100vw; o teto dela agora é a coluna livre à direita da lista (`@media min-width: 1700px`).
+
+### Validação feita
+
+axe **0 violação** no que foi construído (seção de DS + índice), em 1920/1700/1440/768/390, modo papel e tinta, PT e EN. Sem elemento focável novo no índice além dos links. Hierarquia: H2 da seção, H3 nos sub-painéis. As 5 violações que sobram no capítulo são pré-existentes (ver Pendente 2).
 
 ## Planos antigos
 
