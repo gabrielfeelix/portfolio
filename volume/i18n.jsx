@@ -37,31 +37,77 @@ if (LANG === "en") {
       fact: "A shorter path to purchase and a checkout rebuilt from session recordings",
       tldr: { papel: "UX/UI Designer, project owner",
         resultado: "A shorter path to purchase and a checkout rebuilt from session recordings" },
+      figuras: {
+        abertura: { legenda: "The V1 first fold: the campaign fills the screen and the first product only shows up after scrolling." },
+        funil: { legenda: "The funnel over the analyzed period: where each step lost people, and the checkout drop at the end." },
+        gravacao: { legenda: "Session recording: the person scrolls the checkout twice looking for a payment method and leaves without buying." },
+        checkout: { alt: "V2 checkout with Pix, card, boleto and wallets visible before any scrolling",
+          legenda: "The V2 checkout opens on the payment method. You know how you can pay before deciding whether to go on." },
+        vitrine: { alt: "V2 storefront with filters on the left and a buy button on the product card",
+          legenda: "In the storefront, buying no longer requires the product page: the button lives on the card, next to price and rating." },
+        preco: { alt: "V2 product page with a sticky price column on the right",
+          legenda: "On the product page, price and purchase stay pinned to the right. The decision doesn't depend on scrolling back up." },
+        home: { alt: "V2 home with product carousel and promotion blocks",
+          legenda: "The home now opens on product. The institutional blocks are still there, after the first buying carousel." },
+        quickview: { legenda: "Quick view in the listing: judge the product, zoom the photo and buy without changing pages." },
+        sku: { legenda: "The internal tool: SKU on one side, formatted description on the other." },
+        contraste: { legenda: "Before and after the contrast and photography pass across the navigation." },
+        libras: { legenda: "VLibras opened from the menu, translating the page in use." },
+      },
+      abertura: { k: "The scene", t: "A site the company liked and the customer didn't use",
+        p: ["PCYES sells hardware and peripherals to people who build their own PC. They arrive knowing the model they want, compare spec sheets against the competition and decide in minutes. The site they had wasn't built for that: it opened on a brand campaign, with video and animation filling the entire first fold, and the product started below the edge of the screen.",
+            "What came to me was an aesthetic brief. Make it more minimal, cleaner, closer to a big brand. I agreed to look, but not to design before understanding why a beautiful store was selling less than it could. The first week went into watching people try to buy."],
+        fig: "abertura" },
       problema: { t: "Nice to look at, hard to buy from",
         p: ["The first version was built on top of the brand: video, animation, a lot of institutional presence. It turned out beautiful and slow to buy from.",
             "People weren't reaching checkout. Buying anything meant opening the product page: the storefront, the home and the category pages had no add-to-cart. Every purchase cost clicks that didn't need to exist.",
-            "And whoever did reach checkout didn't finish. The final step concentrated the drop-off, and it wasn't clear why."] },
+            "And whoever did reach checkout didn't finish. The final step concentrated the drop-off, and it wasn't clear why.",
+            "Added up, the site charged three tolls to someone who only wanted a mouse: find the product inside the campaign, open its page to be able to add it to the cart, and guess in the dark whether they could pay the way they wanted. Each of those tolls has its own way of losing the customer."],
+        fig: "funil" },
       investigacao: { t: "Session recordings instead of opinion",
         p: ["Recordings in Microsoft Clarity, navigation and dwell-time metrics, and direct conversations with users about where they got stuck.",
+            "I watched the recordings end to end, no skipping, noting the exact point where the person stopped moving forward. It's slow work and it's what holds up everything else: without it, the next meeting would be my opinion against the board's opinion, and mine loses.",
             "The board wanted a minimalist direction focused on brand value. On-site behavior pointed the other way. Instead of picking one, I proposed splitting the layers: the brand stays present at specific moments, and the path to purchase becomes the site's spine. I brought the recordings to back the proposal, and the final model was approved."],
         achados: ["Payment methods weren't visible in the checkout's first fold. Users only found out how they could pay after scrolling, and many left before that.",
                   "There were bugs in the payment module used in Magento. The failure showed up in the recordings before it showed up in any report.",
-                  "The path to purchase was too long for the kind of product being sold."] },
+                  "The path to purchase was too long for the kind of product being sold."],
+        fig: "gravacao" },
+      citacao: { q: "The board asked for minimalism. Behavior on the site asked for a shortcut. Instead of picking one, I split the layers.",
+        fonte: "The proposal that unlocked the project" },
       decisoes: [
-        { d: "Payment methods in the checkout's first fold", r: "because the recordings showed people leaving before finding out how they could pay. I traced the module bug to its origin in a public project of the extension and pointed the fix to the tech team." },
-        { d: "Add to cart straight from the home and the storefront", r: "because requiring the product page charged clicks that didn't need to exist. From the cart, the user goes straight to checkout." },
-        { d: "Price always visible", r: "because the buying decision can't depend on scrolling back to the top: a sticky right column on desktop, a fixed bar at the bottom on mobile." },
-        { d: "A product-led home", r: "because the institutional content was taking the product's place: product carousels instead of brand blocks, promotions up front and a promo filter right at the category entrance." },
-        { d: "Quick view in the storefront", r: "because you should be able to judge the product without leaving the listing: a preview button, with zoom." },
-        { d: "Product copy generated from the SKU", r: "because the spec sheets were inconsistent. I built an internal tool that generates the description HTML with heading hierarchy and pre-formatted images, using AI: what was manual and uneven became a standard." },
-        { d: "Photography and contrast reviewed across the whole navigation", r: "because the site is dark and the light folds of the previous version made reading uncomfortable." },
-        { d: "VLibras integrated", r: "because people whose first language is Libras buy here too." },
+        { d: "Payment methods in the checkout's first fold", fig: "checkout",
+          r: "because the recordings showed people leaving before finding out how they could pay. Along the way I found a bug in the Magento payment module: the error showed up in the recorded session and in no report at all. I traced it to its origin in a public project of the extension and handed the tech team the exact spot to fix." },
+        { d: "Add to cart straight from the home and the storefront", fig: "vitrine",
+          r: "because requiring the product page charged clicks that didn't need to exist. Whoever already knows what they want buys from the card, and from the cart goes straight to checkout. Whoever is still deciding still has the full page available." },
+        { d: "Price always visible", fig: "preco",
+          r: "because the buying decision can't depend on scrolling back to the top: a sticky right column on desktop, a fixed bar at the bottom on mobile. It's the piece of information people check most often, and it was the one that kept disappearing." },
+        { d: "A product-led home", fig: "home",
+          r: "because the institutional content was taking the product's place: product carousels instead of brand blocks, promotions up front and a promo filter right at the category entrance. The brand didn't leave, it moved down one fold." },
+        { d: "Quick view in the storefront", fig: "quickview",
+          r: "because you should be able to judge the product without leaving the listing: a preview button, with photo zoom. Someone comparing three models doesn't lose their place in the list on every look." },
+        { d: "Product copy generated from the SKU", fig: "sku",
+          r: "because the spec sheets were inconsistent, each one written by a different person in a different year. I built an internal tool that generates the description HTML with heading hierarchy and pre-formatted images, using AI: what was manual and uneven became a standard." },
+        { d: "Photography and contrast reviewed across the whole navigation", fig: "contraste",
+          r: "because the site is dark and the light folds of the previous version made reading uncomfortable, especially for people browsing late at night, which is a good share of this audience." },
+        { d: "VLibras integrated", fig: "libras",
+          r: "because people whose first language is Libras buy here too. It cost little implementation time and it's the difference between the store serving that person or not." },
       ],
+      recusei: { k: "What I turned down",
+        p: "Not everything the research surfaced became a screen. Three things were left out on purpose.",
+        itens: [
+          { o: "Swapping one institutional home for another", r: "The minimalist direction that arrived ready solved the aesthetics and kept the product out of the first fold. I brought the recordings to the meeting and proposed the opposite of what had been asked." },
+          { o: "Erasing the brand from the site", r: "After turning the table, the easy path would be to make everything a dry storefront. PCYES has personality and it sells. The brand stayed, at a set time and place." },
+          { o: "Filing a ticket and waiting", r: "The payment module bug was blocking real purchases. Diagnosing it wasn't my job, but it was what unlocked the most expensive step in the funnel." },
+        ] },
       solucao: { t: "Brand present, product on the spine",
         p: ["Instead of choosing between brand value and conversion, I split the layers: the brand appears at specific moments and the path to purchase becomes the site's spine.",
-            "Home, storefront and checkout rebuilt to shorten the distance between arriving and buying."] },
+            "Home, storefront and checkout rebuilt to shorten the distance between arriving and buying.",
+            "The system came with it: a Figma library with the components that show up across the whole purchase, so the tech team can implement without re-deciding spacing, state and color on every new screen."],
+        legendas: ["On mobile, the same rule: the storefront buys without opening the product and the price stays fixed at the bottom of the screen.",
+                   "The design system library: card, button, price and state designed once and used across the navigation."] },
       resultado: { t: "Goes live in October",
         p: ["The testing so far pointed to a path to purchase that is easier to understand, and the board approved the final direction.",
+            "What can be stated today is what changed in the path: buying no longer requires the product page, the price stopped disappearing on scroll, and the payment method shows up before the person decides whether to go on.",
             "I don't have operational results yet, and I'd rather not present a number that doesn't exist."],
         listaK: "What will be tracked after release",
         lista: ["Add-to-cart rate from the home and the storefront",
@@ -69,7 +115,8 @@ if (LANG === "en") {
                 "Time between landing on the site and buying",
                 "Payment error occurrences"] },
       aprendi: { p: ["Brand value and conversion were treated as opposite choices at the start of the project. They aren't. The problem wasn't the brand showing up, it was the brand taking the product's place in the page hierarchy.",
-                     "And the most expensive lesson: walking into a hard conversation with session recordings instead of an opinion completely changes where the discussion goes."] },
+                     "And the most expensive lesson: walking into a hard conversation with session recordings instead of an opinion completely changes where the discussion goes.",
+                     "Chasing the payment module bug down to its origin also bought more trust with the tech team than any presentation I could have made."] },
     },
     "locarmais-conciliacao": {
       domain: "SAAS", descriptor: "Financial reconciliation module", title: "Locar Mais", project: "Locar Mais",
@@ -195,11 +242,20 @@ if (LANG === "en") {
     const en = CH[c.id];
     if (en) {
       // merge raso em `solucao`: a tradução só traz t/p/slots, e um
-      // Object.assign cru trocava o objeto inteiro e derrubava `shots` —
+      // Object.assign cru trocava o objeto inteiro e derrubava `shots`,
       // o que fazia todo case aparecer em screentone cinza no inglês.
       const sol = en.solucao ? Object.assign({}, c.solucao, en.solucao) : c.solucao;
+      // mesma armadilha nas figuras: o inglês traz legenda e alt, o
+      // caminho do arquivo mora só no português. Merge por chave.
+      const figsPt = c.figuras;
       Object.assign(c, en);
       if (sol) c.solucao = sol;
+      if (figsPt) {
+        const figsEn = en.figuras || {};
+        const merged = {};
+        Object.keys(figsPt).forEach((k) => { merged[k] = Object.assign({}, figsPt[k], figsEn[k] || {}); });
+        c.figuras = merged;
+      }
     }
     if (c.cap === "PEÇA") c.cap = "PIECE";
     if (c.cap && c.cap.indexOf("CAP.") === 0) c.cap = c.cap.replace("CAP.", "CH.");

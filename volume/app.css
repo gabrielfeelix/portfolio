@@ -2241,3 +2241,10 @@ html.ink .ad-tag-d { background: var(--vermilion); color: var(--paper); }
   width: 58%; height: auto; inset: auto; object-fit: contain; transform: none;
 }
 .bp-cover .bp-tone { background-size: 15px 15px; opacity: .32; }
+
+/* a prova embaixo do argumento, na coluna do texto da decisão */
+.dec-beat .db-fig { grid-column: 2; max-width: 760px; margin-top: var(--ma-3); }
+.dec-beat.par .db-fig { grid-column: 1; }
+@media (max-width: 880px) {
+  .dec-beat .db-fig, .dec-beat.par .db-fig { grid-column: 1; }
+}

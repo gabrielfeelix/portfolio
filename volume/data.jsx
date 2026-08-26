@@ -49,44 +49,108 @@ const CHAPTERS = [
       papel: "UX/UI Designer, responsável pelo projeto",
       resultado: "Caminho de compra encurtado e checkout reconstruído a partir de gravação de sessão",
     },
+    /* ---- as figuras do capítulo -------------------------------------
+       Cada prova é referenciada por chave no bloco que ela sustenta, e a
+       numeração sai da ordem de leitura (figOrder, em Capitulo.jsx). Sem
+       `src`, a moldura entra marcada como print pendente: é honesto e não
+       abre buraco no layout. */
+    figuras: {
+      abertura: { legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
+      funil: { legenda: "O funil no período analisado: onde cada etapa perdia gente, e o degrau do checkout no fim." },
+      gravacao: { legenda: "Gravação de sessão: a pessoa rola o checkout duas vezes procurando forma de pagamento e sai sem comprar." },
+      checkout: { src: "volume/assets/projetos/pcyes/s4.webp",
+        alt: "Checkout da V2 com Pix, cartão, boleto e carteiras visíveis antes de qualquer rolagem",
+        legenda: "O checkout da V2 abre no método de pagamento. A pessoa sabe como pode pagar antes de decidir se continua." },
+      vitrine: { src: "volume/assets/projetos/pcyes/s2.webp",
+        alt: "Vitrine da V2 com filtros à esquerda e botão de comprar no card do produto",
+        legenda: "Na vitrine, comprar deixou de exigir a página do produto: o botão vive no card, junto do preço e da avaliação." },
+      preco: { src: "volume/assets/projetos/pcyes/s3.webp",
+        alt: "Página de produto da V2 com a coluna de preço fixa à direita",
+        legenda: "Na página do produto, o preço e a compra ficam fixos à direita. A decisão não depende de voltar ao topo." },
+      home: { src: "volume/assets/projetos/pcyes/s1.webp",
+        alt: "Home da V2 com carrossel de produtos e blocos de promoção",
+        legenda: "A home passou a abrir em produto. Os blocos institucionais continuam, depois do primeiro carrossel de compra." },
+      quickview: { legenda: "Visualização rápida na listagem: avaliar o produto, ampliar a foto e comprar sem trocar de página." },
+      sku: { legenda: "A ferramenta interna: SKU de um lado, descrição pronta e formatada do outro." },
+      contraste: { legenda: "Antes e depois do ajuste de contraste e fotografia na navegação." },
+      libras: { legenda: "VLibras acionado a partir do menu, traduzindo a página em uso." },
+    },
+    /* ---- a cena que abre o capítulo ---------------------------------
+       O case começava no problema já formulado. Faltava o momento em que
+       ele chega na mesa: o que a empresa vende, o que pediram e o que eu
+       ainda não sabia. */
+    abertura: {
+      k: "A cena",
+      t: "Um site que a empresa gostava e o cliente não usava",
+      p: ["A PCYES vende hardware e periférico para quem monta o próprio PC. É um público que chega sabendo o modelo que quer, compara ficha técnica com a concorrência e decide em minutos. O site que existia não era feito para esse comportamento: abria em campanha de marca, com vídeo e animação ocupando a primeira dobra inteira, e o produto começava abaixo da linha da tela.",
+          "O pedido que chegou até mim era estético. Deixar mais minimalista, mais limpo, mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita estava vendendo menos do que podia. A primeira semana foi assistindo gente tentar comprar."],
+      fig: "abertura",
+    },
     problema: {
       t: "Bonita de ver, difícil de comprar",
       p: ["A primeira versão do site foi construída em cima da marca: vídeo, animação, muita presença institucional. Ficou bonita e ficou lenta de comprar.",
           "As pessoas não chegavam ao checkout. Para comprar qualquer coisa era obrigatório abrir a página do produto: vitrine, home e categoria não deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
-          "E quem chegava ao checkout não finalizava. A etapa final concentrava o abandono, e não estava claro por quê."],
+          "E quem chegava ao checkout não finalizava. A etapa final concentrava o abandono, e não estava claro por quê.",
+          "Somando, o site cobrava três pedágios de quem só queria comprar um mouse: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho e descobrir no escuro se dava para pagar do jeito que a pessoa queria. Cada um desses pedágios tem o seu jeito de sumir com o cliente."],
+      fig: "funil",
     },
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
       p: ["Gravações no Microsoft Clarity, métricas de navegação e tempo de permanência, e conversa direta com usuários sobre onde travavam.",
+          "Assisti as gravações inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É um trabalho lento e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
           "A diretoria queria uma direção minimalista, com foco em valor de marca. O comportamento no site apontava para o outro lado. Em vez de escolher um dos dois, propus separar as camadas: a marca continua presente em momentos específicos, e o caminho de compra passa a ser o eixo do site. Levei as gravações para sustentar a proposta, e o modelo final foi aprovado."],
       achados: [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
         "Havia bugs no módulo de pagamento usado no Magento. A falha aparecia nas gravações antes de aparecer em qualquer relatório.",
         "O caminho até a compra era longo demais para o tipo de produto vendido.",
       ],
+      fig: "gravacao",
+    },
+    /* a frase que virou a reunião, no tamanho de fala de painel */
+    citacao: {
+      q: "A diretoria pedia minimalismo. O comportamento no site pedia atalho. Em vez de escolher um dos dois, separei as camadas.",
+      fonte: "A proposta que destravou o projeto",
     },
     decisoes: [
-      { d: "Formas de pagamento na primeira dobra do checkout", r: "porque a gravação mostrou gente saindo antes de descobrir como podia pagar. Investiguei o bug do módulo até achar a origem num projeto público da extensão e apontei a correção para o time de tecnologia." },
-      { d: "Adicionar ao carrinho direto da home e da vitrine", r: "porque exigir a página do produto cobrava cliques que não precisavam existir. Do carrinho, o usuário vai direto ao checkout." },
-      { d: "Preço sempre visível", r: "porque a decisão de compra não pode depender de voltar ao topo: coluna fixa à direita no desktop, barra fixa na base da tela no mobile." },
-      { d: "Home orientada a produto", r: "porque o institucional estava ocupando o lugar do produto: carrosséis de produto no lugar dos blocos de marca, promoções em destaque e filtro de promoção logo na entrada das categorias." },
-      { d: "Visualização rápida na vitrine", r: "porque dá pra avaliar o produto sem sair da listagem: botão de preview, com zoom." },
-      { d: "Descrição de produto gerada a partir do SKU", r: "porque as fichas eram inconsistentes. Construí uma ferramenta interna que gera o HTML da descrição com hierarquia de títulos e imagens já formatadas, usando IA: o que era manual e desigual virou padrão." },
-      { d: "Fotografia e contraste revisados na navegação inteira", r: "porque o site é escuro e as dobras claras da versão anterior causavam desconforto na leitura." },
-      { d: "VLibras integrado", r: "porque quem tem Libras como primeira língua também compra aqui." },
+      { d: "Formas de pagamento na primeira dobra do checkout", fig: "checkout",
+        r: "porque a gravação mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no módulo de pagamento do Magento: o erro aparecia na sessão gravada e não aparecia em relatório nenhum. Fui atrás da origem num projeto público da extensão e entreguei o ponto exato para o time de tecnologia corrigir." },
+      { d: "Adicionar ao carrinho direto da home e da vitrine", fig: "vitrine",
+        r: "porque exigir a página do produto cobrava cliques que não precisavam existir. Quem já sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda está decidindo continua com a página completa à disposição." },
+      { d: "Preço sempre visível", fig: "preco",
+        r: "porque a decisão de compra não pode depender de voltar ao topo: coluna fixa à direita no desktop, barra fixa na base da tela no mobile. É a informação que a pessoa mais reconsulta, e era a que mais sumia." },
+      { d: "Home orientada a produto", fig: "home",
+        r: "porque o institucional estava ocupando o lugar do produto: carrosséis de produto no lugar dos blocos de marca, promoções em destaque e filtro de promoção logo na entrada das categorias. A marca não saiu, desceu uma dobra." },
+      { d: "Visualização rápida na vitrine", fig: "quickview",
+        r: "porque dá para avaliar o produto sem sair da listagem: botão de preview, com zoom na foto. Quem está comparando três modelos não perde o lugar na lista a cada olhada." },
+      { d: "Descrição de produto gerada a partir do SKU", fig: "sku",
+        r: "porque as fichas eram inconsistentes, e cada uma tinha sido escrita por uma pessoa diferente em um ano diferente. Construí uma ferramenta interna que gera o HTML da descrição com hierarquia de títulos e imagens já formatadas, usando IA: o que era manual e desigual virou padrão." },
+      { d: "Fotografia e contraste revisados na navegação inteira", fig: "contraste",
+        r: "porque o site é escuro e as dobras claras da versão anterior causavam desconforto na leitura, ainda mais em quem navega de madrugada, que é boa parte desse público." },
+      { d: "VLibras integrado", fig: "libras",
+        r: "porque quem tem Libras como primeira língua também compra aqui. Custou pouco tempo de implementação e é a diferença entre a loja servir essa pessoa ou não servir." },
     ],
+    /* o beat que separa quem escolheu de quem entregou tudo que pediram */
+    recusei: {
+      k: "O que eu recusei",
+      p: "Nem tudo que apareceu na pesquisa virou tela. Três coisas ficaram de fora de propósito.",
+      itens: [
+        { o: "Trocar uma home institucional por outra", r: "A direção minimalista que chegou pronta resolvia a estética e mantinha o produto fora da primeira dobra. Levei as gravações para a reunião e propus o contrário do que tinham pedido." },
+        { o: "Apagar a marca do site", r: "Depois de virar a mesa, o caminho fácil seria transformar tudo em vitrine seca. A PCYES tem personalidade e ela vende. A marca continuou, com hora e lugar marcados." },
+        { o: "Abrir chamado e esperar", r: "O bug do módulo de pagamento travava compra de verdade. Diagnosticar não era o meu papel, mas era o que destravava a etapa mais cara do funil." },
+      ],
+    },
     solucao: {
       t: "Marca presente, produto no eixo",
       p: ["Em vez de escolher entre valor de marca e conversão, separei as camadas: a marca aparece em momentos específicos e o caminho de compra passa a ser o eixo do site.",
-          "Home, vitrine e checkout reconstruídos para encurtar a distância entre entrar e comprar."],
-      slots: 5,
-      /* na ordem do caminho de compra: home orientada a produto, vitrine com
-         compra direta, página de produto com preço fixo, checkout com as
-         formas de pagamento na primeira dobra e o par mobile — vitrine que
-         compra direto e a barra de preço fixa na base da tela. */
-      shots: ["volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp",
-              "volume/assets/projetos/pcyes/s3.webp", "volume/assets/projetos/pcyes/s4.webp",
-              "volume/assets/projetos/pcyes/s5.webp"],
+          "Home, vitrine e checkout reconstruídos para encurtar a distância entre entrar e comprar.",
+          "O sistema saiu junto: uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espaçamento, estado e cor a cada tela nova."],
+      slots: 2,
+      /* as telas de desktop subiram para junto das decisões que elas provam
+         (figuras "checkout", "vitrine", "preco" e "home"). Aqui fica o que
+         fala do conjunto: o mobile e a biblioteca do design system. */
+      shots: ["volume/assets/projetos/pcyes/s5.webp", { src: null }],
+      legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela.",
+                 "A biblioteca do design system: card, botão, preço e estado desenhados uma vez e usados em toda a navegação."],
     },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
@@ -98,7 +162,8 @@ const CHAPTERS = [
     resultado: {
       t: "Entra em produção em outubro",
       p: ["Os testes feitos até aqui apontaram um caminho de compra mais fácil de entender, e a diretoria aprovou a direção final.",
-          "Ainda não tenho resultado de operação, e prefiro não apresentar número que não existe."],
+          "O que já dá para afirmar é o que mudou no caminho: comprar deixou de exigir a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua.",
+          "Resultado de operação eu ainda não tenho, e prefiro não apresentar número que não existe."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
               "Conclusão do checkout e abandono por etapa",
@@ -107,7 +172,8 @@ const CHAPTERS = [
     },
     aprendi: {
       p: ["Valor de marca e conversão foram tratados como escolhas opostas no começo do projeto. Não são. O problema não era a marca aparecer, era ela ocupar o lugar do produto na hierarquia da página.",
-          "E a lição mais cara: chegar em uma conversa difícil com gravação de sessão em vez de opinião muda completamente o rumo da discussão."],
+          "E a lição mais cara: chegar em uma conversa difícil com gravação de sessão em vez de opinião muda completamente o rumo da discussão.",
+          "Perseguir o bug do módulo de pagamento até a origem também comprou mais confiança com o time de tecnologia do que qualquer apresentação que eu tivesse feito."],
     },
   },
   {

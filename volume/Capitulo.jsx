@@ -73,12 +73,136 @@ function renderPH(str) {
   );
 }
 
+/* ---- FIGURA: a prova ao lado da afirmação ---------------------------
+   Toda evidência do capítulo passa por aqui: o print quando existe, a
+   moldura marcada como pendente quando ainda não subiu. A legenda carrega
+   argumento, nunca "tela de checkout": quem só lê as legendas do capítulo
+   tem que sair entendendo o case. */
+function Figura({ fig, n, ar, className = "" }) {
+  if (!fig) return null;
+  const legenda = fig.legenda;
+  return (
+    <figure className={`fig ${className}`}>
+      <div className="fig-frame" style={{ aspectRatio: fig.ar || ar || "16/10" }}>
+        {fig.src
+          ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
+          : <MangaPlate />}
+      </div>
+      {legenda ? (
+        <figcaption className="fig-cap">
+          {n ? <i className="fig-n">fig. {String(n).padStart(2, "0")}</i> : null}
+          <span>{renderPH(legenda)}</span>
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+/* ---- CENA: a figura de linha inteira que corta o texto ---------------
+   Entra onde a leitura precisa respirar e ver o estado inteiro da tela.
+   Sangra até a borda porque é o equivalente da splash page: o painel que
+   ocupa a folha sozinho. */
+function Cena({ fig, n }) {
+  if (!fig) return null;
+  return (
+    <div className="cena bleed">
+      <div className="fig-frame" style={{ aspectRatio: fig.ar || "21/9" }}>
+        {fig.src
+          ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
+          : <MangaPlate />}
+      </div>
+      {fig.legenda ? (
+        <div className="fig-cap">
+          {n ? <i className="fig-n">fig. {String(n).padStart(2, "0")}</i> : null}
+          <span>{renderPH(fig.legenda)}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/* ---- ABERTURA: a cena antes do diagnóstico --------------------------
+   O capítulo começava no problema já formulado. Faltava o momento em que
+   o projeto chega na mesa: o que a empresa vendia, o que pediram e o que
+   eu ainda não sabia. É o que dá o que perder no resto da leitura. */
+function Abertura({ chap, figN }) {
+  const ab = chap.abertura;
+  if (!ab) return null;
+  const fig = ab.fig && chap.figuras ? chap.figuras[ab.fig] : null;
+  return (
+    <>
+      <Beat>
+        <div className="c8 text-col">
+          <div className="panel text">
+            <div className="beat-k">{ab.k || t("A cena", "The scene")}</div>
+            {ab.t ? <Brush as="h2" className="beat-t">{renderPH(ab.t)}</Brush> : null}
+            {(ab.p || []).map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+          </div>
+        </div>
+      </Beat>
+      {fig ? <Cena fig={fig} n={figN[ab.fig]} /> : null}
+    </>
+  );
+}
+
+/* ---- CITAÇÃO: a frase que virou o projeto ---- */
+function Citacao({ dados }) {
+  if (!dados || !dados.q) return null;
+  return (
+    <Beat>
+      <blockquote className="citacao">
+        <p className="cit-q">{renderPH(dados.q)}</p>
+        {dados.fonte ? <div className="cit-f">{renderPH(dados.fonte)}</div> : null}
+      </blockquote>
+    </Beat>
+  );
+}
+
+/* ---- O QUE EU RECUSEI ----
+   O beat que separa quem escolheu de quem entregou tudo que pediram. Vem
+   depois das decisões porque só faz sentido depois de saber o que entrou. */
+function Recusei({ dados }) {
+  if (!dados || !dados.itens || !dados.itens.length) return null;
+  return (
+    <Beat>
+      <div className="recusei">
+        <div className="beat-k">{dados.k || t("O que eu recusei", "What I turned down")}</div>
+        {dados.p ? <p className="beat-p" style={{ marginTop: 10 }}>{renderPH(dados.p)}</p> : null}
+        <ul className="rec-lista">
+          {dados.itens.map((it, i) => (
+            <li key={i}>
+              <h3 className="rec-o">{renderPH(it.o)}</h3>
+              <p className="rec-r">{renderPH(it.r)}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Beat>
+  );
+}
+
+/* numeração contínua das figuras do capítulo, na ordem de leitura: quem
+   cita "fig. 04" no texto está apontando para a mesma imagem que o leitor
+   acabou de ver. */
+function figOrder(chap) {
+  const mapa = {};
+  let n = 0;
+  const marca = (k) => { if (k && chap.figuras && chap.figuras[k] && !mapa[k]) mapa[k] = ++n; };
+  if (chap.abertura) marca(chap.abertura.fig);
+  if (chap.problema) marca(chap.problema.fig);
+  if (chap.investigacao) marca(chap.investigacao.fig);
+  (chap.decisoes || []).forEach((d) => marca(d.fig));
+  return mapa;
+}
+
 /* ---- [2] PROBLEMA ----
    The arc-opening panel: the problem title shouted in display type inside
    a thick manga frame, the seal kanji 問 (question) ghosted vertically
    behind. The title lives IN the panel; the text column carries the story. */
-function Problema({ chap }) {
+function Problema({ chap, figN = {} }) {
+  const fig = chap.problema.fig && chap.figuras ? chap.figuras[chap.problema.fig] : null;
   return (
+    <>
     <Beat>
       <div className="c7">
         <div className="panel art prob">
@@ -94,6 +218,14 @@ function Problema({ chap }) {
         </div>
       </div>
     </Beat>
+    {fig ? (
+      <Beat>
+        <div style={{ gridColumn: "1 / -1" }}>
+          <Figura fig={fig} n={figN[chap.problema.fig]} ar="16/9" />
+        </div>
+      </Beat>
+    ) : null}
+    </>
   );
 }
 
@@ -165,10 +297,12 @@ function AntesDepois({ dados }) {
 /* ---- [2.5] COMO INVESTIGUEI ----
    O que separa opinião de decisão. Só aparece nos capítulos que trazem o
    bloco; os achados entram numerados, porque foram eles que viraram corte. */
-function Investigacao({ chap }) {
+function Investigacao({ chap, figN = {} }) {
   const inv = chap.investigacao;
   if (!inv) return null;
+  const fig = inv.fig && chap.figuras ? chap.figuras[inv.fig] : null;
   return (
+    <>
     <Beat>
       <div className="c5 text-col">
         <div className="panel text">
@@ -187,6 +321,14 @@ function Investigacao({ chap }) {
         </div>
       </div>
     </Beat>
+    {fig ? (
+      <Beat>
+        <div style={{ gridColumn: "1 / -1" }}>
+          <Figura fig={fig} n={figN[inv.fig]} ar="16/9" />
+        </div>
+      </Beat>
+    ) : null}
+    </>
   );
 }
 
@@ -214,7 +356,7 @@ function SfxBeat({ word }) {
 }
 
 /* ---- [3] DECISÕES (decisão -> razão) ---- */
-function Decisoes({ chap }) {
+function Decisoes({ chap, figN = {} }) {
   return (
     <>
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
@@ -226,7 +368,9 @@ function Decisoes({ chap }) {
           argumento numerado, que é o que o capítulo está fazendo. */}
       <ol className="dec-seq">
         {chap.decisoes.map((dec, i) => (
-          <DecBeat key={i} n={i + 1} dec={dec} par={i % 2 === 1} />
+          <DecBeat key={i} n={i + 1} dec={dec} par={i % 2 === 1}
+                   fig={dec.fig && chap.figuras ? chap.figuras[dec.fig] : null}
+                   figN={figN[dec.fig]} />
         ))}
       </ol>
     </>
@@ -235,7 +379,7 @@ function Decisoes({ chap }) {
 
 /* um beat de decisão: número grande em editorial, a escolha em display e a
    razão em corpo de leitura. Entra em corte seco quando cruza a viewport. */
-function DecBeat({ n, dec, par }) {
+function DecBeat({ n, dec, par, fig, figN }) {
   const [ref, seen] = useReveal({ threshold: 0.3 });
   return (
     <li ref={ref} className={`dec-beat ${par ? "par" : ""} ${seen ? "in" : ""}`}>
@@ -244,6 +388,9 @@ function DecBeat({ n, dec, par }) {
         <h3 className="db-d">{renderPH(dec.d)}</h3>
         <p className="db-r"><i className="db-k">{t("Por quê", "Why")}</i>{renderPH(dec.r)}</p>
       </div>
+      {/* a decisão que tem prova mostra a prova aqui mesmo, embaixo do
+          argumento, e não num bloco de prints no fim do capítulo */}
+      {fig ? <div className="db-fig"><Figura fig={fig} n={figN} ar="16/9" /></div> : null}
       <span className="db-tone" aria-hidden="true"></span>
     </li>
   );
@@ -293,6 +440,7 @@ function Vocabulario({ dados }) {
 /* ---- [4] SOLUÇÃO ---- */
 function Solucao({ chap }) {
   const shots = chap.solucao.shots || [];
+  const legendas = chap.solucao.legendas || [];
   const n = shots.length;
   return (
     <>
@@ -324,12 +472,16 @@ function Solucao({ chap }) {
               const src = typeof sh === "string" ? sh : (sh && sh.src);
               const ar = sh && sh.ar;
               const cls = "sol-panel" + (sh && sh.meia ? " meia" : "");
+              const cap = legendas[i];
               return (
-                <div className={cls} key={i} style={ar ? { aspectRatio: ar } : undefined}>
-                  {src
-                    ? <img className="sol-img" src={src} alt={t(`${chap.title} · tela ${i + 1}`, `${chap.title} · screen ${i + 1}`)} loading="lazy" draggable="false" />
-                    : <MangaPlate />}
-                </div>
+                <React.Fragment key={i}>
+                  <div className={cls} style={ar ? { aspectRatio: ar } : undefined}>
+                    {src
+                      ? <img className="sol-img" src={src} alt={cap || t(`${chap.title} · tela ${i + 1}`, `${chap.title} · screen ${i + 1}`)} loading="lazy" draggable="false" />
+                      : <MangaPlate />}
+                  </div>
+                  {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}>{renderPH(cap)}</p> : null}
+                </React.Fragment>
               );
             })}
           </div>
@@ -487,6 +639,7 @@ function NextChapter({ next, onOpen, onHome }) {
 /* ---- the assembled chapter ---- */
 function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
+  const figN = figOrder(chap);
   return (
     <main key={chap.id} className="chapter-main">
       <div className="chapter-back">
@@ -501,11 +654,14 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
       <div className="chapter-body shell">
         <Tldr tldr={chap.tldr} links={chap.links} />
         <div style={{ height: "var(--ma-6)" }}></div>
-        <Problema chap={chap} />
-        <Investigacao chap={chap} />
+        <Abertura chap={chap} figN={figN} />
+        <Problema chap={chap} figN={figN} />
+        <Investigacao chap={chap} figN={figN} />
+        <Citacao dados={chap.citacao} />
         <SfxBeat word={chap.sfx} />
-        <Decisoes chap={chap} />
+        <Decisoes chap={chap} figN={figN} />
         <div style={{ height: "var(--ma-6)" }}></div>
+        <Recusei dados={chap.recusei} />
         <Solucao chap={chap} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {chap.vocabulario ? <><div style={{ height: "var(--ma-6)" }}></div><Vocabulario dados={chap.vocabulario} /></> : null}
@@ -522,4 +678,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Figura, Cena, Abertura, Citacao, Recusei, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

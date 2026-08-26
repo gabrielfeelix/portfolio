@@ -106,3 +106,66 @@
   .beat .c7,.beat .c5,.beat .c6,.beat .c8,.beat .c4 { grid-column: 1 / -1; }
   .beat.rev .text-col { order: 0; }
 }
+
+/* =====================================================================
+   NARRATIVA COM PROVA — figura, cena de sangria, citação e recusa
+   O case lia como sete blocos de texto e um bloco de prints no fim. Aqui
+   cada afirmação carrega a evidência ao lado dela, que é como uma página
+   de mangá conta: painel, fala, painel. A moldura vazia é sinal honesto
+   de print que ainda não subiu, nunca um buraco no layout.
+   ===================================================================== */
+.fig { margin: 0; }
+.fig-frame {
+  position: relative; overflow: hidden; background: var(--wash-1);
+  border: var(--ink-stroke) solid var(--ink);
+}
+.fig-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.fig-cap {
+  display: flex; gap: 10px; align-items: baseline;
+  margin-top: 12px; font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: 60ch;
+}
+.fig-n {
+  font-family: var(--font-condensed); font-weight: 700; font-style: normal;
+  text-transform: uppercase; letter-spacing: .14em; font-size: 11px;
+  color: var(--vermilion-ink); white-space: nowrap; padding-top: 3px;
+}
+
+/* cena: a figura que ocupa a linha inteira, entre uma seção e outra.
+   Sangra até a borda da tela; `overflow-x: clip` no capítulo impede a
+   barra horizontal que o truque de 100vw costuma criar. */
+.chapter-main { overflow-x: clip; }
+.cena { margin: 0 0 var(--ma-6); }
+.cena .fig-frame { border-left: 0; border-right: 0; }
+.cena.bleed { width: 100vw; margin-left: calc(50% - 50vw); }
+.cena .fig-cap { max-width: 62ch; padding: 0 var(--gutter); margin-inline: auto; }
+.cena.bleed .fig-cap { max-width: 1240px; padding: 0 var(--gutter); }
+
+/* a citação que separa a investigação da decisão: a frase que destravou o
+   projeto, em tinta, no tamanho de fala de painel */
+.citacao { grid-column: 1 / -1; background: var(--ink); color: var(--paper); padding: var(--ma-5) var(--ma-4); }
+.citacao .cit-q {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.5rem, 3.2vw, 2.6rem); line-height: 1.06; margin: 0; max-width: 22ch;
+}
+.citacao .cit-f {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .18em; font-size: 12px; color: var(--vermilion); margin-top: var(--ma-3);
+}
+
+/* o bloco de recusa: o que ficou de fora e por quê. É o beat que separa
+   quem escolheu de quem só entregou tudo que pediram. */
+/* sem borda no topo: a sequência de decisões já fecha com um traço, e a
+   segunda linha logo abaixo lia como erro de layout */
+.recusei { grid-column: 1 / -1; padding-top: var(--ma-3); }
+.rec-lista { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: var(--ma-4); grid-template-columns: repeat(3, 1fr); }
+.rec-lista li { border-left: var(--ink-stroke) solid var(--ink); padding-left: 16px; }
+.rec-o { font-family: var(--font-condensed); font-weight: 700; font-size: 19px; line-height: 1.2; margin: 0 0 8px; }
+.rec-r { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
+
+/* legenda das telas da solução: cada print diz o que provou */
+.sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: 62ch; display: flex; gap: 10px; align-items: baseline; }
+
+@media (max-width: 880px) {
+  .rec-lista { grid-template-columns: 1fr; }
+  .citacao { padding: var(--ma-4) var(--ma-3); }
+}
