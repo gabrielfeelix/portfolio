@@ -136,7 +136,15 @@ if (process.argv.includes("--serve")) {
     loader: { ".jsx": "jsx" }, target: ["es2018"],
   });
   await ctx.watch();
-  const { port } = await ctx.serve({ servedir: DIST, port: 5173 });
+  const wanted = Number(process.env.PORT) || 5173;
+  let port;
+  try {
+    ({ port } = await ctx.serve({ servedir: DIST, port: wanted }));
+  } catch (err) {
+    if (!/address already in use/i.test(err.message)) throw err;
+    console.log(`porta ${wanted} ocupada, escolhendo outra…`);
+    ({ port } = await ctx.serve({ servedir: DIST, port: 0 }));
+  }
   console.log(`dev server: http://localhost:${port}`);
 } else {
   await buildOnce();
