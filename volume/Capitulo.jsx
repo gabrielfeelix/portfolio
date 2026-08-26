@@ -73,6 +73,74 @@ function renderPH(str) {
   );
 }
 
+/* ---- LIGHTBOX: a prova em tamanho cheio ------------------------------
+   Print pequeno na página serve para o argumento; quem quiser ler a
+   interface abre aqui, em resolução cheia, com zoom seguindo o ponteiro.
+   Um evento no window liga a figura ao painel, então qualquer bloco novo
+   ganha o comportamento sem precisar carregar estado pela árvore. */
+function abrirFigura(fig) {
+  window.dispatchEvent(new CustomEvent("vol-figura", { detail: fig }));
+}
+
+function Lightbox() {
+  const [fig, setFig] = useState(null);
+  const [zoom, setZoom] = useState(false);
+  const [origem, setOrigem] = useState({ x: 50, y: 50 });
+  const fechar = useRef(null);
+  const anterior = useRef(null);
+
+  useEffect(() => {
+    const abre = (e) => {
+      anterior.current = document.activeElement;
+      setZoom(false); setOrigem({ x: 50, y: 50 }); setFig(e.detail);
+    };
+    window.addEventListener("vol-figura", abre);
+    return () => window.removeEventListener("vol-figura", abre);
+  }, []);
+
+  useEffect(() => {
+    if (!fig) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") { e.preventDefault(); setFig(null); }
+      if (e.key === "Tab") { e.preventDefault(); if (fechar.current) fechar.current.focus(); }
+    };
+    document.addEventListener("keydown", onKey);
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    if (fechar.current) fechar.current.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = overflow;
+      if (anterior.current && anterior.current.focus) anterior.current.focus();
+    };
+  }, [fig]);
+
+  if (!fig) return null;
+  const mover = (e) => {
+    if (!zoom) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    setOrigem({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  };
+  return (
+    <div className="lb" role="dialog" aria-modal="true"
+         aria-label={fig.alt || t("Imagem ampliada", "Enlarged image")}
+         onClick={(e) => { if (e.target === e.currentTarget) setFig(null); }}>
+      <button className="lb-x" type="button" ref={fechar} onClick={() => setFig(null)}
+              aria-label={t("Fechar", "Close")}>✕</button>
+      <figure className="lb-fig">
+        <div className={`lb-quadro ${zoom ? "zoom" : ""}`} onMouseMove={mover}
+             onClick={() => setZoom((z) => !z)}>
+          <img src={fig.src} alt={fig.alt || ""} draggable="false"
+               style={zoom ? { transform: "scale(2.4)", transformOrigin: `${origem.x}% ${origem.y}%` } : undefined} />
+        </div>
+        {fig.legenda ? <figcaption className="lb-cap">{renderPH(fig.legenda)}</figcaption> : null}
+        <div className="lb-dica">{zoom ? t("Clique para reduzir · Esc fecha", "Click to zoom out · Esc closes")
+                                       : t("Clique na imagem para ampliar · Esc fecha", "Click the image to zoom · Esc closes")}</div>
+      </figure>
+    </div>
+  );
+}
+
 /* ---- FIGURA: a prova ao lado da afirmação ---------------------------
    Toda evidência do capítulo passa por aqui: o print quando existe, a
    moldura marcada como pendente quando ainda não subiu. A legenda carrega
@@ -81,8 +149,8 @@ function renderPH(str) {
 function Figura({ fig, n, ar, className = "" }) {
   if (!fig) return null;
   const legenda = fig.legenda;
-  // a máscara sobe do rodapé do quadro quando ele entra na viewport: o
-  // print é revelado como quem vira a página, não como quem faz fade.
+  // o quadro estoura quando entra na viewport (o respingo vive no CSS) e,
+  // tendo arquivo, abre no lightbox para quem quiser ler os detalhes.
   const [ref, seen] = useReveal({ threshold: 0.22 });
   return (
     <figure className={`fig ${className} ${seen || REDUCED ? "revelada" : ""}`} ref={ref}>
@@ -90,6 +158,11 @@ function Figura({ fig, n, ar, className = "" }) {
         {fig.src
           ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
           : <MangaPlate />}
+        {fig.src ? <>
+          <button className="fig-abrir" type="button" onClick={() => abrirFigura(fig)}
+                  aria-label={t("Abrir a imagem em tamanho cheio", "Open the image full size")}></button>
+          <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
+        </> : null}
       </div>
       {legenda ? (
         <figcaption className="fig-cap">
@@ -114,6 +187,11 @@ function Cena({ fig, n }) {
         {fig.src
           ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
           : <MangaPlate />}
+        {fig.src ? <>
+          <button className="fig-abrir" type="button" onClick={() => abrirFigura(fig)}
+                  aria-label={t("Abrir a imagem em tamanho cheio", "Open the image full size")}></button>
+          <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
+        </> : null}
       </div>
       {fig.legenda ? (
         <div className="fig-cap">
@@ -202,6 +280,8 @@ function Modulos({ chap, figN = {} }) {
   return (
     <>
       {mods.map((m, i) => {
+        // o módulo com escolha nunca inverte: a pergunta vem antes das abas
+        if (m.caminhos) return <ModuloCaminhos key={i} mod={m} chap={chap} figN={figN} />;
         const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
         const grade = figs.length > 1;
         return (
@@ -225,6 +305,59 @@ function Modulos({ chap, figN = {} }) {
   );
 }
 
+/* ---- MÓDULO COM CAMINHOS: a escolha que o próprio produto oferece ----
+   Quando o módulo do produto é "escolha um caminho", ler três parágrafos
+   seguidos desmonta o argumento. Aqui quem lê escolhe o caminho e vê a
+   tela grande dele, com a troca em corte seco: a página faz o que a tela
+   que ela está descrevendo faz. Teclado: setas andam entre os caminhos. */
+function ModuloCaminhos({ mod, chap, figN = {} }) {
+  const caminhos = mod.caminhos || [];
+  const [ativo, setAtivo] = useState(0);
+  const cam = caminhos[ativo] || {};
+  const fig = cam.fig && chap.figuras ? chap.figuras[cam.fig] : null;
+  const onKey = (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const passo = e.key === "ArrowRight" ? 1 : -1;
+    const prox = (ativo + passo + caminhos.length) % caminhos.length;
+    setAtivo(prox);
+    const alvo = e.currentTarget.parentNode.querySelectorAll(".cam-tab")[prox];
+    if (alvo) alvo.focus();
+  };
+  return (
+    <>
+      <Beat>
+        <div className="c5 text-col">
+          <div className="panel text">
+            <div className="beat-k">{mod.k}</div>
+            <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
+            {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
+          </div>
+        </div>
+        <div className="c7">
+          <div className="cam-tabs" role="tablist" aria-label={mod.t}>
+            {caminhos.map((c, i) => (
+              <button key={i} type="button" role="tab" id={`cam-t-${i}`}
+                      className={`cam-tab ${i === ativo ? "on" : ""}`}
+                      aria-selected={i === ativo} aria-controls={`cam-p-${i}`}
+                      tabIndex={i === ativo ? 0 : -1}
+                      onClick={() => setAtivo(i)} onKeyDown={onKey}>
+                <span className="cam-n">{String(i + 1).padStart(2, "0")}</span>
+                <span className="cam-t">{c.t}</span>
+                <span className="cam-para">{c.para}</span>
+              </button>
+            ))}
+          </div>
+          <div className="cam-palco" role="tabpanel" id={`cam-p-${ativo}`} aria-labelledby={`cam-t-${ativo}`}>
+            <Figura key={cam.fig || ativo} fig={fig} n={figN[cam.fig]} ar="16/10" className="cam-fig" />
+            {cam.p ? <p className="cam-p">{renderPH(cam.p)}</p> : null}
+          </div>
+        </div>
+      </Beat>
+    </>
+  );
+}
+
 /* ---- CALENDÁRIO: a data de publicação, rabiscada ---------------------
    Outubro de 2026 desenhado como folha de calendário, com o 26 circulado
    a mão quando o bloco entra na viewport. O rabisco é um path SVG que se
@@ -235,8 +368,7 @@ function Calendario({ dados }) {
   const semanas = dados.semanas || [];
   const dia = dados.dia;
   return (
-    <Beat>
-      <div className="cal-wrap" ref={ref} style={{ gridColumn: "1 / -1" }}>
+      <div className="cal-wrap" ref={ref}>
         <div className={`cal ${seen || REDUCED ? "in" : ""}`}>
           <div className="cal-top">
             <span className="cal-mes">{dados.mes}</span>
@@ -263,7 +395,6 @@ function Calendario({ dados }) {
           <p>{renderPH(dados.legenda)}</p>
         </div>
       </div>
-    </Beat>
   );
 }
 
@@ -278,7 +409,10 @@ function figOrder(chap) {
   if (chap.problema) marca(chap.problema.fig);
   if (chap.investigacao) marca(chap.investigacao.fig);
   (chap.decisoes || []).forEach((d) => marca(d.fig));
-  (chap.modulos || []).forEach((m) => (m.figs || []).forEach(marca));
+  (chap.modulos || []).forEach((m) => {
+    (m.figs || []).forEach(marca);
+    (m.caminhos || []).forEach((c) => marca(c.fig));
+  });
   return mapa;
 }
 
@@ -621,18 +755,22 @@ function Resultado({ chap }) {
         </div>
       </div>
       <div className="c7">
-        <div className="panel art impact">
-          {chap.fact ? (
-            <div className="impact-inner">
-              <span className="impact-kana" lang="ja" translate="no" aria-hidden="true">{chap.sfx}</span>
-              <div className="impact-k">{t("Preto no branco", "In black and white")}</div>
-              <div className="impact-t">{chap.fact}</div>
-              {chap.links && chap.links.vercel
-                ? <a className="impact-live" href={chap.links.vercel} target="_blank" rel="noreferrer">{t("No ar", "Live")} <span className="ext" aria-hidden="true">↗</span></a>
-                : null}
-            </div>
-          ) : <MangaPlate />}
-        </div>
+        {/* com data marcada, o painel do resultado é o calendário: a folha
+            de outubro diz o que a chapa preta dizia, e diz com a data. */}
+        {chap.calendario ? <Calendario dados={chap.calendario} /> : (
+          <div className="panel art impact">
+            {chap.fact ? (
+              <div className="impact-inner">
+                <span className="impact-kana" lang="ja" translate="no" aria-hidden="true">{chap.sfx}</span>
+                <div className="impact-k">{t("Preto no branco", "In black and white")}</div>
+                <div className="impact-t">{chap.fact}</div>
+                {chap.links && chap.links.vercel
+                  ? <a className="impact-live" href={chap.links.vercel} target="_blank" rel="noreferrer">{t("No ar", "Live")} <span className="ext" aria-hidden="true">↗</span></a>
+                  : null}
+              </div>
+            ) : <MangaPlate />}
+          </div>
+        )}
       </div>
     </Beat>
   );
@@ -778,15 +916,15 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         {chap.antesDepois ? <><div style={{ height: "var(--ma-6)" }}></div><AntesDepois dados={chap.antesDepois} /></> : null}
         <div style={{ height: "var(--ma-6)" }}></div>
         <Resultado chap={chap} />
-        <Calendario dados={chap.calendario} />
         <Aprendi chap={chap} />
         {chap.id === "portfolio" && <SistemaVolume />}
       </div>
 
+      <Lightbox />
       {next && <NextChapter next={next} onOpen={onOpen} onHome={onHome} />}
       <Colofao onNav={onNav} />
     </main>
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Modulos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

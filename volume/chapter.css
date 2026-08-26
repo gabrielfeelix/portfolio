@@ -178,7 +178,10 @@
 /* ---- calendário: a data de publicação, rabiscada a mão ----
    Folha de outubro em papel, com o dia da publicação circulado quando o
    bloco entra na viewport. O traço é um path que se desenha. */
-.cal-wrap { display: grid; grid-template-columns: minmax(0, 500px) 1fr; gap: var(--ma-5); align-items: center; }
+/* dentro da coluna do resultado o calendário empilha: folha em cima,
+   legenda embaixo. Em tela larga ainda cabe lado a lado. */
+.cal-wrap { display: grid; gap: var(--ma-4); align-items: start; }
+.cal-legenda p { max-width: 52ch; }
 .cal { border: var(--ink-stroke-hi) solid var(--ink); background: var(--paper); padding: var(--ma-3); box-shadow: 8px 8px 0 var(--ink); }
 .cal-top { display: flex; align-items: baseline; justify-content: space-between; border-bottom: var(--ink-stroke) solid var(--ink); padding-bottom: 10px; }
 .cal-mes { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1; }
@@ -206,24 +209,65 @@
   .cal-rabisco path { stroke-dashoffset: 0 !important; animation: none !important; }
 }
 
-/* ---- revelação das figuras ------------------------------------------
-   O quadro abre com a imagem mascarada e ela sobe para o lugar conforme
-   a figura entra na viewport. É o equivalente ao quadro virando na
-   página: nada de fade genérico. */
-.fig-frame { --fig-mask: 0%; }
-.fig .fig-img, .fig .fig-frame .plate {
-  clip-path: inset(calc(100% - var(--fig-mask)) 0 0 0);
-  transform: scale(1.06);
-  transition: clip-path 900ms cubic-bezier(.16,.84,.32,1), transform 1100ms cubic-bezier(.16,.84,.32,1);
+/* ---- revelação das figuras: o respingo -------------------------------
+   A imagem não sobe em cortina, ela estoura. Uma mancha irregular abre do
+   centro para fora em três tempos (respingo, mancha, quadro cheio), com um
+   flash de tinta por cima no primeiro quadro e um tranco curto no painel.
+   É o gesto do mangá: o painel chega batendo, não deslizando. */
+@keyframes figSplash {
+  0%   { clip-path: polygon(61.5% 50.0%, 58.6% 52.0%, 55.8% 52.8%, 58.0% 56.4%, 56.7% 58.4%, 53.5% 57.2%, 51.5% 56.5%, 50.0% 61.7%, 47.9% 59.2%, 46.7% 56.9%, 45.4% 55.7%, 40.2% 57.8%, 42.9% 53.4%, 42.4% 51.7%, 41.8% 50.0%, 37.6% 47.2%, 44.3% 47.3%, 43.3% 44.6%, 44.4% 43.0%, 44.7% 38.9%, 48.9% 45.1%, 50.0% 40.1%, 52.1% 40.8%, 55.0% 39.7%, 52.8% 46.5%, 58.9% 42.9%, 58.3% 46.0%, 60.1% 47.7%); }
+  46%  { clip-path: polygon(105.2% 50.0%, 94.1% 60.1%, 82.7% 65.8%, 89.6% 81.6%, 82.7% 91.0%, 68.4% 88.2%, 58.3% 86.2%, 50.0% 105.9%, 39.4% 96.5%, 32.2% 86.9%, 25.2% 81.1%, 3.7% 86.9%, 12.4% 68.1%, 9.5% 59.3%, 6.9% 50.0%, -8.5% 36.7%, 17.6% 34.4%, 15.2% 22.2%, 21.3% 14.0%, 24.7% -2.6%, 43.0% 19.4%, 50.0% 0.8%, 60.6% 3.7%, 73.9% 0.4%, 68.1% 27.3%, 92.8% 15.9%, 92.2% 29.7%, 99.9% 38.6%); }
+  100% { clip-path: polygon(164.4% 50.0%, 151.6% 73.2%, 135.7% 91.3%, 135.8% 118.4%, 119.6% 137.3%, 93.9% 141.2%, 71.3% 143.5%, 50.0% 165.1%, 26.2% 154.1%, 6.7% 139.9%, -11.5% 127.1%, -42.7% 123.9%, -40.7% 93.7%, -48.0% 72.4%, -52.0% 50.0%, -66.3% 23.4%, -35.3% 8.9%, -30.9% -14.5%, -15.5% -32.1%, -1.1% -56.0%, 30.0% -37.7%, 50.0% -58.3%, 73.7% -53.9%, 99.6% -53.0%, 104.6% -18.5%, 139.1% -21.1%, 145.4% 4.1%, 157.5% 25.5%); }
 }
-.fig.revelada .fig-frame { --fig-mask: 100%; }
-.fig.revelada .fig-img, .fig.revelada .fig-frame .plate { transform: scale(1); }
-.fig .fig-cap { opacity: 0; transform: translateY(8px); transition: opacity var(--cut) 220ms, transform var(--cut) 220ms; }
+@keyframes figTranco {
+  0%   { transform: scale(1.14) rotate(-.6deg); }
+  40%  { transform: scale(1.03) rotate(.25deg); }
+  70%  { transform: scale(1.005) rotate(-.1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes figFlash {
+  0%   { opacity: .92; transform: scale(.6); }
+  35%  { opacity: .5; }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+.fig .fig-img, .fig .fig-frame .plate { opacity: 0; }
+.fig.revelada .fig-img, .fig.revelada .fig-frame .plate {
+  opacity: 1;
+  animation: figSplash 620ms cubic-bezier(.2,.85,.25,1) both, figTranco 720ms cubic-bezier(.2,.85,.25,1) both;
+}
+/* o respingo de tinta que estoura junto com o quadro */
+.fig-frame::after {
+  content: ""; position: absolute; inset: -10%; z-index: 2; pointer-events: none;
+  background: radial-gradient(closest-side, var(--vermilion) 0 42%, rgba(228,35,27,.35) 62%, transparent 72%);
+  opacity: 0; transform: scale(.6);
+  clip-path: polygon(105.2% 50.0%, 94.1% 60.1%, 82.7% 65.8%, 89.6% 81.6%, 82.7% 91.0%, 68.4% 88.2%, 58.3% 86.2%, 50.0% 105.9%, 39.4% 96.5%, 32.2% 86.9%, 25.2% 81.1%, 3.7% 86.9%, 12.4% 68.1%, 9.5% 59.3%, 6.9% 50.0%, -8.5% 36.7%, 17.6% 34.4%, 15.2% 22.2%, 21.3% 14.0%, 24.7% -2.6%, 43.0% 19.4%, 50.0% 0.8%, 60.6% 3.7%, 73.9% 0.4%, 68.1% 27.3%, 92.8% 15.9%, 92.2% 29.7%, 99.9% 38.6%);
+}
+.fig.revelada .fig-frame::after { animation: figFlash 520ms cubic-bezier(.2,.7,.3,1) both; }
+.fig .fig-cap { opacity: 0; transform: translateY(8px); transition: opacity var(--cut) 300ms, transform var(--cut) 300ms; }
 .fig.revelada .fig-cap { opacity: 1; transform: none; }
+
+/* a figura é clicável: abre no lightbox em tamanho cheio */
+.fig-frame { cursor: zoom-in; }
+.fig-abrir {
+  position: absolute; inset: 0; z-index: 3; border: 0; padding: 0; background: transparent;
+  cursor: zoom-in; -webkit-appearance: none; appearance: none;
+}
+.fig-abrir:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: -4px; }
+.fig-lupa {
+  position: absolute; right: 10px; bottom: 10px; z-index: 4; pointer-events: none;
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+  font-size: 10px; padding: 5px 9px; background: var(--paper); color: var(--ink);
+  border: var(--ink-hair) solid var(--ink); opacity: 0; transition: opacity var(--cut);
+}
+.fig-frame:hover .fig-lupa, .fig-abrir:focus-visible + .fig-lupa { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   .fig .fig-img, .fig .fig-frame .plate, .fig .fig-cap {
-    clip-path: none !important; transform: none !important; opacity: 1 !important; transition: none !important;
+    clip-path: none !important; transform: none !important; opacity: 1 !important;
+    animation: none !important; transition: none !important;
   }
+  .fig-frame::after { display: none; }
 }
 
 /* ---- tinta viva nos vazios ------------------------------------------
@@ -243,3 +287,54 @@
 /* mais de uma dobra comparada: os pares empilham com respiro entre eles */
 .ad-seq { display: grid; gap: var(--ma-5); }
 .ad-pendente .fig-frame { border-style: dashed; }
+
+/* ---- lightbox: a prova em tamanho cheio ---- */
+.lb {
+  position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;
+  background: rgba(12, 10, 10, .93); padding: clamp(16px, 4vw, 48px);
+  animation: lbEntra 180ms ease-out both;
+}
+@keyframes lbEntra { from { opacity: 0; } to { opacity: 1; } }
+.lb-x {
+  position: absolute; top: clamp(12px, 2vw, 24px); right: clamp(12px, 2vw, 24px);
+  width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+  background: var(--paper); color: var(--ink); border: var(--ink-stroke) solid var(--ink);
+  font-size: 18px; line-height: 1; cursor: pointer; transition: background var(--cut), color var(--cut);
+}
+.lb-x:hover { background: var(--vermilion); color: #fff; border-color: var(--vermilion); }
+.lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 100%; }
+.lb-quadro {
+  overflow: hidden; border: var(--ink-stroke) solid var(--paper); background: #000;
+  max-width: min(1400px, 92vw); max-height: 78vh; cursor: zoom-in; line-height: 0;
+  animation: lbQuadro 240ms cubic-bezier(.2,.85,.25,1) both;
+}
+@keyframes lbQuadro { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.lb-quadro.zoom { cursor: zoom-out; }
+.lb-quadro img { display: block; max-width: min(1400px, 92vw); max-height: 78vh; width: auto; height: auto;
+  transition: transform 320ms cubic-bezier(.2,.85,.25,1); }
+.lb-cap { color: var(--paper); font-size: 15px; line-height: 1.45; max-width: 70ch; text-align: center; opacity: .92; }
+.lb-dica { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .16em;
+  font-size: 11px; color: rgba(246,243,236,.5); }
+@media (prefers-reduced-motion: reduce) {
+  .lb, .lb-quadro, .lb-quadro img { animation: none !important; transition: none !important; }
+}
+
+/* ---- módulo com caminhos: a escolha na própria página ---- */
+.cam-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: var(--ma-3); }
+.cam-tab {
+  -webkit-appearance: none; appearance: none; text-align: left; cursor: pointer;
+  background: var(--paper); border: var(--ink-stroke) solid var(--ink); padding: 12px 14px;
+  display: grid; gap: 3px; transition: background var(--cut), color var(--cut), transform var(--cut), box-shadow var(--cut);
+}
+.cam-tab .cam-n { font-family: var(--font-editorial); font-size: 12px; letter-spacing: .12em; color: var(--wash-2); }
+.cam-tab .cam-t { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: 15px; line-height: 1.15; }
+.cam-tab .cam-para { font-size: 12.5px; line-height: 1.35; color: var(--fg-2); }
+.cam-tab:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 var(--ink); }
+.cam-tab.on { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--vermilion); }
+.cam-tab.on .cam-n { color: var(--vermilion); }
+.cam-tab.on .cam-para { color: rgba(246,243,236,.72); }
+.cam-tab:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: 3px; }
+.cam-p { margin-top: 12px; font-size: 15.5px; line-height: 1.5; color: var(--fg); max-width: 62ch; }
+@media (max-width: 880px) {
+  .cam-tabs { grid-template-columns: 1fr; }
+}
