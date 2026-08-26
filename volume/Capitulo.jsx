@@ -226,7 +226,7 @@ function razaoAR(ar) {
    abertura acontece na primeira metade do trilho -- o resto é a imagem
    aberta, parada, para dar tempo de ler.
    Com prefers-reduced-motion a imagem entra aberta e parada. */
-function CenaScroll({ fig, n, altura = 1900, arAberto = "16/9", largIni = 34 }) {
+function CenaScroll({ fig, n, altura = 1400, arAberto = "16/9", largIni = 34, largMax = 82 }) {
   if (!fig) return null;
   const trilho = useRef(null);
   const [p, setP] = useState(REDUCED ? 1 : 0);
@@ -265,7 +265,12 @@ function CenaScroll({ fig, n, altura = 1900, arAberto = "16/9", largIni = 34 }) 
 
   // o quadro cresce de verdade -- de `largIni`% da tela até 100%. Antes só
   // o clip-path fechava, e a moldura ja entrava do tamanho da pagina.
-  const larg = largIni + (100 - largIni) * e;
+  // no mobile o quadro nasce bem maior: 34% de 390px é um selo, e o vão
+  // ao redor fica maior que a própria cena
+  const estreito = typeof window !== "undefined" && window.innerWidth <= 760;
+  const li = estreito ? 62 : largIni;
+  const lm = estreito ? 100 : largMax;
+  const larg = li + (lm - li) * e;
   // enquanto pequeno, mostra a primeira dobra (21/9); abrindo, vai até a
   // proporcao do arquivo inteiro
   const ARI = 21 / 9;
@@ -688,6 +693,158 @@ function ModuloPassos({ mod, chap, figN = {} }) {
   );
 }
 
+/* ---- as outras fundações do sistema ---------------------------------
+   Cor sozinha responde "que cores tem". Sistema aparece quando o mesmo
+   raciocínio se repete em motion, tipografia e espaço, então cada bloco
+   abaixo mostra a regra, não o inventário.
+   Tudo desenhado: a curva é SVG com a bezier de verdade, a escala
+   tipográfica é texto no tamanho que ela declara, o ritmo é barra na
+   proporção real. Nenhum print. */
+
+/* a curva da casa, com um ponto que a percorre de verdade: dá para ver a
+   desaceleração no fim, que é o argumento. Sem animação em reduced-motion:
+   a curva continua legível parada, e é ela que carrega a informação. */
+function CurvaMotion({ dados }) {
+  const [ref, seen] = useReveal({ threshold: 0.4 });
+  const c = dados.curva || [0.16, 1, 0.3, 1];
+  const W = 260, H = 190;
+  // a bezier em coordenadas de tela: y invertido porque SVG cresce pra baixo
+  const px = (x) => x * W, py = (y) => H - y * H;
+  const d = `M ${px(0)} ${py(0)} C ${px(c[0])} ${py(c[1])}, ${px(c[2])} ${py(c[3])}, ${px(1)} ${py(1)}`;
+  return (
+    <div className="painel ds-motion" ref={ref}>
+      <div className="beat-k">{dados.k}</div>
+      <Brush as="h3" className="ds-sub-t">{renderPH(dados.t)}</Brush>
+      <div className="ds-motion-grade">
+        <div className="ds-curva-caixa">
+          <svg className="ds-curva" viewBox={`-14 -14 ${W + 28} ${H + 28}`} role="img"
+               aria-label={t(`Curva de aceleração ${dados.rotulo}: sai rápido e desacelera no fim.`,
+                             `Easing curve ${dados.rotulo}: fast out, slow in.`)}>
+            {/* a caixa 0..1 e a diagonal que seria o movimento linear */}
+            <rect x="0" y="0" width={W} height={H} className="cv-caixa" />
+            <line x1="0" y1={H} x2={W} y2="0" className="cv-linear" />
+            <path d={d} pathLength="1" className={`cv-curva ${seen ? "in" : ""}`} />
+            <circle r="6" className={`cv-ponto ${seen ? "anda" : ""}`} style={{ offsetPath: `path("${d}")` }} />
+          </svg>
+          <span className="cv-eixo cv-x">{t("tempo", "time")} → {dados.dur}</span>
+          <span className="cv-eixo cv-y">{t("progresso", "progress")}</span>
+          <span className="cv-linear-rot">{t("linear", "linear")}</span>
+        </div>
+        <div className="ds-motion-txt">
+          <code className="ds-formula">{dados.rotulo}</code>
+          <p className="ds-sub-p">{renderPH(dados.p)}</p>
+          <ul className="ds-marcos">
+            {(dados.marcos || []).map((m, i) => (
+              <li key={i}><strong>{m.l}</strong><span>{m.n}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* a escala tipográfica no tamanho que ela declara. O "Ag" desenha a
+   família; o tamanho grande fica com transform pra não estourar a coluna
+   e continuar proporcional ao de baixo. */
+function Tipografia({ dados }) {
+  return (
+    <div className="painel ds-tipo">
+      <div className="pn-topo">
+        <div>
+          <div className="beat-k">{dados.k}</div>
+          <Brush as="h3" className="ds-sub-t">{renderPH(dados.t)}</Brush>
+        </div>
+        <div className="ds-familias">
+          {(dados.familias || []).map((f, i) => (
+            <div className="ds-fam" key={i}><strong>{f.n}</strong><span>{f.f}</span></div>
+          ))}
+        </div>
+      </div>
+      <ul className="ds-escala">
+        {(dados.escala || []).map((e, i) => (
+          <li className="ds-deg" key={i}>
+            {/* o espécime: tamanho real, escalado só para caber na coluna */}
+            <span className="ds-esp" style={{ fontSize: `${Math.min(e.px, 64)}px`, fontWeight: e.peso }}>Ag</span>
+            <span className="ds-deg-meta">
+              <code>{e.n}</code>
+              <span className="ds-deg-v">{e.px}px · {e.fam} {e.pn}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      {dados.nota ? <p className="pn-nota">{renderPH(dados.nota)}</p> : null}
+    </div>
+  );
+}
+
+/* espaço e raio: a barra é a distância na proporção real, então dá para
+   ver o compasso em vez de ler quatro números. */
+function EspacoRaio({ dados }) {
+  const [ref, seen] = useReveal({ threshold: 0.3 });
+  const maior = Math.max(...(dados.ritmo || []).map((r) => r.d), 1);
+  return (
+    <div className="painel ds-espaco" ref={ref}>
+      <div className="beat-k">{dados.k}</div>
+      <Brush as="h3" className="ds-sub-t">{renderPH(dados.t)}</Brush>
+      <p className="ds-sub-p">{renderPH(dados.p)}</p>
+      <ul className="ds-ritmo">
+        {(dados.ritmo || []).map((r, i) => (
+          <li key={i}>
+            <code className="ds-ritmo-l">{r.l}</code>
+            <span className="ds-ritmo-trilho">
+              <i className="ds-ritmo-d" style={{ width: seen ? `${(r.d / maior) * 100}%` : 0, transitionDelay: `${i * 80}ms` }} />
+              <i className="ds-ritmo-m" style={{ width: seen ? `${(r.m / maior) * 100}%` : 0, transitionDelay: `${i * 80 + 40}ms` }} />
+            </span>
+            <span className="ds-ritmo-v">{r.d} <em>/ {r.m}</em></span>
+          </li>
+        ))}
+      </ul>
+      {dados.ritmoNota ? <p className="ds-mini-nota">{renderPH(dados.ritmoNota)}</p> : null}
+      <ul className="ds-raios">
+        {(dados.raios || []).map((r, i) => (
+          <li key={i}>
+            <span className="ds-raio-am" style={{ borderRadius: `${r.v}px` }} aria-hidden="true" />
+            <strong>{r.v}px</strong>
+            <span>{r.u}</span>
+          </li>
+        ))}
+      </ul>
+      {dados.raioNota ? <p className="pn-nota">{renderPH(dados.raioNota)}</p> : null}
+    </div>
+  );
+}
+
+/* o caso que fecha: o componente mais repetido da loja não guarda cor.
+   As duas amostras abaixo são a MESMA regra css, mudando só o ink do
+   tema, então o que se vê é a regra funcionando, não duas cores. */
+function Derivado({ dados }) {
+  return (
+    <div className="painel ds-derivado">
+      <div className="beat-k">{dados.k}</div>
+      <Brush as="h3" className="ds-sub-t">{renderPH(dados.t)}</Brush>
+      <code className="ds-formula">{dados.formula}</code>
+      <div className="ds-wells">
+        {(dados.temas || []).map((tm, i) => (
+          <figure className={`ds-well ${tm.escuro ? "escuro" : "claro"}`} key={i} style={{ background: tm.bg }}>
+            {/* o poço: exatamente a regra do produto, com o ink do tema */}
+            <div className="ds-poco" style={{
+              background: `linear-gradient(135deg, rgba(${tm.ink}, 0.10) 0%, rgba(${tm.ink}, 0.03) 100%)`,
+              border: `1px solid rgba(${tm.ink}, 0.08)`,
+            }}>
+              <span className="ds-poco-brilho" style={{
+                background: `radial-gradient(circle at 30% 25%, rgba(${tm.ink}, 0.06) 0%, transparent 55%)`,
+              }} aria-hidden="true" />
+            </div>
+            <figcaption>{tm.tema}<em>ink {tm.ink}</em></figcaption>
+          </figure>
+        ))}
+      </div>
+      {(dados.p || []).map((para, i) => <p className="ds-sub-p" key={i}>{renderPH(para)}</p>)}
+    </div>
+  );
+}
+
 /* ---- SISTEMA: o design system como argumento, não como catálogo -----
    Entra entre as decisões e os módulos, e o lugar é o argumento: o
    vocabulário vem antes das telas, então tudo que vem depois lê como
@@ -716,13 +873,13 @@ function Sistema({ dados }) {
           {/* as cores que respondem perguntas diferentes. A amostra é a
               própria cor: quem lê vê o token, não a descrição dele. */}
           {(dados.funcoes || []).length ? (
-            <ul className="sis-funcoes">
+            <ul className="ds-funcoes">
               {dados.funcoes.map((f, i) => (
-                <li className="sis-funcao" key={i}>
-                  <span className="sis-chip" style={{ background: f.c }} aria-hidden="true" />
-                  <div className="sis-fc">
-                    <div className="sis-fn">{f.n} <span className="sis-fpapel">{f.f}</span></div>
-                    <p className="sis-fp">{renderPH(f.p)}</p>
+                <li className="ds-funcao" key={i}>
+                  <span className="ds-chip" style={{ background: f.c }} aria-hidden="true" />
+                  <div className="ds-fc">
+                    <div className="ds-fn">{f.n} <span className="ds-fpapel">{f.f}</span></div>
+                    <p className="ds-fp">{renderPH(f.p)}</p>
                   </div>
                 </li>
               ))}
@@ -734,23 +891,23 @@ function Sistema({ dados }) {
         {/* a escada: uma linha por token, os dois temas na mesma linha.
             A leitura horizontal é o argumento inteiro. */}
         {esc ? (
-          <div className="painel sis-escada">
+          <div className="painel ds-escada">
             <div className="pn-topo">
               <div className="beat-k">{esc.k}</div>
-              <div className="sis-cab" aria-hidden="true">
+              <div className="ds-cab" aria-hidden="true">
                 <span>Claro</span><span>Escuro</span>
               </div>
             </div>
-            <ul className="sis-linhas">
+            <ul className="ds-linhas">
               {(esc.linhas || []).map((l, i) => (
-                <li className="sis-linha" key={i}>
-                  <div className="sis-tok">
-                    <code className="sis-nome">{l.t}</code>
-                    <span className="sis-papel">{l.f}</span>
+                <li className="ds-linha" key={i}>
+                  <div className="ds-tok">
+                    <code className="ds-nome">{l.t}</code>
+                    <span className="ds-papel">{l.f}</span>
                   </div>
-                  <div className="sis-amostras">
-                    <span className="sis-am claro"><i style={{ background: l.c }} /><em>{l.cl || l.c}</em></span>
-                    <span className="sis-am escuro"><i style={{ background: l.e }} /><em>{l.el || l.e}</em></span>
+                  <div className="ds-amostras">
+                    <span className="ds-am claro"><i style={{ background: l.c }} /><em>{l.cl || l.c}</em></span>
+                    <span className="ds-am escuro"><i style={{ background: l.e }} /><em>{l.el || l.e}</em></span>
                   </div>
                 </li>
               ))}
@@ -762,22 +919,30 @@ function Sistema({ dados }) {
             explica por quê. A amostra é texto sobre fundo real, então dá
             para ver a legibilidade em vez de ler sobre ela. */}
         {caso ? (
-          <div className="painel sis-caso">
+          <div className="painel ds-caso">
             <div className="beat-k">{caso.k}</div>
-            <h3 className="sis-caso-t">{renderPH(caso.t)}</h3>
-            <div className="sis-pares">
+            <h3 className="ds-caso-t">{renderPH(caso.t)}</h3>
+            <div className="ds-pares">
               {(caso.pares || []).map((par, i) => (
-                <div className={`sis-par ${par.escuro ? "escuro" : "claro"}`} key={i} style={{ background: par.bg, color: par.c }}>
-                  <span className="sis-par-tema" aria-hidden="true">{par.tema}</span>
-                  <strong className="sis-par-am">-15% OFF</strong>
-                  <span className="sis-par-r">{par.c} · {par.r}</span>
+                <div className={`ds-par ${par.escuro ? "escuro" : "claro"}`} key={i} style={{ background: par.bg, color: par.c }}>
+                  <span className="ds-par-tema" aria-hidden="true">{par.tema}</span>
+                  <strong className="ds-par-am">-15% OFF</strong>
+                  <span className="ds-par-r">{par.c} · {par.r}</span>
                 </div>
               ))}
             </div>
-            {(caso.p || []).map((para, i) => <p className="sis-caso-p" key={i}>{renderPH(para)}</p>)}
+            {(caso.p || []).map((para, i) => <p className="ds-caso-p" key={i}>{renderPH(para)}</p>)}
           </div>
         ) : null}
-        {dados.nota ? <p className="sis-nota">{renderPH(dados.nota)}</p> : null}
+      </div>
+      {/* as outras fundações: cor sozinha diz que cores existem, o resto
+          mostra que a mesma cabeça decidiu tempo, texto e espaço */}
+      <div className="c12 ds-fundacoes">
+        {dados.motion ? <CurvaMotion dados={dados.motion} /> : null}
+        {dados.tipografia ? <Tipografia dados={dados.tipografia} /> : null}
+        {dados.espaco ? <EspacoRaio dados={dados.espaco} /> : null}
+        {dados.derivado ? <Derivado dados={dados.derivado} /> : null}
+        {dados.nota ? <p className="ds-nota">{renderPH(dados.nota)}</p> : null}
       </div>
     </Beat>
   );
@@ -1414,6 +1579,141 @@ function NextChapter({ next, onOpen, onHome }) {
 }
 
 /* ---- the assembled chapter ---- */
+/* ---- ÍNDICE DO CAPÍTULO ---------------------------------------------
+   O sumário de lombada: fica preso à esquerda enquanto o capítulo rola,
+   diz onde a leitura está e leva direto a qualquer seção.
+   A lista NÃO é escrita à mão por capítulo: sai do que o capítulo tem
+   (`indiceDo`), agrupada em atos. Capítulo curto gera índice curto e
+   nenhum arquivo de conteúdo precisa saber que o índice existe.
+
+   Três variantes convivem porque a escolha é visual e se decide vendo:
+   `lombada` (fina, número + hover), `lista` (títulos sempre visíveis) e
+   `expansivel` (fina que abre no hover). O seletor no topo troca entre
+   elas e guarda a escolha; quando uma for escolhida, as outras saem. */
+
+/* os atos do capítulo, na ordem em que a página os renderiza. `chave` é o
+   campo do dado que faz a seção existir: sem ele, a seção não entra. */
+const ATOS = [
+  { k: "problema", t: ["O problema", "The problem"], secs: [
+    { id: "abertura", chave: "abertura", t: ["A cena", "The scene"] },
+    { id: "problema", chave: "problema", t: ["O problema", "The problem"] },
+    { id: "painel", chave: "painel", t: ["O tamanho do buraco", "The size of the hole"] },
+  ] },
+  { k: "investigacao", t: ["A investigação", "The investigation"], secs: [
+    { id: "funil", chave: "funil", t: ["O funil", "The funnel"] },
+    { id: "gesto", chave: "gesto", t: ["O gesto", "The gesture"] },
+    { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
+    { id: "busca", chave: "busca", t: ["A busca", "Search"] },
+  ] },
+  { k: "decisoes", t: ["As decisões", "The decisions"], secs: [
+    { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
+    { id: "recusei", chave: "recusei", t: ["O que recusei", "What I turned down"] },
+  ] },
+  { k: "sistema", t: ["O sistema", "The system"], secs: [
+    { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
+  ] },
+  { k: "solucao", t: ["A solução", "The solution"], secs: [
+    { id: "modulos", chave: "modulos", t: ["Os módulos", "The modules"] },
+    { id: "solucao", chave: "solucao", t: ["A solução", "The solution"] },
+    { id: "antesdepois", chave: "antesDepois", t: ["Antes e depois", "Before and after"] },
+  ] },
+  { k: "fecho", t: ["O fecho", "The close"], secs: [
+    { id: "resultado", chave: "resultado", t: ["Resultado", "Result"] },
+    { id: "aprendi", chave: "aprendi", t: ["O que aprendi", "What I learned"] },
+  ] },
+];
+
+/* o índice de um capítulo é o que ele de fato tem: ato sem seção some */
+function indiceDo(chap) {
+  return ATOS.map((ato) => {
+    const secs = ato.secs.filter((s) => {
+      const v = chap[s.chave];
+      return Array.isArray(v) ? v.length > 0 : !!v;
+    });
+    return secs.length ? { k: ato.k, t: ato.t, secs } : null;
+  }).filter(Boolean);
+}
+
+function IndiceCapitulo({ chap }) {
+  const atos = indiceDo(chap);
+  const planas = atos.flatMap((a) => a.secs);
+  const [ativo, setAtivo] = useState(planas.length ? planas[0].id : null);
+
+  // a seção ativa é a última cujo topo já passou da faixa de leitura:
+  // com IO puro, seção alta e seção baixa disputam e o marcador pisca
+  useEffect(() => {
+    if (!planas.length) return;
+    let raf = 0;
+    const medir = () => {
+      raf = 0;
+      const linha = window.innerHeight * 0.34;
+      let atual = planas[0].id;
+      for (const s of planas) {
+        const el = document.getElementById(`sec-${s.id}`);
+        if (el && el.getBoundingClientRect().top <= linha) atual = s.id;
+      }
+      setAtivo(atual);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(medir); };
+    medir();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, [chap.id, planas.length]);
+
+  if (!planas.length) return null;
+
+  const irPara = (e, id) => {
+    e.preventDefault();
+    const el = document.getElementById(`sec-${id}`);
+    if (!el) return;
+    // foco no destino: quem navega por teclado precisa continuar de lá,
+    // não voltar pro topo do índice
+    el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+    el.setAttribute("tabindex", "-1");
+    el.focus({ preventScroll: true });
+  };
+
+  const n = (i) => String(i + 1).padStart(2, "0");
+  let cont = -1;
+
+  return (
+    <nav className="idx" aria-label={t("Índice do capítulo", "Chapter index")}>
+      <div className="idx-caixa">
+        <div className="idx-cab">{t("Índice", "Index")}</div>
+        <ol className="idx-atos">
+          {atos.map((ato) => (
+            <li className="idx-ato" key={ato.k}>
+              <span className="idx-ato-t">{t(ato.t[0], ato.t[1])}</span>
+              <ol className="idx-secs">
+                {ato.secs.map((s) => {
+                  cont += 1;
+                  const on = s.id === ativo;
+                  return (
+                    <li key={s.id} className={on ? "aqui" : ""}>
+                      <a href={`#sec-${s.id}`} onClick={(e) => irPara(e, s.id)}
+                         aria-current={on ? "true" : undefined}>
+                        <span className="idx-n">{n(cont)}</span>
+                        <span className="idx-t">{t(s.t[0], s.t[1])}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+  );
+}
+
+/* âncora de seção: só endereço e alvo de foco, sem desenhar nada. O
+   `scroll-margin-top` mora no css pra o título não colar no topo. */
+function Sec({ id, children }) {
+  return <div className="sec-anc" id={`sec-${id}`}>{children}</div>;
+}
+
 function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
   const figN = figOrder(chap);
@@ -1428,38 +1728,45 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
 
       <Tobira chap={chap} />
 
-      <div className="chapter-body shell">
+      <div className="chapter-body shell com-indice">
+        {/* o índice é coluna, não camada: entra depois da capa e fica
+            preso enquanto a coluna de leitura ao lado corre */}
+        <IndiceCapitulo chap={chap} />
+        <div className="chapter-col">
         <Tldr tldr={chap.tldr} links={chap.links} />
         <div style={{ height: "var(--ma-6)" }}></div>
-        <Abertura chap={chap} figN={figN} />
-        <Problema chap={chap} figN={figN} />
-        <Painel dados={chap.painel} />
+        {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
+            não desenha nada, só dá endereço e alvo de foco. */}
+        <Sec id="abertura"><Abertura chap={chap} figN={figN} /></Sec>
+        <Sec id="problema"><Problema chap={chap} figN={figN} /></Sec>
+        <Sec id="painel"><Painel dados={chap.painel} /></Sec>
         {/* o funil diz onde a leitura perdia gente; o gesto, o que a mão
             fazia enquanto isso. Os dois vêm antes da investigação porque
             são o que mandou olhar para onde ela olhou. */}
-        <Funil dados={chap.funil} />
-        <Gesto dados={chap.gesto} />
-        <Investigacao chap={chap} figN={figN} />
+        <Sec id="funil"><Funil dados={chap.funil} /></Sec>
+        <Sec id="gesto"><Gesto dados={chap.gesto} /></Sec>
+        <Sec id="investigacao"><Investigacao chap={chap} figN={figN} /></Sec>
         {/* o achado da busca fecha a investigação: é ele que amplia o
             escopo de "corrigir o checkout" para "quem consegue comprar" */}
-        <Busca dados={chap.busca} chap={chap} figN={figN} />
+        <Sec id="busca"><Busca dados={chap.busca} chap={chap} figN={figN} /></Sec>
         <Citacao dados={chap.citacao} />
         <SfxBeat word={chap.sfx} />
-        <Decisoes chap={chap} figN={figN} />
+        <Sec id="decisoes"><Decisoes chap={chap} figN={figN} /></Sec>
         <div style={{ height: "var(--ma-6)" }}></div>
-        <Recusei dados={chap.recusei} />
+        <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
         {/* o vocabulário chega depois das decisões: cada tela dos
             módulos vira prova de que o sistema funciona */}
-        <Sistema dados={chap.sistema} />
-        <Modulos chap={chap} figN={figN} />
-        <Solucao chap={chap} />
+        <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
+        <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
+        <Sec id="solucao"><Solucao chap={chap} /></Sec>
         <div style={{ height: "var(--ma-6)" }}></div>
         {chap.vocabulario ? <><div style={{ height: "var(--ma-6)" }}></div><Vocabulario dados={chap.vocabulario} /></> : null}
-        {chap.antesDepois ? <><div style={{ height: "var(--ma-6)" }}></div><AntesDepois dados={chap.antesDepois} /></> : null}
+        {chap.antesDepois ? <><div style={{ height: "var(--ma-6)" }}></div><Sec id="antesdepois"><AntesDepois dados={chap.antesDepois} /></Sec></> : null}
         <div style={{ height: "var(--ma-6)" }}></div>
-        <Resultado chap={chap} />
-        <Aprendi chap={chap} />
+        <Sec id="resultado"><Resultado chap={chap} /></Sec>
+        <Sec id="aprendi"><Aprendi chap={chap} /></Sec>
         {chap.id === "portfolio" && <SistemaVolume />}
+        </div>
       </div>
 
       <Lightbox />
@@ -1469,4 +1776,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Sec, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

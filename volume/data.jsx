@@ -335,6 +335,73 @@ const CHAPTERS = [
         pares: [{ tema: "Claro", c: "#15803d", bg: "#ffffff", r: "5,02:1" },
                 { tema: "Escuro", c: "#4ade80", bg: "#0e0e0e", r: "11,08:1", escuro: true }],
       },
+      /* ---- as outras fundações ------------------------------------
+         Cor sozinha responde "que cores tem". O sistema aparece mesmo
+         quando o mesmo raciocínio se repete em motion, tipografia e
+         espaço. Cada bloco abaixo é um valor real do theme.css, não
+         escala inventada pra ilustrar. */
+      /* a curva é a assinatura de movimento da casa: sai rápido e chega
+         devagar, que é como objeto pesado para. Desenhada, não descrita:
+         dá para ver a desaceleração no fim. */
+      motion: {
+        k: "Motion",
+        t: "Uma curva só, para tudo que se move",
+        curva: [0.16, 1, 0.3, 1],
+        rotulo: "cubic-bezier(0.16, 1, 0.3, 1)",
+        dur: "300ms",
+        p: "Sai rápido e chega devagar, que é como coisa com peso para. A alternativa é cada componente escolher a sua, e aí o site inteiro parece feito por pessoas diferentes. Uma curva, uma duração padrão, e o movimento vira sotaque em vez de ruído.",
+        marcos: [{ l: "200ms", n: "estado de botão" }, { l: "300ms", n: "padrão" }, { l: "500ms", n: "entrada de painel" }],
+      },
+      /* a escala tipográfica, desenhada no tamanho que ela tem */
+      tipografia: {
+        k: "Tipografia",
+        t: "Duas famílias, uma escala",
+        p: "Figtree carrega título e Inter carrega texto e interface. A escala não é contínua de propósito: são cinco degraus com distância suficiente para a hierarquia ser óbvia sem ninguém precisar comparar dois textos lado a lado.",
+        familias: [{ n: "Figtree", f: "Display, títulos" }, { n: "Inter", f: "Texto e interface" }],
+        escala: [
+          { n: "h1", px: 80, fam: "Figtree", peso: 400, pn: "regular" },
+          { n: "h2", px: 48, fam: "Figtree", peso: 300, pn: "light" },
+          { n: "h3", px: 40, fam: "Figtree", peso: 400, pn: "regular" },
+          { n: "h4", px: 32, fam: "Figtree", peso: 400, pn: "regular" },
+          { n: "corpo", px: 16, fam: "Inter", peso: 400, pn: "regular" },
+        ],
+        nota: "O h2 é o único em light. É o tamanho que mais aparece em abertura de seção, e no peso normal ele competia com o h1 em vez de organizar a página abaixo dele.",
+      },
+      /* espaço e raio: as duas escalas que ninguém nota quando estão
+         certas e todo mundo sente quando cada tela escolhe a sua */
+      espaco: {
+        k: "Espaço e raio",
+        t: "O ritmo entre as seções tem quatro valores, não quarenta",
+        p: "Distância entre seções costuma ser o lugar onde o sistema vaza: alguém escreve 72, outro escreve 80, e a página perde o compasso. Aqui são quatro degraus, e eles encolhem juntos no mobile, onde o vão de desktop vira tela vazia.",
+        ritmo: [
+          { l: "sm", d: 56, m: 40 },
+          { l: "md", d: 88, m: 56 },
+          { l: "lg", d: 128, m: 72 },
+          { l: "xl", d: 168, m: 96 },
+        ],
+        ritmoNota: "Desktop e mobile. A mesma escala, comprimida.",
+        raios: [
+          { v: 4, u: "Campo, botão" },
+          { v: 8, u: "Card padrão" },
+          { v: 12, u: "Modal, busca" },
+          { v: 18, u: "Card de brinde" },
+          { v: 22, u: "Foto de produto" },
+          { v: 26, u: "Vitrine de categoria" },
+        ],
+        raioNota: "Cada raio tem um uso escrito. É o que impede o sétimo raio de nascer na próxima tela.",
+      },
+      /* o exemplo que fecha o argumento: o componente mais repetido do
+         site não guarda cor nenhuma. Ele deriva do tema. */
+      derivado: {
+        k: "O caso que fecha",
+        t: "O card de produto não guarda cor nenhuma",
+        p: ["O fundo da foto do produto é o componente mais repetido da loja: aparece na home, na vitrine, na busca, no carrinho. Seria o candidato natural a ter um cinza escolhido na mão.",
+            "Não tem. O fundo é a cor de texto do tema rebaixada a 10% e 3% de opacidade, em diagonal. No claro, isso é preto quase transparente; no escuro, é branco quase transparente. Mesma regra, dois resultados, nenhum valor guardado.",
+            "É a diferença entre uma paleta e um sistema. Paleta é uma lista de cores. Sistema é uma regra que produz a cor certa em um contexto que ninguém previu."],
+        formula: "rgba(var(--foreground-rgb), .10) → .03",
+        temas: [{ tema: "Claro", ink: "22, 22, 22", bg: "#fafafa", escuro: false },
+                { tema: "Escuro", ink: "255, 255, 255", bg: "#0a0a0a", escuro: true }],
+      },
       nota: "O sistema é espelhado em código e sincronizado com o Figma por Tokens Studio, então biblioteca e produto não divergem com o tempo. Uma sombra de card que existia copiada em 43 lugares virou um token só.",
     },
     /* ---- os módulos que ganharam beat próprio ------------------------

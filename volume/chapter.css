@@ -215,11 +215,12 @@ html.ink .cover-linhas { opacity: .06; }
    sticky de 100vh segura a imagem e o clip-path abre das bordas para
    fora. Sem sticky (motores antigos) a imagem simplesmente fica no topo
    do trilho, aberta, que é o estado final -- nunca some. */
-.cena-scroll { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: var(--ma-6); position: relative; }
+.cena-scroll { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: var(--ma-5); position: relative; }
+
 .cena-scroll-cola {
-  position: sticky; top: 0; height: 100vh;
+  position: sticky; top: 0; height: 100vh; max-height: 86vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 14px; padding: var(--ma-4) 0;
+  gap: 12px; padding: var(--ma-3) 0;
 }
 /* o frame preenche o sticky inteiro: `align-items: center` num flex faria
    ele encolher para a altura do conteudo, e o conteudo e uma <img> em
@@ -230,6 +231,7 @@ html.ink .cover-linhas { opacity: .06; }
    fica alto, e `margin: auto` mantem ele centrado. */
 .cena-scroll-frame {
   position: relative; max-width: 100%;
+  /* o teto real vem do @media abaixo quando o índice está na tela */
   max-height: 100%; min-height: 0; margin: auto;
   border: var(--ink-stroke) solid var(--ink);
   will-change: width, aspect-ratio;
@@ -242,6 +244,21 @@ html.ink .cover-linhas { opacity: .06; }
 .cena-scroll-cap {
   flex: 0 0 auto; width: 100%; max-width: 1240px;
   padding: 0 var(--gutter); margin: 0 auto;
+}
+
+/* com o índice à esquerda, a cena não pode crescer por cima dele: o
+   quadro para na coluna que sobra à direita da lista, e a cena inteira
+   desloca para lá em vez de ficar centrada na tela (o que a faria
+   encostar no índice de novo). */
+@media (min-width: 1700px) {
+  .cena-scroll-cola { padding-left: calc((100vw - 1240px) / 2 + 56px + 236px - (100vw - 1240px) / 2); }
+  .cena-scroll-frame { max-width: calc(100vw - 56px - 236px - var(--ma-5) * 2); }
+}
+
+@media (max-width: 760px) {
+  .cena-scroll-cola { height: auto; max-height: none; min-height: 52vh;
+    position: sticky; top: 8vh; padding: var(--ma-3) 0; }
+  .cena-scroll-frame { max-height: 62vh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -662,64 +679,265 @@ html.ink .cover-linhas { opacity: .06; }
 .beat-sistema .c7 { display: flex; flex-direction: column; gap: var(--ma-4); }
 
 /* as cores que respondem a perguntas diferentes */
-.sis-funcoes { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: 14px; }
-.sis-funcao { display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: start; }
-.sis-chip { width: 18px; height: 18px; margin-top: 3px; border: var(--ink-stroke) solid var(--ink); }
-.sis-fn { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+.ds-funcoes { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: 14px; }
+.ds-funcao { display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: start; }
+.ds-chip { width: 18px; height: 18px; margin-top: 3px; border: var(--ink-stroke) solid var(--ink); }
+.ds-fn { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
   letter-spacing: .1em; font-size: 12.5px; color: var(--fg); }
-.sis-fpapel { color: var(--fg-2); font-weight: 600; letter-spacing: .14em; }
-.sis-fpapel::before { content: "· "; }
-.sis-fp { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--fg-2); max-width: 42ch; }
+.ds-fpapel { color: var(--fg-2); font-weight: 600; letter-spacing: .14em; }
+.ds-fpapel::before { content: "· "; }
+.ds-fp { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--fg-2); max-width: 42ch; }
 
 /* a escada: um token por linha, os dois temas lado a lado */
-.sis-escada .pn-topo { align-items: center; }
-.sis-cab { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: clamp(260px, 46%, 340px);
+.ds-escada .pn-topo { align-items: center; }
+.ds-cab { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: clamp(260px, 46%, 340px);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .14em; font-size: 11px; color: var(--fg-2); }
-.sis-linhas { list-style: none; margin: var(--ma-3) 0 0; padding: 0; }
-.sis-linha { display: flex; align-items: center; justify-content: space-between; gap: var(--gutter);
+.ds-linhas { list-style: none; margin: var(--ma-3) 0 0; padding: 0; }
+.ds-linha { display: flex; align-items: center; justify-content: space-between; gap: var(--gutter);
   padding: 12px 0; border-top: 1px solid var(--wash-1); flex-wrap: wrap; }
-.sis-linha:first-child { border-top: 0; }
-.sis-tok { min-width: 0; }
-.sis-nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--fg); }
-.sis-papel { display: block; margin-top: 3px; font-family: var(--font-condensed); font-weight: 600;
+.ds-linha:first-child { border-top: 0; }
+.ds-tok { min-width: 0; }
+.ds-nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--fg); }
+.ds-papel { display: block; margin-top: 3px; font-family: var(--font-condensed); font-weight: 600;
   text-transform: uppercase; letter-spacing: .12em; font-size: 10.5px; color: var(--fg-2); }
-.sis-amostras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+.ds-amostras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
   width: clamp(260px, 46%, 340px); flex: none; min-width: 0; }
 /* a amostra clara vive sobre papel e a escura sobre o fundo escuro: cada
    token aparece no contexto em que ele é usado de verdade */
-.sis-am { display: flex; align-items: center; gap: 8px; padding: 7px 9px;
+.ds-am { display: flex; align-items: center; gap: 8px; padding: 7px 9px;
   border: 1px solid var(--wash-1); min-width: 0; }
-.sis-am.claro { background: #fafafa; }
-.sis-am.escuro { background: #0a0a0a; }
-.sis-am i { width: 18px; height: 18px; flex: none; border: 1px solid rgba(128,128,128,.5); }
-.sis-am em { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-style: normal;
+.ds-am.claro { background: #fafafa; }
+.ds-am.escuro { background: #0a0a0a; }
+.ds-am i { width: 18px; height: 18px; flex: none; border: 1px solid rgba(128,128,128,.5); }
+.ds-am em { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-style: normal;
   font-size: 10.5px; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sis-am.claro em { color: #52525b; }
-.sis-am.escuro em { color: #a1a1aa; }
+.ds-am.claro em { color: #52525b; }
+.ds-am.escuro em { color: #a1a1aa; }
 
 /* o caso do verde: o mesmo papel em dois valores, com o número */
-.sis-caso-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d3, 24px);
+.ds-caso-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d3, 24px);
   line-height: 1.08; margin: 8px 0 var(--ma-3); }
-.sis-pares { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: var(--ma-3); }
-.sis-par { padding: 16px; border: 1px solid var(--wash-1); display: flex; flex-direction: column; gap: 6px; }
+.ds-pares { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: var(--ma-3); }
+.ds-par { padding: 16px; border: 1px solid var(--wash-1); display: flex; flex-direction: column; gap: 6px; }
 /* o rótulo e a razão são chrome, não a amostra: herdar a cor do token com
    opacidade diluía o verde e reprovava no próprio axe (2.93:1). Cor neutra
    explícita por tema, e a amostra (-15% OFF) segue na cor real do token. */
-.sis-par-tema { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+.ds-par-tema { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .16em; font-size: 10.5px; }
-.sis-par-am { font-family: var(--font-condensed); font-weight: 700; font-size: 22px; letter-spacing: .02em; }
-.sis-par-r { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
-.sis-par.claro .sis-par-tema, .sis-par.claro .sis-par-r { color: #52525b; }   /* 7.0:1 sobre #ffffff */
-.sis-par.escuro .sis-par-tema, .sis-par.escuro .sis-par-r { color: #a1a1aa; } /* 7.6:1 sobre #0e0e0e */
-.sis-caso-p { font-size: 15px; line-height: 1.55; color: var(--fg); max-width: 62ch; }
-.sis-caso-p + .sis-caso-p { margin-top: 12px; }
-.sis-nota { font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: 74ch; }
+.ds-par-am { font-family: var(--font-condensed); font-weight: 700; font-size: 22px; letter-spacing: .02em; }
+.ds-par-r { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+.ds-par.claro .ds-par-tema, .ds-par.claro .ds-par-r { color: #52525b; }   /* 7.0:1 sobre #ffffff */
+.ds-par.escuro .ds-par-tema, .ds-par.escuro .ds-par-r { color: #a1a1aa; } /* 7.6:1 sobre #0e0e0e */
+.ds-caso-p { font-size: 15px; line-height: 1.55; color: var(--fg); max-width: 62ch; }
+.ds-caso-p + .ds-caso-p { margin-top: 12px; }
+.ds-nota { font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: 74ch; }
 
 @media (max-width: 880px) {
   .beat-sistema .c5, .beat-sistema .c7 { grid-column: 1 / -1; }
-  .sis-cab { display: none; }
-  .sis-linha { display: block; }
-  .sis-amostras, .sis-cab { width: 100%; }
-  .sis-amostras { margin-top: 10px; }
+  .ds-cab { display: none; }
+  .ds-linha { display: block; }
+  .ds-amostras, .ds-cab { width: 100%; }
+  .ds-amostras { margin-top: 10px; }
+}
+
+/* ---- as outras fundações do sistema ---------------------------------
+   Cor mora na primeira dobra da seção; motion, tipografia, espaço e o
+   caso do card entram abaixo, em largura cheia, porque cada um precisa
+   de espécime grande o bastante pra ser lido como amostra e não como
+   ícone. Tudo desenhado: nenhum print. */
+.beat .c12 { grid-column: 1 / -1; }
+.ds-fundacoes { display: grid; gap: var(--ma-4); margin-top: var(--ma-5); }
+.ds-sub-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d3);
+  line-height: 1.06; margin: 8px 0 var(--ma-3); }
+.ds-sub-p { font-size: 15.5px; line-height: 1.55; color: var(--fg); max-width: 60ch; }
+.ds-sub-p + .ds-sub-p { margin-top: 12px; }
+.ds-mini-nota { margin: 10px 0 var(--ma-4); font-size: 13px; color: var(--fg-2); }
+.ds-formula { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; padding: 6px 10px; background: var(--wash-1); color: var(--fg); margin-bottom: var(--ma-3); }
+
+/* motion: a curva desenhada, com um ponto que a percorre de verdade */
+.ds-motion-grade { display: grid; grid-template-columns: 300px 1fr; gap: var(--ma-4); align-items: start; }
+.ds-curva-caixa { position: relative; padding: 0 0 26px 18px; }
+.ds-curva { width: 100%; height: auto; overflow: visible; }
+.cv-caixa { fill: none; stroke: var(--wash-1); stroke-width: 1.5; }
+.cv-linear { stroke: var(--wash-1); stroke-width: 1.5; stroke-dasharray: 4 5; }
+.cv-curva { fill: none; stroke: var(--vermilion-ink); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1200ms cubic-bezier(.16,1,.3,1); }
+.cv-curva.in { stroke-dashoffset: 0; }
+.cv-ponto { fill: var(--vermilion-ink); offset-distance: 0%; opacity: 0; }
+/* o ponto anda na PRÓPRIA curva: é a curva se explicando, não uma
+   animação decorativa por cima dela */
+.cv-ponto.anda { opacity: 1; animation: cvAnda 2600ms cubic-bezier(.16,1,.3,1) 900ms infinite; }
+@keyframes cvAnda {
+  0%   { offset-distance: 0%; }
+  55%  { offset-distance: 100%; }
+  100% { offset-distance: 100%; }
+}
+.cv-eixo { position: absolute; font-family: var(--font-condensed); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .14em; font-size: 10px; color: var(--fg-2); }
+.cv-x { left: 0; bottom: -20px; }
+/* o rótulo do eixo Y corre junto ao eixo, escrito de baixo pra cima */
+.cv-y { left: -16px; bottom: 34px; transform-origin: 0 0; transform: rotate(-90deg); white-space: nowrap; }
+/* "linear" fica na ponta inferior da diagonal, longe da curva: mais acima
+   ela cruzava o traço vermelho e as duas leituras se atrapalhavam */
+.cv-linear-rot { position: absolute; right: 8px; bottom: 26px; font-family: var(--font-condensed);
+  font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-size: 9.5px;
+  color: var(--fg-2); }
+.ds-marcos { list-style: none; margin: var(--ma-3) 0 0; padding: 0; display: flex; gap: var(--ma-4); flex-wrap: wrap; }
+.ds-marcos li { display: flex; flex-direction: column; gap: 2px; }
+.ds-marcos strong { font-family: var(--font-condensed); font-size: 17px; color: var(--fg); }
+.ds-marcos span { font-size: 12px; color: var(--fg-2); }
+
+/* tipografia: espécime no tamanho declarado */
+.ds-familias { display: flex; gap: var(--ma-4); }
+.ds-fam { display: flex; flex-direction: column; gap: 2px; text-align: right; }
+.ds-fam strong { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
+.ds-fam span { font-size: 11.5px; color: var(--fg-2); }
+.ds-escala { list-style: none; margin: var(--ma-3) 0 0; padding: 0; }
+.ds-deg { display: flex; align-items: baseline; gap: var(--ma-4); padding: 14px 0;
+  border-top: 1px solid var(--wash-1); }
+.ds-deg:first-child { border-top: 0; }
+/* o espécime usa a família de verdade quando ela existe no ar; o
+   fallback mantém a proporção, que é o que a escala está mostrando */
+.ds-esp { font-family: 'Figtree', 'Hanken Grotesk', system-ui, sans-serif; line-height: 1; color: var(--fg); flex: none; min-width: 92px; }
+.ds-deg-meta { display: flex; flex-direction: column; gap: 3px; }
+.ds-deg-meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; color: var(--fg); }
+.ds-deg-v { font-size: 12px; color: var(--fg-2); }
+
+/* espaço: a barra é a distância na proporção real */
+.ds-ritmo { list-style: none; margin: var(--ma-3) 0 0; padding: 0; display: grid; gap: 10px; }
+.ds-ritmo li { display: grid; grid-template-columns: 42px 1fr 92px; gap: 14px; align-items: center; }
+.ds-ritmo-l { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--fg-2); }
+.ds-ritmo-trilho { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ds-ritmo-d, .ds-ritmo-m { display: block; height: 9px; transition: width 700ms cubic-bezier(.16,1,.3,1); }
+.ds-ritmo-d { background: var(--vermilion-ink); }
+.ds-ritmo-m { background: var(--wash-3); }
+.ds-ritmo-v { font-family: var(--font-condensed); font-size: 14px; color: var(--fg); text-align: right; }
+.ds-ritmo-v em { font-style: normal; color: var(--fg-2); font-size: 12.5px; }
+
+/* raio: a amostra é o próprio canto */
+.ds-raios { list-style: none; margin: 0 0 var(--ma-3); padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 14px; }
+.ds-raios li { display: flex; align-items: center; gap: 10px; }
+.ds-raio-am { width: 30px; height: 30px; flex: none; border: var(--ink-stroke) solid var(--ink); }
+.ds-raios strong { font-family: var(--font-condensed); font-size: 14px; }
+.ds-raios span:last-child { font-size: 12px; color: var(--fg-2); }
+
+/* o card que deriva do tema: a mesma regra, dois inks */
+.ds-wells { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: var(--ma-3); }
+.ds-well { margin: 0; padding: 16px; border: 1px solid var(--wash-1); }
+.ds-poco { position: relative; aspect-ratio: 5/4; border-radius: 22px; overflow: hidden; }
+.ds-poco-brilho { position: absolute; inset: 0; border-radius: 22px; }
+.ds-well figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  margin-top: 10px; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .14em; font-size: 10.5px; }
+.ds-well figcaption em { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-style: normal; letter-spacing: 0; font-size: 10px; text-transform: none; }
+.ds-well.claro figcaption { color: #52525b; }      /* 7.0:1 sobre #fafafa */
+.ds-well.escuro figcaption { color: #a1a1aa; }     /* 7.4:1 sobre #0a0a0a */
+
+@media (max-width: 880px) {
+  .ds-motion-grade { grid-template-columns: 1fr; }
+  .ds-curva-caixa { max-width: 300px; }
+  .ds-wells { grid-template-columns: 1fr; }
+  .ds-deg { gap: var(--ma-3); }
+  .ds-esp { min-width: 68px; }
+  .ds-ritmo li { grid-template-columns: 34px 1fr 78px; gap: 10px; }
+  .ds-familias { flex-direction: column; gap: 8px; text-align: left; }
+  .ds-fam { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* a curva parada já carrega a informação; o ponto correndo é reforço */
+  .cv-ponto.anda { animation: none; offset-distance: 100%; }
+  .cv-curva { transition: none; stroke-dashoffset: 0; }
+  .ds-ritmo-d, .ds-ritmo-m { transition: none; }
+}
+
+/* ---- ÍNDICE DO CAPÍTULO ---------------------------------------------
+   Sumário de lombada, à esquerda. NÃO é camada flutuante: é coluna do
+   corpo do capítulo, então ele começa depois da capa (a capa é full
+   bleed, fora deste grid) e fica preso enquanto a coluna de leitura ao
+   lado corre. Quando o capítulo acaba, o índice sobe junto: é sticky,
+   não fixed.
+   Abaixo de 1240px a coluna some e a leitura volta a ocupar tudo: nessa
+   largura um índice lateral vira tampa, não navegação. */
+.sec-anc { scroll-margin-top: var(--ma-4); }
+.sec-anc:focus { outline: none; }
+
+.idx { display: none; }
+
+@media (min-width: 1700px) {
+  /* o conteúdo NÃO divide a tela com o índice: a coluna de leitura segue
+     centralizada e do tamanho de antes. O índice mora na margem
+     esquerda, ancorado no corpo do capítulo -- por isso ele aparece
+     depois da capa e sai quando o capítulo acaba, sem ser fixed. */
+  .chapter-body.com-indice { position: relative; }
+  .chapter-col { min-width: 0; }
+
+  /* sticky dentro do corpo do capítulo (aparece depois da capa, solta no
+     fim), mas deslocado pra margem esquerda da tela por transform, que
+     não ocupa espaço e por isso não estreita a leitura.
+     A margem negativa tira ele do fluxo; o transform o leva pra fora do
+     bloco sem depender da largura da janela. */
+  .idx {
+    display: block;
+    position: sticky; top: var(--ma-5);
+    width: 236px; height: 0;     /* altura zero: não empurra nada abaixo */
+    margin: 0; overflow: visible;
+    /* o .shell trava em 1240px, então a margem livre é (100vw - 1240)/2.
+       O índice se encosta na borda da tela por aí: em telas largas sobra
+       espaço de verdade, e o conteúdo nunca estreita pra abrir lugar. */
+    transform: translateX(calc((100vw - 1240px) / -2 - var(--gutter) + 56px));
+  }
+  /* só rola no eixo vertical, e só se o índice não couber na tela.
+     `overflow-y: auto` sozinho cria barra HORIZONTAL quando um título
+     encosta na borda: o x explícito mata isso. */
+  .idx-caixa { max-height: calc(100vh - var(--ma-5) * 2 - 12px);
+    overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+  .idx-t { overflow-wrap: break-word; }
+  .idx-caixa { border-left: var(--ink-stroke) solid var(--ink); padding: 4px 0 4px 18px; }
+
+  .idx-cab { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+    letter-spacing: .2em; font-size: 11px; color: var(--fg-2); margin-bottom: 4px; }
+  .idx-atos, .idx-secs { list-style: none; margin: 0; padding: 0; }
+  .idx-ato { margin-top: 18px; }
+  .idx-ato:first-child { margin-top: 12px; }
+  .idx-ato-t { display: block; font-family: var(--font-condensed); font-weight: 700;
+    text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: var(--fg-2); }
+  .idx-secs { margin-top: 6px; }
+  .idx-secs li { position: relative; }
+
+  .idx a { display: flex; gap: 9px; align-items: baseline; text-decoration: none;
+    color: var(--fg); padding: 4px 0 4px 10px; margin-left: -10px;
+    transition: color 200ms cubic-bezier(.16,1,.3,1), transform 200ms cubic-bezier(.16,1,.3,1); }
+  .idx-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+    color: var(--fg); flex: none; transition: color 200ms cubic-bezier(.16,1,.3,1); }
+  .idx-t { font-size: 14.5px; line-height: 1.32; }
+
+  /* o marcador do ativo é um traço que DESLIZA entre os itens: ele mora
+     no li e cresce a partir do centro, então trocar de seção lê como
+     movimento contínuo em vez de piscar em outro lugar */
+  .idx-secs li::before {
+    content: ""; position: absolute; left: -20px; top: 50%;
+    width: 3px; height: 0; transform: translateY(-50%);
+    background: var(--vermilion-ink);
+    transition: height 260ms cubic-bezier(.16,1,.3,1);
+  }
+  .idx-secs li.aqui::before { height: 20px; }
+
+  .idx .aqui a, .idx .aqui a .idx-n { color: var(--vermilion-ink); font-weight: 600; }
+  .idx .aqui .idx-t { letter-spacing: .002em; }   /* o peso engorda; a trilha compensa */
+
+  /* hover: o item anda um fio para a direita e escurece, o que dá o
+     alvo sem precisar de caixa de fundo */
+  .idx a:hover { color: var(--ink); transform: translateX(3px); }
+  .idx a:hover .idx-n { color: var(--vermilion-ink); }
+  .idx a:focus-visible { outline: 2px solid var(--vermilion-ink); outline-offset: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idx a, .idx-n, .idx-secs li::before { transition: none; }
+  .idx a:hover { transform: none; }
 }
