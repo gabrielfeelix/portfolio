@@ -658,7 +658,7 @@ const CHAPTERS = [
     problema: {
       t: "A interface envelheceu junto com o produto",
       p: ["A plataforma funcionava, e funcionava há anos. O problema não era o fluxo, era a interface: um layout antigo, que envelheceu junto com o produto e passou a comunicar menos do que o negócio já entrega hoje.",
-          "Este é um projeto de redesign visual, e vale dizer isso com clareza. Não redesenhei a lógica do sistema. Redesenhei a superfície inteira dele."],
+          "Redesign de legado é exercício de contenção, não de criação. A superfície inteira mudou; a lógica do sistema, de propósito, não. Quem opera isso todo dia sabe onde tudo está de cor, e obrigar essa pessoa a reaprender o caminho seria cobrar caro por uma melhoria que ela não pediu."],
     },
     investigacao: {
       t: "Validado com quem opera o sistema",
@@ -693,7 +693,7 @@ const CHAPTERS = [
       p: ["O site entrou em produção dentro da data do evento. A plataforma segue em andamento e o app está em protótipo."],
     },
     aprendi: {
-      p: ["Redesign de sistema legado é mais um exercício de contenção do que de criação. A tentação é reorganizar tudo. O trabalho certo é atualizar a interface sem obrigar quem usa o produto todo dia a reaprender onde as coisas estão.",
+      p: ["A tentação, num sistema assim, é reorganizar tudo de uma vez. O trabalho certo é atualizar a interface sem obrigar quem usa o produto todo dia a reaprender onde as coisas estão.",
           "E que saber mexer no código muda o que você consegue entregar. Nesse projeto foi a diferença entre chegar na feira com o site novo ou não chegar."],
     },
   },
@@ -737,8 +737,8 @@ const CHAPTERS = [
     },
     resultado: {
       t: "Um sistema a menos no comercial",
-      p: ["O resultado que eu não tinha previsto: para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava. Isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, e eles começaram a conectar o RD ao CRM interno.",
-          "A consequência foi organizacional. A operação usava três sistemas para o mesmo processo: um saiu de cena, e hoje o caminho é consolidar tudo dentro do CRM próprio, agora que o fluxo foi validado na prática com os vendedores.",
+      p: ["A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
+          "Não era o resultado previsto. Para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava. Isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, e eles começaram a conectar o RD ao CRM interno. Um sistema saiu de cena, e o caminho agora é consolidar tudo dentro do CRM próprio, agora que o fluxo foi validado na prática com os vendedores.",
           "O lançamento é em etapas, de propósito. Primeiro ela recebe só o tráfego de anúncio, que é onde o problema aparecia com mais força, e só depois substitui a página de cadastro do site oficial. Até aqui foi testada com usuários internos e com um grupo pequeno de externos."],
       listaK: "O que será acompanhado nessa primeira fase",
       lista: ["Conclusão de cada etapa",
@@ -756,7 +756,7 @@ const CHAPTERS = [
     sfx: "シャキーン",                  // shakiin: corte seco (este volume)
     cover: "volume/assets/projetos/portfolio/cover.webp",
     coverTall: "volume/assets/projetos/portfolio/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
-    links: { vercel: "https://portfolio-volume.vercel.app/", figma: null },
+    links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null },
     premise: "Um portfólio que se lê como um volume de mangá.",
     role: "Concepção, design e construção",
     surface: "Website · Manifesto",
@@ -975,7 +975,7 @@ const PROJECTS = [
     desc: "Página de cadastro de revenda", cover: "volume/assets/projetos/oderco-revenda/cover.webp", links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null } },
   { id: "portfolio", title: "Portfólio", cat: "web", domain: "Website · Manifesto", fav: false, chapterId: "portfolio",
     desc: "Este volume que você está lendo", cover: "volume/assets/projetos/portfolio/cover.webp",
-    links: { vercel: "https://portfolio-volume.vercel.app/", figma: null } },
+    links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null } },
 
   /* ---- outras peças: entram no índice e linkam pro próprio trabalho -- */
   { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,

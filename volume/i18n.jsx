@@ -338,7 +338,7 @@ if (LANG === "en") {
         resultado: "A legacy system brought up to date without changing the path of the people already using it" },
       problema: { t: "The interface aged along with the product",
         p: ["The platform worked, and had worked for years. The problem wasn't the flow, it was the interface: an old layout that aged along with the product and ended up communicating less than the business already delivers today.",
-            "This is a visual redesign project, and that's worth saying plainly. I didn't redesign the system's logic. I redesigned its entire surface."] },
+            "Redesigning legacy is an exercise in restraint, not in creation. The entire surface changed; the system's logic, on purpose, did not. The people who operate it every day know where everything is by heart, and making them relearn the path would charge a high price for an improvement they never asked for."] },
       decisoes: [
         { d: "The whole screen base redesigned, with a navigable prototype", r: "because the team needed to judge the proposal in use, not as a static image." },
         { d: "New visual language, path untouched", r: "because in a system with years of use, changing the look without changing the path is the difference between modernizing and getting in the way." },
@@ -350,7 +350,7 @@ if (LANG === "en") {
         p: ["The platform redesigned with a navigable prototype, the app's main screens in prototype, and the energy storage page created for the new battery line, explaining how the product works to an audience that doesn't know the technology yet."] },
       resultado: { t: "Live in time for the trade show",
         p: ["The site went into production within the event's date. The platform is still in progress and the app is in prototype."] },
-      aprendi: { p: ["Redesigning a legacy system is more an exercise in restraint than in creation. The temptation is to reorganize everything. The right work is updating the interface without forcing the people who use the product every day to relearn where things are.",
+      aprendi: { p: ["The temptation, in a system like this, is to reorganize everything at once. The right work is updating the interface without forcing the people who use the product every day to relearn where things are.",
                      "And that knowing how to touch the code changes what you can deliver. On this project it was the difference between arriving at the trade show with the new site or not arriving at all."] },
     },
     "oderco-revenda": {
@@ -377,8 +377,8 @@ if (LANG === "en") {
         p: ["Someone arriving from an ad who has never heard of the company finds, on the same screen as the form, what it distributes, who it sells to and what the reseller gets out of it.",
             "Filling it in stopped being an act of faith and became an informed decision."] },
       resultado: { t: "One system fewer in sales",
-        p: ["The result I hadn't predicted: to build the automation I went after the RD Station API and documented how it worked. That showed the development team the integration was simpler than it looked, and they started connecting RD to the internal CRM.",
-            "The consequence was organizational. Operations used three systems for the same process: one is out, and the path now is consolidating everything inside the in-house CRM, now that the flow has been validated in practice with the reps.",
+        p: ["Operations ran three systems for the same sales process. Today it runs two.",
+            "That wasn't the predicted result. To build the automation I went after the RD Station API and documented how it worked. That showed the development team the integration was simpler than it looked, and they started connecting RD to the internal CRM. One system is out, and the path now is consolidating everything inside the in-house CRM, now that the flow has been validated in practice with the reps.",
             "The rollout is staged on purpose. First it takes only ad traffic, which is where the problem showed up hardest, and only then does it replace the official site's signup page. So far it has been tested with internal users and a small group of external ones."],
         listaK: "What will be tracked in this first phase",
         lista: ["Completion of each step",
