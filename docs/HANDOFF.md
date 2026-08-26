@@ -10,10 +10,19 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
   repositório muda entre elas. Nada aqui deve gravar caminho absoluto de
   `$HOME`: descubra com `git rev-parse --show-toplevel`.
 
-**A auditoria do portfólio está em `docs/AUDITORIA-PORTFOLIO.md`**: veredito
-de triagem, o que está bom, o que está fraco por impacto, e o plano de
-revisão do PCYES em quatro atos com ordem de execução. É de lá que sai o
-próximo trabalho, e o registro de execução no fim dele diz o que já caiu.
+**São duas auditorias, e elas não se sobrepõem:**
+
+- `docs/AUDITORIA-PORTFOLIO.md` (volume inteiro, calibrada para mid):
+  veredito de triagem, o plano do PCYES em quatro atos. Rodadas 1, 2, 3 e
+  5 fechadas. **Explicitamente não avalia craft visual, motion nem
+  leiturabilidade.**
+- `docs/AUDITORIA-PCYES-2026-08-26.md` (o capítulo só, e é justamente o
+  que a outra deixou de fora): craft, motion, leiturabilidade, escala das
+  imagens e apresentação do design. **Nota atual: 8,0 para mid**, era
+  7,4. Traz os números medidos e a receita pra reproduzir a medição.
+
+O próximo trabalho sai da seção **Pendente** deste arquivo, que consolida
+as duas.
 
 > Este arquivo é relido a cada sessão, então guarda só o que **muda o que
 > você vai fazer**: regras, armadilhas que custaram retrabalho, decisões já
@@ -72,6 +81,14 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 2. Sticky **precisa de um pai mais alto que ele** pra ter trilho por onde correr. Sem isso a coluna sobe junto com o scroll. Use `.text-col { align-self: stretch }`.
 3. `.beat .panel` nasce `opacity: 0` e só acende com a classe `.in`. Numa coluna presa, essa faixa já passou e o conteúdo **some**. Force `opacity: 1` no módulo.
 
+> Esta terceira mordeu de novo em `fb823c9`: o beat `sistema` tinha as
+> duas primeiras resolvidas e **não** a terceira, então a abertura do
+> Design System (kicker, título e dois parágrafos) ficou em `opacity: 0`
+> por semanas, com build verde e sem erro de console. Só apareceu medindo
+> a opacidade máxima de cada painel enquanto ele está na faixa de
+> leitura. **Se criar módulo novo com coluna presa, aplique as três.**
+> Hoje quem força são `.mod-passos` e `.beat-sistema`.
+
 ## Decisões fechadas (não relitigar)
 
 - **Coverflow**: as capas laterais esmaecidas violam contraste no axe. Gabriel decidiu (2026-05-29) **aceitar** — é preview periférico decorativo e a capa focada carrega o texto legível. Exceção consciente à WCAG 1.4.3. Não mexer.
@@ -84,92 +101,222 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-> Itens 1 e 2 da rodada anterior (índice em 1440, cinco violações de
-> contraste) foram **resolvidos** em `e45aca3`. Não reabrir.
+> **Estado em 2026-08-26, `fb823c9`.** A Rodada A da auditoria do PCYES
+> caiu inteira (ver `docs/AUDITORIA-PCYES-2026-08-26.md`, que tem os
+> números e o método pra reproduzir a medição). Nota do capítulo: **8,0
+> para mid**, era 7,4. Nada do que está abaixo foi tentado e falhou:
+> tudo é trabalho que ainda não começou ou que depende do Gabriel.
 
-> A **reordenação do PCYES foi feita** em `c3112ef` (Rodada 2). Não
-> reabrir: a ordem em quatro atos, as 4 âncoras sem figura e o módulo
-> "O acabamento" são decisão executada e medida.
->
-> A **Rodada 3 (os atalhos) também já está fechada**, e uma versão
-> anterior deste arquivo dizia o contrário. Os títulos de ato existem no
-> índice desde `46382c7` (a constante `ATOS` em `Capitulo.jsx`, renderizada
-> em `.idx-ato-t`); o que faltava era o índice **aparecer em 1440px**, e
-> isso saiu em `e45aca3`. Medido nesta sessão: a caixa do índice mede
-> 188x561px em 1440 e 236x585px em 1700, com os quatro títulos de ato.
-> Não reimplementar.
->
-> A **Rodada 5 saiu** em `7136f9e` (Oderço e Odex). O que sobra da
-> auditoria depende de material do Gabriel.
+Sete grupos. Os grupos A e B são os que valem mais.
 
-**1. O que a reordenação deixou pendente.** Uma coisa, e depende de
-material: `buscaV2` e `popup` agora são **passos 1 e 2** do módulo "O
-acabamento" e caem em `MangaPlate` até o print subir. São os dois
-primeiros passos de um módulo de nove, então é o buraco mais visível do
-capítulo hoje.
+---
 
-> A "figura `marca` órfã" que este arquivo listava **não existe**. `marca`
-> (`data.jsx`) é a régua do funil, consumida por `Funil` em
-> `Capitulo.jsx` via `dados.marca`. Verificado: nenhuma figura está órfã,
-> todas entram por `fig:` ou `figs:`. Não procurar de novo.
+### A · RITMO E LEITURABILIDADE (o maior item aberto)
 
-**2. OS QUATRO PRINTS: é o que trava o capítulo hoje.** Só o Gabriel tem
-acesso à V1. Combinado: entrariam depois da reordenação, e a reordenação
-**já saiu** (`c3112ef`), então a vez é esta.
+**Decisão do Gabriel: isto é projeto à parte, não se ataca por partes.**
+Palavra dele: *"o ritmo vai ser um design à parte, vai exigir um esforço
+considerável"*. Não comece isso numa sessão que também vai fazer outra
+coisa.
 
-Molduras já prontas em `data.jsx` (sem `src`, caem em `MangaPlate` com o
-selo "print a subir"). Alt e legenda **já estão escritos em PT e EN**:
-basta o arquivo entrar, nada de código a mexer.
+O tamanho do problema, medido em 1440x900 na página servida:
 
-| Chave | O que é | Onde aparece | Prioridade |
+| Medida | PCYES | Outros capítulos |
+|---|---|---|
+| Altura | **36.420px** | 9.234 a 11.504px |
+| Telas de rolagem | **40,5** | 10,3 a 12,8 |
+| Palavras | **3.995** (~20 min) | 654 a 1.102 |
+
+Um recrutador dá 3 minutos. O capítulo pede 20.
+
+Sub-itens, e eles **não** são independentes (por isso o Gabriel quer
+tratar como um projeto só):
+
+1. **Cortar ou dobrar conteúdo.** 16 beats. O Ato I e II somam 8 beats
+   de diagnóstico antes da primeira solução.
+2. **Atalho de 3 minutos dentro do capítulo.** Não é o `#/rapido`, que é
+   global e resolve escolha *entre* capítulos. É um "ver só o que mudou"
+   no topo do PCYES que pula para `solucao` + `antesDepois` +
+   `resultado`. O `IndiceCapitulo` hoje é lista de 15 seções, não atalho.
+3. **Linhas ainda fora da faixa 45 a 75 CPL.** Depois da Rodada A o
+   `.beat-p` foi de 35 para **44 CPL** (295px → 375px), e a mediana do
+   capítulo de 40 para 43. Mas ainda sobram os dois extremos:
+   - **curto demais:** `.rec-r` a 38 CPL (282px), `.ds-caso-p` a ~35,
+     `.ds-sub-p` no mobile a 34.
+   - **longo demais:** `.pn-nota` a **85 CPL** (592px com fonte de 14px,
+     4 ocorrências) e `.ds-nota` a 85. O teto confortável é 75.
+   Ou seja: a medida do capítulo não é sistemática. Cada componente
+   escolheu a sua, que é exatamente o que o beat do Design System diz que
+   não se deve fazer.
+
+---
+
+### B · A ESCALA DAS TELAS (a inversão diminuiu, não acabou)
+
+**O achado:** a V1 que o capítulo critica é mostrada maior que a V2 que o
+Gabriel desenhou.
+
+Depois da Rodada A, medido em 1440:
+
+| | Largura | % da tela |
+|---|---|---|
+| `v1-home` (V1) | **988px** | 69% |
+| `v1-vitrine`, `v1-carrinho` (V1) | **976px** | 68% |
+| Telas da `solucao` (corrigido na Rodada A) | 628px | 44% |
+| **Mediana das telas da V2** | **543px** | 38% |
+| `prevenda`, `contador`, `sidecart`, `points` | **240px** | 17% |
+
+Faltam duas coisas:
+
+1. **Subir o piso das telas da V2 fora da `solucao`.** As quatro a 240px
+   são as piores. Regra proposta, ainda não aplicada: nenhuma tela de
+   produto abaixo de 600px em 1440, e nenhuma tela da V2 menor que a da
+   V1 equivalente.
+2. **Zoom onde não tem, e lupa que se vê.** Das 27 imagens, 18 abrem em
+   zoom. Das 9 que não abrem, 6 são o antes/depois (é slider, está a
+   976px, tudo bem) e **3 são exatamente as telas da `solucao`**, o
+   clímax. Além disso a `.fig-lupa` tem **`opacity: 0` em repouso**: só
+   existe no hover, sem `tabindex` e sem `role`, então quem rola sem
+   passar o mouse nunca soube que dava pra ampliar, e quem usa teclado
+   não alcança. **É o item de melhor retorno por esforço da lista toda.**
+
+> Registro, pra ninguém repetir o erro: uma versão anterior da auditoria
+> dizia que "o recrutador não consegue avaliar o UI". **Isso é falso e
+> foi escrito antes de testar a lupa.** São 27 telas, 18 com zoom, mais
+> link de protótipo e de design system no topo. Quantidade nunca foi o
+> problema. O problema é escala e descoberta.
+
+---
+
+### C · MATERIAL QUE SÓ O GABRIEL TEM (travado)
+
+**C1. Os quatro prints do PCYES.** Só ele tem acesso à V1.
+
+| Chave | O que é | Onde | Prioridade |
 |---|---|---|---|
 | `buscaV2` | V2 sugerindo produtos e termos antes de digitar | **passo 1** de "O acabamento" | **alta** |
-| `popup` | Pop-up da V2 aparecendo após 15% de rolagem | **passo 2** de "O acabamento" | **alta** |
-| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad na frente | beat `busca` (Ato II) | **alta** |
+| `popup` | Pop-up da V2 após 15% de rolagem | **passo 2** de "O acabamento" | **alta** |
+| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad | beat `busca` (Ato II) | **alta** |
 | `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | beat `busca` (Ato II) | **alta** |
 
-Os dois primeiros subiram de prioridade na Rodada 2: viraram os **dois
-primeiros passos** de um módulo de nove, então o leitor abre "O
-acabamento" em duas molduras vazias seguidas. É o buraco mais visível do
-capítulo hoje. Os dois últimos sustentam o achado da busca, que é o
-melhor momento do melhor case.
+`buscaV2` e `popup` são os **passos 1 e 2** de um módulo de nove: o
+leitor abre "O acabamento" em duas molduras vazias empilhadas. É o buraco
+mais visível do capítulo hoje. `buscaMouse` e `buscaMause` sustentam o
+achado da busca, que é o melhor momento do melhor case.
 
 **Como entregar:** precisa de **arquivo em disco**, imagem colada em chat
-não serve. Salvar em `volume/assets/projetos/pcyes/` e apontar o `src` na
-entrada correspondente de `chap.figuras` (`data.jsx`, capítulo `pcyes`),
-no mesmo formato das vizinhas: `src: "volume/assets/projetos/pcyes/<arquivo>.webp"`.
-Preferir `.webp`. Depois `npm run build`.
+não serve. Salvar em `volume/assets/projetos/pcyes/`, preferir `.webp`,
+e apontar o `src` na entrada de `chap.figuras` (`data.jsx`, capítulo
+`pcyes`) no formato das vizinhas:
+`src: "volume/assets/projetos/pcyes/<arquivo>.webp"`. **Alt e legenda já
+estão escritos em PT e EN: não há código a mexer.** Depois `npm run build`.
 
-**3. FigJam: NÃO despejar os 10 artefatos.** Decisão da auditoria. O
-capítulo já tem 16 beats e o Ato I/II já é denso. Critério para um
-artefato entrar: **mudou uma decisão?** Se sim, entra junto da decisão
-que mudou; se não, fica fora. Os que não entram viram **uma figura só**
-em `investigacao` (vista do FigJam inteiro), com legenda que argumenta
-("dez artefatos antes da primeira tela"), não dez beats. Quais mudaram
-decisão é resposta do Gabriel, ainda pendente.
+**C2. Quais artefatos do FigJam mudaram uma decisão.** A resposta é dele.
+O critério está em `AUDITORIA-PORTFOLIO.md` e **não se relitiga**: o
+artefato entra só se mudou uma decisão, e entra junto da decisão que
+mudou. Os que não entram viram **uma figura só** em `investigacao` (vista
+do FigJam inteiro), com legenda que argumenta ("dez artefatos antes da
+primeira tela"), não dez beats. **Não despejar os 10.**
 
-**4. Os outros capítulos.** ~~Oderço e Odex~~ **FEITO** em `7136f9e`, PT
-e EN. O `resultado` do Oderço abre no desfecho ("usava três sistemas,
-hoje usa dois") em vez de na modéstia, e o `problema` do Odex abre na
-tese de contenção, com o escopo dito como decisão e não como ressalva.
-O `aprendi` do Odex parou de repetir a tese que agora abre.
+**C3. Print do Traxium** (ele tem em casa) e **logo do IMMO**
+(`logo: null` em `data.jsx`, ele vai mandar o Figma).
 
-> Os `[assim]` da lista priorizada **não existem na página**. Eles moram
-> só em `synthChapter` (`data.jsx`), o fallback para projeto sem capítulo
-> autoral, e os cinco `CASE_IDS` têm capítulo em `CHAPTERS`: `chapterFor`
-> nunca chega no synth. É código morto, não pendência de conteúdo.
+---
 
-**5. Antes/depois de um componente real (opcional).** O DS prova sistema
-em cima de token; faltaria provar em cima de tela: card de produto da V1
-ao lado do da V2. Não há documentação de token da V1, então o
-enquadramento honesto é "a V1 não tinha sistema", não inventar números.
+### D · MOTION (o capítulo contradiz a própria tese)
 
-**6. Conteúdo de outros capítulos.** Traxium sem print (ele tem em casa).
-IMMO sem logo (`logo: null` em `data.jsx`) — ele vai mandar o Figma.
+O beat do Design System argumenta, com todas as letras: *"Uma curva só,
+para tudo que se move. A alternativa é cada componente escolher a sua, e
+aí o site inteiro parece feito por pessoas diferentes."*
 
-**7. Quirk pré-existente, fora de escopo.** Ao navegar pra um capítulo a
-partir de uma posição rolada, a pill do nav começa escondida até rolar
-pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
+Inventário medido no capítulo:
+
+```
+ease (padrão do browser)          1002 elementos  ← camada decorativa `organic`
+cubic-bezier(0.2, 0.9, 0.1, 1)     129
+cubic-bezier(0.16, 1, 0.3, 1)       42  ← a curva que o texto defende
+cubic-bezier(0.72, 0.02, 0.28, 1)   29
+cubic-bezier(0.4, 0, 0.2, 1)         1
++ ease-in-out e linear em animações
+```
+
+A curva defendida é a **quarta** mais usada. Unificar nos componentes de
+conteúdo; a camada decorativa pode ficar no `ease`.
+
+Ressalva honesta pra não inflar o problema: os 1002 `ease` são **uma**
+camada decorativa (as partículas `<i>` de `organic.jsx`), não mil
+componentes distintos. O problema real são as **quatro curvas em
+componentes de conteúdo**.
+
+**O que está bom no motion e não se mexe:** `prefers-reduced-motion`
+tratado em 14 pontos do CSS, durações sensatas (0,18s a 0,82s),
+`will-change` onde precisa.
+
+---
+
+### E · TEXTO (maneirismo, não conteúdo)
+
+O conteúdo do PCYES está bom e **não precisa reescrita**. O que precisa é
+quebrar um tique de ritmo, medido no capítulo:
+
+- **60 dois-pontos explicativos** em ~250 frases. Uma em cada quatro
+  frases faz o mesmo gesto: afirmação, dois-pontos, revelação. Fica
+  previsível no Ato III e IV. Quebrar uns 20.
+- "deixou de / passou a" **14 vezes**, "em vez de" **10 vezes**.
+
+**Não é cara de IA, e isso foi verificado:** 0 travessões, 0 construções
+"não é X, é Y", frase média de 18,6 palavras, só 5 frases acima de 45
+palavras, vocabulário idiomático e brasileiro. Não relitigar isso.
+
+---
+
+### F · OS OUTROS QUATRO CAPÍTULOS (o problema que ninguém olhou ainda)
+
+Medido: cada um mostra **4 a 6 telas de projeto** e tem 654 a 1.102
+palavras. Para portfólio de UI, quatro telas por case é pouco. O volume
+hoje é um capítulo de 20 minutos ao lado de quatro de 4 minutos.
+
+Isso **não** se resolve cortando o PCYES (decisão fechada: "não cortar
+beats pra equilibrar, o problema é falta de atalho, não excesso de
+argumento"). Resolve-se engordando os outros, e isso depende de material.
+
+Aberto e não decidido: **quanto** engordar, e com o quê.
+
+---
+
+### G · OPCIONAIS E MIUDEZAS
+
+- **Antes/depois de um componente real** (opcional, da auditoria antiga):
+  card de produto da V1 ao lado do da V2. Não há documentação de token da
+  V1, então o enquadramento honesto é "a V1 não tinha sistema". **Não
+  inventar número.**
+- **Quirk pré-existente, fora de escopo:** ao navegar pra um capítulo a
+  partir de uma posição rolada, a pill do nav começa escondida até rolar
+  pra cima. O Nav é comportamento sensível, mexer só com cuidado.
+- **264 elementos de texto entre 12 e 14px.** Depois da Rodada A o piso é
+  12px e **nada** ficou abaixo disso (eram 133). Se um dia quiser subir o
+  piso pra 13px, é aqui que se mexe. Não é urgente.
+
+---
+
+### Coisas que parecem pendência e NÃO são (não procurar de novo)
+
+- **A figura `marca` não está órfã.** É a régua do funil, consumida por
+  `Funil` via `dados.marca`. Nenhuma figura está órfã.
+- **Os `[assim]` não renderizam na página.** Moram só em `synthChapter`
+  (`data.jsx`), o fallback de projeto sem capítulo autoral, e os cinco
+  `CASE_IDS` têm capítulo em `CHAPTERS`. É código morto.
+- **Nenhuma imagem está sem `alt`.** Os dois `bp-logo` têm `alt=""`
+  dentro de `<span aria-hidden="true">`, que é o padrão **correto** para
+  imagem decorativa. Uma varredura que conta string vazia como ausente dá
+  falso positivo aqui.
+- **Contraste está resolvido.** 0 violação real em 1920/1700/1440/768/390,
+  nos dois modos, PT e EN. As duas que uma varredura acusa são os kanji
+  decorativos (`prob-kanji`, `inv-kanji`) em `rgba(0,0,0,0)`.
+- **`calendario` não é beat.** É desenhado dentro de `Resultado`, no slot
+  de arte (`c7`). A ordem das chaves em `data.jsx` não é a ordem de render.
+- **Os títulos de ato já existem no índice** (constante `ATOS` em
+  `Capitulo.jsx`, renderizada em `.idx-ato-t`), e o índice **já aparece
+  em 1440px**. Rodadas 1, 2, 3 e 5 da auditoria antiga estão fechadas.
 
 ## Estado do capítulo PCYES
 
@@ -268,17 +415,60 @@ Lista agrupada em atos, à esquerda. **Derivada do dado** (`indiceDo` + a consta
 
 ### Validação feita
 
-- **Contraste**: 0 violação em 1920/1700/1440/768/390, modo papel e tinta,
-  PT e EN (`e45aca3`, varredura sobre o capítulo inteiro).
+**Rodada A da auditoria do capítulo** (`fb823c9`, 2026-08-26), tudo
+medido na página servida, não por print:
+
+| | Antes | Depois |
+|---|---|---|
+| Painéis que nunca acendem | 1 (abertura do DS) | **0** |
+| Telas da `solucao` | 282px (20% da tela) | **628px** (44%) |
+| `.beat-p` | 295px, ~35 CPL | **375px, ~44 CPL** |
+| Elementos abaixo de 12px | 133 | **0** |
+| Altura do documento | 37.030px | 36.420px |
+
+Sem regressão: 1440, 1700, 768 e 390 conferidos, `scrollWidth ==
+clientWidth` nos quatro (nenhum scroll horizontal), **0 `pageerror`**, 0
+falha real de contraste.
+
+**Anterior, e continua valendo:**
+
+- **Contraste**: 0 violação em 1920/1700/1440/768/390, modo papel e
+  tinta, PT e EN (`e45aca3`).
+- **Teclado**: focus ring de 2 a 3px visível nos 14 primeiros Tabs, skip
+  link presente, ordem de foco sensata.
+- **`prefers-reduced-motion`**: tratado em 14 pontos do CSS.
 - **Selo do capítulo principal** (`192f838`): renderiza exatamente uma
-  vez, no PCYES, em PT ("Capítulo principal") e EN ("Main chapter").
-  `.rvm-main` a 6,40:1 no papel e 6,19:1 na tinta, medido na página
-  servida. Sem erro de console em `#/`, `#/rapido` e no capítulo.
-- **Leitura rápida** (`192f838`): as três células (papel, o quê,
-  resultado) preenchidas nos cinco capítulos, nos dois idiomas.
+  vez, no PCYES, PT e EN. `.rvm-main` a 6,40:1 no papel e 6,19:1 na tinta.
+- **Leitura rápida** (`192f838`): as três células preenchidas nos cinco
+  capítulos, nos dois idiomas.
 - **Performance** (`f01e90b`, mobile, throttling simulado): perf 43 → 74,
   FCP 4,9s → 1,5s, TBT 770ms → 190ms, CLS 0 → 0,017. Acessibilidade 100,
-  SEO 100. As doze rotas renderizam sem erro de console.
+  SEO 100.
+
+### Como medir este site (a receita que funciona)
+
+```bash
+npm run build
+cd dist && python3 -m http.server 8788 --bind 127.0.0.1
+# rota do capítulo: http://127.0.0.1:8788/#/cap/pcyes
+# é #/cap/, NÃO #/capitulo/ — errar isso serve a página 404 e a medição
+# sai toda zerada sem avisar
+```
+
+Para medir sem pegar estado de transição, injete antes de medir:
+
+```css
+*,*::before,*::after{animation:none!important;transition:none!important}
+.beat .panel,.panel{opacity:1!important;transform:none!important}
+```
+
+**Mas para verificar reveal, faça o contrário:** deixe os efeitos
+ligados, aproxime a seção rolando de cima em passos pequenos e registre a
+**opacidade máxima que cada painel atinge enquanto está na faixa de
+leitura**. Foi assim que o bug do Design System apareceu, e ele não
+aparece de nenhum outro jeito.
+
+Filtre `_vercel/` do console: 404 local é esperado, não é regressão.
 
 ## Planos antigos
 
