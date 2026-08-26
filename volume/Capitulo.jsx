@@ -398,7 +398,10 @@ function Modulos({ chap, figN = {} }) {
               </div>
             </div>
             <div className="c7">
-              <div className={`mod-figs ${grade ? "grade" : ""}`}>
+              {/* série: os estados empilham em coluna, porque a leitura é
+                  uma sequência (antes, antes em rede lenta, depois) e não
+                  um mosaico de telas soltas */}
+              <div className={`mod-figs ${m.serie ? "serie" : (grade ? "grade" : "")}`}>
                 {figs.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} ar={grade ? "16/10" : "16/10"} />)}
               </div>
             </div>

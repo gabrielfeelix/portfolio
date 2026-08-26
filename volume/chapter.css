@@ -243,6 +243,7 @@ html.ink .cover-linhas { opacity: .06; }
 /* ---- módulos: o argumento com as telas dele ao lado ---- */
 .mod-figs { display: grid; gap: var(--gutter); }
 .mod-figs.grade { grid-template-columns: 1fr 1fr; }
+.mod-figs.serie { grid-template-columns: 1fr; gap: var(--ma-4); }
 @media (max-width: 880px) { .mod-figs.grade { grid-template-columns: 1fr; } }
 
 /* ---- calendário: a data de publicação, rabiscada a mão ----
