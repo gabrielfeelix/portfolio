@@ -55,10 +55,9 @@ const CHAPTERS = [
        `src`, a moldura entra marcada como print pendente: é honesto e não
        abre buraco no layout. */
     figuras: {
-      abertura: { src: "volume/assets/projetos/pcyes/v1-home.webp", ar: "21/9",
+      abertura: { src: "volume/assets/projetos/pcyes/v1-home.webp", ar: "45/19",
         alt: "Home da V1 abrindo em campanha de marca, com o primeiro produto abaixo da dobra",
         legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
-      gravacao: { legenda: "Gravação de sessão: a pessoa rola o checkout duas vezes procurando forma de pagamento e sai sem comprar." },
       checkout: { src: "volume/assets/projetos/pcyes/s4.webp",
         alt: "Checkout da V2 com Pix, cartão, boleto e carteiras visíveis antes de qualquer rolagem",
         legenda: "O checkout da V2 abre no método de pagamento. A pessoa sabe como pode pagar antes de decidir se continua." },
@@ -83,7 +82,9 @@ const CHAPTERS = [
       contraste: { src: "volume/assets/projetos/pcyes/contraste.webp",
         alt: "Home da V1 passando de uma seção escura para uma dobra branca no meio da rolagem",
         legenda: "A V1 alternava dobras escuras e uma dobra branca inteira no meio do caminho. De madrugada, esse salto de brilho é a parte que cansa a leitura." },
-      libras: { legenda: "VLibras acionado a partir do menu, traduzindo a página em uso." },
+      libras: { src: "volume/assets/projetos/pcyes/libras.webp", ar: "8/5",
+        alt: "Tradutor VLibras aberto sobre a home da V2, com o avatar em Libras ao lado do banner",
+        legenda: "O tradutor de Libras entra pelo ícone de acessibilidade do header e traduz a página em uso. A V1 não tinha: quem tem Libras como primeira língua lia um site em segunda língua." },
       contador: { src: "volume/assets/projetos/pcyes/contador.webp", ar: "1/1",
         alt: "Contagem regressiva da pré-venda correndo, com dias, horas, minutos e segundos",
         legenda: "A contagem corre de verdade na tela, e o número de reservas ao lado é o que sobrou. Escassez que existe, não a que o texto promete." },
@@ -105,12 +106,33 @@ const CHAPTERS = [
       mspProntas: { src: "volume/assets/projetos/pcyes/msp-prontas.webp",
         alt: "Grade de builds prontas separadas por uso, com preço e desconto",
         legenda: "As builds prontas viram produto de vitrine: nome, uso, preço fechado e compra em um clique." },
-      ckCarregado: { ar: "16/10",
-        legenda: "V1, tudo carregado: as bandeiras de cartão ocupam uma faixa inteira e empurram o resumo para fora da primeira dobra." },
-      ckLento: { ar: "16/10",
-        legenda: "A mesma tela em conexão lenta: as bandeiras não chegam e sobra um vão morto no lugar mais caro da página." },
-      ckV12: { ar: "16/10",
-        legenda: "V1.2: componentes reposicionados. A dobra encurtou, o vão sumiu e as formas de pagamento aparecem de cara, no desktop e no mobile." },
+      ckCarregado: { src: "volume/assets/projetos/pcyes/ck-carregado.webp", ar: "120/89",
+        alt: "Checkout da V1 com os quatro meios de pagamento empilhados em lista vertical",
+        legenda: "V1, tudo carregado: cada meio de pagamento ocupa uma linha inteira e o bloco desce por metade da tela." },
+      ckLento: { src: "volume/assets/projetos/pcyes/ck-lento.webp", ar: "120/89",
+        alt: "A mesma tela com apenas Boleto e Pix carregados, e um vão vazio no lugar dos outros meios",
+        legenda: "A mesma tela quando os meios de pagamento não chegam: sobram dois, e o vão que fica é maior que o conteúdo. Quem paga com cartão não vê como pagar." },
+      ckV12: { src: "volume/assets/projetos/pcyes/ck-v12.webp", ar: "1800/913",
+        alt: "Checkout da V1.2 com os quatro meios de pagamento lado a lado em uma única linha",
+        legenda: "V1.2: os quatro meios cabem em uma linha e o frete condensa em três opções. O mesmo checkout ficou 60% mais curto." },
+      popup: { ar: "16/9",
+        alt: "Pop-up de captação da V2 aparecendo depois da pessoa rolar parte da página",
+        legenda: "V2: o pop-up só aparece depois de 15% de rolagem. Quem acabou de chegar vê a loja primeiro; quem já demonstrou interesse é que recebe a oferta." },
+      buscaMouse: { ar: "16/9",
+        alt: "Busca da V1 por mouse devolvendo mousepad nos primeiros resultados",
+        legenda: "V1, busca por \u201cmouse\u201d: o primeiro resultado é mousepad. O motor rankeava por texto parecido, não pelo que a loja precisava vender." },
+      buscaMause: { ar: "16/9",
+        alt: "Busca da V1 por mause devolvendo tela sem nenhum resultado",
+        legenda: "V1, busca por \u201cmause\u201d: nenhum resultado. Uma letra trocada e a loja inteira desaparece." },
+      buscaV2: { ar: "16/9",
+        alt: "Busca da V2 sugerindo produtos e termos mais buscados antes de digitar",
+        legenda: "V2: a busca abre com os produtos e os termos mais procurados. Quem não lembra o nome escolhe sem digitar." },
+      ckMobile: { src: "volume/assets/projetos/pcyes/ck-mobile.webp", ar: "25/61",
+        alt: "Checkout mobile da V1 e da V1.2 lado a lado, com uma linha marcando onde a V1.2 termina",
+        legenda: "As duas na mesma escala: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente." },
+      ckV12Pix: { src: "volume/assets/projetos/pcyes/ck-v12-pix.webp", ar: "225/137",
+        alt: "Checkout da V1.2 com Pix selecionado, abrindo o passo a passo de aprovação imediata",
+        legenda: "Escolher Pix abre o que acontece depois de finalizar. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela." },
       mspBuilder: { src: "volume/assets/projetos/pcyes/msp-builder.webp",
         alt: "Montagem passo a passo com as oito etapas de componentes e o resumo da configuração",
         legenda: "Quem monta do zero anda em oito etapas com compatibilidade checada e o total sempre à vista." },
@@ -154,6 +176,42 @@ const CHAPTERS = [
       ],
       nota: "Os números de comportamento vêm de uma amostra curta do Clarity, e é assim que eles entram aqui: como indício que orientou onde olhar, não como medida definitiva. O que sustenta a decisão é a soma deles com as gravações e com a conversão do trimestre.",
     },
+    /* ---- O FUNIL E O GESTO ----------------------------------------
+       O painel acima dá o tamanho do buraco; estes dois dizem onde ele
+       estava. O funil vem da lista de páginas mais visitadas do Clarity,
+       e o gesto vem do mapa de calor da mesma amostra. Nenhum dos dois
+       entra como print de dashboard: o dado é redesenhado, porque foto de
+       ferramenta é foto de ferramenta, não argumento. */
+    funil: {
+      k: "Onde as pessoas paravam",
+      t: "De 63 que entram, uma chega ao checkout",
+      fonte: "Microsoft Clarity · páginas mais visitadas · amostra de 3 dias",
+      etapas: [
+        { l: "Home", v: 1705, n: "A porta de entrada." },
+        { l: "Busca e vitrine", v: 1541, n: "Quase todo mundo procura alguma coisa." },
+        { l: "Carrinho", v: 267, n: "Aqui já sobrou uma em cada seis." },
+        { l: "Finalizar compra", v: 27, n: "E aqui, uma em cada 63 que entraram." },
+      ],
+      marca: { nosso: 0.16, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Taxa de conversão",
+        n: "Eletrônicos convertem 1,1% em média no Brasil, com faixa saudável entre 0,8% e 1,5%. A loja estava a um sétimo do piso da própria categoria.",
+        fonte: "Benchmark Prax 2025, mais de mil e-commerces brasileiros" },
+      nota: "A amostra do Clarity é curta e serve para dizer onde olhar, não para medir. O que fecha a conta é a conversão do trimestre inteiro, que veio do GA4 e das notas fiscais.",
+    },
+    /* o mapa de calor respondeu o que o funil não responde: não onde as
+       pessoas paravam, mas o que faziam enquanto estavam ali */
+    gesto: {
+      k: "O que as pessoas clicavam",
+      t: "O clique mais comum do site era fechar o pop-up",
+      fonte: "Microsoft Clarity · mapa de calor · 497 exibições, 798 cliques",
+      itens: [
+        { el: "Fechar o pop-up", sel: "I._close-icon", v: 124, p: 15.54, tipo: "ruido" },
+        { el: "Campo de busca", sel: "#search", v: 76, p: 9.52, tipo: "busca" },
+        { el: "Fechar o pop-up (área)", sel: "DIV._close", v: 58, p: 7.27, tipo: "ruido" },
+        { el: "Próximo do carrossel", sel: "Next", v: 22, p: 2.76, tipo: "neutro" },
+        { el: "Comprar", sel: "BUTTON.action.primary", v: 5, p: 0.63, tipo: "compra" },
+      ],
+      leitura: "Somados, os dois botões de fechar dão 182 cliques: 22,8% de tudo que se clicava na página. Comprar tinha 5. O site pedia atenção antes de oferecer qualquer coisa, e a pessoa gastava o primeiro gesto se livrando dele. Foi o que tirou o pop-up da chegada na V2, e o que mandou olhar para a busca: se o segundo gesto mais comum é procurar e a compra não acontece, o problema está no que a busca devolve.",
+    },
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
       p: ["Gravações no Microsoft Clarity, métricas de navegação e tempo de permanência, e conversa direta com usuários sobre onde travavam.",
@@ -163,8 +221,21 @@ const CHAPTERS = [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
         "Havia bugs no módulo de pagamento usado no Magento. A falha aparecia nas gravações antes de aparecer em qualquer relatório.",
         "O caminho até a compra era longo demais para o tipo de produto vendido.",
+        "O gesto mais repetido da página era fechar o pop-up, e o segundo era buscar. Comprar aparecia em 0,63% dos cliques. Se todo mundo procura e quase ninguém compra, a suspeita deixa de ser o produto e passa a ser o que a busca devolve.",
       ],
-      fig: "gravacao",
+    },
+    /* ---- A BUSCA -------------------------------------------------------
+       O achado que mudou o escopo do projeto. Não é bug de motor de busca,
+       é decisão sobre quem tem direito de comprar: a V1 exigia que a
+       pessoa soubesse escrever o nome do produto para ver o produto. */
+    busca: {
+      k: "O achado que ampliou o escopo",
+      t: "A loja cobrava ortografia para deixar comprar",
+      p: ["O mapa de calor dizia que buscar era o segundo gesto mais comum do site. Fui testar o que a busca respondia.",
+          "Procurei por mouse. A vitrine devolveu mousepad na frente do mouse, e o mouse era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
+          "Depois procurei por mause. A loja devolveu uma tela vazia. Nada de aproximação, nada de sugestão útil, nada de \u201cvocê quis dizer\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
+          "Isso não é detalhe de motor de busca. É a loja decidindo que quem não escreve certo não compra. Numa loja de hardware, onde metade dos nomes é estrangeira e cheia de número, isso exclui gente que tem dinheiro e intenção de gastar."],
+      figs: ["buscaMouse", "buscaMause"],
     },
     /* a frase que virou a reunião, no tamanho de fala de painel */
     citacao: {
@@ -173,6 +244,10 @@ const CHAPTERS = [
       tinta: "orbit",
     },
     decisoes: [
+      { d: "Busca que perdoa quem não escreve certo", fig: "buscaV2",
+        r: "porque a V1 devolvia tela vazia para \u201cmause\u201d e mousepad para \u201cmouse\u201d. A V2 passou a tolerar erro de grafia, a ranquear o catálogo pelo que a loja precisa vender e a abrir com os termos e produtos mais buscados, para quem não lembra o nome do que quer. Numa loja de hardware, exigir ortografia exata é escolher um público e dispensar o resto." },
+      { d: "Pop-up depois de 15% de rolagem, nunca na chegada", fig: "popup",
+        r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas áreas de fechar, contra 5 no botão de comprar. A captação de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele só aparece depois de a pessoa rolar 15% da página, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem já está olhando." },
       { d: "Formas de pagamento na primeira dobra do checkout", fig: "checkout",
         r: "porque a gravação mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no módulo de pagamento do Magento: o erro aparecia na sessão gravada e não aparecia em relatório nenhum. Fui atrás da origem num projeto público da extensão e entreguei o ponto exato para o time de tecnologia corrigir." },
       { d: "Adicionar ao carrinho direto da home e da vitrine", fig: "vitrine",
@@ -237,11 +312,29 @@ const CHAPTERS = [
           { t: "Quero pronto", para: "Setups testados", fig: "mspProntas",
             p: "Nove máquinas montadas e testadas viram produto de vitrine: nome, uso, preço fechado e compra em um clique, do mesmo jeito que se compra um mouse." },
         ] },
+      /* este módulo lê como sequência, não como bloco de texto + mosaico de
+         telas: o argumento só fecha se a pessoa vir um estado de cada vez.
+         `passos` liga cada trecho de texto à figura que o sustenta, e o
+         texto fica preso à esquerda enquanto a prova correspondente passa. */
       { k: "Correção antes da V2", t: "O checkout melhorou sem esperar o redesenho",
-        p: ["A V2 tem data para entrar no ar, e o checkout da V1 estava perdendo venda no meio do caminho. Em vez de esperar, propus uma correção pequena na versão que já estava rodando.",
-            "O diagnóstico veio de olhar a mesma tela em dois estados. Com tudo carregado, a faixa de bandeiras de cartão comia altura e empurrava o resumo para baixo da dobra. Em conexão lenta, essa faixa simplesmente não chegava e deixava um vão morto exatamente onde a decisão de compra acontece.",
-            "A V1.2 reposicionou os componentes: a dobra encurtou, o espaço ocioso saiu e as formas de pagamento passaram a aparecer de primeira, no desktop e no mobile. É a mesma ideia que a V2 leva mais longe, entregue meses antes."],
-        serie: true, figs: ["ckCarregado", "ckLento", "ckV12"] },
+        p: ["A V2 tem data para entrar no ar, e o checkout da V1 estava perdendo venda no meio do caminho. Em vez de esperar, propus uma correção pequena na versão que já estava rodando."],
+        passos: [
+          { k: "O estado bom", t: "Mesmo funcionando, era longo demais",
+            p: "Com tudo carregado, cada meio de pagamento ocupa uma linha inteira. O bloco desce por metade da tela e empurra a decisão para longe de quem já escolheu o produto.",
+            fig: "ckCarregado" },
+          { k: "O estado real", t: "E quando não carregava, sumia",
+            p: "O módulo de pagamento do Magento falhava. Sobravam dois meios e um vão maior que o próprio conteúdo, exatamente onde a compra acontece. Quem paga com cartão não via como pagar.",
+            fig: "ckLento" },
+          { k: "A correção", t: "Os quatro meios em uma linha só",
+            p: "Os quatro passaram a caber lado a lado e o frete condensou em três opções com um \u201cver mais\u201d. O mesmo checkout ficou 60% mais curto: 3421 pixels de altura contra 1366.",
+            fig: "ckV12" },
+          { k: "A resposta", t: "Escolher passou a explicar",
+            p: "Selecionar Pix abre o que acontece depois de finalizar, em três passos. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela.",
+            fig: "ckV12Pix" },
+          { k: "No celular", t: "A mesma decisão, na tela pequena",
+            p: "No mobile a diferença fica literal: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente. Mesma compra, menos caminho.",
+            fig: "ckMobile" },
+        ] },
       { k: "O que a V1 não tinha", t: "Carrinho lateral e programa de pontos",
         p: ["Duas coisas entraram na V2 e não existiam antes. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
             "As duas resolvem o mesmo problema por vias diferentes: dar motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],

@@ -210,6 +210,47 @@ html.ink .cover-linhas { opacity: .06; }
 .cena .fig-cap { max-width: 62ch; padding: 0 var(--gutter); margin-inline: auto; }
 .cena.bleed .fig-cap { max-width: 1240px; padding: 0 var(--gutter); }
 
+/* cena-scroll: a mesma cena, presa na viewport enquanto o scroll corre.
+   O trilho é alto de propósito (a altura vem do JSX); dentro dele um
+   sticky de 100vh segura a imagem e o clip-path abre das bordas para
+   fora. Sem sticky (motores antigos) a imagem simplesmente fica no topo
+   do trilho, aberta, que é o estado final -- nunca some. */
+.cena-scroll { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: var(--ma-6); position: relative; }
+.cena-scroll-cola {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; padding: var(--ma-4) 0;
+}
+/* o frame preenche o sticky inteiro: `align-items: center` num flex faria
+   ele encolher para a altura do conteudo, e o conteudo e uma <img> em
+   position:absolute -- ou seja, zero. Bloco de 100% resolve. */
+/* largura e proporcao vem do JSX e mudam com o scroll (um quadro pequeno
+   em 21/9 -> a pagina inteira na proporcao do arquivo), por isso nao ficam
+   fixadas aqui. `max-height` segura o quadro dentro da tela quando ele
+   fica alto, e `margin: auto` mantem ele centrado. */
+.cena-scroll-frame {
+  position: relative; max-width: 100%;
+  max-height: 100%; min-height: 0; margin: auto;
+  border: var(--ink-stroke) solid var(--ink);
+  will-change: width, aspect-ratio;
+}
+/* a batida de tinta (figTinta/figTranco) anima `transform` na .fig-img, o
+   que atropelaria o zoom do parallax. Aqui o zoom vive numa camada propria
+   e a imagem fica livre para fazer a sua entrada. */
+.cena-scroll-zoom { position: absolute; inset: 0; transform-origin: center; will-change: transform; }
+/* a legenda anda com o quadro preso, ancorada logo abaixo dele */
+.cena-scroll-cap {
+  flex: 0 0 auto; width: 100%; max-width: 1240px;
+  padding: 0 var(--gutter); margin: 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cena-scroll { height: auto !important; }
+  .cena-scroll-cola { position: static; height: auto; display: block; padding: 0; }
+  .cena-scroll-frame { width: 100% !important; aspect-ratio: 45/19; max-height: none; }
+  .cena-scroll-zoom { transform: none !important; }
+}
+
 /* a citação que separa a investigação da decisão: a frase que destravou o
    projeto, em tinta, no tamanho de fala de painel */
 .citacao { grid-column: 1 / -1; background: var(--ink); color: var(--paper); padding: var(--ma-5) var(--ma-4); }
@@ -245,6 +286,71 @@ html.ink .cover-linhas { opacity: .06; }
 .mod-figs.grade { grid-template-columns: 1fr 1fr; }
 .mod-figs.serie { grid-template-columns: 1fr; gap: var(--ma-4); }
 @media (max-width: 880px) { .mod-figs.grade { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   MÓDULO EM PASSOS — o texto que acompanha a prova
+   O bloco de texto ficava no topo e as telas empilhavam embaixo: quem
+   descia via prova sem saber o que estava sendo provado. Aqui a coluna
+   da esquerda prende e o trecho troca quando a figura correspondente
+   cruza o meio da tela.
+   ===================================================================== */
+/* o beat é um grid com `align-items: center`: a coluna de texto, muito
+   mais curta que a das provas, era centralizada verticalmente e começava
+   milhares de pixels abaixo da primeira figura -- e sticky não gruda em
+   item centralizado. As duas colunas precisam começar no mesmo topo. */
+.mod-passos { align-items: stretch; }
+/* a coluna precisa ser tão alta quanto a das provas, senão o sticky não
+   tem trilho por onde correr e o texto sobe junto com o scroll. O
+   `.panel.text` do beat traz padding próprio, que aqui só empurraria o
+   bloco preso para longe do topo da tela. */
+.mod-passos .text-col { align-self: stretch; display: block; }
+/* o reveal do beat esconde `.panel` até a classe `.in` chegar, mas aqui a
+   coluna fica presa muito além dessa faixa: o contexto sumia da tela.
+   No módulo em passos o painel entra visível e quem revela é o passo. */
+.mod-passos .text-col .panel.text { padding: 0; opacity: 1; transform: none; }
+/* o bloco preso encosta no topo: o contexto acima e o passo logo abaixo */
+.mod-passos .passo-vivo { margin-top: var(--ma-3); }
+.mod-passos .passo-regua { margin-top: var(--ma-3); }
+.passos-cola { position: sticky; top: calc(var(--ma-5) + 10px); }
+.passos-figs { display: grid; grid-template-columns: 1fr; gap: 26vh; padding-bottom: 12vh; }
+/* o vão entre as provas é o que dá tempo do texto trocar: sem ele duas
+   figuras disputam a faixa central e o passo pisca */
+.passo-fig:last-child { padding-bottom: 0; }
+
+.passo-vivo { margin-top: var(--ma-4); border-left: var(--ink-stroke) solid var(--vermilion); padding-left: 16px; }
+.passo-k {
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .14em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 6px;
+}
+.passo-t { font-size: clamp(19px, 2vw, 24px); line-height: 1.2; margin: 0 0 8px; }
+.passo-p { font-size: 16px; line-height: 1.55; color: var(--fg-2); margin: 0; max-width: 44ch; }
+
+/* a troca é um corte seco com respiro, no idioma do resto do capítulo */
+@keyframes passoEntra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.passo-vivo { animation: passoEntra 320ms cubic-bezier(.2,.85,.25,1) both; }
+
+/* a régua: onde a leitura está na sequência */
+.passo-regua { display: flex; gap: 7px; list-style: none; padding: 0; margin: var(--ma-4) 0 0; }
+.passo-regua li {
+  width: 26px; height: 3px; background: var(--wash-1);
+  border: var(--ink-hair) solid var(--ink); transition: background var(--cut);
+}
+.passo-regua li.passou { background: var(--wash-3); }
+.passo-regua li.aqui { background: var(--vermilion); }
+
+/* no desktop o texto de cada passo vive na coluna presa, não sob a figura */
+.passo-movel { display: none; }
+
+@media (max-width: 880px) {
+  /* sem coluna presa, cada passo carrega o próprio texto acima da prova */
+  .passos-cola { position: static; }
+  .passos-cola .passo-vivo, .passo-regua { display: none; }
+  .passos-figs { gap: var(--ma-5); padding-bottom: 0; }
+  .passo-movel { display: block; margin-bottom: 14px; border-left: var(--ink-stroke) solid var(--vermilion); padding-left: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .passo-vivo { animation: none; }
+}
 
 /* ---- calendário: a data de publicação, rabiscada a mão ----
    Folha de outubro em papel, com o dia da publicação circulado quando o
@@ -454,6 +560,82 @@ html.ink .cover-linhas { opacity: .06; }
   transition: width 760ms cubic-bezier(.2,.85,.25,1); }
 .pb-n { display: block; margin-top: 6px; font-size: 13px; color: var(--fg-2); }
 .pn-nota { margin: var(--ma-4) 0 0; font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: 74ch; }
+
+/* =====================================================================
+   FUNIL — onde a leitura perdia gente
+   Mesmo idioma do painel de números: o dado é desenhado, não fotografado.
+   Cada etapa encolhe em relação à primeira, e a régua no fim põe o
+   número da loja ao lado do que a categoria faz -- sem essa referência,
+   0,16% é só um número pequeno.
+   ===================================================================== */
+/* a fonte destes dois é longa e quebrava em três linhas desalinhadas à
+   direita: aqui ela vira uma linha só, no rodapé do cabeçalho */
+.funil .pn-fonte, .gesto .pn-fonte { text-align: left; max-width: 46ch; align-self: end; }
+
+.fn-etapas { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: 20px; counter-reset: fn; }
+.fn-cab { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.fn-l { font-size: 15px; color: var(--fg); }
+.fn-v { font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1; }
+.fn-trilho { margin-top: 7px; height: 14px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
+.fn-preenche { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0;
+  transition: width 820ms cubic-bezier(.2,.85,.25,1); }
+/* a última etapa é a que importa: recebe tinta */
+.fn-etapa:last-child .fn-preenche { background: var(--vermilion); }
+.fn-etapa:last-child .fn-v { color: var(--vermilion-ink); }
+.fn-n { margin: 6px 0 0; font-size: 13px; color: var(--fg-2); }
+
+.fn-marca { margin-top: var(--ma-5); border-top: var(--ink-stroke) solid var(--ink); padding-top: var(--ma-4); }
+.fn-marca-l {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .14em; font-size: 11px; color: var(--fg-2);
+}
+/* a régua: faixa saudável em wash, a marca da categoria, o nosso ponto */
+.fn-regua { position: relative; height: 34px; margin-top: 12px; border-bottom: var(--ink-stroke) solid var(--ink); }
+.fn-faixa { position: absolute; top: 9px; bottom: 9px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); }
+.fn-regua::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--wash-2, var(--wash-1)); }
+.fn-alvo { position: absolute; top: 2px; bottom: 2px; width: 2px; background: var(--ink); }
+.fn-nosso {
+  position: absolute; top: 0; bottom: 0; width: 3px; background: var(--vermilion);
+  transition: opacity var(--cut) 400ms;
+}
+.fn-nosso::after {
+  content: ""; position: absolute; left: 50%; top: -4px; width: 11px; height: 11px;
+  transform: translateX(-50%) rotate(45deg); background: var(--vermilion);
+}
+.fn-marca-legendas { display: flex; gap: var(--ma-4); flex-wrap: wrap; margin-top: 10px; font-size: 14px; color: var(--fg-2); }
+.fn-tag b { font-family: var(--font-condensed); font-weight: 700; font-size: 16px; }
+.fn-tag.nosso b { color: var(--vermilion-ink); }
+.fn-marca-n { margin: 12px 0 0; font-size: 15px; line-height: 1.55; max-width: 70ch; }
+.fn-marca-fonte { margin-top: 8px; font-size: 12px; color: var(--wash-3); }
+
+/* =====================================================================
+   GESTO — o que a mão fazia enquanto a pessoa estava lá
+   O ruído (fechar o pop-up) em tinta viva, a compra quase invisível ao
+   lado: a hierarquia da barra é o argumento.
+   ===================================================================== */
+.ge-lista { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: 16px; }
+.ge-cab { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ge-el { font-size: 15px; color: var(--fg); }
+.ge-sel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+  color: var(--wash-3); background: var(--wash-1); padding: 1px 6px; border: var(--ink-hair) solid var(--ink);
+}
+.ge-p { margin-left: auto; font-family: var(--font-condensed); font-weight: 700; font-size: 15px; }
+.ge-trilho { margin-top: 7px; height: 12px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
+.ge-preenche { position: absolute; inset: 0 auto 0 0; background: var(--wash-3); width: 0;
+  transition: width 760ms cubic-bezier(.2,.85,.25,1); }
+/* o ruído é o que domina a página: entra em tinta */
+.ge-item.ruido .ge-preenche { background: var(--vermilion); }
+.ge-item.ruido .ge-p { color: var(--vermilion-ink); }
+.ge-item.busca .ge-preenche { background: var(--ink); }
+/* comprar: a barra que quase não existe */
+.ge-item.compra .ge-preenche { background: var(--ink); }
+.ge-item.compra .ge-el { font-weight: 700; }
+.ge-v { display: block; margin-top: 6px; font-size: 13px; color: var(--fg-2); }
+
+@media (max-width: 880px) {
+  .ge-p { margin-left: 0; }
+}
 
 @media (max-width: 880px) {
   .pn-grade { grid-template-columns: 1fr; gap: var(--ma-4); }

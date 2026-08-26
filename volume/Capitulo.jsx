@@ -206,6 +206,103 @@ function Cena({ fig, n }) {
   );
 }
 
+/* "16/9" | "1.78" -> número. O `ar` das figuras vive como string no data. */
+function razaoAR(ar) {
+  if (typeof ar === "number") return ar;
+  const m = String(ar).split("/");
+  const v = m.length === 2 ? Number(m[0]) / Number(m[1]) : Number(m[0]);
+  return Number.isFinite(v) && v > 0 ? v : 16 / 9;
+}
+
+/* ---- CENA-SCROLL: a prova que se abre enquanto a página rola ---------
+   A abertura do capítulo não é uma figura entre parágrafos, é a tela que
+   a pessoa via antes de tudo. Aqui ela fica presa na viewport enquanto o
+   scroll corre e o recorte abre das laterais para o centro: a leitura
+   entra no print em vez de passar por ele. Fora isso é a mesma Cena --
+   mesma moldura, mesma legenda numerada, mesmo lightbox.
+
+   A revelação é de fora a fora: o quadro entra pequeno, no meio da página,
+   e cresce até encostar nas bordas da tela mostrando a página inteira. A
+   abertura acontece na primeira metade do trilho -- o resto é a imagem
+   aberta, parada, para dar tempo de ler.
+   Com prefers-reduced-motion a imagem entra aberta e parada. */
+function CenaScroll({ fig, n, altura = 1900, arAberto = "16/9", largIni = 34 }) {
+  if (!fig) return null;
+  const trilho = useRef(null);
+  const [p, setP] = useState(REDUCED ? 1 : 0);
+  // a mesma batida de tinta das outras figuras: sem `revelada` a .fig-img
+  // fica em opacity 0 (chapter.css) e o quadro sai vazio
+  const [refRev, visto] = useReveal({ threshold: 0.05, rootMargin: "0px" });
+
+  useEffect(() => {
+    if (REDUCED) return;
+    const el = trilho.current; if (!el) return;
+    let raf = 0;
+    const medir = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      // 0 quando o topo do trilho encosta no topo da tela, 1 quando o
+      // trilho acabou de passar: é o intervalo em que a imagem está presa
+      const curso = r.height - window.innerHeight;
+      if (curso <= 0) { setP(1); return; }
+      setP(Math.min(1, Math.max(0, -r.top / curso)));
+    };
+    const agenda = () => { if (!raf) raf = requestAnimationFrame(medir); };
+    medir();
+    window.addEventListener("scroll", agenda, { passive: true });
+    window.addEventListener("resize", agenda);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", agenda);
+      window.removeEventListener("resize", agenda);
+    };
+  }, []);
+
+  // a abertura termina em 70% do trilho: depois disso a imagem fica aberta
+  // e parada, que é quando dá para de fato olhar o print
+  const a = Math.min(1, p / 0.70);
+  const e = 1 - Math.pow(1 - a, 3);   // desacelera na chegada
+
+  // o quadro cresce de verdade -- de `largIni`% da tela até 100%. Antes só
+  // o clip-path fechava, e a moldura ja entrava do tamanho da pagina.
+  const larg = largIni + (100 - largIni) * e;
+  // enquanto pequeno, mostra a primeira dobra (21/9); abrindo, vai até a
+  // proporcao do arquivo inteiro
+  const ARI = 21 / 9;
+  const arf = razaoAR(arAberto);
+  const arAtual = ARI + (arf - ARI) * e;
+  const escala = 1.06 - 0.06 * e;
+
+  return (
+    <div className={`cena-scroll bleed fig ${visto || REDUCED ? "revelada" : ""}`}
+         ref={trilho} style={{ height: altura }}>
+      <div className="cena-scroll-cola" ref={refRev}>
+        <div className="fig-frame cena-scroll-frame"
+             style={{ width: `${larg}%`, aspectRatio: arAtual }}>
+          {fig.src
+            ? <span className="cena-scroll-zoom" style={{ transform: `scale(${escala})` }}>
+                <img className="fig-img" src={fig.src} alt={fig.alt || ""} draggable="false" />
+              </span>
+            : <MangaPlate />}
+          {fig.src ? <>
+            <button className="fig-abrir" type="button" onClick={() => abrirFigura(fig)}
+                    aria-label={t("Abrir a imagem em tamanho cheio", "Open the image full size")}></button>
+            <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
+          </> : null}
+        </div>
+        {/* a legenda viaja junto com o quadro preso: fora do sticky ela
+            ficava orfa no topo do trilho, longe da imagem que descreve */}
+        {fig.legenda ? (
+          <div className="fig-cap cena-scroll-cap">
+            {n ? <i className="fig-n">fig. {String(n).padStart(2, "0")}</i> : null}
+            <span>{renderPH(fig.legenda)}</span>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 /* ---- ABERTURA: a cena antes do diagnóstico --------------------------
    O capítulo começava no problema já formulado. Faltava o momento em que
    o projeto chega na mesa: o que a empresa vendia, o que pediram e o que
@@ -230,7 +327,10 @@ function Abertura({ chap, figN }) {
           <Organic variant={ab.tinta || "cluster"} size={250} />
         </div>
       </Beat>
-      {fig ? <Cena fig={fig} n={figN[ab.fig]} /> : null}
+      {/* a cena de abertura entra presa no scroll: o recorte abre das
+          laterais enquanto a página corre, e a V1 se revela em vez de
+          aparecer pronta. As outras figuras seguem em <Cena> normal. */}
+      {fig ? <CenaScroll fig={fig} n={figN[ab.fig]} arAberto={fig.ar} /> : null}
     </>
   );
 }
@@ -374,6 +474,220 @@ function Painel({ dados }) {
   );
 }
 
+/* ---- FUNIL: onde a leitura perde gente -------------------------------
+   O painel de números diz o tamanho do buraco. Este diz onde ele estava.
+   Cada etapa é uma barra que encolhe, e a última carrega a comparação
+   com o mercado: sem referência externa, 0,16% é só um número pequeno.
+   Como no painel, o dado é desenhado e não fotografado. */
+function Funil({ dados }) {
+  if (!dados) return null;
+  const [ref, seen] = useReveal({ threshold: 0.25 });
+  const on = seen || REDUCED;
+  const etapas = dados.etapas || [];
+  const topo = etapas.length ? etapas[0].v : 1;
+  const m = dados.marca;
+  return (
+    <Beat>
+      <div className="painel funil" ref={ref} style={{ gridColumn: "1 / -1" }}>
+        <div className="pn-topo">
+          <div>
+            <div className="beat-k">{dados.k}</div>
+            <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
+          </div>
+          {dados.fonte ? <div className="pn-fonte">{dados.fonte}</div> : null}
+        </div>
+
+        <ol className="fn-etapas">
+          {etapas.map((e, i) => {
+            const pct = topo ? (e.v / topo) * 100 : 0;
+            return (
+              <li key={i} className="fn-etapa">
+                <div className="fn-cab">
+                  <span className="fn-l">{e.l}</span>
+                  <span className="fn-v">
+                    <ContaAte alvo={e.v} ligado={on} />
+                  </span>
+                </div>
+                <div className="fn-trilho">
+                  <i className="fn-preenche" style={{ width: on ? `${pct}%` : 0, transitionDelay: `${i * 110}ms` }} />
+                </div>
+                {e.n ? <p className="fn-n">{e.n}</p> : null}
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* a comparação: o número da loja ao lado do que a categoria faz */}
+        {m ? (
+          <div className="fn-marca">
+            <div className="fn-marca-l">{m.l}</div>
+            {/* a régua vai de 0 até o teto da faixa saudável (1,5%): a
+                faixa cinza é o intervalo aceitável, o traço é a média da
+                categoria e o losango é onde a loja estava */}
+            <div className="fn-regua">
+              <i className="fn-faixa" style={{ left: `${(m.piso / m.teto) * 100}%`, right: 0 }} />
+              <i className="fn-alvo" style={{ left: `${(m.mercado / m.teto) * 100}%` }} />
+              <i className="fn-nosso" style={{ left: `${(m.nosso / m.teto) * 100}%`, opacity: on ? 1 : 0 }} />
+            </div>
+            <div className="fn-marca-legendas">
+              <span className="fn-tag nosso">
+                <b><ContaAte alvo={m.nosso} decimais={2} ligado={on} />%</b> a loja
+              </span>
+              <span className="fn-tag mercado"><b>{String(m.mercado).replace(".", ",")}%</b> a categoria</span>
+            </div>
+            {m.n ? <p className="fn-marca-n">{renderPH(m.n)}</p> : null}
+            {m.fonte ? <div className="fn-marca-fonte">{m.fonte}</div> : null}
+          </div>
+        ) : null}
+
+        {dados.nota ? <p className="pn-nota">{renderPH(dados.nota)}</p> : null}
+      </div>
+    </Beat>
+  );
+}
+
+/* ---- GESTO: o que a mão fazia enquanto a pessoa estava lá ------------
+   O funil diz onde param; o mapa de calor diz o que fazem. O achado é
+   que os dois cliques mais comuns não têm nada a ver com comprar, e é
+   isso que a barra deixa ver de uma vez: o ruído em tinta viva, a compra
+   quase invisível ao lado. */
+function Gesto({ dados }) {
+  if (!dados) return null;
+  const [ref, seen] = useReveal({ threshold: 0.25 });
+  const on = seen || REDUCED;
+  const itens = dados.itens || [];
+  const topo = itens.length ? Math.max(...itens.map((i) => i.p)) : 1;
+  return (
+    <Beat>
+      <div className="painel gesto" ref={ref} style={{ gridColumn: "1 / -1" }}>
+        <div className="pn-topo">
+          <div>
+            <div className="beat-k">{dados.k}</div>
+            <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
+          </div>
+          {dados.fonte ? <div className="pn-fonte">{dados.fonte}</div> : null}
+        </div>
+        <ol className="ge-lista">
+          {itens.map((it, i) => (
+            <li key={i} className={`ge-item ${it.tipo}`}>
+              <div className="ge-cab">
+                <span className="ge-el">{it.el}</span>
+                <code className="ge-sel">{it.sel}</code>
+                <span className="ge-p">{String(it.p).replace(".", ",")}%</span>
+              </div>
+              <div className="ge-trilho">
+                <i className="ge-preenche" style={{ width: on ? `${(it.p / topo) * 100}%` : 0, transitionDelay: `${i * 90}ms` }} />
+              </div>
+              <span className="ge-v">{it.v} cliques</span>
+            </li>
+          ))}
+        </ol>
+        {dados.leitura ? <p className="pn-nota">{renderPH(dados.leitura)}</p> : null}
+      </div>
+    </Beat>
+  );
+}
+
+/* ---- BUSCA: o beat que ampliou o escopo do projeto -------------------
+   Texto à esquerda, os dois estados da falha à direita. Fica sozinho
+   num beat porque é o achado que muda o que o projeto entende por
+   "quem compra aqui". */
+function Busca({ dados, chap, figN = {} }) {
+  if (!dados) return null;
+  const figs = (dados.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
+  return (
+    <Beat className="beat-busca">
+      <div className="c5 text-col">
+        <div className="panel text">
+          <div className="beat-k">{dados.k}</div>
+          <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
+          {(dados.p || []).map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+        </div>
+      </div>
+      <div className="c7">
+        <div className="mod-figs serie">
+          {figs.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} />)}
+        </div>
+      </div>
+    </Beat>
+  );
+}
+
+/* ---- MÓDULO EM PASSOS: o argumento que se conta descendo -------------
+   Um bloco de texto no topo e quatro telas empilhadas embaixo lê como
+   mosaico: quem desce vê prova sem saber o que está provando. Aqui o
+   texto fica preso à esquerda e troca quando a figura correspondente
+   entra na tela -- a leitura é uma sequência de estados, que é como o
+   diagnóstico aconteceu de verdade.
+   Sem sticky, ou com motion reduzido, vira a mesma coisa em coluna:
+   cada passo com o seu texto logo acima da sua prova. */
+function ModuloPassos({ mod, chap, figN = {} }) {
+  const passos = (mod.passos || []).filter((s) => s && s.fig);
+  if (!passos.length) return null;
+  const [ativo, setAtivo] = useState(0);
+  const refs = useRef([]);
+
+  useEffect(() => {
+    if (REDUCED || !("IntersectionObserver" in window)) return;
+    // o passo vira ativo quando a prova dele cruza a faixa central da tela
+    const io = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => {
+        if (e.isIntersecting) {
+          const i = refs.current.indexOf(e.target);
+          if (i >= 0) setAtivo(i);
+        }
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+    refs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, [passos.length]);
+
+  const p = passos[ativo] || passos[0];
+  return (
+    <Beat className="mod-passos">
+      <div className="c5 text-col">
+        <div className="passos-cola">
+          <div className="panel text">
+            <div className="beat-k">{mod.k}</div>
+            <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
+            {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
+          </div>
+          {/* o trecho que troca: é o mesmo lugar da página, texto novo */}
+          <div className="passo-vivo" key={ativo}>
+            <div className="passo-k">{p.k}</div>
+            <h3 className="passo-t">{renderPH(p.t)}</h3>
+            <p className="passo-p">{renderPH(p.p)}</p>
+          </div>
+          {/* a régua de onde a leitura está na sequência */}
+          <ol className="passo-regua" aria-hidden="true">
+            {passos.map((_, i) => <li key={i} className={i === ativo ? "aqui" : (i < ativo ? "passou" : "")} />)}
+          </ol>
+        </div>
+      </div>
+      <div className="c7">
+        <div className="passos-figs">
+          {passos.map((s, i) => {
+            const f = chap.figuras && chap.figuras[s.fig];
+            if (!f) return null;
+            return (
+              <div className="passo-fig" key={s.fig} ref={(el) => (refs.current[i] = el)}>
+                {/* o texto do passo também vem junto no mobile, onde a
+                    coluna da esquerda deixa de ser sticky */}
+                <div className="passo-movel">
+                  <div className="passo-k">{s.k}</div>
+                  <h3 className="passo-t">{renderPH(s.t)}</h3>
+                  <p className="passo-p">{renderPH(s.p)}</p>
+                </div>
+                <Figura fig={f} n={figN[s.fig]} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Beat>
+  );
+}
+
 /* ---- MÓDULOS: as partes do produto que merecem beat próprio ---------
    Pré-venda, Monte seu PC e o que a V2 ganhou de novo. Cada módulo é um
    argumento com as telas dele ao lado; com mais de uma tela, a coluna vira
@@ -386,6 +700,8 @@ function Modulos({ chap, figN = {} }) {
       {mods.map((m, i) => {
         // o módulo com escolha nunca inverte: a pergunta vem antes das abas
         if (m.caminhos) return <ModuloCaminhos key={i} mod={m} chap={chap} figN={figN} />;
+        // o módulo em passos conta uma sequência: texto preso, prova rolando
+        if (m.passos) return <ModuloPassos key={i} mod={m} chap={chap} figN={figN} />;
         const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
         const grade = figs.length > 1;
         return (
@@ -518,10 +834,12 @@ function figOrder(chap) {
   if (chap.abertura) marca(chap.abertura.fig);
   if (chap.problema) marca(chap.problema.fig);
   if (chap.investigacao) marca(chap.investigacao.fig);
+  if (chap.busca) (chap.busca.figs || []).forEach(marca);
   (chap.decisoes || []).forEach((d) => { marca(d.fig); marca(d.figExtra); });
   (chap.modulos || []).forEach((m) => {
     (m.figs || []).forEach(marca);
     (m.caminhos || []).forEach((c) => marca(c.fig));
+    (m.passos || []).forEach((s) => marca(s.fig));
   });
   return mapa;
 }
@@ -1021,7 +1339,15 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Abertura chap={chap} figN={figN} />
         <Problema chap={chap} figN={figN} />
         <Painel dados={chap.painel} />
+        {/* o funil diz onde a leitura perdia gente; o gesto, o que a mão
+            fazia enquanto isso. Os dois vêm antes da investigação porque
+            são o que mandou olhar para onde ela olhou. */}
+        <Funil dados={chap.funil} />
+        <Gesto dados={chap.gesto} />
         <Investigacao chap={chap} figN={figN} />
+        {/* o achado da busca fecha a investigação: é ele que amplia o
+            escopo de "corrigir o checkout" para "quem consegue comprar" */}
+        <Busca dados={chap.busca} chap={chap} figN={figN} />
         <Citacao dados={chap.citacao} />
         <SfxBeat word={chap.sfx} />
         <Decisoes chap={chap} figN={figN} />
