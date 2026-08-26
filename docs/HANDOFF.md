@@ -97,19 +97,32 @@ dependendo de material:
   ninguém** (já era assim antes desta rodada). Ou entra em algum lugar, ou
   sai do `data.jsx`.
 
-**2. Prints que só o Gabriel pode dar.** Molduras já marcadas como
-pendentes em `data.jsx` (sem `src`, caem em `MangaPlate`):
+**2. OS QUATRO PRINTS: é o que trava o capítulo hoje.** Só o Gabriel tem
+acesso à V1. Combinado: entrariam depois da reordenação, e a reordenação
+**já saiu** (`c3112ef`), então a vez é esta.
 
-| Chave | O que é | Prioridade |
-|---|---|---|
-| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad na frente | alta |
-| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | alta |
-| `buscaV2` | V2 sugerindo produtos e termos antes de digitar | média |
-| `popup` | Pop-up da V2 aparecendo após 15% de rolagem | média |
+Molduras já prontas em `data.jsx` (sem `src`, caem em `MangaPlate` com o
+selo "print a subir"). Alt e legenda **já estão escritos em PT e EN**:
+basta o arquivo entrar, nada de código a mexer.
 
-As duas primeiras sustentam o achado da busca, que é o melhor momento do
-melhor case. Imagem de chat não serve: precisa de **arquivo em disco**.
-Ele já combinou que entrega depois da reordenação.
+| Chave | O que é | Onde aparece | Prioridade |
+|---|---|---|---|
+| `buscaV2` | V2 sugerindo produtos e termos antes de digitar | **passo 1** de "O acabamento" | **alta** |
+| `popup` | Pop-up da V2 aparecendo após 15% de rolagem | **passo 2** de "O acabamento" | **alta** |
+| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad na frente | beat `busca` (Ato II) | **alta** |
+| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | beat `busca` (Ato II) | **alta** |
+
+Os dois primeiros subiram de prioridade na Rodada 2: viraram os **dois
+primeiros passos** de um módulo de nove, então o leitor abre "O
+acabamento" em duas molduras vazias seguidas. É o buraco mais visível do
+capítulo hoje. Os dois últimos sustentam o achado da busca, que é o
+melhor momento do melhor case.
+
+**Como entregar:** precisa de **arquivo em disco**, imagem colada em chat
+não serve. Salvar em `volume/assets/projetos/pcyes/` e apontar o `src` na
+entrada correspondente de `chap.figuras` (`data.jsx`, capítulo `pcyes`),
+no mesmo formato das vizinhas: `src: "volume/assets/projetos/pcyes/<arquivo>.webp"`.
+Preferir `.webp`. Depois `npm run build`.
 
 **3. FigJam: NÃO despejar os 10 artefatos.** Decisão da auditoria. O
 capítulo já tem 16 beats e o Ato I/II já é denso. Critério para um
