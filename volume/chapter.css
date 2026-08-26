@@ -122,6 +122,19 @@ html.ink .cover-linhas { opacity: .06; }
 /* NB: keep the .shell side gutters — a bare `padding: X 0 Y` wipes them and
    the chapter content touches the screen edge below the 1240px max-width */
 .chapter-body { padding: var(--ma-6) var(--gutter) var(--ma-5); }
+
+/* ---- a sangria da direita: onde as telas do projeto ganham tamanho ---
+   A coluna de provas mede 549px numa tela de 1440, e print de interface a
+   549px não se lê: era a inversão medida na auditoria, com a V1 criticada
+   aparecendo maior que a V2 desenhada. Estreitar o texto para alargar a
+   figura está fora de questão (a linha já mede 44 caracteres, no piso da
+   faixa confortável), então quem cede é a MARGEM da página.
+
+   `--sangra-dir` é a distância que a coluna de provas pode avançar sobre
+   a margem direita deixando uma calha de ar até a borda da tela. Só a
+   direita: a margem esquerda é onde mora o índice do capítulo. */
+.chapter-body { --sangra-dir: max(0px, calc((100vw - 1240px) / 2)); }
+.chapter-col { min-width: 0; }
 .beat { display: grid; grid-template-columns: repeat(12,1fr); gap: var(--gutter); align-items: center; margin-bottom: var(--ma-6); }
 .beat .panel {
   border: var(--ink-stroke) solid var(--ink); background: var(--paper); position: relative; overflow: hidden;
@@ -315,9 +328,19 @@ html.ink .cover-linhas { opacity: .06; }
 
 /* ---- módulos: o argumento com as telas dele ao lado ---- */
 .mod-figs { display: grid; gap: var(--gutter); }
-.mod-figs.grade { grid-template-columns: 1fr 1fr; }
+/* Duas telas lado a lado dentro da coluna de provas davam 240px cada: um
+   selo, não uma tela de produto. Empilhadas, cada uma vale a coluna
+   inteira. O par continua sendo um par pela vizinhança, não pela grade. */
+.mod-figs.grade { grid-template-columns: 1fr; gap: var(--ma-4); }
 .mod-figs.serie { grid-template-columns: 1fr; gap: var(--ma-4); }
-@media (max-width: 880px) { .mod-figs.grade { grid-template-columns: 1fr; } }
+
+/* as colunas de prova avançam sobre a margem direita */
+.mod-figs, .passos-figs, .cam-palco, .sol-col {
+  margin-right: calc(-1 * var(--sangra-dir, 0px));
+}
+/* a legenda acompanha a figura, mas a linha não: texto a 1000px de
+   largura sai da faixa de leitura tão rápido quanto sai a 280px */
+.mod-figs .fig-cap, .passos-figs .fig-cap, .cam-palco .fig-cap { max-width: 68ch; }
 
 /* =====================================================================
    MÓDULO EM PASSOS — o texto que acompanha a prova
@@ -468,13 +491,24 @@ html.ink .cover-linhas { opacity: .06; }
   cursor: zoom-in; -webkit-appearance: none; appearance: none;
 }
 .fig-abrir:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: -4px; }
+/* A lupa nascia com `opacity: 0` e só existia no hover. Quem rolava sem
+   passar o mouse (celular, trackpad, teclado) nunca soube que 21 das
+   telas abrem em tamanho cheio: o recurso existia e não se anunciava.
+   Agora ela fica em repouso e o hover/foco é que muda o estado, invertendo
+   para tinta. O alvo clicável continua sendo o botão `.fig-abrir`, que já
+   está na ordem de tabulação com rótulo próprio; a lupa é a etiqueta. */
 .fig-lupa {
   position: absolute; right: 10px; bottom: 10px; z-index: 4; pointer-events: none;
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
   font-size: 12px; padding: 5px 9px; background: var(--paper); color: var(--ink);
-  border: var(--ink-hair) solid var(--ink); opacity: 0; transition: opacity var(--cut);
+  border: var(--ink-hair) solid var(--ink); opacity: 1;
+  transition: background var(--cut), color var(--cut), border-color var(--cut);
 }
-.fig-frame:hover .fig-lupa, .fig-abrir:focus-visible + .fig-lupa { opacity: 1; }
+.fig-lupa::before { content: "+"; margin-right: 7px; font-weight: 700; }
+.fig-frame:hover .fig-lupa, .sol-panel:hover .fig-lupa,
+.fig-abrir:focus-visible + .fig-lupa {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .fig .fig-img, .fig .fig-frame .plate, .fig .fig-cap {
@@ -983,6 +1017,11 @@ html.ink .cover-linhas { opacity: .06; }
      no que corre dentro dela: o conteudo desvia da coluna do indice. */
   .cena-scroll-cola { padding-left: 228px; }
   .cena-scroll-frame { max-width: calc(100vw - 228px - var(--ma-5) * 2); }
+
+  /* nesta faixa o corpo ja andou para a direita e a sobra da direita e
+     exatamente a margem (var(--gutter)) mais a calha do proprio .shell:
+     a coluna de provas toma uma das duas e deixa a outra de ar. */
+  .chapter-body.com-indice { --sangra-dir: var(--gutter); }
 }
 
 @media (min-width: 1700px) {

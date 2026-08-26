@@ -418,7 +418,12 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
   text-transform: uppercase; letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 6px; }
 .dec-why::after { content: ""; flex: 1 1 auto; height: 0; border-top: var(--ink-hair) solid var(--wash-1); }
 
-.sol-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gutter); }
+/* Duas colunas, não doze. O grid de 12 com calha de var(--gutter) entre
+   todas nunca coube na coluna de provas: 11 calhas de 57,6px somam 634px
+   dentro de um pai de 549px, e os painéis vazavam 85px para fora da
+   coluna. O tamanho "628px" da rodada anterior era esse vazamento, não
+   uma medida. Aqui a largura é a do pai e a sangria é declarada. */
+.sol-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); }
 /* Os prints são 1600x1000 (16:10). O painel usa EXATAMENTE essa proporção,
    então nada é cortado. Antes: .small era 4/3 (comia 17% das laterais) e o
    terceiro vinha 21/9 inline (comia 31% de cima e baixo, decepando modais).
@@ -426,9 +431,10 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .sol-panel { border: var(--ink-stroke) solid var(--ink); background: var(--wash-1);
   aspect-ratio: 16 / 10; position: relative; overflow: hidden; grid-column: 1 / -1; }
 .sol-panel.big, .sol-panel.small, .sol-panel.third { grid-column: 1 / -1; }
+.sol-panel { cursor: zoom-in; }
 /* prints em retrato ocupam meia coluna: em largura cheia um 3:4 vira um
    paredão de 800px de altura e empurra o resto da página pra baixo */
-.sol-panel.meia { grid-column: span 6; }
+.sol-panel.meia { grid-column: span 1; }
 /* Com os painéis em largura cheia a coluna de prints ficou bem mais alta que
    a de texto, e o align-items:center do .beat jogava o texto pro meio da
    página. Só este beat alinha no topo — o :has() já é idioma da casa. */
@@ -1932,7 +1938,7 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 }
 /* sem prints, a coluna de texto da solução ocupa a largura inteira */
 .sol-vazio { display: none; }
-.beat > .c5.text-col:only-child, .beat .c5.text-col:has(+ .sol-vazio) { grid-column: 1 / -1; }
+.beat > .c5.text-col:only-child, .beat .c7.text-col:has(+ .sol-vazio) { grid-column: 1 / -1; }
 
 @media (max-width: 760px) {
   .voc-row { grid-template-columns: 14px 1fr; gap: 4px 14px; }

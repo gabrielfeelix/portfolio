@@ -19,7 +19,8 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 - `docs/AUDITORIA-PCYES-2026-08-26.md` (o capítulo só, e é justamente o
   que a outra deixou de fora): craft, motion, leiturabilidade, escala das
   imagens e apresentação do design. **Nota atual: 8,0 para mid**, era
-  7,4. Traz os números medidos e a receita pra reproduzir a medição.
+  7,4. Traz os números medidos e a receita pra reproduzir a medição, e o
+  registro das duas rodadas já executadas (a A e a de escala).
 
 O próximo trabalho sai da seção **Pendente** deste arquivo, que consolida
 as duas.
@@ -101,13 +102,15 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-> **Estado em 2026-08-26, `fb823c9`.** A Rodada A da auditoria do PCYES
-> caiu inteira (ver `docs/AUDITORIA-PCYES-2026-08-26.md`, que tem os
-> números e o método pra reproduzir a medição). Nota do capítulo: **8,0
-> para mid**, era 7,4. Nada do que está abaixo foi tentado e falhou:
-> tudo é trabalho que ainda não começou ou que depende do Gabriel.
+> **Estado em 2026-08-26.** A Rodada A caiu em `fb823c9` e o **Grupo B
+> (escala das telas e zoom) caiu na sequência**: ver o registro de
+> execução em `docs/AUDITORIA-PCYES-2026-08-26.md`, que tem os números e
+> o método pra reproduzir a medição. Nada do que sobrou abaixo foi
+> tentado e falhou: é trabalho que ainda não começou ou que depende do
+> Gabriel.
 
-Sete grupos. Os grupos A e B são os que valem mais.
+Sete grupos. O **A** é o que vale mais agora, e é o que o Gabriel decidiu
+tratar como projeto à parte.
 
 ---
 
@@ -150,42 +153,56 @@ tratar como um projeto só):
 
 ---
 
-### B · A ESCALA DAS TELAS (a inversão diminuiu, não acabou)
+### B · A ESCALA DAS TELAS · **FECHADO em 2026-08-26**
 
-**O achado:** a V1 que o capítulo critica é mostrada maior que a V2 que o
-Gabriel desenhou.
+O achado era: a V1 que o capítulo critica era mostrada maior que a V2 que
+o Gabriel desenhou. Está resolvido onde era comparável. Medido em 1440:
 
-Depois da Rodada A, medido em 1440:
-
-| | Largura | % da tela |
+| | Antes | Depois |
 |---|---|---|
-| `v1-home` (V1) | **988px** | 69% |
-| `v1-vitrine`, `v1-carrinho` (V1) | **976px** | 68% |
-| Telas da `solucao` (corrigido na Rodada A) | 628px | 44% |
-| **Mediana das telas da V2** | **543px** | 38% |
-| `prevenda`, `contador`, `sidecart`, `points` | **240px** | 17% |
+| Telas de produto abaixo de 600px | 21 de 27 | **0** |
+| `prevenda`, `contador`, `sidecart`, `points` | 240px | **600px** |
+| Telas dos módulos e dos passos | 543px | **600px** |
+| Telas da `solucao` (o clímax) | 628px | **1033px** |
+| Imagens com zoom | 18 de 27 | **21 de 27** |
+| Zoom no clímax | 0 de 3 | **3 de 3** |
+| Lupa em repouso | `opacity: 0` | `opacity: 1`, 17,87:1 |
+| Altura do documento | 36.420px | **39.302px** |
 
-Faltam duas coisas:
+As seis imagens que continuam sem lupa são o antes/depois, que é slider e
+está a 976px: é assim de propósito, não procurar de novo.
 
-1. **Subir o piso das telas da V2 fora da `solucao`.** As quatro a 240px
-   são as piores. Regra proposta, ainda não aplicada: nenhuma tela de
-   produto abaixo de 600px em 1440, e nenhuma tela da V2 menor que a da
-   V1 equivalente.
-2. **Zoom onde não tem, e lupa que se vê.** Das 27 imagens, 18 abrem em
-   zoom. Das 9 que não abrem, 6 são o antes/depois (é slider, está a
-   976px, tudo bem) e **3 são exatamente as telas da `solucao`**, o
-   clímax. Além disso a `.fig-lupa` tem **`opacity: 0` em repouso**: só
-   existe no hover, sem `tabindex` e sem `role`, então quem rola sem
-   passar o mouse nunca soube que dava pra ampliar, e quem usa teclado
-   não alcança. **É o item de melhor retorno por esforço da lista toda.**
+**O idioma novo, e a regra que ele estabelece.** A coluna de provas mede
+549px em 1440 e o texto não pode estreitar (a linha já mede 44
+caracteres). Então quem cede é a **margem direita da página**, por
+`--sangra-dir`, declarado em `chapter.css` por faixa de viewport. Só a
+direita: **a margem esquerda é onde mora o índice do capítulo, e sangrar
+para lá bate nele.** Quem usa: `.mod-figs`, `.passos-figs`, `.cam-palco`
+e `.sol-col`. Módulo novo com coluna de provas herda a sangria entrando
+nessa lista.
 
-> Registro, pra ninguém repetir o erro: uma versão anterior da auditoria
-> dizia que "o recrutador não consegue avaliar o UI". **Isso é falso e
-> foi escrito antes de testar a lupa.** São 27 telas, 18 com zoom, mais
-> link de protótipo e de design system no topo. Quantidade nunca foi o
-> problema. O problema é escala e descoberta.
+Por isso `Modulos` **não alterna mais `rev`**: a coluna de provas fica
+sempre à direita, que é o único lado por onde ela pode crescer. O
+zigue-zague existia em um único beat e nunca chegou a ler como padrão.
 
----
+**Armadilha achada e corrigida, para ninguém reintroduzir:** `.sol-grid`
+era `repeat(12, 1fr)` com `gap: var(--gutter)` dentro de um pai de 549px.
+Onze calhas de 57,6px somam 633,6px, as colunas `1fr` colapsavam a zero e
+o painel media **634px dentro de um pai de 549**, vazando 85px para fora
+da coluna, sem erro e sem scroll horizontal. Os "628px" que a Rodada A
+registrou eram esse vazamento. Hoje são duas colunas e a largura é
+declarada. **Grid de 12 colunas com calha de `--gutter` só cabe no
+`.beat`, que é filho do `.shell`. Dentro de uma coluna, não cabe.**
+
+**O que sobra, e é decisão visual do Gabriel:** a abertura da V1 é uma
+`CenaScroll` que abre em 82% da tela (perto de 1180px) e o clímax da V2
+para em 1033px. Para empatar de vez, as telas da `solucao` teriam que
+sangrar em `100vw` como a cena da V1 sangra. Não foi feito por conta
+própria.
+
+**O preço, e ele é real:** tela maior é página mais alta. O capítulo foi
+de 36.420 para 39.302px, de 40,5 para 43,7 telas de rolagem. Isso empurra
+o Grupo A, não o resolve.
 
 ### C · MATERIAL QUE SÓ O GABRIEL TEM (travado)
 
@@ -300,6 +317,8 @@ Aberto e não decidido: **quanto** engordar, e com o quê.
 
 ### Coisas que parecem pendência e NÃO são (não procurar de novo)
 
+- **As 6 imagens sem lupa são o antes/depois.** É slider, está a 976px, e
+  é assim de propósito. As outras 21 abrem em tamanho cheio.
 - **A figura `marca` não está órfã.** É a régua do funil, consumida por
   `Funil` via `dados.marca`. Nenhuma figura está órfã.
 - **Os `[assim]` não renderizam na página.** Moram só em `synthChapter`
@@ -414,6 +433,22 @@ Lista agrupada em atos, à esquerda. **Derivada do dado** (`indiceDo` + a consta
    impressão.
 
 ### Validação feita
+
+**Rodada de escala (Grupo B), 2026-08-26**, tudo medido na página
+servida: `scrollWidth == clientWidth` em 1920, 1700, 1440, 1280, 768 e
+390; **0 `pageerror`**; nenhum elemento vazando a borda direita; **axe
+(wcag2a + wcag2aa) com 0 violação** em 1440 papel, 1440 tinta, 1440 EN e
+390. Varredura de reveal em passos de 90px: os **39** painéis chegam a
+opacidade ≥ 0,95 na faixa de leitura, **0 morto**. As legendas alargadas
+ficaram em 58 a 65 CPL (o teto de 68ch segura). O lightbox abre a partir
+do clímax, com `role="dialog"` e `aria-modal`, e fecha no Esc. Em EN a
+lupa lê "+ ZOOM" e são os mesmos 21 botões. No mobile de 390px, **26 das
+27** imagens ocupam a coluna inteira.
+
+Os outros quatro capítulos herdaram a régua: `odex`, `oderco-revenda`,
+`portfolio` e `locarmais-conciliacao` mostram a `solucao` a 1033px, com
+zoom. No Locar Mais os prints em retrato usam `meia` e ficam a 485px de
+largura por 647 de altura, que é o tamanho certo para um 3:4.
 
 **Rodada A da auditoria do capítulo** (`fb823c9`, 2026-08-26), tudo
 medido na página servida, não por print:

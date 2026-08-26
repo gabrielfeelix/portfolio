@@ -956,7 +956,11 @@ function Modulos({ chap, figN = {} }) {
         const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
         const grade = figs.length > 1;
         return (
-          <Beat key={i} className={i % 2 === 1 ? "rev" : ""}>
+          /* Sem alternância: a coluna de provas fica sempre à direita, que é
+             o único lado por onde ela pode sangrar para a margem (à
+             esquerda mora o índice). Só um módulo caía no `rev`, então o
+             zigue-zague nunca chegou a ler como padrão. */
+          <Beat key={i}>
             <div className="c5 text-col">
               <div className="panel text">
                 <div className="beat-k">{m.k}</div>
@@ -1381,7 +1385,7 @@ function Solucao({ chap }) {
         <span className="kicker live" style={{ color: "var(--vermilion-ink)" }}>{t("no ar", "live")}</span>
       </div>
       <Beat>
-        <div className="c5 text-col">
+        <div className="c7 text-col">
           <div className="panel text">
             <div className="beat-k">{t("Solução", "Solution")}</div>
             <Brush as="h2" className="beat-t">{renderPH(chap.solucao.t)}</Brush>
@@ -1390,7 +1394,12 @@ function Solucao({ chap }) {
             <ProtoLinks links={chap.links} />
           </div>
         </div>
-        <div className={n ? "c7" : "c7 sol-vazio"}>
+        {/* O clímax ocupa a largura da página, não meia coluna. A régua do
+            capítulo estava invertida: a V1 criticada aparecia a 976px e a
+            V2 desenhada a 628px. Aqui as telas da solução saem da coluna
+            de provas, tomam as doze colunas e ainda sangram para a margem
+            direita, então a V2 é a maior imagem de V2 do capítulo. */}
+        <div className={n ? "c12 sol-col" : "c12 sol-col sol-vazio"}>
           <div className="sol-grid">
             {/* Todos os painéis têm a mesma medida e a mesma proporção (16:10,
                 a dos arquivos), então qualquer quantidade de prints empilha
@@ -1417,6 +1426,14 @@ function Solucao({ chap }) {
                     {src
                       ? <img className="sol-img" src={src} alt={alt} loading="lazy" draggable="false" />
                       : <MangaPlate />}
+                    {/* o clímax era o único bloco de telas sem lupa: três
+                        prints, nenhum jeito de ler a interface de perto */}
+                    {src ? <>
+                      <button className="fig-abrir" type="button"
+                              onClick={() => abrirFigura({ src, alt, legenda: cap })}
+                              aria-label={t("Abrir a imagem em tamanho cheio", "Open the image full size")}></button>
+                      <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
+                    </> : null}
                   </div>
                   {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}>{renderPH(cap)}</p> : null}
                 </React.Fragment>

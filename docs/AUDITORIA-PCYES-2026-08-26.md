@@ -180,8 +180,88 @@ dar ao trabalho dele o mesmo tamanho que ele deu ao trabalho que criticou.
   `resultado`), que não é o `#/rapido` global.
 - Unificar as curvas de motion nos componentes de conteúdo.
 - Quebrar uns 20 dos 60 dois-pontos.
-- Zoom nas telas da `solucao` e lupa visível sem hover.
+- ~~Zoom nas telas da `solucao` e lupa visível sem hover.~~ **feito** na
+  rodada de escala, abaixo.
 - Os quatro prints pendentes.
+
+## Registro de execução · escala e descoberta (Grupo B)
+
+Executada em 2026-08-26 sobre `fb823c9`. Tudo medido na página servida,
+em 1440x900, com os reveals congelados. É o Grupo B do HANDOFF: a escala
+das telas e o zoom no clímax. O Grupo A (ritmo) não foi tocado.
+
+**O achado técnico que ninguém tinha visto:** `.sol-grid` era um grid de
+12 colunas com calha `var(--gutter)` (57,6px) dentro de um pai de 549px.
+Onze calhas somam 633,6px, então as colunas `1fr` colapsavam a zero e o
+painel spanando `1 / -1` media **634px dentro de um pai de 549**,
+vazando 85px para fora da coluna. Os "628px" registrados na Rodada A eram
+esse vazamento, não uma medida de layout. Agora a largura é declarada.
+
+| Item | Antes | Depois |
+|---|---|---|
+| Telas de produto abaixo de 600px | **21 de 27** | **0** |
+| `prevenda`, `contador`, `sidecart`, `points` | 240px (17%) | **600px (42%)** |
+| Telas dos módulos e dos passos | 543px (38%) | **600px (42%)** |
+| Telas da `solucao` (o clímax) | 628px (44%), por vazamento | **1033px (72%)** |
+| Imagens com zoom | 18 de 27 | **21 de 27** |
+| Zoom no clímax | **0 de 3** | **3 de 3** |
+| Lupa em repouso | `opacity: 0` | `opacity: 1` |
+| Contraste da lupa | não se via | **17,87:1** papel · **16,11:1** tinta |
+| Altura do documento | 36.420px | **39.302px** (+7,9%) |
+
+**O que mudou, em três decisões:**
+
+1. **A margem cede, o texto não.** A coluna de provas mede 549px em 1440
+   e estreitar o texto está fora de questão (a linha já mede 44
+   caracteres, no piso da faixa). Então a coluna de provas passou a
+   avançar sobre a margem **direita** da página, por `--sangra-dir`. Só a
+   direita: a esquerda é onde mora o índice. A sangria é declarada por
+   faixa de viewport e vale 0 abaixo de 1240px, uma calha na faixa do
+   índice deslocado e `(100vw - 1240px) / 2` acima de 1700.
+2. **O clímax toma a página.** As telas da `solucao` saíram da coluna de
+   provas e ocupam as doze colunas mais a sangria: 1033px em 1440. A V1
+   criticada aparece a 976px no antes/depois, então a régua deixou de
+   estar invertida onde ela era comparável.
+3. **O par de telas deixou de ser par de selos.** `.mod-figs.grade` punha
+   duas telas lado a lado dentro da coluna: 240px cada. Empilhadas, cada
+   uma vale a coluna inteira.
+
+E a lupa passou a existir em repouso, invertendo para tinta no hover e no
+foco. O alvo continua sendo o botão `.fig-abrir`, que já estava na ordem
+de tabulação com rótulo próprio: o que faltava não era acesso, era aviso.
+
+**Verificação.** 1920, 1700, 1440, 1280, 768 e 390: `scrollWidth ==
+clientWidth` nos seis, **0 `pageerror`**, nenhum elemento vazando a borda
+direita. **axe (wcag2a + wcag2aa): 0 violação** em 1440 papel, 1440
+tinta, 1440 EN e 390. Varredura de reveal em passos de 90px: os **39**
+painéis chegam a opacidade ≥ 0,95 na faixa de leitura, nenhum morto. A
+medida das legendas alargadas ficou em 58 a 65 CPL, dentro da faixa. O
+lightbox abre a partir do clímax, com `role="dialog"`, `aria-modal` e
+fecha no Esc; em EN a lupa lê "+ ZOOM" e são os mesmos 21 botões.
+
+Os outros quatro capítulos herdaram a mesma régua: `odex`,
+`oderco-revenda`, `portfolio` e `locarmais-conciliacao` passaram a
+mostrar a `solucao` a 1033px, com zoom. No Locar Mais os prints em
+retrato usam `meia` e ficam a 485px de largura por 647 de altura, que é o
+tamanho certo para um 3:4.
+
+No mobile a régua já era outra e continua: em 390px, **26 das 27**
+imagens ocupam a coluna inteira (344px de 350).
+
+### Nota depois da rodada de escala
+
+| Dimensão | Antes | Depois | Por quê |
+|---|---|---|---|
+| Apresentação do design final | 5,5 | **7,5** | Nada de produto abaixo de 600px, clímax a 1033px, zoom nas três telas que não tinham. |
+| Acessibilidade | 8,5 | **9,0** | A lupa deixou de depender de um gesto que ninguém garante. |
+| Ritmo e leiturabilidade | 5,5 | **5,0** | Tela maior é página mais alta: 40,5 telas de rolagem viraram 43,7. |
+| Evidência, voz, narrativa, motion, acabamento | iguais | iguais | Não foram alvo. |
+
+**O que ainda segura a apresentação em 7,5, e não em 9:** a abertura da
+V1 é uma `CenaScroll` que abre em 82% da tela, perto de 1180px, e o
+clímax da V2 para em 1033px. Para empatar de vez, as telas da `solucao`
+teriam que sangrar em `100vw` como a cena da V1 sangra. Isso é decisão
+visual do Gabriel, na tela dele, e não foi tomada aqui.
 
 ## Registro de execução
 
