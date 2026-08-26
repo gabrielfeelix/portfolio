@@ -1634,6 +1634,12 @@ function IndiceCapitulo({ chap }) {
   const atos = indiceDo(chap);
   const planas = atos.flatMap((a) => a.secs);
   const [ativo, setAtivo] = useState(planas.length ? planas[0].id : null);
+  // profundidade de leitura: um evento por ato alcançado, uma vez por sessão.
+  // É o que responde "o leitor chegou no Ato IV ou morreu no meio do case".
+  const atoDe = {};
+  atos.forEach((a) => a.secs.forEach((sc) => { atoDe[sc.id] = a.k; }));
+  const atosVistos = useRef(null);
+  if (!atosVistos.current) atosVistos.current = {};
 
   // a seção ativa é a última cujo topo já passou da faixa de leitura:
   // com IO puro, seção alta e seção baixa disputam e o marcador pisca
@@ -1649,6 +1655,11 @@ function IndiceCapitulo({ chap }) {
         if (el && el.getBoundingClientRect().top <= linha) atual = s.id;
       }
       setAtivo(atual);
+      const k = atoDe[atual];
+      if (k && !atosVistos.current[k]) {
+        atosVistos.current[k] = 1;
+        if (window.vtrack) window.vtrack("leitura", { cap: chap.id, ato: String(k) });
+      }
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(medir); };
     medir();

@@ -297,6 +297,7 @@ function App() {
     setTimeout(() => window.scrollTo(0, y), REDUCED ? 80 : 700);
   };
 
+  const primeiraRota = useRef(true);
   useEffect(() => { const id = setTimeout(() => setLit(true), 120); return () => clearTimeout(id); }, []);
   useEffect(() => { applyTweaks(t); }, [t]);
 
@@ -311,6 +312,10 @@ function App() {
       window.history[fn](null, "", h);
     }
     document.title = viewTitle(view);
+    // analytics: o script da Vercel não conta troca de hash (mesmo pathname),
+    // então a rota é reportada aqui. O pageview de entrada já saiu sozinho.
+    if (primeiraRota.current) primeiraRota.current = false;
+    else if (window.vpage) window.vpage(h.slice(1) || "/");
   }, [view]);
   useEffect(() => {
     const onPop = () => {
