@@ -81,27 +81,21 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 > Itens 1 e 2 da rodada anterior (índice em 1440, cinco violações de
 > contraste) foram **resolvidos** em `e45aca3`. Não reabrir.
 
-**1. A REORDENAÇÃO DO PCYES — é o próximo trabalho.** Plano completo,
-com diagnóstico e ordem proposta, em `docs/AUDITORIA-PORTFOLIO.md`,
-Parte 2. Leia de lá, não daqui. Resumo do que precisa acontecer:
+> A **reordenação do PCYES foi feita** em `c3112ef` (Rodada 2). Não
+> reabrir: a ordem em quatro atos, as 4 âncoras sem figura e o módulo
+> "O acabamento" são decisão executada e medida. O próximo trabalho é a
+> **Rodada 3 (os atalhos)** em `docs/AUDITORIA-PORTFOLIO.md`: títulos de
+> ato no índice, que é o nível 2 de leitura (3 minutos) e hoje não existe.
 
-- `decisoes` tem **10 itens com figura acoplada** e por isso é um segundo
-  capítulo disfarçado de lista: gasta toda a prova antes de `solucao`,
-  `sistema` e `antesDepois`. Separar em **4 âncoras** (busca tolerante,
-  pop-up após 15%, pagamento na primeira dobra, comprar do card) que
-  ficam em `decisoes` **sem figura**, e **6 execuções** (preço, home,
-  quickview, SKU, contraste, VLibras) que viram passos de `modulos`
-  **com** as figuras.
-- `calendario` sai do meio (hoje entre `modulos` e `antesDepois`) e entra
-  dentro de `resultado`: é status de projeto, não beat narrativo.
-- `solucao` volta a ser síntese, agora com prova nova em vez de resumo do
-  que já foi mostrado.
-- Marcar os quatro atos com respiro. O vocabulário já existe: `--ma-6`
-  ("the held silence before a reveal") e `--ma-hold` (380ms).
+**1. O que a reordenação deixou pendente.** Duas coisas, as duas
+dependendo de material:
 
-Ordem dos beats hoje (16): abertura, problema, painel, funil, gesto,
-investigacao, busca, citacao, decisoes, recusei, sistema, modulos,
-solucao, calendario, antesDepois, resultado, aprendi.
+- `buscaV2` e `popup` agora são **passos 1 e 2** do módulo "O acabamento"
+  e caem em `MangaPlate` até o print subir. São os dois primeiros passos
+  de um módulo de nove, então é o buraco mais visível do capítulo hoje.
+- A figura `marca` está declarada em `chap.figuras` e **não é usada por
+  ninguém** (já era assim antes desta rodada). Ou entra em algum lugar, ou
+  sai do `data.jsx`.
 
 **2. Prints que só o Gabriel pode dar.** Molduras já marcadas como
 pendentes em `data.jsx` (sem `src`, caem em `MangaPlate`):
@@ -144,11 +138,29 @@ pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
 
 ## Estado do capítulo PCYES
 
-O mais desenvolvido do volume. A leitura hoje:
+O mais desenvolvido do volume. Desde `c3112ef` corre em **quatro atos**,
+com um `Respiro` entre eles:
 
-abertura → problema → painel de números → funil → gesto → investigação → busca → citação → decisões → recusei → **design system** → módulos → solução → antes/depois → resultado → aprendi
+```
+ATO I  · a cena e o buraco   abertura → problema → painel → funil
+ATO II · o que o dado disse  gesto → busca → investigação → citação
+ATO III· como eu resolvi     recusei → design system → decisões → módulos
+ATO IV · o que mudou         solução → antes/depois → resultado → aprendi
+```
 
-São 15 seções, e é o que o índice da esquerda lista.
+São 15 seções, e é o que o índice da esquerda lista (a `citacao` não tem
+`Sec`, então não entra no índice).
+
+**A regra que sustenta a ordem: decisão argumenta, módulo prova.**
+`decisoes` são **4 âncoras sem figura** (busca tolerante, pop-up após
+15%, pagamento na primeira dobra, comprar do card): as escolhas que mudam
+a tese do projeto. As **6 execuções** que a implementam viram passos do
+módulo **"O acabamento"**, com as figuras. Antes eram 10 itens com figura
+acoplada, e por isso o clímax acontecia no meio e `solucao` virava resumo.
+Não reacoplar figura em `decisoes`.
+
+`calendario` **não é beat**: é desenhado dentro de `Resultado`, no slot de
+arte (`c7`). A ordem das chaves em `data.jsx` não é a ordem de render.
 
 Três beats usam dado desenhado (nenhum é print de dashboard):
 

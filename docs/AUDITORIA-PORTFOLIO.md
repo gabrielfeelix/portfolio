@@ -225,11 +225,12 @@ abertura, problema, painel, funil, gesto, investigacao, busca, citacao.
 Metade do capítulo é diagnóstico. É um material excelente, mas o leitor
 fica meia dúzia de minutos sem ver nada sendo resolvido.
 
-### Causa 3 · a régua de tempo está fora de lugar
+### Causa 3 · a régua de tempo está fora de lugar ~~— CORRIGIDO~~
 
-`calendario` (a data de outubro) aparece **entre** `modulos` e
-`antesDepois`. Ele é informação de status do projeto, não beat narrativo,
-e corta o caminho entre a prova e a comparação final.
+> **A causa não existia.** A ordem das chaves em `data.jsx` não é a ordem
+> de render: `calendario` já era desenhado *dentro* de `Resultado`, no
+> slot de arte (`c7`), e não como beat entre `modulos` e `antesDepois`.
+> Verificado em `Capitulo.jsx`. Nada a mover.
 
 ### Causa 4 · `sistema` está no lugar certo, mas isolado
 
@@ -417,7 +418,11 @@ Nenhuma destas deve ser decidida sem ele:
 | 1 | Contraste (5 + 6 violações) | feito (outro agente) | `e45aca3` |
 | 1 | Selo de capítulo principal | feito | `192f838` |
 | 1 | Índice em 1440px | feito (outro agente) | `e45aca3` |
-| 2 | Reordenação do PCYES | **próxima** | |
+| 2 | `decisoes` em 4 âncoras + 6 execuções em `modulos` | feito | `c3112ef` |
+| 2 | `solucao` como síntese com prova nova | feito | `c3112ef` |
+| 2 | Respiros entre os quatro atos | feito | `c3112ef` |
+| 2 | `calendario` dentro de `resultado` | já estava | — |
+| 3 | Os atalhos | **próxima** | |
 
 ### Armadilha desta rodada
 
