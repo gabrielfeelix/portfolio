@@ -79,8 +79,14 @@ const CHAPTERS = [
       t: "Marca presente, produto no eixo",
       p: ["Em vez de escolher entre valor de marca e conversão, separei as camadas: a marca aparece em momentos específicos e o caminho de compra passa a ser o eixo do site.",
           "Home, vitrine e checkout reconstruídos para encurtar a distância entre entrar e comprar."],
-      slots: 3,
-      shots: ["volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp", "volume/assets/projetos/pcyes/s3.webp"],
+      slots: 5,
+      /* na ordem do caminho de compra: home orientada a produto, vitrine com
+         compra direta, página de produto com preço fixo, checkout com as
+         formas de pagamento na primeira dobra e o par mobile — vitrine que
+         compra direto e a barra de preço fixa na base da tela. */
+      shots: ["volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp",
+              "volume/assets/projetos/pcyes/s3.webp", "volume/assets/projetos/pcyes/s4.webp",
+              "volume/assets/projetos/pcyes/s5.webp"],
     },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
