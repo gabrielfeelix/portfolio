@@ -81,8 +81,11 @@ function renderPH(str) {
 function Figura({ fig, n, ar, className = "" }) {
   if (!fig) return null;
   const legenda = fig.legenda;
+  // a máscara sobe do rodapé do quadro quando ele entra na viewport: o
+  // print é revelado como quem vira a página, não como quem faz fade.
+  const [ref, seen] = useReveal({ threshold: 0.22 });
   return (
-    <figure className={`fig ${className}`}>
+    <figure className={`fig ${className} ${seen || REDUCED ? "revelada" : ""}`} ref={ref}>
       <div className="fig-frame" style={{ aspectRatio: fig.ar || ar || "16/10" }}>
         {fig.src
           ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
@@ -104,8 +107,9 @@ function Figura({ fig, n, ar, className = "" }) {
    ocupa a folha sozinho. */
 function Cena({ fig, n }) {
   if (!fig) return null;
+  const [ref, seen] = useReveal({ threshold: 0.18 });
   return (
-    <div className="cena bleed">
+    <div className={`cena bleed fig ${seen || REDUCED ? "revelada" : ""}`} ref={ref}>
       <div className="fig-frame" style={{ aspectRatio: fig.ar || "21/9" }}>
         {fig.src
           ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
@@ -139,6 +143,11 @@ function Abertura({ chap, figN }) {
             {(ab.p || []).map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
           </div>
         </div>
+        {/* a coluna que sobrava ao lado da abertura recebe tinta viva: o
+            capítulo abre com movimento antes da primeira prova */}
+        <div className="c4 ab-tinta">
+          <Organic variant={ab.tinta || "cluster"} size={250} />
+        </div>
       </Beat>
       {fig ? <Cena fig={fig} n={figN[ab.fig]} /> : null}
     </>
@@ -151,6 +160,7 @@ function Citacao({ dados }) {
   return (
     <Beat>
       <blockquote className="citacao">
+        <Organic variant={dados.tinta || "merge"} size={150} className="cit-org" onInk />
         <p className="cit-q">{renderPH(dados.q)}</p>
         {dados.fonte ? <div className="cit-f">{renderPH(dados.fonte)}</div> : null}
       </blockquote>
@@ -166,6 +176,7 @@ function Recusei({ dados }) {
   return (
     <Beat>
       <div className="recusei">
+        <Organic variant={dados.tinta || "split"} size={120} className="rec-org" />
         <div className="beat-k">{dados.k || t("O que eu recusei", "What I turned down")}</div>
         {dados.p ? <p className="beat-p" style={{ marginTop: 10 }}>{renderPH(dados.p)}</p> : null}
         <ul className="rec-lista">
@@ -176,6 +187,81 @@ function Recusei({ dados }) {
             </li>
           ))}
         </ul>
+      </div>
+    </Beat>
+  );
+}
+
+/* ---- MÓDULOS: as partes do produto que merecem beat próprio ---------
+   Pré-venda, Monte seu PC e o que a V2 ganhou de novo. Cada módulo é um
+   argumento com as telas dele ao lado; com mais de uma tela, a coluna vira
+   grade e as legendas seguem embaixo de cada uma. */
+function Modulos({ chap, figN = {} }) {
+  const mods = chap.modulos;
+  if (!mods || !mods.length) return null;
+  return (
+    <>
+      {mods.map((m, i) => {
+        const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
+        const grade = figs.length > 1;
+        return (
+          <Beat key={i} className={i % 2 === 1 ? "rev" : ""}>
+            <div className="c5 text-col">
+              <div className="panel text">
+                <div className="beat-k">{m.k}</div>
+                <Brush as="h2" className="beat-t">{renderPH(m.t)}</Brush>
+                {(m.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
+              </div>
+            </div>
+            <div className="c7">
+              <div className={`mod-figs ${grade ? "grade" : ""}`}>
+                {figs.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} ar={grade ? "16/10" : "16/10"} />)}
+              </div>
+            </div>
+          </Beat>
+        );
+      })}
+    </>
+  );
+}
+
+/* ---- CALENDÁRIO: a data de publicação, rabiscada ---------------------
+   Outubro de 2026 desenhado como folha de calendário, com o 26 circulado
+   a mão quando o bloco entra na viewport. O rabisco é um path SVG que se
+   desenha; com reduced-motion, já nasce desenhado. */
+function Calendario({ dados }) {
+  if (!dados) return null;
+  const [ref, seen] = useReveal({ threshold: 0.4 });
+  const semanas = dados.semanas || [];
+  const dia = dados.dia;
+  return (
+    <Beat>
+      <div className="cal-wrap" ref={ref} style={{ gridColumn: "1 / -1" }}>
+        <div className={`cal ${seen || REDUCED ? "in" : ""}`}>
+          <div className="cal-top">
+            <span className="cal-mes">{dados.mes}</span>
+            <span className="cal-ano">{dados.ano}</span>
+          </div>
+          <div className="cal-dow">
+            {(dados.dow || []).map((d, i) => <span key={i}>{d}</span>)}
+          </div>
+          <div className="cal-grid">
+            {semanas.map((sem, i) => sem.map((n, j) => (
+              <span key={`${i}-${j}`} className={`cal-d ${n === dia ? "hit" : ""} ${n ? "" : "vazio"}`}>
+                {n || ""}
+                {n === dia ? (
+                  <svg className="cal-rabisco" viewBox="0 0 100 74" aria-hidden="true">
+                    <path d="M69 15 C 54 5, 26 6, 16 20 C 6 34, 14 55, 34 63 C 55 71, 84 65, 88 48 C 91 34, 78 20, 60 16 C 46 13, 30 17, 22 27" />
+                  </svg>
+                ) : null}
+              </span>
+            )))}
+          </div>
+        </div>
+        <div className="cal-legenda">
+          <span className="cal-k">{dados.k}</span>
+          <p>{renderPH(dados.legenda)}</p>
+        </div>
       </div>
     </Beat>
   );
@@ -192,6 +278,7 @@ function figOrder(chap) {
   if (chap.problema) marca(chap.problema.fig);
   if (chap.investigacao) marca(chap.investigacao.fig);
   (chap.decisoes || []).forEach((d) => marca(d.fig));
+  (chap.modulos || []).forEach((m) => (m.figs || []).forEach(marca));
   return mapa;
 }
 
@@ -235,7 +322,33 @@ function Problema({ chap, figN = {} }) {
    ao entrar na viewport (a informação nunca fica só dentro do gesto).
    Teclado: setas movem 4% por vez; reduced-motion nasce em 50% sem animar. */
 function AntesDepois({ dados }) {
-  if (!dados || !dados.antes || !dados.depois) return null;
+  if (!dados) return null;
+  // o par principal continua sendo antes/depois na raiz; `pares` guarda as
+  // outras dobras comparadas. Par sem arquivo entra como moldura pendente,
+  // então dá para planejar a comparação antes de ter o print da V1.
+  const pares = [
+    ...(dados.antes && dados.depois ? [{ antes: dados.antes, depois: dados.depois, rotuloAntes: dados.rotuloAntes, rotuloDepois: dados.rotuloDepois, legenda: dados.legenda }] : []),
+    ...(dados.pares || []),
+  ];
+  if (!pares.length) return null;
+  return (
+    <div className="ad-wrap">
+      <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Antes e depois", "Before and after")}</Brush>
+        <span className="kicker">{t("arraste a divisa", "drag the divider")}</span>
+      </div>
+      <div className="ad-seq">
+        {pares.map((par, i) => (par.antes && par.depois)
+          ? <ADPar key={i} dados={par} />
+          : <Figura key={i} className="ad-pendente" ar="16/9"
+                    fig={{ legenda: par.legenda || t("Comparação a subir", "Comparison pending") }} />)}
+      </div>
+    </div>
+  );
+}
+
+/* um par comparado: a cortina arrastável de uma dobra */
+function ADPar({ dados }) {
   const [ref, seen] = useReveal({ threshold: 0.45 });
   const [pos, setPos] = useState(REDUCED ? 50 : 100);   // 100 = só o "antes"
   const [arrastando, setArrastando] = useState(false);
@@ -270,11 +383,7 @@ function AntesDepois({ dados }) {
   const rotA = dados.rotuloAntes || t("Antes", "Before");
   const rotD = dados.rotuloDepois || t("Depois", "After");
   return (
-    <div className="ad-wrap" ref={ref}>
-      <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Antes e depois", "Before and after")}</Brush>
-        <span className="kicker">{t("arraste a divisa", "drag the divider")}</span>
-      </div>
+    <div className="ad-par" ref={ref}>
       <div className={`ad-box ${arrastando ? "arrastando" : ""} ${pos < 100 ? "aberto" : ""}`}
            ref={caixa} style={{ "--ad-pos": pos + "%" }}
            onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
@@ -662,12 +771,14 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Decisoes chap={chap} figN={figN} />
         <div style={{ height: "var(--ma-6)" }}></div>
         <Recusei dados={chap.recusei} />
+        <Modulos chap={chap} figN={figN} />
         <Solucao chap={chap} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {chap.vocabulario ? <><div style={{ height: "var(--ma-6)" }}></div><Vocabulario dados={chap.vocabulario} /></> : null}
         {chap.antesDepois ? <><div style={{ height: "var(--ma-6)" }}></div><AntesDepois dados={chap.antesDepois} /></> : null}
         <div style={{ height: "var(--ma-6)" }}></div>
         <Resultado chap={chap} />
+        <Calendario dados={chap.calendario} />
         <Aprendi chap={chap} />
         {chap.id === "portfolio" && <SistemaVolume />}
       </div>
@@ -678,4 +789,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Figura, Cena, Abertura, Citacao, Recusei, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Modulos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

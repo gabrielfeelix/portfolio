@@ -169,3 +169,77 @@
   .rec-lista { grid-template-columns: 1fr; }
   .citacao { padding: var(--ma-4) var(--ma-3); }
 }
+
+/* ---- módulos: o argumento com as telas dele ao lado ---- */
+.mod-figs { display: grid; gap: var(--gutter); }
+.mod-figs.grade { grid-template-columns: 1fr 1fr; }
+@media (max-width: 880px) { .mod-figs.grade { grid-template-columns: 1fr; } }
+
+/* ---- calendário: a data de publicação, rabiscada a mão ----
+   Folha de outubro em papel, com o dia da publicação circulado quando o
+   bloco entra na viewport. O traço é um path que se desenha. */
+.cal-wrap { display: grid; grid-template-columns: minmax(0, 500px) 1fr; gap: var(--ma-5); align-items: center; }
+.cal { border: var(--ink-stroke-hi) solid var(--ink); background: var(--paper); padding: var(--ma-3); box-shadow: 8px 8px 0 var(--ink); }
+.cal-top { display: flex; align-items: baseline; justify-content: space-between; border-bottom: var(--ink-stroke) solid var(--ink); padding-bottom: 10px; }
+.cal-mes { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1; }
+.cal-ano { font-family: var(--font-condensed); font-weight: 700; letter-spacing: .14em; font-size: 13px; color: var(--fg-2); }
+.cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 12px; }
+.cal-dow span { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; color: var(--wash-2); text-align: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 6px; }
+.cal-d { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-editorial); font-size: 17px; color: var(--fg-2); }
+.cal-d.vazio { color: transparent; }
+.cal-d.hit { color: var(--ink); font-weight: 700; }
+.cal-rabisco { position: absolute; inset: -32% -18%; width: 136%; height: 164%; overflow: visible; pointer-events: none; }
+.cal-rabisco path {
+  fill: none; stroke: var(--vermilion); stroke-width: 5.5; stroke-linecap: round;
+  stroke-dasharray: 320; stroke-dashoffset: 320;
+}
+.cal.in .cal-rabisco path { animation: calRabisco 760ms cubic-bezier(.2,.7,.3,1) 220ms forwards; }
+@keyframes calRabisco { to { stroke-dashoffset: 0; } }
+.cal-legenda .cal-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
+.cal-legenda p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 42ch; margin-top: 10px; }
+@media (max-width: 880px) {
+  .cal-wrap { grid-template-columns: 1fr; gap: var(--ma-4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cal-rabisco path { stroke-dashoffset: 0 !important; animation: none !important; }
+}
+
+/* ---- revelação das figuras ------------------------------------------
+   O quadro abre com a imagem mascarada e ela sobe para o lugar conforme
+   a figura entra na viewport. É o equivalente ao quadro virando na
+   página: nada de fade genérico. */
+.fig-frame { --fig-mask: 0%; }
+.fig .fig-img, .fig .fig-frame .plate {
+  clip-path: inset(calc(100% - var(--fig-mask)) 0 0 0);
+  transform: scale(1.06);
+  transition: clip-path 900ms cubic-bezier(.16,.84,.32,1), transform 1100ms cubic-bezier(.16,.84,.32,1);
+}
+.fig.revelada .fig-frame { --fig-mask: 100%; }
+.fig.revelada .fig-img, .fig.revelada .fig-frame .plate { transform: scale(1); }
+.fig .fig-cap { opacity: 0; transform: translateY(8px); transition: opacity var(--cut) 220ms, transform var(--cut) 220ms; }
+.fig.revelada .fig-cap { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fig .fig-img, .fig .fig-frame .plate, .fig .fig-cap {
+    clip-path: none !important; transform: none !important; opacity: 1 !important; transition: none !important;
+  }
+}
+
+/* ---- tinta viva nos vazios ------------------------------------------
+   Os loaders orgânicos entram onde a página respira: ao lado da abertura,
+   dentro da citação e no canto do bloco de recusa. Decoração, então saem
+   do fluxo de leitura e nunca roubam espaço do texto. */
+.ab-tinta { display: flex; justify-content: center; align-items: center; }
+.citacao { position: relative; overflow: hidden; }
+.citacao .cit-org { position: absolute; right: var(--ma-4); top: 50%; transform: translateY(-50%); opacity: .5; }
+.recusei { position: relative; }
+.recusei .rec-org { position: absolute; right: 0; top: calc(-1 * var(--ma-3)); opacity: .35; }
+@media (max-width: 880px) {
+  .ab-tinta { display: none; }
+  .citacao .cit-org, .recusei .rec-org { display: none; }
+}
+
+/* mais de uma dobra comparada: os pares empilham com respiro entre eles */
+.ad-seq { display: grid; gap: var(--ma-5); }
+.ad-pendente .fig-frame { border-style: dashed; }

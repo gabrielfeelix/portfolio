@@ -53,6 +53,20 @@ if (LANG === "en") {
         sku: { legenda: "The internal tool: SKU on one side, formatted description on the other." },
         contraste: { legenda: "Before and after the contrast and photography pass across the navigation." },
         libras: { legenda: "VLibras opened from the menu, translating the page in use." },
+        prevenda: { alt: "Pre-order product page with a reservation bar, delivery date and reservation price",
+          legenda: "The pre-order shows how many reservations are gone, how many are left and when the product arrives." },
+        sidecart: { alt: "Side cart open over the product page, with the gift bar and the order's points",
+          legenda: "The side cart opens over the page. Adding an item stopped pulling people away from where they were." },
+        points: { alt: "PCYES Points area with the rarity ladder and points balance",
+          legenda: "PCYES Points: balance, tier ladder and how far the next one is, with no fine print buried anywhere." },
+        mspCaminhos: { alt: "Build your PC entry screen with the three available paths",
+          legenda: "The module's entrance asks one thing: do you already know what you want, want help, or want it ready." },
+        mspJogos: { alt: "Quiz step with the grid of games to select",
+          legenda: "People who don't know components pick by what they play. The recommendation comes from Valorant and Fortnite, not from socket and TDP." },
+        mspProntas: { alt: "Grid of ready-made builds split by use, with price and discount",
+          legenda: "Ready-made builds became storefront products: name, use case, closed price and one-click purchase." },
+        mspBuilder: { alt: "Step-by-step build with the eight component stages and the configuration summary",
+          legenda: "Building from scratch runs through eight steps with compatibility checked and the total always in sight." },
       },
       abertura: { k: "The scene", t: "A site the company liked and the customer didn't use",
         p: ["PCYES sells hardware and peripherals to people who build their own PC. They arrive knowing the model they want, compare spec sheets against the competition and decide in minutes. The site they had wasn't built for that: it opened on a brand campaign, with video and animation filling the entire first fold, and the product started below the edge of the screen.",
@@ -105,6 +119,31 @@ if (LANG === "en") {
             "The system came with it: a Figma library with the components that show up across the whole purchase, so the tech team can implement without re-deciding spacing, state and color on every new screen."],
         legendas: ["On mobile, the same rule: the storefront buys without opening the product and the price stays fixed at the bottom of the screen.",
                    "The design system library: card, button, price and state designed once and used across the navigation."] },
+      modulos: [
+        { k: "Pre-order", t: "A reservation with counted slots and a date in plain sight",
+          p: ["PCYES launches limited editions and a Maringá FC collection, and the V1 treated a launch like any other product: either it had stock, or it disappeared from the storefront.",
+              "In the V2, a product announced before it ships goes into pre-order with a reservation. You see how many reservations are already gone, how many are left and the expected delivery date, and the card is only charged on dispatch.",
+              "The scarcity here isn't invented urgency. The reservation count is real and so is the date, and that's what makes the bar work instead of annoy."],
+          figs: ["prevenda"] },
+        { k: "Build your PC", t: "Three paths to the same machine",
+          p: ["Building a PC splits two audiences that don't mix: people who know the processor model they want, and people who only know the game they play. The old configurator served the first well and abandoned the second.",
+              "The module's entrance asks one question and opens one of three paths: build from scratch with compatibility checked part by part, answer three questions about use and get the build back, or buy an already tested setup like any other product in the store.",
+              "The middle path is the one that changes things: instead of asking about budget, it asks what you play, edit or do day to day. The build comes out of Valorant and Premiere, not out of socket and TDP."],
+          figs: ["mspCaminhos", "mspJogos", "mspProntas", "mspBuilder"] },
+        { k: "What the V1 didn't have", t: "Side cart and a points program",
+          p: ["Two things came into the V2 that didn't exist before. The side cart, which opens over the page instead of taking people away, with the gift bar showing how much is missing to earn something, and PCYES Points, with balance, tiers and expiry open on screen.",
+              "Both solve the same problem by different routes: give a reason to keep buying without charging another click to someone who already decided."],
+          figs: ["sidecart", "points"] },
+      ],
+      antesDepois: { rotuloAntes: "V1", rotuloDepois: "V2",
+        legenda: "The same first fold: the V1 opens on a brand campaign, the V2 opens on the path to purchase.",
+        pares: [
+          { legenda: "The storefront in both versions: the V1 required opening the product to buy, the V2 solves it on the card." },
+          { legenda: "The checkout in both versions: payment methods move from the end of the scroll up to the first fold." },
+        ] },
+      calendario: { k: "Date set", mes: "October", ano: "2026", dia: 26,
+        dow: ["S", "M", "T", "W", "T", "F", "S"],
+        legenda: "October 26, 2026: the date agreed with the board for the V2 to go live. Until then, the prototype is the product you can test." },
       resultado: { t: "Goes live in October",
         p: ["The testing so far pointed to a path to purchase that is easier to understand, and the board approved the final direction.",
             "What can be stated today is what changed in the path: buying no longer requires the product page, the price stopped disappearing on scroll, and the payment method shows up before the person decides whether to go on.",
@@ -248,8 +287,20 @@ if (LANG === "en") {
       // mesma armadilha nas figuras: o inglês traz legenda e alt, o
       // caminho do arquivo mora só no português. Merge por chave.
       const figsPt = c.figuras;
+      // `semanas` do calendário é dado, não texto: o inglês só traz mês,
+      // dia da semana e legenda, então a grade volta do português.
+      const semanas = c.calendario && c.calendario.semanas;
+      const adPt = c.antesDepois;
       Object.assign(c, en);
       if (sol) c.solucao = sol;
+      if (semanas && c.calendario) c.calendario = Object.assign({}, c.calendario, { semanas: semanas });
+      // antes/depois: o inglês traz rótulos e legendas, os arquivos moram no
+      // português. Merge raso, e os pares extras casam por índice.
+      if (adPt && c.antesDepois) {
+        const adEn = c.antesDepois;
+        const pares = (adPt.pares || []).map((par, i) => Object.assign({}, par, (adEn.pares || [])[i] || {}));
+        c.antesDepois = Object.assign({}, adPt, adEn, pares.length ? { pares: pares } : {});
+      }
       if (figsPt) {
         const figsEn = en.figuras || {};
         const merged = {};

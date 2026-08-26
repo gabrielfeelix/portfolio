@@ -74,6 +74,27 @@ const CHAPTERS = [
       sku: { legenda: "A ferramenta interna: SKU de um lado, descrição pronta e formatada do outro." },
       contraste: { legenda: "Antes e depois do ajuste de contraste e fotografia na navegação." },
       libras: { legenda: "VLibras acionado a partir do menu, traduzindo a página em uso." },
+      prevenda: { src: "volume/assets/projetos/pcyes/prevenda.webp",
+        alt: "Página de produto em pré-venda com barra de reservas, prazo de entrega e preço de reserva",
+        legenda: "A pré-venda mostra quantas reservas já foram feitas, quantas restam e quando o produto chega." },
+      sidecart: { src: "volume/assets/projetos/pcyes/sidecart.webp",
+        alt: "Carrinho lateral aberto sobre a página do produto, com barra de brinde e pontos do pedido",
+        legenda: "O carrinho lateral abre sobre a página. Adicionar um item deixou de tirar a pessoa de onde ela estava." },
+      points: { src: "volume/assets/projetos/pcyes/points.webp",
+        alt: "Área do PCYES Points com escada de raridade e saldo de pontos",
+        legenda: "PCYES Points: saldo, escada de níveis e o quanto falta para o próximo, sem letra miúda escondida." },
+      mspCaminhos: { src: "volume/assets/projetos/pcyes/msp-caminhos.webp",
+        alt: "Tela inicial do Monte seu PC com os três caminhos disponíveis",
+        legenda: "A entrada do módulo pergunta uma coisa só: você já sabe o que quer, quer ajuda ou quer pronto." },
+      mspJogos: { src: "volume/assets/projetos/pcyes/msp-jogos.webp",
+        alt: "Etapa do quiz com a grade de jogos para selecionar",
+        legenda: "Quem não conhece peça escolhe pelo que joga. A recomendação sai de Valorant e Fortnite, não de soquete e TDP." },
+      mspProntas: { src: "volume/assets/projetos/pcyes/msp-prontas.webp",
+        alt: "Grade de builds prontas separadas por uso, com preço e desconto",
+        legenda: "As builds prontas viram produto de vitrine: nome, uso, preço fechado e compra em um clique." },
+      mspBuilder: { src: "volume/assets/projetos/pcyes/msp-builder.webp",
+        alt: "Montagem passo a passo com as oito etapas de componentes e o resumo da configuração",
+        legenda: "Quem monta do zero anda em oito etapas com compatibilidade checada e o total sempre à vista." },
     },
     /* ---- a cena que abre o capítulo ---------------------------------
        O case começava no problema já formulado. Faltava o momento em que
@@ -85,6 +106,7 @@ const CHAPTERS = [
       p: ["A PCYES vende hardware e periférico para quem monta o próprio PC. É um público que chega sabendo o modelo que quer, compara ficha técnica com a concorrência e decide em minutos. O site que existia não era feito para esse comportamento: abria em campanha de marca, com vídeo e animação ocupando a primeira dobra inteira, e o produto começava abaixo da linha da tela.",
           "O pedido que chegou até mim era estético. Deixar mais minimalista, mais limpo, mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita estava vendendo menos do que podia. A primeira semana foi assistindo gente tentar comprar."],
       fig: "abertura",
+      tinta: "cluster",
     },
     problema: {
       t: "Bonita de ver, difícil de comprar",
@@ -110,6 +132,7 @@ const CHAPTERS = [
     citacao: {
       q: "A diretoria pedia minimalismo. O comportamento no site pedia atalho. Em vez de escolher um dos dois, separei as camadas.",
       fonte: "A proposta que destravou o projeto",
+      tinta: "orbit",
     },
     decisoes: [
       { d: "Formas de pagamento na primeira dobra do checkout", fig: "checkout",
@@ -152,12 +175,47 @@ const CHAPTERS = [
       legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela.",
                  "A biblioteca do design system: card, botão, preço e estado desenhados uma vez e usados em toda a navegação."],
     },
+    /* ---- os módulos que ganharam beat próprio ------------------------
+       Três partes do produto que não cabiam na lista de decisões: a
+       pré-venda, o configurador e o que a V2 passou a ter e a V1 não
+       tinha. Cada uma entra com as telas dela ao lado do argumento. */
+    modulos: [
+      { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
+        p: ["A PCYES lança edição limitada e coleção com o Maringá FC, e a V1 tratava lançamento igual a qualquer produto: ou tinha estoque, ou sumia da vitrine.",
+            "Na V2, produto anunciado antes de chegar entra em pré-venda com reserva. A pessoa vê quantas reservas já saíram, quantas ainda existem e a data prevista de entrega, e o cartão só é cobrado no despacho.",
+            "A escassez aqui não é truque de urgência inventada. O número de reservas é real e a data também, e é isso que faz a barra funcionar em vez de irritar."],
+        figs: ["prevenda"] },
+      { k: "Monte seu PC", t: "Três caminhos para a mesma máquina",
+        p: ["Montar PC separa dois públicos que não se misturam: quem sabe o modelo do processador que quer e quem só sabe o jogo que joga. O configurador antigo servia bem o primeiro e abandonava o segundo.",
+            "A entrada do módulo pergunta uma coisa só e abre um dos três caminhos: montar do zero com compatibilidade checada peça a peça, responder três perguntas sobre uso e receber a build pronta, ou comprar um setup já testado como se fosse qualquer produto da loja.",
+            "O caminho do meio é o que muda o jogo: em vez de perguntar orçamento, pergunta o que a pessoa joga, edita ou faz no dia a dia. A build sai de Valorant e Premiere, não de soquete e TDP."],
+        figs: ["mspCaminhos", "mspJogos", "mspProntas", "mspBuilder"] },
+      { k: "O que a V1 não tinha", t: "Carrinho lateral e programa de pontos",
+        p: ["Duas coisas entraram na V2 e não existiam antes. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
+            "As duas resolvem o mesmo problema por vias diferentes: dar motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],
+        figs: ["sidecart", "points"] },
+    ],
+    /* a data de publicação, rabiscada na folha de outubro */
+    calendario: {
+      k: "Data marcada",
+      mes: "Outubro", ano: "2026", dia: 26,
+      dow: ["D", "S", "T", "Q", "Q", "S", "S"],
+      semanas: [[0, 0, 0, 1, 2, 3, 4], [5, 6, 7, 8, 9, 10, 11], [12, 13, 14, 15, 16, 17, 18], [19, 20, 21, 22, 23, 24, 25], [26, 27, 28, 29, 30, 31, 0]],
+      legenda: "26 de outubro de 2026: a data combinada com a diretoria para a V2 entrar no ar. Até lá, o protótipo é o produto que dá para testar.",
+    },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
       antes: "volume/assets/projetos/pcyes/antes.webp",
       depois: "volume/assets/projetos/pcyes/depois.webp",
       rotuloAntes: "V1", rotuloDepois: "V2",
       legenda: "A mesma primeira dobra: a V1 abre em campanha de marca, a V2 abre no caminho de compra.",
+      /* as outras dobras que valem comparar. Sem o print da V1, o par entra
+         como moldura tracejada: fica claro o que falta subir e o beat não
+         some da página. */
+      pares: [
+        { legenda: "A vitrine nas duas versões: a V1 exigia abrir o produto para comprar, a V2 resolve no card." },
+        { legenda: "O checkout nas duas versões: as formas de pagamento saem do fim da rolagem e sobem para a primeira dobra." },
+      ],
     },
     resultado: {
       t: "Entra em produção em outubro",
