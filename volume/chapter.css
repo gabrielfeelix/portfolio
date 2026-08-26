@@ -236,12 +236,12 @@
 }
 .fig.revelada .fig-img, .fig.revelada .fig-frame .plate {
   opacity: 1;
-  animation: figTinta 760ms steps(29) both, figTranco 820ms cubic-bezier(.2,.85,.25,1) both;
+  animation: figTinta 380ms steps(29) both, figTranco 440ms cubic-bezier(.2,.85,.25,1) both;
 }
 /* terminada a batida, a máscara sai do caminho: sem isso o último quadro
    do sprite continuaria recortando a imagem em telas muito largas */
 .fig.revelada .fig-img { animation-fill-mode: forwards; }
-.fig .fig-cap { opacity: 0; transform: translateY(8px); transition: opacity var(--cut) 320ms, transform var(--cut) 320ms; }
+.fig .fig-cap { opacity: 0; transform: translateY(8px); transition: opacity var(--cut) 180ms, transform var(--cut) 180ms; }
 .fig.revelada .fig-cap { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
