@@ -74,7 +74,7 @@ const CHAPTERS = [
       sku: { legenda: "A ferramenta interna: SKU de um lado, descrição pronta e formatada do outro." },
       contraste: { legenda: "Antes e depois do ajuste de contraste e fotografia na navegação." },
       libras: { legenda: "VLibras acionado a partir do menu, traduzindo a página em uso." },
-      contador: { src: "volume/assets/projetos/pcyes/contador.webp", ar: "88/98",
+      contador: { src: "volume/assets/projetos/pcyes/contador.webp", ar: "1/1",
         alt: "Contagem regressiva da pré-venda correndo, com dias, horas, minutos e segundos",
         legenda: "A contagem corre de verdade na tela, e o número de reservas ao lado é o que sobrou. Escassez que existe, não a que o texto promete." },
       prevenda: { src: "volume/assets/projetos/pcyes/prevenda.webp",

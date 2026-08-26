@@ -349,7 +349,10 @@ function ModuloCaminhos({ mod, chap, figN = {} }) {
             ))}
           </div>
           <div className="cam-palco" role="tabpanel" id={`cam-p-${ativo}`} aria-labelledby={`cam-t-${ativo}`}>
-            <Figura key={cam.fig || ativo} fig={fig} n={figN[cam.fig]} ar="16/10" className="cam-fig" />
+            {/* sem key variável: o quadro não remonta ao trocar de aba, então
+                a troca é seca. O respingo é da entrada na página, não da
+                navegação entre caminhos. */}
+            <Figura fig={fig} n={figN[cam.fig]} ar="16/10" className="cam-fig" />
             {cam.p ? <p className="cam-p">{renderPH(cam.p)}</p> : null}
           </div>
         </div>

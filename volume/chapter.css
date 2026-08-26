@@ -336,6 +336,9 @@
 .cam-tab.on .cam-n { color: var(--vermilion); }
 .cam-tab.on .cam-para { color: rgba(246,243,236,.72); }
 .cam-tab:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: 3px; }
+/* a troca de caminho não reanima: quem clicou já está olhando o quadro */
+.cam-fig .fig-img { animation: none !important; }
+.cam-fig .fig-frame::after { display: none; }
 .cam-p { margin-top: 12px; font-size: 15.5px; line-height: 1.5; color: var(--fg); max-width: 62ch; }
 @media (max-width: 880px) {
   .cam-tabs { grid-template-columns: 1fr; }
