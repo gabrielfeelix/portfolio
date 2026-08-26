@@ -53,10 +53,12 @@
      the signature stamp. NEVER a background or decorative fill. */
   --vermilion:     #E4231B;
   --vermilion-ink: #B01510;   /* pressed / on-paper darker variant     */
-  --vermilion-lift:#F4695C;   /* o vermelho SOBRE tinta: superficie preta
-                                 nos dois modos (aba ligada, painel de
-                                 impacto). #E4231B da 4,29:1 no preto e
-                                 reprova; este passa AA.                */
+  /* ---- superficies que pintam o fundo com var(--ink) ----------------
+     .citacao e .cam-tab.on invertem junto com o tema: fundo preto no
+     modo papel, fundo quase-branco no modo tinta. Texto em cima delas
+     nao pode ter cor fixa -- estes dois tokens sao o par que vira. */
+  --vermilion-sobre-ink: #F4695C;  /* vermelho legivel sobre o fundo preto */
+  --sobre-ink-2:         #C9C3B6;  /* apoio: papel rebaixado, nao opacidade */
   --vermilion-tint:#F2C9C5;   /* the ONE allowed soft red — focus halo  */
 
   /* ---- Semantic color roles -------------------------------------- */

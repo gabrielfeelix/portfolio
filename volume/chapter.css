@@ -41,7 +41,10 @@
 .cover .shell { position: relative; z-index: 2; width: 100%; padding-top: var(--ma-5); padding-bottom: var(--ma-5); display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--gutter); align-items: center; }
 .cover-art { position: relative; border: var(--ink-stroke-hi) solid var(--paper); aspect-ratio: 4/5; overflow: hidden; background: var(--wash-4); }
 .cover-art image-slot { width: 100%; height: 100%; }
-.cover-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .24em; font-size: 14px; color: var(--vermilion); }
+/* a capa do capitulo e superficie de var(--ink) e inverte com o tema:
+   o kicker usa o par que vira junto, senao reprova nos dois modos
+   (4,29:1 sobre preto, 4,01:1 sobre claro). */
+.cover-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .24em; font-size: 14px; color: var(--vermilion-sobre-ink); }
 .cover-title { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-splash); line-height: .88; margin: 16px 0 var(--ma-3); }
 .cover-lead { font-size: var(--t-lead); max-width: 32ch; color: var(--paper); line-height: 1.45; opacity: .92; }
 /* ---- o fundo da tobira: quatro camadas em velocidades diferentes ------
@@ -277,7 +280,11 @@ html.ink .cover-linhas { opacity: .06; }
 }
 .citacao .cit-f {
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); margin-top: var(--ma-3);
+  /* a .citacao pinta o fundo com var(--ink), que INVERTE no modo tinta:
+     preto no papel, quase-branco na tinta. O vermelho precisa inverter
+     junto, senao um dos dois modos reprova. --vermilion-sobre-ink faz
+     esse par (ver colors_and_type.css). */
+  letter-spacing: .18em; font-size: 12px; color: var(--vermilion-sobre-ink); margin-top: var(--ma-3);
 }
 
 /* o bloco de recusa: o que ficou de fora e por quê. É o beat que separa
@@ -381,7 +388,7 @@ html.ink .cover-linhas { opacity: .06; }
 .cal-mes { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1; }
 .cal-ano { font-family: var(--font-condensed); font-weight: 700; letter-spacing: .14em; font-size: 13px; color: var(--fg-2); }
 .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 12px; }
-.cal-dow span { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; color: var(--wash-2); text-align: center; }
+.cal-dow span { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; color: var(--fg-2); text-align: center; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 6px; }
 .cal-d { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-editorial); font-size: 17px; color: var(--fg-2); }
@@ -394,7 +401,7 @@ html.ink .cover-linhas { opacity: .06; }
 }
 .cal.in .cal-rabisco path { animation: calRabisco 760ms cubic-bezier(.2,.7,.3,1) 220ms forwards; }
 @keyframes calRabisco { to { stroke-dashoffset: 0; } }
-.cal-legenda .cal-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
+.cal-legenda .cal-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion-ink); }
 .cal-legenda p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 42ch; margin-top: 10px; }
 @media (max-width: 880px) {
   .cal-wrap { grid-template-columns: 1fr; gap: var(--ma-4); }
@@ -530,8 +537,11 @@ html.ink .cover-linhas { opacity: .06; }
 .cam-tab .cam-para { font-size: 12.5px; line-height: 1.35; color: var(--fg-2); }
 .cam-tab:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 var(--ink); }
 .cam-tab.on { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--vermilion); }
-.cam-tab.on .cam-n { color: var(--vermilion-lift); }
-.cam-tab.on .cam-para { color: rgba(246,243,236,.72); }
+.cam-tab.on .cam-n { color: var(--vermilion-sobre-ink); }
+/* o apoio da aba ligada seguia rgba de papel fixo: no modo tinta a
+   superficie var(--ink) clareia e o texto sumia (1,04:1). --paper
+   inverte junto com --ink e mantem o par legivel nos dois modos. */
+.cam-tab.on .cam-para { color: var(--sobre-ink-2); }
 .cam-tab:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: 3px; }
 /* a troca de caminho não reanima: quem clicou já está olhando o quadro */
 .cam-fig .fig-img { animation: none !important; -webkit-mask-image: none; mask-image: none; }
