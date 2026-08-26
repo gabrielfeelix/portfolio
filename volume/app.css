@@ -238,7 +238,15 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
 /* chapter pages have their own top bar — push it clear of the floating pill */
 .chapter-main { padding-top: clamp(54px, 8vh, 74px); }
 
-/* ---- header modes: hidden over cover / floating pill past it ---- */
+/* ---- header modes: hidden over cover / floating pill past it ----
+   Sobre a capa da home o cabeçalho fica escondido, mas continuava ocupando
+   os seus ~117px no fluxo. O papel começava abaixo disso e, no instante em
+   que o cabeçalho virava pílula fixa e saía do fluxo, o documento encolhia
+   e a página pulava esse tanto de uma vez. Sobreposto desde o começo, a
+   rolagem anda 1:1 e o salto some. */
+header.hd-hidden:not(.hd-float) { position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
+header.hd-hidden:not(.hd-float) .v-rule,
+header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .hd-hidden .v-nav { transform: translateY(-150%); opacity: 0; pointer-events: none; }
 .hd-float .v-rule, .hd-float .v-volline { display: none; }
 .hd-float .v-nav {
