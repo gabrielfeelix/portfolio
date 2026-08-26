@@ -6,6 +6,11 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 - Repo: github.com/gabrielfeelix/portfolio · push na `main` = auto-deploy Vercel
 - No ar: https://portfolio-volume.vercel.app
 
+**A auditoria do portfólio está em `docs/AUDITORIA-PORTFOLIO.md`**: veredito
+de triagem, o que está bom, o que está fraco por impacto, e o plano de
+revisão do PCYES em quatro atos com ordem de execução. É de lá que sai o
+próximo trabalho, e o registro de execução no fim dele diz o que já caiu.
+
 > Este arquivo é relido a cada sessão, então guarda só o que **muda o que
 > você vai fazer**: regras, armadilhas que custaram retrabalho, decisões já
 > fechadas e o que está pendente. O histórico de features entregues está no
@@ -19,6 +24,7 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 - `volume/*.jsx` são **scripts clássicos** que compartilham estado via `window`. **Não há import/export.**
 - `build.mjs` (esbuild) transpila cada jsx individualmente (`bundle:false`, **nunca** `minifyIdentifiers` — os nomes de topo são a API entre arquivos) → `dist/`, vendoriza React 18, copia assets, gera `dist/index.html`.
 - Ordem dos scripts importa: tweaks-panel → data → i18n → organic → cursor → RevealMask → Capa → Capitulo → Processo → Posfacio → EmpresaPage → app.
+- **Desde `f01e90b`:** os scripts vão com `defer` (preserva a ordem, e por isso o contrato de `window` continua valendo) e os cinco CSS do volume são **concatenados e minificados** num arquivo só, na ordem `colors_and_type` primeiro, `app` e `organic` por último. `Capitulo.js` e `EmpresaPage.js` **saem do carregamento inicial** e chegam quando a rota pede, então `renderPH` mora em `data.jsx` (não em `Capitulo.jsx`): a home usa e cairia com `renderPH is not defined`.
 - **`dist/` é apagado a cada build** (`rm -rf`). Nunca deixe arquivo só lá.
 - Fluxo: editar → `npm run build` → commit → `git push origin main`.
 - Commits terminam com `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`. Mensagens em português, no tom dos commits anteriores.
@@ -30,13 +36,14 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 - **Zero travessões (—) em texto do site.** Palavra do Gabriel: "cara de IA". Use dois-pontos, vírgula ou ponto; em títulos, "·". Em comentário de código pode.
 - **IA aparece pouco:** só onde é feature (Hub Oderço), uma filosofia no Posfácio, uma razão no Rodapé. Não re-adicionar.
 - Outros repos em `~/dev/` são **somente leitura**. Cópia só na direção projeto → portfólio.
-- **Não confie nestas notas: valide.** Rode o axe, tire screenshot e dê `Read` no PNG antes de dizer que está bom. Teste teclado de verdade.
+- **Não confie nestas notas: valide.** Rode o axe e meça na página servida antes de dizer que está bom. Teste teclado de verdade.
+- **Screenshot aqui mede pouco e engana.** `.beat .panel` nasce `opacity: 0`, `CenaScroll` cresce ao longo de 1900px de trilho e `ModuloPassos` troca o texto em meio à rolagem: print pega estado de transição, que parece quebrado mesmo quando está certo. Para verificar, **meça no DOM** (`getComputedStyle`, `getBoundingClientRect`, contagem de elemento, contraste calculado), não por imagem. Julgamento visual é do Gabriel, na tela dele.
 
 ## Ferramentas
 
 **Playwright** — use `~/.npm/_npx/1ac161d228dd2210/node_modules/playwright`. Chromium do cache em `~/.cache/ms-playwright`. Funciona direto, sem `LD_LIBRARY_PATH` (a receita antiga de `dpkg -x` não é mais necessária).
 
-- Servir o build: `npm run dev` (cai em outra porta se a 5173 estiver ocupada; veja o log).
+- Servir o build: **prefira `python3 -m http.server <porta> --bind 127.0.0.1` de dentro de `dist/`**, com uma porta que você conferiu livre (`ss -ltn | grep :<porta>`). O `npm run dev` escolhe porta sozinho e, quando 5173/5174 já estão tomadas por outra sessão, o job morre sem aviso: aconteceu nesta rodada e o agente ficou "rodando" sem nunca ter servido nada.
 - **Unity WebGL (VLibras e afins) só renderiza em `headless:false`** via WSLg (`DISPLAY=:0`). Leva ~60s e o canvas vive num shadow root, então `document.querySelector` não acha — sonde dentro do `shadowRoot` ou simplesmente espere e capture.
 - Sempre dê `Read` no PNG. Build que passa não prova que a tela está certa: nesta rodada o sticky estava quebrado com o build verde.
 
@@ -65,30 +72,75 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 - **Hero**: aprovado, não mexer. O obi foi recusado.
 - **Onde entra o Design System** (2026-08-26): depois das Decisões, antes dos Módulos. Nunca no começo. O argumento é "antes de desenhar 40 telas, construí o vocabulário", então o DS chega como resposta a um problema já posto e cada tela vira prova de que o sistema funciona.
 - **Profundidade do DS**: "sistema em uso", não catálogo de swatches. Mostrar token semântico funcionando (mesmo componente em dark/light; cor com função: verde = compra, laranja = pré-venda, dourado = Coin). O argumento: *a V1 tinha cores; a V2 tem um sistema que sabe o que cada cor faz*. `ink-muted` não é cinza, é o papel "texto secundário", e vira sozinho quando o tema flipa.
+- **PCYES é o capítulo principal** (2026-08-26, decisão do Gabriel): é o mais longo, o mais medido e o único com dado de comportamento. **Continua Cap. 01** e o sumário marca isso com o selo "Capítulo principal" (`chap.principal` em `data.jsx`, `.rvm-main` em `RevealMask.jsx`). Sem a marca, o leitor gasta 16 beats para descobrir sozinho e quem abre por outro capítulo forma opinião pelo case mais curto.
+- **`fact` ancora em efeito, não em entrega** (2026-08-26): particípio ("caminho encurtado", "checkout reconstruído") descreve o que foi feito. O PCYES não tem número porque publica em outubro, então ancora no que já é verificável: a direção proposta contrariava o briefing e foi a aprovada. O padrão de referência é o Locar Mais, que troca número ausente por **mudança de comportamento verificável**. **Não inventar número para o Locar Mais.**
 - **Índice do capítulo** (2026-08-26): variante **LISTA** escolhida entre três protótipos (lombada fina, lista com títulos, fina que expande no hover). As outras duas e o seletor **já foram removidos** — não reintroduzir. Ele fica na margem esquerda e **o conteúdo não estreita pra abrir lugar**: uma versão em `grid` que dividia a tela foi recusada.
 
 ## Pendente
 
-**1. Índice só aparece em 1700px+.** O `.shell` trava em 1240px, então abaixo disso a margem livre (menos de 100px de cada lado) não comporta os 236px do índice sem espremer a leitura ou passar por cima dela. **Na tela do Gabriel (1440px) o índice não aparece.** Decisão pendente dele: aceitar assim, ou estreitar o conteúdo em 1440 pra abrir lugar. Não mexer sem ele decidir.
+> Itens 1 e 2 da rodada anterior (índice em 1440, cinco violações de
+> contraste) foram **resolvidos** em `e45aca3`. Não reabrir.
 
-**2. Cinco violações de contraste pré-existentes no capítulo.** Confirmadas contra baseline limpo (`git stash`), não são regressão desta rodada: `.cit-f > span` e `.cam-n` (#e4231b sobre #0a0a0a = 4,29:1, precisa 4,5) e `.db-n` / `.cam-n` claro (#b4afa3 sobre #f6f3ec = 1,97:1). O padrão de correção já existe no repo: trocar `--vermilion` por `--vermilion-ink` e `--wash-2` por `--wash-3`. Ficaram fora de escopo de propósito.
+**1. A REORDENAÇÃO DO PCYES — é o próximo trabalho.** Plano completo,
+com diagnóstico e ordem proposta, em `docs/AUDITORIA-PORTFOLIO.md`,
+Parte 2. Leia de lá, não daqui. Resumo do que precisa acontecer:
 
-**3. Antes/depois de um componente real (opcional).** O DS prova sistema em cima de token. Faltaria provar em cima de uma tela: card de produto da V1 ao lado do da V2. Não há documentação de token da V1 em lugar nenhum, então o enquadramento honesto é "a V1 não tinha sistema", não inventar números da V1.
+- `decisoes` tem **10 itens com figura acoplada** e por isso é um segundo
+  capítulo disfarçado de lista: gasta toda a prova antes de `solucao`,
+  `sistema` e `antesDepois`. Separar em **4 âncoras** (busca tolerante,
+  pop-up após 15%, pagamento na primeira dobra, comprar do card) que
+  ficam em `decisoes` **sem figura**, e **6 execuções** (preço, home,
+  quickview, SKU, contraste, VLibras) que viram passos de `modulos`
+  **com** as figuras.
+- `calendario` sai do meio (hoje entre `modulos` e `antesDepois`) e entra
+  dentro de `resultado`: é status de projeto, não beat narrativo.
+- `solucao` volta a ser síntese, agora com prova nova em vez de resumo do
+  que já foi mostrado.
+- Marcar os quatro atos com respiro. O vocabulário já existe: `--ma-6`
+  ("the held silence before a reveal") e `--ma-hold` (380ms).
 
-**4. Prints que só o Gabriel pode dar.** As molduras já existem marcadas como pendentes em `data.jsx`:
+Ordem dos beats hoje (16): abertura, problema, painel, funil, gesto,
+investigacao, busca, citacao, decisoes, recusei, sistema, modulos,
+solucao, calendario, antesDepois, resultado, aprendi.
 
-| Chave | O que é |
-|---|---|
-| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad na frente |
-| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia |
-| `buscaV2` | V2 sugerindo produtos e termos antes de digitar |
-| `popup` | Pop-up da V2 aparecendo após 15% de rolagem |
+**2. Prints que só o Gabriel pode dar.** Molduras já marcadas como
+pendentes em `data.jsx` (sem `src`, caem em `MangaPlate`):
 
-Ele mostrou os dois primeiros no chat, mas imagem de chat não serve: precisa de **arquivo em disco**. Falta também o FigJam da análise inicial (10 artefatos: mapa do site, inventário de telas, personas, jornada, fluxos, taxonomia, microcopy, auditoria heurística, service blueprint, wireflows) em resolução alta.
+| Chave | O que é | Prioridade |
+|---|---|---|
+| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad na frente | alta |
+| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | alta |
+| `buscaV2` | V2 sugerindo produtos e termos antes de digitar | média |
+| `popup` | Pop-up da V2 aparecendo após 15% de rolagem | média |
 
-**5. Conteúdo de outros capítulos.** Traxium sem print (ele tem em casa). IMMO sem logo (`logo: null` em `data.jsx:755`) — ele vai mandar o Figma. Um `src: null` restante no par mobile do PCYES (`data.jsx`, o segundo shot da biblioteca do design system).
+As duas primeiras sustentam o achado da busca, que é o melhor momento do
+melhor case. Imagem de chat não serve: precisa de **arquivo em disco**.
+Ele já combinou que entrega depois da reordenação.
 
-**6. Quirk pré-existente, fora de escopo.** Ao navegar pra um capítulo a partir de uma posição rolada, a pill do nav começa escondida até rolar pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
+**3. FigJam: NÃO despejar os 10 artefatos.** Decisão da auditoria. O
+capítulo já tem 16 beats e o Ato I/II já é denso. Critério para um
+artefato entrar: **mudou uma decisão?** Se sim, entra junto da decisão
+que mudou; se não, fica fora. Os que não entram viram **uma figura só**
+em `investigacao` (vista do FigJam inteiro), com legenda que argumenta
+("dez artefatos antes da primeira tela"), não dez beats. Quais mudaram
+decisão é resposta do Gabriel, ainda pendente.
+
+**4. Os outros capítulos** (depois do PCYES, Rodada 5 da auditoria):
+promover o resultado do Oderço (a API do RD Station que eliminou um
+sistema de três está enterrada no 3º parágrafo) e inverter a abertura do
+Odex (hoje pede desculpa antes de argumentar).
+
+**5. Antes/depois de um componente real (opcional).** O DS prova sistema
+em cima de token; faltaria provar em cima de tela: card de produto da V1
+ao lado do da V2. Não há documentação de token da V1, então o
+enquadramento honesto é "a V1 não tinha sistema", não inventar números.
+
+**6. Conteúdo de outros capítulos.** Traxium sem print (ele tem em casa).
+IMMO sem logo (`logo: null` em `data.jsx`) — ele vai mandar o Figma.
+
+**7. Quirk pré-existente, fora de escopo.** Ao navegar pra um capítulo a
+partir de uma posição rolada, a pill do nav começa escondida até rolar
+pra cima. Mexer só com cuidado: o Nav é comportamento sensível.
 
 ## Estado do capítulo PCYES
 
@@ -141,14 +193,45 @@ Lista agrupada em atos, à esquerda. **Derivada do dado** (`indiceDo` + a consta
 
 ### Armadilhas desta rodada (custaram retrabalho)
 
-1. **`.sis-` já era namespace do `SistemaVolume`** (`app.css`, 9 classes). A colisão em `.sis-motion` deu `display:flex; height:56px` no meu painel e ele **colapsou** — build verde, tela quebrada. Prefixo virou `ds-`. Antes de criar prefixo novo, `grep` no `app.css`.
-2. **`opacity` sobre `--fg-2` reprova no axe.** Aconteceu duas vezes: 2,93:1 no painel que argumenta sobre contraste, e 3,4:1 nos números do índice. Texto de apoio leva **cor neutra explícita**, nunca opacidade.
-3. **Deletar bloco por índice de string come vizinho.** Ao remover o seletor de variantes, o `function Sec` foi junto e a página caiu em `Sec is not defined` (o ErrorBoundary segurou, por isso não ficou em branco). Conferir o que sobrou depois de cortar.
-4. **Cena full bleed passa por cima do índice.** `.cena-scroll` sangra em 100vw; o teto dela agora é a coluna livre à direita da lista (`@media min-width: 1700px`).
+1. **`ChapterBlock` / `ChapterList` em `Capa.jsx` são código morto.** Quem
+   desenha a lista de capítulos da home é `RevealImageMask` /
+   `RevealChapters` em `RevealMask.jsx` (classes `.rvm-*`), chamado pelo
+   `Sumario` via `<RevealChapters>`. O selo do capítulo principal foi
+   escrito primeiro no componente errado, buildou verde e **renderizou
+   zero vezes**. Antes de editar a home, confirme quem o `Sumario` chama.
+2. **`--vermilion-lift` não existe mais.** O `e45aca3` trocou por
+   `--vermilion-sobre-ink`. CSS com token inexistente **não quebra o
+   build**: cai no valor herdado e passa despercebido (o selo ficou
+   quase-branco no modo tinta sem nenhum aviso).
+3. **Escolher o vermelho pelo fundo, não pelo nome.** São dois sistemas
+   opostos e é fácil pegar o errado:
+   - `--vermilion-ink`: #B01510 no papel, **#F4695C sobre tinta**. Para
+     texto sobre `--paper`, o fundo que acompanha o tema. É o caso comum.
+   - `--vermilion-sobre-ink`: #F4695C no papel, **#B01510 sobre tinta**.
+     Para superfícies que pintam `var(--ink)` e por isso **invertem**
+     (capa do capítulo, citação, aba ligada).
+   - `--vermilion` puro **nunca** aguenta texto em cima (4,0 a 4,3:1) em
+     nenhum dos dois modos.
+4. **Verificação que mede, não que olha.** As três armadilhas acima
+   passaram pelo build verde e só apareceram medindo a página servida:
+   contagem de elemento no DOM, `getComputedStyle().color` e contraste
+   calculado nos dois modos. Delegue a execução a um subagente (o barulho
+   fica fora do contexto), mas peça **números e strings de volta**, não
+   impressão.
 
 ### Validação feita
 
-axe **0 violação** no que foi construído (seção de DS + índice), em 1920/1700/1440/768/390, modo papel e tinta, PT e EN. Sem elemento focável novo no índice além dos links. Hierarquia: H2 da seção, H3 nos sub-painéis. As 5 violações que sobram no capítulo são pré-existentes (ver Pendente 2).
+- **Contraste**: 0 violação em 1920/1700/1440/768/390, modo papel e tinta,
+  PT e EN (`e45aca3`, varredura sobre o capítulo inteiro).
+- **Selo do capítulo principal** (`192f838`): renderiza exatamente uma
+  vez, no PCYES, em PT ("Capítulo principal") e EN ("Main chapter").
+  `.rvm-main` a 6,40:1 no papel e 6,19:1 na tinta, medido na página
+  servida. Sem erro de console em `#/`, `#/rapido` e no capítulo.
+- **Leitura rápida** (`192f838`): as três células (papel, o quê,
+  resultado) preenchidas nos cinco capítulos, nos dois idiomas.
+- **Performance** (`f01e90b`, mobile, throttling simulado): perf 43 → 74,
+  FCP 4,9s → 1,5s, TBT 770ms → 190ms, CLS 0 → 0,017. Acessibilidade 100,
+  SEO 100. As doze rotas renderizam sem erro de console.
 
 ## Planos antigos
 
