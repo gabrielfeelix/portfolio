@@ -55,7 +55,9 @@ const CHAPTERS = [
        `src`, a moldura entra marcada como print pendente: é honesto e não
        abre buraco no layout. */
     figuras: {
-      abertura: { legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
+      abertura: { src: "volume/assets/projetos/pcyes/v1-home.webp", ar: "21/9",
+        alt: "Home da V1 abrindo em campanha de marca, com o primeiro produto abaixo da dobra",
+        legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
       funil: { legenda: "O funil no período analisado: onde cada etapa perdia gente, e o degrau do checkout no fim." },
       gravacao: { legenda: "Gravação de sessão: a pessoa rola o checkout duas vezes procurando forma de pagamento e sai sem comprar." },
       checkout: { src: "volume/assets/projetos/pcyes/s4.webp",
@@ -70,7 +72,9 @@ const CHAPTERS = [
       home: { src: "volume/assets/projetos/pcyes/s1.webp",
         alt: "Home da V2 com carrossel de produtos e blocos de promoção",
         legenda: "A home passou a abrir em produto. Os blocos institucionais continuam, depois do primeiro carrossel de compra." },
-      quickview: { legenda: "Visualização rápida na listagem: avaliar o produto, ampliar a foto e comprar sem trocar de página." },
+      quickview: { src: "volume/assets/projetos/pcyes/quickview.webp",
+        alt: "Visualização rápida aberta sobre a listagem, com galeria, ficha resumida e botão de comprar",
+        legenda: "Visualização rápida na listagem: avaliar o produto, ampliar a foto e comprar sem trocar de página." },
       sku: { legenda: "A ferramenta interna: SKU de um lado, descrição pronta e formatada do outro." },
       contraste: { legenda: "Antes e depois do ajuste de contraste e fotografia na navegação." },
       libras: { legenda: "VLibras acionado a partir do menu, traduzindo a página em uso." },

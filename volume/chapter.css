@@ -44,38 +44,66 @@
 .cover-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .24em; font-size: 14px; color: var(--vermilion); }
 .cover-title { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-splash); line-height: .88; margin: 16px 0 var(--ma-3); }
 .cover-lead { font-size: var(--t-lead); max-width: 32ch; color: var(--paper); line-height: 1.45; opacity: .92; }
-/* a retícula respira: duas camadas de pontos em velocidades diferentes,
-   deslocando devagar. O movimento é lento de propósito, para dar vida à
-   chapa sem competir com a leitura. Uma terceira camada, uma mancha de
-   tinta mais clara, passeia por trás e faz o fundo pulsar. */
+/* ---- o fundo da tobira: quatro camadas em velocidades diferentes ------
+   Retícula fina correndo em diagonal, retícula grossa correndo ao
+   contrário, feixe de linhas cinéticas girando muito devagar e uma
+   varredura de tinta atravessando o campo. Nenhuma delas chama atenção
+   sozinha; juntas fazem a chapa respirar atrás do título.
+   No modo tinta a capa clareia, e as camadas vermelhas saem de cena: no
+   claro elas viravam mancha rosa. */
 .cover-tone {
   position: absolute; inset: -10%; z-index: 1; opacity: .07;
   background-image: radial-gradient(var(--paper) 1px, transparent 1.2px);
   background-size: 8px 8px;
-  animation: coverPontos 34s linear infinite;
+  animation: coverPontos 26s linear infinite;
 }
 .cover-tone::after {
   content: ""; position: absolute; inset: 0;
   background-image: radial-gradient(var(--paper) 1.4px, transparent 1.6px);
-  background-size: 22px 22px; opacity: .5;
-  animation: coverPontos 58s linear infinite reverse;
+  background-size: 22px 22px; opacity: .55;
+  animation: coverPontos 44s linear infinite reverse;
+}
+/* linhas cinéticas: o fundo de página de ação, girando devagar demais
+   para distrair e rápido o bastante para o olho perceber que vive */
+.cover-linhas {
+  position: absolute; inset: -40%; z-index: 0; pointer-events: none; opacity: .09;
+  background: repeating-conic-gradient(from 0deg at 50% 50%,
+              var(--paper) 0 .34deg, transparent .34deg 3.1deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 64%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 64%);
+  animation: coverGira 120s linear infinite;
+}
+/* a varredura: uma faixa de tinta que atravessa o campo e volta */
+.cover-varre {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(228,35,27,.42) 48%, rgba(228,35,27,.12) 58%, transparent 72%);
+  animation: coverVarre 19s ease-in-out infinite;
 }
 .cover-brilho {
   position: absolute; inset: -25%; z-index: 0; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(228,35,27,.28), transparent 70%);
-  filter: blur(28px);
-  animation: coverBrilho 22s ease-in-out infinite alternate;
+  background: radial-gradient(closest-side, rgba(228,35,27,.26), transparent 70%);
+  filter: blur(30px);
+  animation: coverBrilho 24s ease-in-out infinite alternate;
 }
-/* no modo tinta a chapa da capa clareia, e o mesmo brilho que dá vida no
-   escuro vira mancha rosa no claro: entra bem mais fraco */
-html.ink .cover-brilho { opacity: .35; filter: blur(46px); }
 @keyframes coverPontos { to { background-position: 160px 96px; } }
+@keyframes coverGira { to { transform: rotate(360deg); } }
+@keyframes coverVarre {
+  0%   { transform: translate3d(-38%, 0, 0); opacity: 0; }
+  18%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { transform: translate3d(38%, 0, 0); opacity: 0; }
+}
 @keyframes coverBrilho {
   from { transform: translate3d(-6%, -4%, 0) scale(1); }
   to   { transform: translate3d(8%, 5%, 0) scale(1.18); }
 }
+/* modo tinta: a chapa vira papel e o vermelho de fundo lê como rosa.
+   Ficam só as retículas, que funcionam nas duas superfícies. */
+html.ink .cover-brilho, html.ink .cover-varre { display: none; }
+html.ink .cover-linhas { opacity: .06; }
 @media (prefers-reduced-motion: reduce) {
-  .cover-tone, .cover-tone::after, .cover-brilho { animation: none !important; }
+  .cover-tone, .cover-tone::after, .cover-brilho, .cover-linhas, .cover-varre { animation: none !important; }
+  .cover-varre { display: none; }
 }
 @media (max-width: 880px) {
   .cover { min-height: calc(100svh - 84px); }
