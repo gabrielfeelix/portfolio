@@ -11,7 +11,7 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
 - `build.mjs` (esbuild) transpila cada jsx individualmente (`bundle:false`, **NUNCA** `minifyIdentifiers`) → `dist/`, vendoriza React 18 prod, copia assets, gera `dist/index.html` de `index.template.html`.
 - Ordem dos scripts importa (tweaks-panel→data→organic→cursor→Capa→Capitulo→Processo→Posfacio→EmpresaPage→app).
 - **Regra de ouro:** se algo renderiza errado, é bug no `build.mjs` ou CSS — **não reescreva os `.jsx` pra "consertar render"**. Editar conteúdo (data.jsx) é OK.
-- Fluxo: editar → `npm run build` → commit (terminar msg com `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`) → `git push origin main`.
+- Fluxo: editar → `npm run build` → commit (terminar msg com `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`) → `git push origin main`.
 
 ## Ferramentas que já funcionam
 - **Screenshots/axe via Playwright** (chromium do cache): faltavam libs do sistema; resolvido SEM sudo com
@@ -75,12 +75,28 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend/DB.
   - **Empresa**: logo como marca d'água halftone na capa escura (mask radial-gradient 7px; fallback = nome em outline p/ empresa sem logo).
   - axe revalidado nas views alteradas: limpo (exceção do coverflow segue).
 
+- **Rodada 8 (2026-08-26, capítulo PCYES: dado desenhado + prova que rola):**
+  - **Cena de abertura** (`CenaScroll` em Capitulo.jsx): quadro pequeno (34% da tela) que cresce até a página inteira conforme rola, preso num trilho de 1900px, abertura completa em 70% do trilho. Props `altura`/`largIni` calibram velocidade e tamanho inicial.
+  - **Módulo em passos** (`ModuloPassos`): texto sticky à esquerda que troca quando cada prova cruza o meio da tela (IntersectionObserver, `rootMargin -45%`), régua de progresso, mobile solta o sticky e põe o texto acima de cada figura. Estrutura em `data.jsx` = `modulos[].passos[{k,t,p,fig}]`.
+    - **3 armadilhas do sticky, todas corrigidas** (custaram uma rodada de retrabalho): `.beat` tem `align-items:center`, que centraliza a coluna curta e a faz começar milhares de px abaixo (→ `align-items:stretch` + `.text-col{align-self:stretch}`); sticky precisa de pai mais alto que ele pra ter trilho; `.beat .panel` nasce `opacity:0` e só acende com `.in`, então o título sumia (→ opacity 1 explícito no módulo).
+  - **3 beats de dado desenhado**, no idioma do `Painel` (dado é desenhado, print de dashboard é foto de ferramenta): `Funil` (1.705 home → 27 checkout, com régua comparando 0,16% da loja vs 1,1% da categoria, faixa saudável 0,8–1,5%, fonte [Prax 2025](https://www.prax.ai/blog/benchmark-taxa-de-conversao)); `Gesto` (mapa de calor: 182 cliques em fechar pop-up vs 5 em comprar); `Busca` (o achado que ampliou o escopo).
+  - **Duas decisões novas na V2**, ambas rastreadas ao dado acima: pop-up só após 15% de rolagem; busca tolerante a erro de grafia + ranqueamento + termos mais buscados. O ponto de **letramento** é o argumento central: exigir ortografia exata numa loja de hardware escolhe um público e dispensa o resto.
+  - **Imagens**: home V1 recapturada 2880x1216 (a antiga renderizava esticada); 4 telas de checkout cortadas onde o conteúdo acaba (V1 3421px vs V1.2 1366px = 60% mais curto); comparativo mobile V1/V1.2 na mesma escala; VLibras.
+  - **Playwright**: usar `~/.npm/_npx/1ac161d228dd2210/node_modules/playwright`. **VLibras (e qualquer Unity WebGL) só renderiza em `headless:false`** via WSLg (`DISPLAY=:0`), leva ~60s, e o canvas vive num shadow root — sondar `document.querySelector` não acha.
+  - **Figma MCP funciona** (arquivo PCYES V2 DS, key `A0Zg3I15KcYI82zZocmyjD`): `get_metadata` puxa a árvore por nodeId; `get_variable_defs`/`get_screenshot` exigem seleção no Figma desktop.
+
 ## PENDENTE (continuar aqui)
 1. ✅ FEITO — Tablet 641–1024 validado (sem breakpoint novo; bug emp-meta corrigido).
 2. ✅ FEITO — Passe teclado/leitor (focus mgmt + Tab order nas 5 views + landmarks).
 3. ✅ DECIDIDO — coverflow: Gabriel aceitou as 8 (não mexer).
-4. **Conteúdo (único pendente real):** ~13 marcadores `[confirmar]` no `data.jsx` (números/status que só o Gabriel confirma). Traxium sem print (ele tem em casa). IMMO: ele vai mandar Figma. Logos TT&T/Locarmais/Grupo-Oderço: ele manda (vão em `volume/assets/logos/`, já há fallback).
-5. **Quirk pré-existente (fora de escopo, não regressão):** ao navegar pra um capítulo a partir de uma posição rolada, a pill flutuante começa escondida (lógica hide-on-scroll do Nav) até rolar pra cima. Mexer só com cuidado (Nav é comportamento sensível).
+4. **PRÓXIMA SESSÃO — Design System no capítulo PCYES (decidido, não relitigar):**
+   - **Onde entra:** depois das Decisões, antes dos Módulos. NÃO no começo. O argumento é "antes de desenhar 40 telas, construí o vocabulário", então o DS chega como resposta a um problema já estabelecido e cada tela depois vira prova de que o sistema funciona. Ato: problema → investigação → decisões → **DS** → módulos → resultado.
+   - **Profundidade escolhida:** "sistema em uso", não catálogo. Mostrar tokens semânticos funcionando (mesmo componente em dark/light, cor com função: verde=compra, laranja=pré-venda, dourado=Coin), não grade de swatches. O argumento: *"a V1 tinha cores; a V2 tem um sistema que sabe o que cada cor faz"* — `ink-muted` não é cinza, é o papel "texto secundário", e vira sozinho quando o tema flipa.
+   - **O que o Figma tem** (já inspecionado): `surface-0/1/2/3`, `ink`/`ink-muted`/`ink-subtle`, `edge`/`edge-subtle`/`edge-strong`, ladder dark documentada por uso, além de páginas de gradients, typography, spacing, radii, shadows, motion, containers, primitivos.
+   - **Falta do Gabriel:** prints de busca `mouse`/`mause` na V1 **como arquivo em disco** (ele mostrou no chat, mas imagem de chat não serve); pop-up da V2 após rolagem; FigJam da análise inicial (10 artefatos: mapa do site, inventário, personas, jornada, fluxos, taxonomia, microcopy, auditoria heurística, service blueprint, wireflows) em resolução alta; node-ids das páginas do DS **ou** ele seleciona no Figma desktop.
+   - Molduras dessas figuras já existem marcadas como pendentes (`buscaMouse`, `buscaMause`, `buscaV2`, `popup` em `data.jsx`).
+5. **Conteúdo:** ~13 marcadores `[confirmar]` no `data.jsx` (números/status que só o Gabriel confirma). Traxium sem print (ele tem em casa). IMMO: ele vai mandar Figma. Logos TT&T/Locarmais/Grupo-Oderço: ele manda (vão em `volume/assets/logos/`, já há fallback).
+6. **Quirk pré-existente (fora de escopo, não regressão):** ao navegar pra um capítulo a partir de uma posição rolada, a pill flutuante começa escondida (lógica hide-on-scroll do Nav) até rolar pra cima. Mexer só com cuidado (Nav é comportamento sensível).
 
 ## VALIDAÇÃO SEM VIÉS (importante)
 Não confie nestas notas: **valide por conta própria** a cada rodada —
