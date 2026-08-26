@@ -288,6 +288,55 @@ const CHAPTERS = [
       legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela.",
                  "A biblioteca do design system: card, botão, preço e estado desenhados uma vez e usados em toda a navegação."],
     },
+    /* ---- O DESIGN SYSTEM -------------------------------------------
+       Entra aqui, e não no começo, porque o argumento é de ordem: antes
+       de desenhar quarenta telas, construí o vocabulário. Chega depois
+       das decisões, então cada tela dos módulos vira prova de que o
+       sistema funciona.
+       Não é catálogo de swatch. O que se mostra é token semântico em
+       uso: cor com função, que troca de valor quando o tema vira e
+       mantém o papel. Os valores abaixo são os do arquivo real
+       (src/styles/theme.css do protótipo), não amostra ilustrativa. */
+    sistema: {
+      k: "Antes das telas",
+      t: "A V1 tinha cores. A V2 tem um sistema que sabe o que cada cor faz",
+      p: ["Quarenta telas desenhadas na mão viram quarenta decisões repetidas sobre espaçamento, estado e cor. Antes de desenhar, construí o vocabulário: 239 tokens no arquivo de tema, 69 componentes montados em cima deles.",
+          "O que muda não é a quantidade de cor, é o endereço dela. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela. Na V2 ele tem nome e função: ink-muted não é um cinza, é o papel \u201ctexto secundário\u201d. Quando o tema vira, ele vira sozinho."],
+      /* o par que prova o argumento: o mesmo token, os dois temas.
+         Escala aqui é papel, não valor: surface é fundo, ink é texto,
+         edge é borda. */
+      escada: {
+        k: "O mesmo token, os dois temas",
+        n: "Um valor por tema, um papel só. Nenhuma tela precisa saber em que tema está.",
+        linhas: [
+          { t: "surface-1", f: "Fundo de card", c: "#ffffff", e: "#1a1a1a" },
+          { t: "surface-3", f: "Fundo elevado, divisória cheia", c: "#e5e5e5", e: "#323232" },
+          { t: "ink-strong", f: "Título, preço", c: "#161616", e: "#ffffff" },
+          { t: "ink-muted", f: "Texto secundário", c: "rgba(22,22,22,.65)", cl: "preto 65%", e: "rgba(255,255,255,.55)", el: "branco 55%" },
+          { t: "edge", f: "Borda padrão", c: "rgba(0,0,0,.12)", cl: "preto 12%", e: "rgba(255,255,255,.12)", el: "branco 12%" },
+        ],
+      },
+      /* a cor que carrega função. Cada uma responde a uma pergunta do
+         cliente, e é por isso que não podem ser a mesma. */
+      funcoes: [
+        { n: "Comprar", c: "#22c55e", f: "Ação", p: "O verde do botão de compra. É gesto, não informação: só aparece onde dá para agir." },
+        { n: "Economia", c: "#15803d", ce: "#4ade80", f: "Informação", p: "O \u201c-15% OFF\u201d e a menção ao Pix. Mesma família do verde de comprar, papel diferente, e por isso valor diferente." },
+        { n: "Pré-venda", c: "#f97316", f: "Espera", p: "Laranja é o produto que ainda não chegou. Reserva, contador e prazo usam essa cor e nenhuma outra usa." },
+        { n: "Coin", c: "#facc15", f: "Saldo", p: "O dourado do programa de pontos. Saldo, nível e validade. Fora do PCYES Points, essa cor não aparece." },
+      ],
+      /* o token que sozinho explica a diferença entre cor e sistema:
+         ele troca de valor entre os temas justamente para não trocar de
+         papel. O número é do arquivo, com a razão de contraste medida. */
+      caso: {
+        k: "Por que o valor muda",
+        t: "O verde de economia é dois verdes",
+        p: ["O verde de comprar (#22c55e) sobre branco dá 2,28:1. Para texto, a WCAG pede 4,5:1, então o mesmo verde que funciona como botão reprova como texto pequeno.",
+            "Então o token de economia guarda dois valores: #15803d no claro (5,02:1) e #4ade80 no escuro (11,08:1). Quem desenha a tela escreve economia e recebe o verde que passa no tema em que está. A acessibilidade deixou de depender de alguém lembrar."],
+        pares: [{ tema: "Claro", c: "#15803d", bg: "#ffffff", r: "5,02:1" },
+                { tema: "Escuro", c: "#4ade80", bg: "#0e0e0e", r: "11,08:1", escuro: true }],
+      },
+      nota: "O sistema é espelhado em código e sincronizado com o Figma por Tokens Studio, então biblioteca e produto não divergem com o tempo. Uma sombra de card que existia copiada em 43 lugares virou um token só.",
+    },
     /* ---- os módulos que ganharam beat próprio ------------------------
        Três partes do produto que não cabiam na lista de decisões: a
        pré-venda, o configurador e o que a V2 passou a ter e a V1 não

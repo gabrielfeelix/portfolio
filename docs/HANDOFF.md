@@ -68,9 +68,7 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-**1. Design System no capítulo PCYES** — é a próxima seção grande. As decisões acima já estão fechadas.
-
-O Figma tem (já inspecionado): `surface-0/1/2/3`, `ink`/`ink-muted`/`ink-subtle`, `edge`/`edge-subtle`/`edge-strong`, ladder dark documentada por uso, mais páginas de gradients, typography, spacing, radii, shadows, motion, containers e primitivos.
+**1. Aprofundar o Design System (opcional).** A seção base entrou (ver abaixo). O que daria pra somar, se ele quiser: tipografia, espaçamento e raio do mesmo jeito que a cor entrou, e um par antes/depois de um componente real (card de produto na V1 e na V2) provando o sistema em cima de uma tela, não só de token.
 
 **2. Prints que só o Gabriel pode dar.** As molduras já existem marcadas como pendentes em `data.jsx`:
 
@@ -91,7 +89,7 @@ Ele mostrou os dois primeiros no chat, mas imagem de chat não serve: precisa de
 
 O mais desenvolvido do volume. A leitura hoje:
 
-abertura → problema → painel de números → **funil** → **gesto** → investigação → **busca** → citação → decisões → módulos → solução → resultado
+abertura → problema → painel de números → **funil** → **gesto** → investigação → **busca** → citação → decisões → recusei → **design system** → módulos → solução → resultado
 
 Os três beats em negrito são desta rodada e usam dado desenhado:
 
@@ -105,6 +103,25 @@ Dois componentes de scroll, ambos em `Capitulo.jsx`:
 
 - **`CenaScroll`** — a cena de abertura entra num quadro pequeno (34% da tela) que cresce até a página inteira. Trilho de 1900px, abertura completa em 70% dele. Calibre por `altura` e `largIni`.
 - **`ModuloPassos`** — texto preso à esquerda que troca quando cada prova cruza o meio da tela (IntersectionObserver, `rootMargin: -45%`), com régua de progresso. No mobile o sticky solta e o texto vai acima de cada figura. Dados em `modulos[].passos[{k,t,p,fig}]`.
+
+### O beat do Design System (`Sistema`, rodada 2026-08-26)
+
+Entra entre `Recusei` e `Modulos`, que é a ordem decidida: o vocabulário vem antes das telas, então tudo que vem depois lê como prova. Dados em `chapter.sistema` (`data.jsx`), inglês em `i18n.jsx`.
+
+Nada aqui é print: as amostras são cor renderizada em elemento, no mesmo idioma dos beats de dado desenhado. Três peças, cada uma com uma afirmação:
+
+- **`escada`** — o mesmo token nos dois temas, lado a lado. A leitura horizontal é o argumento: valor muda, papel não.
+- **`funcoes`** — cor amarrada a pergunta do cliente (comprar, economizar, esperar, saldo). É o que separa paleta de sistema.
+- **`caso`** — o verde de economia guarda dois valores (#15803d claro 5,02:1, #4ade80 escuro 11,08:1) justamente para não trocar de papel.
+
+**Os valores são reais**, tirados de `/home/gabrielbarbosa/dev/v3-codigo-fonte/src/styles/theme.css` (o protótipo, somente leitura), não amostra ilustrativa. De lá saíram também os números citados: 239 tokens, 69 componentes, a sombra copiada em 43 lugares. O Figma expõe só a página Cover pela API; o resto do DS exige seleção no desktop, então o arquivo de tema é a fonte melhor.
+
+Duas armadilhas desta seção, ambas já corrigidas:
+
+1. Célula de amostra com largura fixa **estoura o painel** quando o valor é uma string `rgba(...)` longa. Resolvido com `min-width: 0` e largura em `clamp()`, mais rótulo curto opcional (`cl`/`el`) separado do valor real que pinta o chip.
+2. `opacity` sobre o texto de apoio diluía o verde e **reprovava no axe** (2,93:1) justo no painel que argumenta sobre contraste. Rótulo e razão agora têm cor neutra explícita por tema (`.sis-par.claro` / `.sis-par.escuro`, via `par.escuro` no dado); só a amostra usa a cor do token.
+
+Validado: axe 0 violação em 1440/768/390, em modo papel, modo tinta e EN. Sem elemento focável (é beat de leitura, não mexe no Tab). Hierarquia: H2 da seção, H3 no caso.
 
 ## Planos antigos
 

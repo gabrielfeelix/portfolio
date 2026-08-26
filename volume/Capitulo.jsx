@@ -688,6 +688,101 @@ function ModuloPassos({ mod, chap, figN = {} }) {
   );
 }
 
+/* ---- SISTEMA: o design system como argumento, não como catálogo -----
+   Entra entre as decisões e os módulos, e o lugar é o argumento: o
+   vocabulário vem antes das telas, então tudo que vem depois lê como
+   prova de que ele funciona.
+   Grade de swatch é a versão fácil e não diz nada: mostra que existe
+   cor, não que existe sistema. Aqui cada peça carrega uma afirmação.
+     · a escada mostra o MESMO token nos dois temas, lado a lado, para
+       que a troca de valor com papel constante seja visível de relance;
+     · as funções amarram cor a pergunta do cliente (comprar, economizar,
+       esperar, saldo), que é o que separa paleta de sistema;
+     · o caso do verde fecha com o número: o token guarda dois valores
+       justamente para não trocar de papel, e a razão de contraste é a
+       prova. Isso é dado desenhado, no mesmo idioma do Painel: as
+       amostras são cor de verdade renderizada, não print do Figma. */
+function Sistema({ dados }) {
+  if (!dados) return null;
+  const esc = dados.escada;
+  const caso = dados.caso;
+  return (
+    <Beat className="beat-sistema">
+      <div className="c5 text-col">
+        <div className="panel text">
+          <div className="beat-k">{dados.k}</div>
+          <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
+          {(dados.p || []).map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+          {/* as cores que respondem perguntas diferentes. A amostra é a
+              própria cor: quem lê vê o token, não a descrição dele. */}
+          {(dados.funcoes || []).length ? (
+            <ul className="sis-funcoes">
+              {dados.funcoes.map((f, i) => (
+                <li className="sis-funcao" key={i}>
+                  <span className="sis-chip" style={{ background: f.c }} aria-hidden="true" />
+                  <div className="sis-fc">
+                    <div className="sis-fn">{f.n} <span className="sis-fpapel">{f.f}</span></div>
+                    <p className="sis-fp">{renderPH(f.p)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </div>
+      <div className="c7">
+        {/* a escada: uma linha por token, os dois temas na mesma linha.
+            A leitura horizontal é o argumento inteiro. */}
+        {esc ? (
+          <div className="painel sis-escada">
+            <div className="pn-topo">
+              <div className="beat-k">{esc.k}</div>
+              <div className="sis-cab" aria-hidden="true">
+                <span>Claro</span><span>Escuro</span>
+              </div>
+            </div>
+            <ul className="sis-linhas">
+              {(esc.linhas || []).map((l, i) => (
+                <li className="sis-linha" key={i}>
+                  <div className="sis-tok">
+                    <code className="sis-nome">{l.t}</code>
+                    <span className="sis-papel">{l.f}</span>
+                  </div>
+                  <div className="sis-amostras">
+                    <span className="sis-am claro"><i style={{ background: l.c }} /><em>{l.cl || l.c}</em></span>
+                    <span className="sis-am escuro"><i style={{ background: l.e }} /><em>{l.el || l.e}</em></span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            {esc.n ? <p className="pn-nota">{renderPH(esc.n)}</p> : null}
+          </div>
+        ) : null}
+        {/* o caso que fecha: o mesmo papel, dois valores, e o número que
+            explica por quê. A amostra é texto sobre fundo real, então dá
+            para ver a legibilidade em vez de ler sobre ela. */}
+        {caso ? (
+          <div className="painel sis-caso">
+            <div className="beat-k">{caso.k}</div>
+            <h3 className="sis-caso-t">{renderPH(caso.t)}</h3>
+            <div className="sis-pares">
+              {(caso.pares || []).map((par, i) => (
+                <div className={`sis-par ${par.escuro ? "escuro" : "claro"}`} key={i} style={{ background: par.bg, color: par.c }}>
+                  <span className="sis-par-tema" aria-hidden="true">{par.tema}</span>
+                  <strong className="sis-par-am">-15% OFF</strong>
+                  <span className="sis-par-r">{par.c} · {par.r}</span>
+                </div>
+              ))}
+            </div>
+            {(caso.p || []).map((para, i) => <p className="sis-caso-p" key={i}>{renderPH(para)}</p>)}
+          </div>
+        ) : null}
+        {dados.nota ? <p className="sis-nota">{renderPH(dados.nota)}</p> : null}
+      </div>
+    </Beat>
+  );
+}
+
 /* ---- MÓDULOS: as partes do produto que merecem beat próprio ---------
    Pré-venda, Monte seu PC e o que a V2 ganhou de novo. Cada módulo é um
    argumento com as telas dele ao lado; com mais de uma tela, a coluna vira
@@ -1353,6 +1448,9 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Decisoes chap={chap} figN={figN} />
         <div style={{ height: "var(--ma-6)" }}></div>
         <Recusei dados={chap.recusei} />
+        {/* o vocabulário chega depois das decisões: cada tela dos
+            módulos vira prova de que o sistema funciona */}
+        <Sistema dados={chap.sistema} />
         <Modulos chap={chap} figN={figN} />
         <Solucao chap={chap} />
         <div style={{ height: "var(--ma-6)" }}></div>
@@ -1371,4 +1469,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
