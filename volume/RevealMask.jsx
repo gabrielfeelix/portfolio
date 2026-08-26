@@ -89,6 +89,11 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
           <span className="rvm-head">
             <span className="rvm-num" aria-hidden="true">{num}</span>
             <span className="rvm-dom">{proj.domain}</span>
+            {/* o volume tem um arco central e o sumário diz qual é: sem
+                isso o leitor gasta 16 beats para descobrir sozinho */}
+            {chap && chap.principal
+              ? <span className="rvm-main">{t("Capítulo principal", "Main chapter")}</span>
+              : null}
           </span>
           <span className="rvm-t">{proj.title}</span>
           <span className="rvm-ctx">{renderPH(contexto)}</span>

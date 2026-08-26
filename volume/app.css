@@ -2108,6 +2108,18 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   letter-spacing: .22em; font-size: 13px; color: var(--fg-2);
   border-left: var(--ink-hair) solid var(--wash-2); padding-left: 18px;
 }
+/* o selo do capítulo principal. Vermelho aqui é tinta de destaque
+   editorial, não estado de interação, e por isso nunca --vermilion puro,
+   que não aguenta texto em cima em nenhum dos dois modos.
+   --vermilion-ink já vira sozinho com o tema (#B01510 no papel, #F4695C
+   sobre tinta), que é justamente o par que este fundo pede: 6,4:1 e
+   6,2:1. Não precisa de override em html.ink. */
+.rvm-main {
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .22em; font-size: 13px; color: var(--vermilion-ink);
+  border-left: var(--ink-hair) solid var(--wash-2); padding-left: 18px;
+}
+
 .rvm-t {
   font-family: var(--font-display); text-transform: uppercase;
   font-size: clamp(3rem, 6.6vw, 6.2rem); line-height: .98; letter-spacing: -.01em;

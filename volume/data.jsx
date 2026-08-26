@@ -46,6 +46,10 @@ function renderPH(str) {
 const CHAPTERS = [
   {
     id: "pcyes", num: "01", cap: "CAP. 01", domain: "E-COMMERCE", cat: "ecommerce",
+    /* o capítulo principal do volume: o mais longo, o mais medido e o
+       único com dado de comportamento. O sumário marca isso, senão o
+       leitor precisa gastar 16 beats para descobrir sozinho. */
+    principal: true,
     project: "PCYES V2", descriptor: "Redesign do e-commerce", title: "PCYES V2",
     sfx: "バーン",                      // baan: boom (e-commerce)
     capa: { logo: "volume/assets/marcas/branco/pcyes.png", bg: "#B00000", accent: "#FF0000" },   /* capa de marca */
@@ -57,10 +61,11 @@ const CHAPTERS = [
     surface: "E-commerce · Magento",
     periodo: "6 meses · publicação prevista para outubro/2026",
     year: "2026",
-    fact: "Caminho de compra encurtado e checkout reconstruído a partir de gravação de sessão",
+    fact: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
-      resultado: "Caminho de compra encurtado e checkout reconstruído a partir de gravação de sessão",
+      oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
+      resultado: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
     },
     /* ---- as figuras do capítulo -------------------------------------
        Cada prova é referenciada por chave no bloco que ela sustenta, e a
@@ -530,6 +535,7 @@ const CHAPTERS = [
     fact: "Substituiu uma ferramenta externa e eliminou as planilhas paralelas do time financeiro",
     tldr: {
       papel: "UX Designer, responsável pelo módulo",
+      oque: "Módulo de conciliação financeira dentro de um sistema de gestão.",
       resultado: "Substituiu uma ferramenta externa e eliminou as planilhas paralelas do time financeiro",
     },
     problema: {
@@ -611,6 +617,7 @@ const CHAPTERS = [
     fact: "Sistema legado atualizado sem alterar o percurso de quem já usava",
     tldr: {
       papel: "UX/UI Designer",
+      oque: "Plataforma de gestão com anos de uso, aplicativo e site institucional.",
       resultado: "Sistema legado atualizado sem alterar o percurso de quem já usava",
     },
     problema: {
@@ -670,6 +677,7 @@ const CHAPTERS = [
     fact: "Reduziu de três para dois os sistemas usados pelo comercial",
     tldr: {
       papel: "UX/UI Designer, do fluxo à automação",
+      oque: "Landing page de cadastro de revenda, com formulário em etapas e automação.",
       resultado: "Reduziu de três para dois os sistemas usados pelo comercial",
     },
     problema: {
@@ -722,6 +730,7 @@ const CHAPTERS = [
     fact: "Você está lendo o resultado",
     tldr: {
       papel: "Ideia, design e código, do conceito ao ar",
+      oque: "Este volume: portfólio autoral desenhado e construído do zero.",
       resultado: "Este site. Mangá, tinta e brutalismo a serviço da leitura",
     },
     problema: {
