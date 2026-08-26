@@ -422,7 +422,22 @@ Nenhuma destas deve ser decidida sem ele:
 | 2 | `solucao` como síntese com prova nova | feito | `c3112ef` |
 | 2 | Respiros entre os quatro atos | feito | `c3112ef` |
 | 2 | `calendario` dentro de `resultado` | já estava | — |
-| 3 | Os atalhos | **próxima** | |
+| 3 | Títulos de ato no índice | já existiam | `46382c7` |
+| 3 | Índice legível em 1440 | feito (outro agente) | `e45aca3` |
+| 5 | Resultado do Oderço promovido | feito | `7136f9e` |
+| 5 | Abertura do Odex invertida | feito | `7136f9e` |
+| — | Canonical/OG/JSON-LD no domínio oficial | feito | `0f84ca7` |
+
+**A Rodada 3 estava dada como "próxima" por engano.** Os dois itens dela
+já tinham caído: os títulos de ato existem desde `46382c7` (constante
+`ATOS`, renderizada em `.idx-ato-t`) e o índice em 1440 saiu em `e45aca3`.
+Medido em 2026-08-26 na página servida: caixa de 188x561px em 1440 e
+236x585px em 1700, os quatro títulos presentes.
+
+**Item 9 da lista priorizada (varrer os `[assim]`) não tem alvo.** Os
+marcadores existem só em `synthChapter`, o fallback de projeto sem
+capítulo autoral, e nenhum dos cinco `CASE_IDS` cai nele. Nada renderiza
+na página.
 
 ### Armadilha desta rodada
 

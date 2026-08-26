@@ -2,9 +2,13 @@
 
 Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 
-- Dir: `/home/gabrielbarbosa/dev/gabriel/portfolio`
 - Repo: github.com/gabrielfeelix/portfolio · push na `main` = auto-deploy Vercel
-- No ar: https://portfolio-volume.vercel.app
+- **No ar: https://gabrielfelix-ux.4yu.com.br** (oficial). O push publica
+  em mais de um projeto Vercel; o que vale para conferir mudança é esse.
+  `portfolio-volume.vercel.app` é a versão antiga: não validar por ele.
+- O Gabriel trabalha em **duas máquinas** (trabalho e casa) e o caminho do
+  repositório muda entre elas. Nada aqui deve gravar caminho absoluto de
+  `$HOME`: descubra com `git rev-parse --show-toplevel`.
 
 **A auditoria do portfólio está em `docs/AUDITORIA-PORTFOLIO.md`**: veredito
 de triagem, o que está bom, o que está fraco por impacto, e o plano de
@@ -41,7 +45,9 @@ próximo trabalho, e o registro de execução no fim dele diz o que já caiu.
 
 ## Ferramentas
 
-**Playwright** — use `~/.npm/_npx/1ac161d228dd2210/node_modules/playwright`. Chromium do cache em `~/.cache/ms-playwright`. Funciona direto, sem `LD_LIBRARY_PATH` (a receita antiga de `dpkg -x` não é mais necessária).
+**Playwright** — vem do cache do npx, e **o hash da pasta muda por máquina**, então não copie caminho daqui. Liste com `ls -d ~/.npm/_npx/*/node_modules/playwright` e teste um `chromium.launch()`: várias versões convivem e algumas pedem um build de chromium que não está em `~/.cache/ms-playwright`, falhando com "Executable doesn't exist". Funciona sem `LD_LIBRARY_PATH` (a receita antiga de `dpkg -x` não é mais necessária).
+
+**Servindo o build, o que o teste vê a mais:** `_vercel/insights/script.js` e `_vercel/speed-insights/script.js` dão **404 em servidor local** porque só existem no deploy. Não é regressão: filtre `_vercel/` antes de contar erro de console, senão toda rota "falha".
 
 - Servir o build: **prefira `python3 -m http.server <porta> --bind 127.0.0.1` de dentro de `dist/`**, com uma porta que você conferiu livre (`ss -ltn | grep :<porta>`). O `npm run dev` escolhe porta sozinho e, quando 5173/5174 já estão tomadas por outra sessão, o job morre sem aviso: aconteceu nesta rodada e o agente ficou "rodando" sem nunca ter servido nada.
 - **Unity WebGL (VLibras e afins) só renderiza em `headless:false`** via WSLg (`DISPLAY=:0`). Leva ~60s e o canvas vive num shadow root, então `document.querySelector` não acha — sonde dentro do `shadowRoot` ou simplesmente espere e capture.
@@ -49,7 +55,7 @@ próximo trabalho, e o registro de execução no fim dele diz o que já caiu.
 
 **Figma MCP** — funciona. Arquivo PCYES V2 DS: key `A0Zg3I15KcYI82zZocmyjD`. `get_metadata` puxa a árvore por `nodeId` sem seleção; `get_variable_defs` e `get_screenshot` exigem o node selecionado no Figma desktop.
 
-**Memória do projeto** em `~/.claude/projects/-home-gabrielbarbosa-dev-gabriel-portfolio/memory/`. Leia.
+**Memória do projeto** fica em `~/.claude/projects/<slug-do-caminho-do-repo>/memory/`, e o slug muda com a máquina. Liste `~/.claude/projects/` e procure o que termina em `portfolio`. Leia.
 
 ## Padrões do capítulo (o idioma da página)
 
@@ -83,19 +89,29 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 > A **reordenação do PCYES foi feita** em `c3112ef` (Rodada 2). Não
 > reabrir: a ordem em quatro atos, as 4 âncoras sem figura e o módulo
-> "O acabamento" são decisão executada e medida. O próximo trabalho é a
-> **Rodada 3 (os atalhos)** em `docs/AUDITORIA-PORTFOLIO.md`: títulos de
-> ato no índice, que é o nível 2 de leitura (3 minutos) e hoje não existe.
+> "O acabamento" são decisão executada e medida.
+>
+> A **Rodada 3 (os atalhos) também já está fechada**, e uma versão
+> anterior deste arquivo dizia o contrário. Os títulos de ato existem no
+> índice desde `46382c7` (a constante `ATOS` em `Capitulo.jsx`, renderizada
+> em `.idx-ato-t`); o que faltava era o índice **aparecer em 1440px**, e
+> isso saiu em `e45aca3`. Medido nesta sessão: a caixa do índice mede
+> 188x561px em 1440 e 236x585px em 1700, com os quatro títulos de ato.
+> Não reimplementar.
+>
+> A **Rodada 5 saiu** em `7136f9e` (Oderço e Odex). O que sobra da
+> auditoria depende de material do Gabriel.
 
-**1. O que a reordenação deixou pendente.** Duas coisas, as duas
-dependendo de material:
+**1. O que a reordenação deixou pendente.** Uma coisa, e depende de
+material: `buscaV2` e `popup` agora são **passos 1 e 2** do módulo "O
+acabamento" e caem em `MangaPlate` até o print subir. São os dois
+primeiros passos de um módulo de nove, então é o buraco mais visível do
+capítulo hoje.
 
-- `buscaV2` e `popup` agora são **passos 1 e 2** do módulo "O acabamento"
-  e caem em `MangaPlate` até o print subir. São os dois primeiros passos
-  de um módulo de nove, então é o buraco mais visível do capítulo hoje.
-- A figura `marca` está declarada em `chap.figuras` e **não é usada por
-  ninguém** (já era assim antes desta rodada). Ou entra em algum lugar, ou
-  sai do `data.jsx`.
+> A "figura `marca` órfã" que este arquivo listava **não existe**. `marca`
+> (`data.jsx`) é a régua do funil, consumida por `Funil` em
+> `Capitulo.jsx` via `dados.marca`. Verificado: nenhuma figura está órfã,
+> todas entram por `fig:` ou `figs:`. Não procurar de novo.
 
 **2. OS QUATRO PRINTS: é o que trava o capítulo hoje.** Só o Gabriel tem
 acesso à V1. Combinado: entrariam depois da reordenação, e a reordenação
@@ -132,10 +148,16 @@ em `investigacao` (vista do FigJam inteiro), com legenda que argumenta
 ("dez artefatos antes da primeira tela"), não dez beats. Quais mudaram
 decisão é resposta do Gabriel, ainda pendente.
 
-**4. Os outros capítulos** (depois do PCYES, Rodada 5 da auditoria):
-promover o resultado do Oderço (a API do RD Station que eliminou um
-sistema de três está enterrada no 3º parágrafo) e inverter a abertura do
-Odex (hoje pede desculpa antes de argumentar).
+**4. Os outros capítulos.** ~~Oderço e Odex~~ **FEITO** em `7136f9e`, PT
+e EN. O `resultado` do Oderço abre no desfecho ("usava três sistemas,
+hoje usa dois") em vez de na modéstia, e o `problema` do Odex abre na
+tese de contenção, com o escopo dito como decisão e não como ressalva.
+O `aprendi` do Odex parou de repetir a tese que agora abre.
+
+> Os `[assim]` da lista priorizada **não existem na página**. Eles moram
+> só em `synthChapter` (`data.jsx`), o fallback para projeto sem capítulo
+> autoral, e os cinco `CASE_IDS` têm capítulo em `CHAPTERS`: `chapterFor`
+> nunca chega no synth. É código morto, não pendência de conteúdo.
 
 **5. Antes/depois de um componente real (opcional).** O DS prova sistema
 em cima de token; faltaria provar em cima de tela: card de produto da V1
@@ -205,7 +227,7 @@ Abaixo, as outras fundações (`CurvaMotion`, `Tipografia`, `EspacoRaio`, `Deriv
 - **Espaço e raio** — ritmo 56/88/128/168 em barra proporcional com a compressão mobile (40/56/72/96) ao lado; 6 raios com o uso escrito.
 - **`Derivado`** — o fecho: o card de produto **não guarda cor nenhuma**. O fundo é `rgba(var(--foreground-rgb), .10 → .03)`, então deriva do tema. É a diferença entre paleta e sistema.
 
-**Fonte dos valores:** `/home/gabrielbarbosa/dev/v3-codigo-fonte/src/styles/theme.css` (protótipo, **somente leitura**). De lá saíram 239 tokens, 69 componentes, a sombra copiada em 43 lugares, e os comentários que já documentam as razões de contraste. O Figma expõe **só a página Cover** pela API (`get_metadata` sem nodeId lista as páginas); o resto exige seleção no desktop, então o arquivo de tema é a fonte melhor.
+**Fonte dos valores:** `v3-codigo-fonte/src/styles/theme.css`, um protótipo **somente leitura** que fica ao lado do repo em `~/dev/` (não existe na máquina de casa). De lá saíram 239 tokens, 69 componentes, a sombra copiada em 43 lugares, e os comentários que já documentam as razões de contraste. O Figma expõe **só a página Cover** pela API (`get_metadata` sem nodeId lista as páginas); o resto exige seleção no desktop, então o arquivo de tema é a fonte melhor.
 
 ### O índice do capítulo (`IndiceCapitulo`)
 
