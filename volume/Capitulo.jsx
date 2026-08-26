@@ -1150,7 +1150,7 @@ function AntesDepois({ dados }) {
   return (
     <div className="ad-wrap">
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Antes e depois", "Before and after")}</Brush>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("A mesma dobra, dois sites", "The same fold, two stores")}</Brush>
         <span className="kicker">{t("arraste a divisa", "drag the divider")}</span>
       </div>
       <div className="ad-seq">
@@ -1285,7 +1285,7 @@ function Decisoes({ chap, figN = {} }) {
   return (
     <>
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("As decisões", "The decisions")}</Brush>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("O que o projeto passou a defender", "What the project came to stand for")}</Brush>
         <span className="kicker">{t("o porquê de cada corte", "the why behind each cut")}</span>
       </div>
       {/* cada decisão é um beat de largura cheia, alternando o lado do número.
@@ -1377,7 +1377,7 @@ function Solucao({ chap }) {
   return (
     <>
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("A solução", "The solution")}</Brush>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("O caminho de compra, do começo ao fim", "The buying path, end to end")}</Brush>
         <span className="kicker live" style={{ color: "var(--vermilion-ink)" }}>{t("no ar", "live")}</span>
       </div>
       <Beat>

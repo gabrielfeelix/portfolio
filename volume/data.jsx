@@ -300,8 +300,12 @@ const CHAPTERS = [
          A moldura da biblioteca do design system saiu: o beat `sistema`
          j\u00e1 argumenta o sistema pelas funda\u00e7\u00f5es (cor, tipo, motion,
          espa\u00e7o), ent\u00e3o um print de biblioteca era redundante. */
-      shots: [{ fig: "checkout", meia: true },
-              { fig: "vitrine", meia: true },
+      /* Sem `meia`. Medido em 2026-08-26: com dois lado a lado, o checkout
+         e a vitrine saíam a 282px de largura em 1440 (20% da tela), as
+         menores telas de conteúdo do capítulo, justamente no beat que
+         entrega o resultado. Em largura cheia vão a ~549px. */
+      shots: [{ fig: "checkout" },
+              { fig: "vitrine" },
               "volume/assets/projetos/pcyes/s5.webp"],
       legendas: ["O fim do caminho: o checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
                  "O come\u00e7o dele: na vitrine, comprar deixou de exigir a p\u00e1gina do produto.",
@@ -480,8 +484,8 @@ const CHAPTERS = [
          leitura \u00e9 uma sequ\u00eancia: cada corre\u00e7\u00e3o encurta um trecho
          diferente do mesmo caminho. `buscaV2` e `popup` ainda s\u00e3o
          molduras pendentes: caem em MangaPlate at\u00e9 o print subir. */
-      { k: "O acabamento", t: "As seis corre\u00e7\u00f5es que encurtaram o caminho",
-        p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas seis s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
+      { k: "O acabamento", t: "As nove corre\u00e7\u00f5es que encurtaram o caminho",
+        p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas nove s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
         passos: [
           { k: "A entrada", t: "A busca deixou de exigir ortografia",
             p: "A V2 abre com os termos e produtos mais procurados antes de a pessoa digitar, e o que ela digita errado ainda encontra. O campo passou a servir quem sabe o nome da pe\u00e7a e quem s\u00f3 sabe para que ela serve.",

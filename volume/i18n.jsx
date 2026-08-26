@@ -232,8 +232,8 @@ if (LANG === "en") {
           p: ["Two things came into the V2 that didn't exist before. The side cart, which opens over the page instead of taking people away, with the gift bar showing how much is missing to earn something, and PCYES Points, with balance, tiers and expiry open on screen.",
               "Both solve the same problem by different routes: give a reason to keep buying without charging another click to someone who already decided."],
           figs: ["sidecart", "points"] },
-        { k: "The finishing", t: "The six fixes that shortened the path",
-          p: ["The four anchors say what the project came to stand for. These six are what had to change so that stance held up on screen, one fold at a time."],
+        { k: "The finishing", t: "The nine fixes that shortened the path",
+          p: ["The four anchors say what the project came to stand for. These nine are what had to change so that stance held up on screen, one fold at a time."],
           passos: [
             { k: "The entrance", t: "Search stopped demanding spelling",
               p: "The V2 opens with the most searched terms and products before anyone types, and what they mistype still finds its match. The field began serving both the person who knows the part number and the person who only knows what it is for.",

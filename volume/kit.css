@@ -70,7 +70,7 @@ button { color: inherit; }
 .v-navlinks a.active:not(.nav-contact) { color: var(--vermilion-ink); }
 .v-navlinks a.active:not(.nav-contact)::after { transform: scaleX(1); transform-origin: left; }
 .v-navmeta {
-  font-family: var(--font-condensed); font-size: 11px; letter-spacing: .16em;
+  font-family: var(--font-condensed); font-size: 12px; letter-spacing: .16em;
   text-transform: uppercase; color: var(--fg-2);
 }
 
@@ -229,7 +229,7 @@ button { color: inherit; }
           mask-image: radial-gradient(circle at 68% 38%, transparent 30%, #000 66%); }
 .chap:hover .chap-sl { opacity: .45; }
 .chap-body { padding: 16px; }
-.chap-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: var(--fg-2); transition: color var(--cut); }
+.chap-k { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .16em; font-size: 12px; color: var(--fg-2); transition: color var(--cut); }
 .chap:hover .chap-k { color: var(--vermilion); }
 .chap-t { font-family: var(--font-display); text-transform: uppercase; font-size: 1.75rem; line-height: .92; margin: 6px 0 0; }
 .chap-go { display: flex; align-items: center; gap: 13px; margin-top: 14px; white-space: nowrap; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 12px; transition: color var(--cut); }
@@ -254,7 +254,7 @@ button { color: inherit; }
 .foot-meta .row { display: flex; align-items: center; gap: 12px; }
 .foot-meta a.s { text-transform: uppercase; letter-spacing: .12em; font-size: 13px; opacity: .8; transition: opacity var(--cut), color var(--cut); }
 .foot-meta a.s:hover { opacity: 1; color: var(--vermilion); }
-.foot-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: var(--ma-5); padding-top: var(--ma-3); border-top: var(--ink-hair) solid var(--wash-4); font-family: var(--font-condensed); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--wash-2); }
+.foot-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: var(--ma-5); padding-top: var(--ma-3); border-top: var(--ink-hair) solid var(--wash-4); font-family: var(--font-condensed); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--wash-2); }
 .foot-bottom img { width: 34px; height: 34px; }
 .foot-nav { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: var(--ma-4); padding-bottom: var(--ma-3); border-bottom: var(--ink-hair) solid var(--wash-4); font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .16em; font-size: 13px; }
 .foot-nav a { color: var(--paper); opacity: .85; transition: opacity var(--cut), color var(--cut); }

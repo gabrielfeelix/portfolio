@@ -27,7 +27,7 @@
 .chapter-back a.back { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
 .chapter-back a.back .arr { transition: transform var(--cut); }
 .chapter-back a.back:hover .arr { transform: translateX(-5px); }
-.chapter-back .cap { font-family: var(--font-condensed); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-2); }
+.chapter-back .cap { font-family: var(--font-condensed); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-2); }
 
 /* ---- chapter cover (splash, inverted) ---- */
 /* a abertura do capítulo ocupa a tela inteira: é a tobira-e, a página que
@@ -115,7 +115,7 @@ html.ink .cover-linhas { opacity: .06; }
 .cover-scroll .dn { animation: bob 1.6s ease-in-out infinite; }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 .cover-meta { display: flex; gap: 26px; margin-top: var(--ma-4); }
-.cover-meta .m .l { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--wash-2); }
+.cover-meta .m .l { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--wash-2); }
 .cover-meta .m .v { font-family: var(--font-condensed); font-weight: 600; font-size: 17px; margin-top: 3px; }
 
 /* ---- chapter body: panels revealed on scroll ---- */
@@ -130,13 +130,21 @@ html.ink .cover-linhas { opacity: .06; }
   transition: opacity var(--cut), transform var(--cut);
 }
 .beat.in .panel { opacity: 1; transform: none; }
-.beat .panel.text { padding: var(--ma-4); border: 0; }
+/* O painel de texto não tem borda, então o padding aqui não separa nada:
+   ele só comia a coluna. Numa `c5` de 375px em 1440, os 40px de cada
+   lado tiravam 21% da medida e o parágrafo caía para 295px, ou ~35
+   caracteres por linha (a faixa confortável é 45 a 75). Medido em
+   2026-08-26. O respiro vertical fica; o horizontal sai. */
+.beat .panel.text { padding: var(--ma-4) 0; border: 0; }
 .beat .panel.art { aspect-ratio: 4/3; background: var(--wash-1); }
 .beat .panel.art image-slot { width: 100%; height: 100%; }
 .beat .panel-tone { position: absolute; inset: 0; background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 7px 7px; opacity: .14; pointer-events: none; }
 .beat-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
 .beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.06; margin: 10px 0 var(--ma-3); }
-.beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 46ch; color: var(--fg); }
+/* 46ch travava a medida abaixo da coluna sempre que a coluna era larga
+   (as `c8` paravam em 460px). 62ch deixa o parágrafo usar o que a coluna
+   tem e continua barrando a linha longa demais nas telas grandes. */
+.beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 62ch; color: var(--fg); }
 .beat-p + .beat-p { margin-top: var(--ma-3); }
 
 /* layout variants for rhythm */
@@ -199,7 +207,7 @@ html.ink .cover-linhas { opacity: .06; }
 }
 .fig-n {
   font-family: var(--font-condensed); font-weight: 700; font-style: normal;
-  text-transform: uppercase; letter-spacing: .14em; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .14em; font-size: 12px;
   color: var(--vermilion-ink); white-space: nowrap; padding-top: 3px;
 }
 
@@ -388,7 +396,7 @@ html.ink .cover-linhas { opacity: .06; }
 .cal-mes { font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1; }
 .cal-ano { font-family: var(--font-condensed); font-weight: 700; letter-spacing: .14em; font-size: 13px; color: var(--fg-2); }
 .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 12px; }
-.cal-dow span { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; color: var(--fg-2); text-align: center; }
+.cal-dow span { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 12px; color: var(--fg-2); text-align: center; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 6px; }
 .cal-d { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-editorial); font-size: 17px; color: var(--fg-2); }
@@ -463,7 +471,7 @@ html.ink .cover-linhas { opacity: .06; }
 .fig-lupa {
   position: absolute; right: 10px; bottom: 10px; z-index: 4; pointer-events: none;
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
-  font-size: 10px; padding: 5px 9px; background: var(--paper); color: var(--ink);
+  font-size: 12px; padding: 5px 9px; background: var(--paper); color: var(--ink);
   border: var(--ink-hair) solid var(--ink); opacity: 0; transition: opacity var(--cut);
 }
 .fig-frame:hover .fig-lupa, .fig-abrir:focus-visible + .fig-lupa { opacity: 1; }
@@ -520,7 +528,7 @@ html.ink .cover-linhas { opacity: .06; }
   transition: transform 320ms cubic-bezier(.2,.85,.25,1); }
 .lb-cap { color: var(--paper); font-size: 15px; line-height: 1.45; max-width: 70ch; text-align: center; opacity: .92; }
 .lb-dica { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .16em;
-  font-size: 11px; color: rgba(246,243,236,.5); }
+  font-size: 12px; color: rgba(246,243,236,.5); }
 @media (prefers-reduced-motion: reduce) {
   .lb, .lb-quadro, .lb-quadro img { animation: none !important; transition: none !important; }
 }
@@ -559,7 +567,7 @@ html.ink .cover-linhas { opacity: .06; }
 .pn-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--gutter); flex-wrap: wrap; }
 .pn-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.04; margin: 8px 0 0; max-width: 22ch; }
 .pn-fonte { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .14em;
-  font-size: 11px; color: var(--fg-2); text-align: right; max-width: 30ch; line-height: 1.6; padding-top: 6px; }
+  font-size: 12px; color: var(--fg-2); text-align: right; max-width: 30ch; line-height: 1.6; padding-top: 6px; }
 .pn-grade { display: grid; grid-template-columns: 1.05fr 1fr; gap: var(--ma-5); margin-top: var(--ma-4); align-items: start; }
 
 .mil { display: grid; grid-template-columns: repeat(50, 1fr); gap: 2px; }
@@ -576,7 +584,7 @@ html.ink .cover-linhas { opacity: .06; }
 .pn-numeros { display: grid; grid-template-columns: repeat(3, auto); gap: var(--ma-4); justify-content: start; }
 .pn-v { font-family: var(--font-display); font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1; }
 .pn-l { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .12em;
-  font-size: 11px; color: var(--fg-2); margin-top: 8px; max-width: 16ch; line-height: 1.5; }
+  font-size: 12px; color: var(--fg-2); margin-top: 8px; max-width: 16ch; line-height: 1.5; }
 
 .pn-barras { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: 18px; }
 .pb-topo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
@@ -614,7 +622,7 @@ html.ink .cover-linhas { opacity: .06; }
 .fn-marca { margin-top: var(--ma-5); border-top: var(--ink-stroke) solid var(--ink); padding-top: var(--ma-4); }
 .fn-marca-l {
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .14em; font-size: 11px; color: var(--fg-2);
+  letter-spacing: .14em; font-size: 12px; color: var(--fg-2);
 }
 /* a régua: faixa saudável em wash, a marca da categoria, o nosso ponto */
 .fn-regua { position: relative; height: 34px; margin-top: 12px; border-bottom: var(--ink-stroke) solid var(--ink); }
@@ -644,7 +652,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ge-cab { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .ge-el { font-size: 15px; color: var(--fg); }
 .ge-sel {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
   color: var(--wash-3); background: var(--wash-1); padding: 1px 6px; border: var(--ink-hair) solid var(--ink);
 }
 .ge-p { margin-left: auto; font-family: var(--font-condensed); font-weight: 700; font-size: 15px; }
@@ -686,6 +694,12 @@ html.ink .cover-linhas { opacity: .06; }
    da esquerda flutuaria no meio do vão. */
 .beat-sistema { align-items: stretch; margin-bottom: var(--ma-6); }
 .beat-sistema .text-col { align-self: stretch; }
+/* A coluna presa nunca recebia `.in`: a faixa que dispara o reveal já
+   tinha passado quando ela gruda, então o painel ficava em `opacity: 0`
+   e o beat abria sem kicker, sem título e sem os dois parágrafos. Medido
+   em 2026-08-26: dos 14 painéis do capítulo, 13 chegavam a 1 e só este
+   ficava em 0. Mesma correção que `.mod-passos` já fazia. */
+.beat-sistema .text-col .panel.text { opacity: 1; transform: none; }
 .beat-sistema .c7 { display: flex; flex-direction: column; gap: var(--ma-4); }
 
 /* as cores que respondem a perguntas diferentes */
@@ -702,7 +716,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-escada .pn-topo { align-items: center; }
 .ds-cab { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: clamp(260px, 46%, 340px);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .14em; font-size: 11px; color: var(--fg-2); }
+  letter-spacing: .14em; font-size: 12px; color: var(--fg-2); }
 .ds-linhas { list-style: none; margin: var(--ma-3) 0 0; padding: 0; }
 .ds-linha { display: flex; align-items: center; justify-content: space-between; gap: var(--gutter);
   padding: 12px 0; border-top: 1px solid var(--wash-1); flex-wrap: wrap; }
@@ -710,7 +724,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-tok { min-width: 0; }
 .ds-nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--fg); }
 .ds-papel { display: block; margin-top: 3px; font-family: var(--font-condensed); font-weight: 600;
-  text-transform: uppercase; letter-spacing: .12em; font-size: 10.5px; color: var(--fg-2); }
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: var(--fg-2); }
 .ds-amostras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
   width: clamp(260px, 46%, 340px); flex: none; min-width: 0; }
 /* a amostra clara vive sobre papel e a escura sobre o fundo escuro: cada
@@ -721,7 +735,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-am.escuro { background: #0a0a0a; }
 .ds-am i { width: 18px; height: 18px; flex: none; border: 1px solid rgba(128,128,128,.5); }
 .ds-am em { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-style: normal;
-  font-size: 10.5px; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  font-size: 12px; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ds-am.claro em { color: #52525b; }
 .ds-am.escuro em { color: #a1a1aa; }
 
@@ -734,9 +748,9 @@ html.ink .cover-linhas { opacity: .06; }
    opacidade diluía o verde e reprovava no próprio axe (2.93:1). Cor neutra
    explícita por tema, e a amostra (-15% OFF) segue na cor real do token. */
 .ds-par-tema { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .16em; font-size: 10.5px; }
+  letter-spacing: .16em; font-size: 12px; }
 .ds-par-am { font-family: var(--font-condensed); font-weight: 700; font-size: 22px; letter-spacing: .02em; }
-.ds-par-r { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+.ds-par-r { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
 .ds-par.claro .ds-par-tema, .ds-par.claro .ds-par-r { color: #52525b; }   /* 7.0:1 sobre #ffffff */
 .ds-par.escuro .ds-par-tema, .ds-par.escuro .ds-par-r { color: #a1a1aa; } /* 7.6:1 sobre #0e0e0e */
 .ds-caso-p { font-size: 15px; line-height: 1.55; color: var(--fg); max-width: 62ch; }
@@ -785,14 +799,14 @@ html.ink .cover-linhas { opacity: .06; }
   100% { offset-distance: 100%; }
 }
 .cv-eixo { position: absolute; font-family: var(--font-condensed); font-weight: 600;
-  text-transform: uppercase; letter-spacing: .14em; font-size: 10px; color: var(--fg-2); }
+  text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--fg-2); }
 .cv-x { left: 0; bottom: -20px; }
 /* o rótulo do eixo Y corre junto ao eixo, escrito de baixo pra cima */
 .cv-y { left: -16px; bottom: 34px; transform-origin: 0 0; transform: rotate(-90deg); white-space: nowrap; }
 /* "linear" fica na ponta inferior da diagonal, longe da curva: mais acima
    ela cruzava o traço vermelho e as duas leituras se atrapalhavam */
 .cv-linear-rot { position: absolute; right: 8px; bottom: 26px; font-family: var(--font-condensed);
-  font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-size: 9.5px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-size: 12px;
   color: var(--fg-2); }
 .ds-marcos { list-style: none; margin: var(--ma-3) 0 0; padding: 0; display: flex; gap: var(--ma-4); flex-wrap: wrap; }
 .ds-marcos li { display: flex; flex-direction: column; gap: 2px; }
@@ -803,7 +817,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-familias { display: flex; gap: var(--ma-4); }
 .ds-fam { display: flex; flex-direction: column; gap: 2px; text-align: right; }
 .ds-fam strong { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
-.ds-fam span { font-size: 11.5px; color: var(--fg-2); }
+.ds-fam span { font-size: 12px; color: var(--fg-2); }
 .ds-escala { list-style: none; margin: var(--ma-3) 0 0; padding: 0; }
 .ds-deg { display: flex; align-items: baseline; gap: var(--ma-4); padding: 14px 0;
   border-top: 1px solid var(--wash-1); }
@@ -841,9 +855,9 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-poco-brilho { position: absolute; inset: 0; border-radius: 22px; }
 .ds-well figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
   margin-top: 10px; font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .14em; font-size: 10.5px; }
+  letter-spacing: .14em; font-size: 12px; }
 .ds-well figcaption em { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-style: normal; letter-spacing: 0; font-size: 10px; text-transform: none; }
+  font-style: normal; letter-spacing: 0; font-size: 12px; text-transform: none; }
 .ds-well.claro figcaption { color: #52525b; }      /* 7.0:1 sobre #fafafa */
 .ds-well.escuro figcaption { color: #a1a1aa; }     /* 7.4:1 sobre #0a0a0a */
 
@@ -886,19 +900,19 @@ html.ink .cover-linhas { opacity: .06; }
    --------------------------------------------------------------------- */
 @media (min-width: 1440px) {
   .idx-cab { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
-    letter-spacing: .2em; font-size: 11px; color: var(--fg-2); margin-bottom: 4px; }
+    letter-spacing: .2em; font-size: 12px; color: var(--fg-2); margin-bottom: 4px; }
   .idx-atos, .idx-secs { list-style: none; margin: 0; padding: 0; }
   .idx-ato { margin-top: 18px; }
   .idx-ato:first-child { margin-top: 12px; }
   .idx-ato-t { display: block; font-family: var(--font-condensed); font-weight: 700;
-    text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: var(--fg-2); }
+    text-transform: uppercase; letter-spacing: .16em; font-size: 12px; color: var(--fg-2); }
   .idx-secs { margin-top: 6px; }
   .idx-secs li { position: relative; }
 
   .idx a { display: flex; gap: 9px; align-items: baseline; text-decoration: none;
     color: var(--fg); padding: 4px 0 4px 10px; margin-left: -10px;
     transition: color 200ms cubic-bezier(.16,1,.3,1), transform 200ms cubic-bezier(.16,1,.3,1); }
-  .idx-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+  .idx-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
     color: var(--fg); flex: none; transition: color 200ms cubic-bezier(.16,1,.3,1); }
   .idx-t { font-size: 14.5px; line-height: 1.32; }
 
