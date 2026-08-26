@@ -261,27 +261,21 @@ const CHAPTERS = [
       fonte: "A proposta que destravou o projeto",
       tinta: "orbit",
     },
+    /* AS QUATRO ÂNCORAS ------------------------------------------------
+       Argumento puro, sem figura. As decisões que mudam a tese do projeto
+       ficam aqui; as que a executam viram passos em `modulos`, com as
+       provas. Antes eram dez itens com figura acoplada, e por isso o
+       clímax do capítulo acontecia no meio: a prova toda era gasta antes
+       de `solucao`, `sistema` e `antesDepois`. */
     decisoes: [
-      { d: "Busca que perdoa quem não escreve certo", fig: "buscaV2",
-        r: "porque a V1 devolvia tela vazia para \u201cmause\u201d e mousepad para \u201cmouse\u201d. A V2 passou a tolerar erro de grafia, a ranquear o catálogo pelo que a loja precisa vender e a abrir com os termos e produtos mais buscados, para quem não lembra o nome do que quer. Numa loja de hardware, exigir ortografia exata é escolher um público e dispensar o resto." },
-      { d: "Pop-up depois de 15% de rolagem, nunca na chegada", fig: "popup",
-        r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas áreas de fechar, contra 5 no botão de comprar. A captação de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele só aparece depois de a pessoa rolar 15% da página, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem já está olhando." },
-      { d: "Formas de pagamento na primeira dobra do checkout", fig: "checkout",
-        r: "porque a gravação mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no módulo de pagamento do Magento: o erro aparecia na sessão gravada e não aparecia em relatório nenhum. Fui atrás da origem num projeto público da extensão e entreguei o ponto exato para o time de tecnologia corrigir." },
-      { d: "Adicionar ao carrinho direto da home e da vitrine", fig: "vitrine",
-        r: "porque exigir a página do produto cobrava cliques que não precisavam existir. Quem já sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda está decidindo continua com a página completa à disposição." },
-      { d: "Preço sempre visível", fig: "preco",
-        r: "porque a decisão de compra não pode depender de voltar ao topo: coluna fixa à direita no desktop, barra fixa na base da tela no mobile. É a informação que a pessoa mais reconsulta, e era a que mais sumia." },
-      { d: "Home orientada a produto", fig: "home",
-        r: "porque o institucional estava ocupando o lugar do produto: carrosséis de produto no lugar dos blocos de marca, promoções em destaque e filtro de promoção logo na entrada das categorias. A marca não saiu, desceu uma dobra." },
-      { d: "Visualização rápida na vitrine", fig: "quickview",
-        r: "porque dá para avaliar o produto sem sair da listagem: botão de preview, com zoom na foto. Quem está comparando três modelos não perde o lugar na lista a cada olhada." },
-      { d: "Descrição de produto gerada a partir do SKU", fig: "sku", figExtra: "skuFila",
-        r: "porque as fichas eram inconsistentes, e cada uma tinha sido escrita por uma pessoa diferente em um ano diferente. Construí uma ferramenta interna que gera o HTML da descrição com hierarquia de títulos e imagens já formatadas, usando IA: o que era manual e desigual virou padrão." },
-      { d: "Fotografia e contraste revisados na navegação inteira", fig: "contraste",
-        r: "porque o site é escuro e as dobras claras da versão anterior causavam desconforto na leitura, ainda mais em quem navega de madrugada, que é boa parte desse público." },
-      { d: "VLibras integrado", fig: "libras",
-        r: "porque quem tem Libras como primeira língua também compra aqui. Custou pouco tempo de implementação e é a diferença entre a loja servir essa pessoa ou não servir." },
+      { d: "Busca que perdoa quem n\u00e3o escreve certo",
+        r: "porque a V1 devolvia tela vazia para \u201cmause\u201d e mousepad para \u201cmouse\u201d. A V2 passou a tolerar erro de grafia, a ranquear o cat\u00e1logo pelo que a loja precisa vender e a abrir com os termos e produtos mais buscados, para quem n\u00e3o lembra o nome do que quer. Numa loja de hardware, exigir ortografia exata \u00e9 escolher um p\u00fablico e dispensar o resto." },
+      { d: "Pop-up depois de 15% de rolagem, nunca na chegada",
+        r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas \u00e1reas de fechar, contra 5 no bot\u00e3o de comprar. A capta\u00e7\u00e3o de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele s\u00f3 aparece depois de a pessoa rolar 15% da p\u00e1gina, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem j\u00e1 est\u00e1 olhando." },
+      { d: "Formas de pagamento na primeira dobra do checkout",
+        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no m\u00f3dulo de pagamento do Magento: o erro aparecia na sess\u00e3o gravada e n\u00e3o aparecia em relat\u00f3rio nenhum. Fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
+      { d: "Adicionar ao carrinho direto da home e da vitrine",
+        r: "porque exigir a p\u00e1gina do produto cobrava cliques que n\u00e3o precisavam existir. Quem j\u00e1 sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda est\u00e1 decidindo continua com a p\u00e1gina completa \u00e0 disposi\u00e7\u00e3o." },
     ],
     /* o beat que separa quem escolheu de quem entregou tudo que pediram */
     recusei: {
@@ -295,19 +289,23 @@ const CHAPTERS = [
     },
     solucao: {
       t: "Marca presente, produto no eixo",
-      p: ["Em vez de escolher entre valor de marca e conversão, separei as camadas: a marca aparece em momentos específicos e o caminho de compra passa a ser o eixo do site.",
-          "Home, vitrine e checkout reconstruídos para encurtar a distância entre entrar e comprar.",
-          "O sistema saiu junto: uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espaçamento, estado e cor a cada tela nova."],
+      p: ["Em vez de escolher entre valor de marca e convers\u00e3o, separei as camadas: a marca aparece em momentos espec\u00edficos e o caminho de compra passa a ser o eixo do site.",
+          "As tr\u00eas telas abaixo s\u00e3o o mesmo argumento em tr\u00eas escalas. O checkout abre no meio de pagamento, a vitrine compra sem abrir o produto, e o mobile repete a regra numa tela em que n\u00e3o cabe repetir nada por engano.",
+          "O sistema saiu junto: uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espa\u00e7amento, estado e cor a cada tela nova."],
       slots: 1,
-      /* as telas de desktop subiram para junto das decisões que elas provam
-         (figuras "checkout", "vitrine", "preco" e "home"). Aqui fica o que
-         fala do conjunto: o mobile.
+      /* a s\u00edntese precisa de prova nova, n\u00e3o de resumo. Como `decisoes`
+         devolveu as figuras, `checkout` e `vitrine` chegam aqui inteiras
+         e o conjunto \u00e9 lido de uma vez: as duas pontas do caminho de
+         compra mais a prova de que a regra vale na tela pequena.
          A moldura da biblioteca do design system saiu: o beat `sistema`
-         já argumenta o sistema pelas fundações (cor, tipo, motion,
-         espaço), então um print de biblioteca era redundante e a
-         moldura vazia abria buraco no fim do capítulo. */
-      shots: ["volume/assets/projetos/pcyes/s5.webp"],
-      legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela."],
+         j\u00e1 argumenta o sistema pelas funda\u00e7\u00f5es (cor, tipo, motion,
+         espa\u00e7o), ent\u00e3o um print de biblioteca era redundante. */
+      shots: [{ fig: "checkout", meia: true },
+              { fig: "vitrine", meia: true },
+              "volume/assets/projetos/pcyes/s5.webp"],
+      legendas: ["O fim do caminho: o checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
+                 "O come\u00e7o dele: na vitrine, comprar deixou de exigir a p\u00e1gina do produto.",
+                 "No mobile, a mesma regra: a vitrine compra sem abrir o produto e o pre\u00e7o fica fixo na base da tela."],
     },
     /* ---- O DESIGN SYSTEM -------------------------------------------
        Entra aqui, e não no começo, porque o argumento é de ordem: antes
@@ -476,6 +474,43 @@ const CHAPTERS = [
         p: ["Duas coisas entraram na V2 e não existiam antes. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
             "As duas resolvem o mesmo problema por vias diferentes: dar motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],
         figs: ["sidecart", "points"] },
+      /* AS EXECU\u00c7\u00d5ES ----------------------------------------------------
+         As seis decis\u00f5es que implementam a tese, com as figuras que antes
+         moravam em `decisoes`. Em passos, e n\u00e3o em mosaico, porque a
+         leitura \u00e9 uma sequ\u00eancia: cada corre\u00e7\u00e3o encurta um trecho
+         diferente do mesmo caminho. `buscaV2` e `popup` ainda s\u00e3o
+         molduras pendentes: caem em MangaPlate at\u00e9 o print subir. */
+      { k: "O acabamento", t: "As seis corre\u00e7\u00f5es que encurtaram o caminho",
+        p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas seis s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
+        passos: [
+          { k: "A entrada", t: "A busca deixou de exigir ortografia",
+            p: "A V2 abre com os termos e produtos mais procurados antes de a pessoa digitar, e o que ela digita errado ainda encontra. O campo passou a servir quem sabe o nome da pe\u00e7a e quem s\u00f3 sabe para que ela serve.",
+            fig: "buscaV2" },
+          { k: "A chegada", t: "A oferta passou a esperar o interesse",
+            p: "O pop-up saiu da porta e foi para depois dos 15% de rolagem. Quem acabou de chegar v\u00ea a loja; quem j\u00e1 est\u00e1 olhando \u00e9 que recebe a proposta.",
+            fig: "popup" },
+          { k: "A home", t: "O institucional desceu uma dobra",
+            p: "Carross\u00e9is de produto no lugar dos blocos de marca, promo\u00e7\u00f5es em destaque e filtro de promo\u00e7\u00e3o logo na entrada das categorias. A marca n\u00e3o saiu: ela deixou de ocupar o lugar do produto.",
+            fig: "home" },
+          { k: "A vitrine", t: "Avaliar sem perder o lugar na lista",
+            p: "A visualiza\u00e7\u00e3o r\u00e1pida abre o produto por cima da listagem, com zoom na foto. Quem est\u00e1 comparando tr\u00eas modelos n\u00e3o recome\u00e7a a rolagem a cada olhada.",
+            fig: "quickview" },
+          { k: "O produto", t: "O pre\u00e7o parou de sumir",
+            p: "Coluna fixa \u00e0 direita no desktop, barra fixa na base no mobile. \u00c9 a informa\u00e7\u00e3o que a pessoa mais reconsulta, e era a que mais exigia voltar ao topo.",
+            fig: "preco" },
+          { k: "A ficha", t: "Descri\u00e7\u00e3o gerada a partir do SKU",
+            p: "As fichas eram inconsistentes, cada uma escrita por uma pessoa diferente em um ano diferente. Uma ferramenta interna passou a gerar o HTML com hierarquia de t\u00edtulos e imagens formatadas: o que era manual e desigual virou padr\u00e3o.",
+            fig: "sku" },
+          { k: "A esteira", t: "E o time passou a ver onde cada produto est\u00e1",
+            p: "Cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publica\u00e7\u00e3o. A fila deixou de ser combinado de bastidor e virou tela.",
+            fig: "skuFila" },
+          { k: "A leitura", t: "O salto de brilho saiu da navega\u00e7\u00e3o",
+            p: "O site \u00e9 escuro e a V1 abria uma dobra branca inteira no meio do caminho. De madrugada, que \u00e9 quando boa parte desse p\u00fablico compra, esse salto \u00e9 a parte que cansa.",
+            fig: "contraste" },
+          { k: "O alcance", t: "VLibras, porque a loja tamb\u00e9m atende quem sinaliza",
+            p: "Custou pouco tempo de implementa\u00e7\u00e3o e \u00e9 a diferen\u00e7a entre servir essa pessoa ou n\u00e3o servir. Quem tem Libras como primeira l\u00edngua lia um site em segunda l\u00edngua.",
+            fig: "libras" },
+        ] },
     ],
     /* a data de publicação, rabiscada na folha de outubro */
     calendario: {

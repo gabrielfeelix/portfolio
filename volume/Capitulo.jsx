@@ -1082,10 +1082,13 @@ function figOrder(chap) {
   const mapa = {};
   let n = 0;
   const marca = (k) => { if (k && chap.figuras && chap.figuras[k] && !mapa[k]) mapa[k] = ++n; };
+  // a ordem aqui tem que ser a ordem em que a página renderiza, senão o
+  // "fig. 04" citado no texto aponta para outra imagem: a busca vem
+  // antes da investigação desde a reordenação em quatro atos.
   if (chap.abertura) marca(chap.abertura.fig);
   if (chap.problema) marca(chap.problema.fig);
-  if (chap.investigacao) marca(chap.investigacao.fig);
   if (chap.busca) (chap.busca.figs || []).forEach(marca);
+  if (chap.investigacao) marca(chap.investigacao.fig);
   (chap.decisoes || []).forEach((d) => { marca(d.fig); marca(d.figExtra); });
   (chap.modulos || []).forEach((m) => {
     (m.figs || []).forEach(marca);
@@ -1398,15 +1401,21 @@ function Solucao({ chap }) {
               // { src, ar, meia }: `ar` faz o painel nascer na proporção EXATA
               // do arquivo, então print em retrato também cabe sem tarja nem
               // corte; `meia` põe dois lado a lado em vez de largura cheia.
-              const src = typeof sh === "string" ? sh : (sh && sh.src);
-              const ar = sh && sh.ar;
+              // `fig` aponta para uma entrada de `chap.figuras`: de lá vêm o
+              // caminho e, principalmente, o `alt` escrito à mão. Sem isso a
+              // legenda virava o alt, e legenda argumenta em vez de descrever
+              // a tela, que é justamente o que o alt precisa fazer.
+              const reg = sh && sh.fig && chap.figuras ? chap.figuras[sh.fig] : null;
+              const src = typeof sh === "string" ? sh : ((sh && sh.src) || (reg && reg.src));
+              const ar = (sh && sh.ar) || (reg && reg.ar);
               const cls = "sol-panel" + (sh && sh.meia ? " meia" : "");
-              const cap = legendas[i];
+              const cap = legendas[i] || (reg && reg.legenda);
+              const alt = (reg && reg.alt) || cap || t(`${chap.title} · tela ${i + 1}`, `${chap.title} · screen ${i + 1}`);
               return (
                 <React.Fragment key={i}>
                   <div className={cls} style={ar ? { aspectRatio: ar } : undefined}>
                     {src
-                      ? <img className="sol-img" src={src} alt={cap || t(`${chap.title} · tela ${i + 1}`, `${chap.title} · screen ${i + 1}`)} loading="lazy" draggable="false" />
+                      ? <img className="sol-img" src={src} alt={alt} loading="lazy" draggable="false" />
                       : <MangaPlate />}
                   </div>
                   {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}>{renderPH(cap)}</p> : null}
@@ -1585,30 +1594,26 @@ function NextChapter({ next, onOpen, onHome }) {
 /* os atos do capítulo, na ordem em que a página os renderiza. `chave` é o
    campo do dado que faz a seção existir: sem ele, a seção não entra. */
 const ATOS = [
-  { k: "problema", t: ["O problema", "The problem"], secs: [
+  { k: "cena", t: ["A cena e o buraco", "The scene and the hole"], secs: [
     { id: "abertura", chave: "abertura", t: ["A cena", "The scene"] },
     { id: "problema", chave: "problema", t: ["O problema", "The problem"] },
     { id: "painel", chave: "painel", t: ["O tamanho do buraco", "The size of the hole"] },
-  ] },
-  { k: "investigacao", t: ["A investigação", "The investigation"], secs: [
     { id: "funil", chave: "funil", t: ["O funil", "The funnel"] },
+  ] },
+  { k: "dado", t: ["O que o dado disse", "What the data said"], secs: [
     { id: "gesto", chave: "gesto", t: ["O gesto", "The gesture"] },
-    { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
     { id: "busca", chave: "busca", t: ["A busca", "Search"] },
+    { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
   ] },
-  { k: "decisoes", t: ["As decisões", "The decisions"], secs: [
-    { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
+  { k: "resolvi", t: ["Como eu resolvi", "How I solved it"], secs: [
     { id: "recusei", chave: "recusei", t: ["O que recusei", "What I turned down"] },
-  ] },
-  { k: "sistema", t: ["O sistema", "The system"], secs: [
     { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
-  ] },
-  { k: "solucao", t: ["A solução", "The solution"], secs: [
+    { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
     { id: "modulos", chave: "modulos", t: ["Os módulos", "The modules"] },
+  ] },
+  { k: "mudou", t: ["O que mudou", "What changed"], secs: [
     { id: "solucao", chave: "solucao", t: ["A solução", "The solution"] },
     { id: "antesdepois", chave: "antesDepois", t: ["Antes e depois", "Before and after"] },
-  ] },
-  { k: "fecho", t: ["O fecho", "The close"], secs: [
     { id: "resultado", chave: "resultado", t: ["Resultado", "Result"] },
     { id: "aprendi", chave: "aprendi", t: ["O que aprendi", "What I learned"] },
   ] },
@@ -1699,6 +1704,26 @@ function IndiceCapitulo({ chap }) {
   );
 }
 
+/* ---- RESPIRO: a pausa entre os atos ---------------------------------
+   O vocabulário já existia no CSS e não estava sendo usado como pausa
+   estrutural: `--ma-6` está comentado como "the held silence before a
+   reveal" e `--ma-hold` (380ms) como "the pause before a reveal
+   resolves". Aqui os dois viram beat.
+
+   Não é espaço vazio: é um traço curto que se abre a partir do centro
+   quando o respiro entra na viewport, do mesmo jeito que o marcador do
+   índice. Silêncio com marca, que é o que separa um ato do outro sem
+   cobrar um título. `aria-hidden` porque não há conteúdo a anunciar: a
+   estrutura para quem usa leitor de tela vem dos títulos das seções. */
+function Respiro() {
+  const [ref, seen] = useReveal({ threshold: 0.6 });
+  return (
+    <div ref={ref} className={`respiro ${seen || REDUCED ? "in" : ""}`} aria-hidden="true">
+      <span className="respiro-traco"></span>
+    </div>
+  );
+}
+
 /* âncora de seção: só endereço e alvo de foco, sem desenhar nada. O
    `scroll-margin-top` mora no css pra o título não colar no topo. */
 function Sec({ id, children }) {
@@ -1727,28 +1752,48 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Tldr tldr={chap.tldr} links={chap.links} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
-            não desenha nada, só dá endereço e alvo de foco. */}
+            não desenha nada, só dá endereço e alvo de foco.
+
+            O capítulo corre em quatro atos, e o `Respiro` entre eles é
+            parte do argumento: sem a pausa, dezesseis beats de mesmo
+            ritmo achatam o relevo e o leitor não percebe quando a
+            investigação vira decisão. */}
+
+        {/* ATO I · a cena e o buraco */}
         <Sec id="abertura"><Abertura chap={chap} figN={figN} /></Sec>
         <Sec id="problema"><Problema chap={chap} figN={figN} /></Sec>
         <Sec id="painel"><Painel dados={chap.painel} /></Sec>
-        {/* o funil diz onde a leitura perdia gente; o gesto, o que a mão
-            fazia enquanto isso. Os dois vêm antes da investigação porque
-            são o que mandou olhar para onde ela olhou. */}
+        {/* o funil fecha o ato I: o problema já tem tamanho e endereço */}
         <Sec id="funil"><Funil dados={chap.funil} /></Sec>
+
+        <Respiro />
+
+        {/* ATO II · o que o dado disse. O gesto e a busca vêm antes da
+            investigação porque são o que mandou olhar para onde ela
+            olhou, e a busca é o achado que amplia o escopo de "corrigir
+            o checkout" para "quem consegue comprar". */}
         <Sec id="gesto"><Gesto dados={chap.gesto} /></Sec>
-        <Sec id="investigacao"><Investigacao chap={chap} figN={figN} /></Sec>
-        {/* o achado da busca fecha a investigação: é ele que amplia o
-            escopo de "corrigir o checkout" para "quem consegue comprar" */}
         <Sec id="busca"><Busca dados={chap.busca} chap={chap} figN={figN} /></Sec>
+        <Sec id="investigacao"><Investigacao chap={chap} figN={figN} /></Sec>
         <Citacao dados={chap.citacao} />
+
+        <Respiro />
+
+        {/* ATO III · como eu resolvi. `recusei` abre o ato porque o que
+            ficou de fora é a primeira decisão; `sistema` traz o
+            vocabulário antes das telas, e por isso `modulos` lê como
+            prova de que o sistema funciona. `decisoes` são as quatro
+            âncoras, sem figura: argumento antes de prova. */}
         <SfxBeat word={chap.sfx} />
+        <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
+        <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <Sec id="decisoes"><Decisoes chap={chap} figN={figN} /></Sec>
         <div style={{ height: "var(--ma-6)" }}></div>
-        <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
-        {/* o vocabulário chega depois das decisões: cada tela dos
-            módulos vira prova de que o sistema funciona */}
-        <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
+
+        <Respiro />
+
+        {/* ATO IV · o que mudou */}
         <Sec id="solucao"><Solucao chap={chap} /></Sec>
         <div style={{ height: "var(--ma-6)" }}></div>
         {chap.vocabulario ? <><div style={{ height: "var(--ma-6)" }}></div><Vocabulario dados={chap.vocabulario} /></> : null}
@@ -1767,4 +1812,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Sec, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Respiro, Sec, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
