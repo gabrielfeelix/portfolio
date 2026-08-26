@@ -277,7 +277,7 @@ html.ink .cover-linhas { opacity: .06; }
 }
 .citacao .cit-f {
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .18em; font-size: 12px; color: var(--vermilion); margin-top: var(--ma-3);
+  letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); margin-top: var(--ma-3);
 }
 
 /* o bloco de recusa: o que ficou de fora e por quê. É o beat que separa
@@ -525,12 +525,12 @@ html.ink .cover-linhas { opacity: .06; }
   background: var(--paper); border: var(--ink-stroke) solid var(--ink); padding: 12px 14px;
   display: grid; gap: 3px; transition: background var(--cut), color var(--cut), transform var(--cut), box-shadow var(--cut);
 }
-.cam-tab .cam-n { font-family: var(--font-editorial); font-size: 12px; letter-spacing: .12em; color: var(--wash-2); }
+.cam-tab .cam-n { font-family: var(--font-editorial); font-size: 12px; letter-spacing: .12em; color: var(--fg-2); }
 .cam-tab .cam-t { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; font-size: 15px; line-height: 1.15; }
 .cam-tab .cam-para { font-size: 12.5px; line-height: 1.35; color: var(--fg-2); }
 .cam-tab:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 var(--ink); }
 .cam-tab.on { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 var(--vermilion); }
-.cam-tab.on .cam-n { color: var(--vermilion); }
+.cam-tab.on .cam-n { color: var(--vermilion-lift); }
 .cam-tab.on .cam-para { color: rgba(246,243,236,.72); }
 .cam-tab:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: 3px; }
 /* a troca de caminho não reanima: quem clicou já está olhando o quadro */
@@ -868,37 +868,13 @@ html.ink .cover-linhas { opacity: .06; }
 
 .idx { display: none; }
 
-@media (min-width: 1700px) {
-  /* o conteúdo NÃO divide a tela com o índice: a coluna de leitura segue
-     centralizada e do tamanho de antes. O índice mora na margem
-     esquerda, ancorado no corpo do capítulo -- por isso ele aparece
-     depois da capa e sai quando o capítulo acaba, sem ser fixed. */
-  .chapter-body.com-indice { position: relative; }
-  .chapter-col { min-width: 0; }
-
-  /* sticky dentro do corpo do capítulo (aparece depois da capa, solta no
-     fim), mas deslocado pra margem esquerda da tela por transform, que
-     não ocupa espaço e por isso não estreita a leitura.
-     A margem negativa tira ele do fluxo; o transform o leva pra fora do
-     bloco sem depender da largura da janela. */
-  .idx {
-    display: block;
-    position: sticky; top: var(--ma-5);
-    width: 236px; height: 0;     /* altura zero: não empurra nada abaixo */
-    margin: 0; overflow: visible;
-    /* o .shell trava em 1240px, então a margem livre é (100vw - 1240)/2.
-       O índice se encosta na borda da tela por aí: em telas largas sobra
-       espaço de verdade, e o conteúdo nunca estreita pra abrir lugar. */
-    transform: translateX(calc((100vw - 1240px) / -2 - var(--gutter) + 56px));
-  }
-  /* só rola no eixo vertical, e só se o índice não couber na tela.
-     `overflow-y: auto` sozinho cria barra HORIZONTAL quando um título
-     encosta na borda: o x explícito mata isso. */
-  .idx-caixa { max-height: calc(100vh - var(--ma-5) * 2 - 12px);
-    overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
-  .idx-t { overflow-wrap: break-word; }
-  .idx-caixa { border-left: var(--ink-stroke) solid var(--ink); padding: 4px 0 4px 18px; }
-
+/* ---------------------------------------------------------------------
+   A PELE do indice: tipografia, estados e marcador. Vale para as duas
+   faixas em que ele aparece (1440-1699 estreito, 1700+ largo); o que
+   muda de uma para outra e so a GEOMETRIA -- largura, deslocamento e o
+   desvio da cena -- que fica nos blocos abaixo.
+   --------------------------------------------------------------------- */
+@media (min-width: 1440px) {
   .idx-cab { font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
     letter-spacing: .2em; font-size: 11px; color: var(--fg-2); margin-bottom: 4px; }
   .idx-atos, .idx-secs { list-style: none; margin: 0; padding: 0; }
@@ -935,6 +911,87 @@ html.ink .cover-linhas { opacity: .06; }
   .idx a:hover { color: var(--ink); transform: translateX(3px); }
   .idx a:hover .idx-n { color: var(--vermilion-ink); }
   .idx a:focus-visible { outline: 2px solid var(--vermilion-ink); outline-offset: 3px; }
+}
+
+/* ---------------------------------------------------------------------
+   1440-1699: a tela comporta o indice, mas a MARGEM nao. Em vez de
+   estreitar a leitura (recusado: encurta a linha e aperta o capitulo), o
+   corpo do capitulo SAI DO CENTRO e anda para a direita. A largura da
+   coluna continua 1240px, a mesma de antes; o que muda e onde ela mora
+   na tela. O espaco livre deixa de ser dois nacos de ~100px e vira um
+   naco unico a esquerda, onde o indice cabe.
+   Em 1440 sobram 200px de cada lado; juntos dao 400, e o indice estreito
+   (188px + 40 de respiro) cabe com folga. */
+@media (min-width: 1440px) and (max-width: 1699.98px) {
+  .chapter-body.com-indice {
+    position: relative;
+    /* A conta desta faixa: 1240 de coluna + 228 de indice + calhas dos
+       dois lados pede ~1530px, e aqui ha 1440. Alguem cede.
+       O indice nao cede (abaixo de 188px os titulos quebram e ele vira
+       tampa) e a borda direita nao cede (texto colado na tela le como
+       erro), entao a coluna cede o que faltar -- e SO o que faltar:
+       `min` com 1240px garante que em 1530+ ela volta inteira e nada
+       aperta de graca.
+       Nao e o "estreitar pra abrir lugar" recusado antes: ali a coluna
+       encolhia continuando centrada, com a sobra rachada nos dois lados
+       sem serventia. Aqui a sobra toda vira a coluna do indice. */
+    margin-left: auto; margin-right: var(--gutter);
+    max-width: min(1240px, calc(100vw - 228px - var(--gutter) * 2));
+  }
+  .chapter-col { min-width: 0; }
+
+  .idx {
+    display: block;
+    position: sticky; top: var(--ma-5);
+    width: 188px; height: 0;          /* altura zero: nao empurra nada */
+    margin: 0; overflow: visible;
+    /* o corpo ja andou pra direita, entao basta sair pra esquerda a
+       propria largura mais o respiro: nao depende de 100vw. */
+    transform: translateX(-228px);
+  }
+  .idx-caixa { max-height: calc(100vh - var(--ma-5) * 2 - 12px);
+    overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;
+    border-left: var(--ink-stroke) solid var(--ink); padding: 4px 0 4px 14px; }
+  .idx-t { overflow-wrap: break-word; font-size: 13.5px; line-height: 1.3; }
+
+  /* a cena full bleed sangra em 100vw e passaria por cima da lista. O
+     padrao da casa nao mexe na .cena-scroll (ela precisa sangrar), e sim
+     no que corre dentro dela: o conteudo desvia da coluna do indice. */
+  .cena-scroll-cola { padding-left: 228px; }
+  .cena-scroll-frame { max-width: calc(100vw - 228px - var(--ma-5) * 2); }
+}
+
+@media (min-width: 1700px) {
+  /* o conteúdo NÃO divide a tela com o índice: a coluna de leitura segue
+     centralizada e do tamanho de antes. O índice mora na margem
+     esquerda, ancorado no corpo do capítulo -- por isso ele aparece
+     depois da capa e sai quando o capítulo acaba, sem ser fixed. */
+  .chapter-body.com-indice { position: relative; }
+  .chapter-col { min-width: 0; }
+
+  /* sticky dentro do corpo do capítulo (aparece depois da capa, solta no
+     fim), mas deslocado pra margem esquerda da tela por transform, que
+     não ocupa espaço e por isso não estreita a leitura.
+     A margem negativa tira ele do fluxo; o transform o leva pra fora do
+     bloco sem depender da largura da janela. */
+  .idx {
+    display: block;
+    position: sticky; top: var(--ma-5);
+    width: 236px; height: 0;     /* altura zero: não empurra nada abaixo */
+    margin: 0; overflow: visible;
+    /* o .shell trava em 1240px, então a margem livre é (100vw - 1240)/2.
+       O índice se encosta na borda da tela por aí: em telas largas sobra
+       espaço de verdade, e o conteúdo nunca estreita pra abrir lugar. */
+    transform: translateX(calc((100vw - 1240px) / -2 - var(--gutter) + 56px));
+  }
+  /* só rola no eixo vertical, e só se o índice não couber na tela.
+     `overflow-y: auto` sozinho cria barra HORIZONTAL quando um título
+     encosta na borda: o x explícito mata isso. */
+  .idx-caixa { max-height: calc(100vh - var(--ma-5) * 2 - 12px);
+    overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+  .idx-t { overflow-wrap: break-word; }
+  .idx-caixa { border-left: var(--ink-stroke) solid var(--ink); padding: 4px 0 4px 18px; }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

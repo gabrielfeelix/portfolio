@@ -1855,7 +1855,7 @@ html.ink .ad-tag-d { background: var(--vermilion); color: var(--paper); }
 
 .db-n {
   font-family: var(--font-editorial); font-weight: 700; line-height: .82;
-  font-size: clamp(3rem, 6vw, 5.2rem); color: var(--wash-2);
+  font-size: clamp(3rem, 6vw, 5.2rem); color: var(--fg-2);
   transition: color var(--cut);
 }
 .dec-beat:hover .db-n { color: var(--vermilion); }

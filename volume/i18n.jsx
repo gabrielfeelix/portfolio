@@ -183,8 +183,7 @@ if (LANG === "en") {
         p: ["Instead of choosing between brand value and conversion, I split the layers: the brand appears at specific moments and the path to purchase becomes the site's spine.",
             "Home, storefront and checkout rebuilt to shorten the distance between arriving and buying.",
             "The system came with it: a Figma library with the components that show up across the whole purchase, so the tech team can implement without re-deciding spacing, state and color on every new screen."],
-        legendas: ["On mobile, the same rule: the storefront buys without opening the product and the price stays fixed at the bottom of the screen.",
-                   "The design system library: card, button, price and state designed once and used across the navigation."] },
+        legendas: ["On mobile, the same rule: the storefront buys without opening the product and the price stays fixed at the bottom of the screen."] },
       modulos: [
         { k: "Pre-order", t: "A reservation with counted slots and a date in plain sight",
           p: ["PCYES launches limited editions and a Maringá FC collection, and the V1 treated a launch like any other product: either it had stock, or it disappeared from the storefront.",

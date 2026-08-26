@@ -280,13 +280,16 @@ const CHAPTERS = [
       p: ["Em vez de escolher entre valor de marca e conversão, separei as camadas: a marca aparece em momentos específicos e o caminho de compra passa a ser o eixo do site.",
           "Home, vitrine e checkout reconstruídos para encurtar a distância entre entrar e comprar.",
           "O sistema saiu junto: uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espaçamento, estado e cor a cada tela nova."],
-      slots: 2,
+      slots: 1,
       /* as telas de desktop subiram para junto das decisões que elas provam
          (figuras "checkout", "vitrine", "preco" e "home"). Aqui fica o que
-         fala do conjunto: o mobile e a biblioteca do design system. */
-      shots: ["volume/assets/projetos/pcyes/s5.webp", { src: null }],
-      legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela.",
-                 "A biblioteca do design system: card, botão, preço e estado desenhados uma vez e usados em toda a navegação."],
+         fala do conjunto: o mobile.
+         A moldura da biblioteca do design system saiu: o beat `sistema`
+         já argumenta o sistema pelas fundações (cor, tipo, motion,
+         espaço), então um print de biblioteca era redundante e a
+         moldura vazia abria buraco no fim do capítulo. */
+      shots: ["volume/assets/projetos/pcyes/s5.webp"],
+      legendas: ["No mobile, a mesma regra: a vitrine compra sem abrir o produto e o preço fica fixo na base da tela."],
     },
     /* ---- O DESIGN SYSTEM -------------------------------------------
        Entra aqui, e não no começo, porque o argumento é de ordem: antes
