@@ -1055,11 +1055,6 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
   .splash-sub { font-size: 1.02rem; }
 }
 
-/* ---- manga reading progress: thin vermilion rule at the very top ---- */
-.read-progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 120; pointer-events: none; }
-.read-progress span { display: block; height: 100%; background: var(--vermilion);
-  transform: scaleX(0); transform-origin: left; will-change: transform; }
-
 /* =====================================================================
    MODO TINTA — o volume lido de noite. Os dois polos do mundo trocam:
    tinta clara sobre papel-sumi. A escala de washes inverte junto pra
@@ -1510,7 +1505,16 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   transition: color var(--cut);
 }
 .mk:hover .mk-word { color: var(--ink); }
+/* no modo tinta o chip é escuro e os arquivos de marcas/mono/ são tinta
+   preta sobre transparente: sem inverter, a marca some no fundo. Invertida,
+   a mesma arte vira papel sobre tinta e mantém a leitura monocromática. */
+/* a chapa da empresa carrega a marca em papel, então precisa ser tinta nos
+   dois modos: com var(--wash-4) ela clareava no modo tinta e a logo sumia */
+html.ink .emp-logo { background: #1E1A16; border-color: var(--wash-4); }
+html.ink .emp-logo-mark { color: #F2EFE7; }
 html.ink .mk { background: var(--paper); }
+html.ink .mk-logo { filter: invert(1); opacity: .82; }
+html.ink .mk:hover .mk-logo { opacity: 1; }
 html.ink .mk-word { color: var(--wash-4); }
 
 /* ---- 4 CAPÍTULOS EM LISTA (o coverflow saiu) ------------------------

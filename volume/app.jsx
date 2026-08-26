@@ -24,26 +24,6 @@ function PageTurn({ sfx }) {
   );
 }
 
-/* manga reading progress: a thin vermilion rule at the very top that fills
-   as you read the page. Only on reading views (chapter/sobre/processo/
-   empresa) — the home cover isn't "a page being read". */
-function ReadProgress({ view }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const on = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const p = total > 0 ? Math.min(1, window.scrollY / total) : 0;
-      el.style.transform = `scaleX(${p})`;
-    };
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    window.addEventListener("resize", on);
-    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
-  }, [view]);
-  return <div className="read-progress" aria-hidden="true"><span ref={ref}></span></div>;
-}
-
 /* the page number in the margin: increments as you leaf through the view.
    Decorative (aria-hidden); blend-difference keeps it legible over paper,
    ink covers and the dark footer alike. */
@@ -415,7 +395,6 @@ function App() {
       <Nav view={view} go={handleNav} onContact={goContact} ink={ink} onInk={onInkToggle} />
       {view === "home" && marker ? <Bookmark marker={marker} onGo={resumeMarker} onDismiss={dismissMarker} /> : null}
       {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
-      {view !== "home" && <ReadProgress view={view} />}
       {view !== "home" && <PageNum view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       <div id="conteudo" tabIndex={-1}>{body}</div>
