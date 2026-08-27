@@ -1140,6 +1140,39 @@ html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel 
 .tldr-live:hover { color: var(--vermilion); border-color: var(--vermilion); }
 @media (max-width: 880px) { .tldr.has-live { grid-template-columns: 1fr; } }
 
+/* ---- ATALHO: a linha que devolve o tempo do leitor -------------------
+   Não é uma caixa nova. Ela fecha a caixa da leitura rápida por baixo,
+   compartilhando a borda, porque a pergunta "quanto isto custa" é parte
+   do mesmo bloco que responde "do que se trata". Duas caixas empilhadas
+   viravam dois avisos e o leitor pulava os dois. */
+.atalho {
+  border: var(--ink-stroke) solid var(--ink); border-top: var(--ink-hair) solid var(--ink);
+  background: var(--paper); padding: var(--ma-3);
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px;
+}
+.atalho-k {
+  flex: 0 0 100%;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 2px;
+}
+.atalho-p { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.35; color: var(--fg); margin: 0; }
+.atalho-alt { color: var(--fg-2); }
+.atalho-b {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .1em; font-size: 13px; color: var(--vermilion-ink);
+  border: 0; border-bottom: 2px solid var(--vermilion-ink); padding: 0 0 2px;
+  background: none; cursor: pointer;
+  transition: color var(--cut), border-color var(--cut);
+}
+.atalho-b:hover { color: var(--vermilion); border-color: var(--vermilion); }
+.atalho-b:focus-visible { outline: 3px solid var(--vermilion-ink); outline-offset: 4px; }
+/* a seta aponta para onde o gesto leva: para baixo, não para fora */
+.atalho-arr { transition: transform var(--cut); }
+.atalho-b:hover .atalho-arr { transform: translateY(2px); }
+@media (prefers-reduced-motion: reduce) { .atalho-arr { transition: none; } }
+
+
 /* ---- RESULTADO: painel de impacto (o fato no palco, não placa vazia) --- */
 /* o painel de impacto é literal: preto de tinta nos DOIS modos (é um palco,
    como a capa). Kicker no vermelho claro: 7:1 sobre o preto. */
@@ -1757,7 +1790,7 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
 
 /* ---- O QUE APRENDI: o fecho, em coluna de leitura ------------------- */
 .aprendi { border-top: var(--ink-stroke) solid var(--ink); padding-top: var(--ma-4); margin-top: var(--ma-4); }
-.apr-p { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.55; max-width: 62ch; color: var(--fg); }
+.apr-p { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.55; max-width: var(--med-longa); color: var(--fg); }
 .apr-p + .apr-p { margin-top: var(--ma-3); }
 
 /* ---- ÍNDICE: destino explícito + descrição curta -------------------- */
@@ -1831,7 +1864,7 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
 
 .ad-legenda {
   font-family: var(--font-body); font-size: var(--t-small); line-height: 1.5;
-  color: var(--fg-2); margin-top: var(--ma-3); max-width: 62ch;
+  color: var(--fg-2); margin-top: var(--ma-3); max-width: var(--med-legenda);
 }
 html.ink .ad-tag { background: var(--paper); color: var(--ink); }
 /* a tag "depois" e o punho ficam no par vermelho-escuro + papel nos DOIS
@@ -1879,7 +1912,7 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   font-family: var(--font-display); text-transform: uppercase;
   font-size: clamp(1.5rem, 2.8vw, 2.3rem); line-height: 1.1; margin: 0 0 12px;
 }
-.db-r { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.55; color: var(--wash-4); margin: 0; }
+.db-r { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.55; color: var(--wash-4); margin: 0; max-width: var(--med-longa); }
 .db-k {
   display: block; font-style: normal; font-family: var(--font-condensed); font-weight: 600;
   text-transform: uppercase; letter-spacing: .2em; font-size: 12px;

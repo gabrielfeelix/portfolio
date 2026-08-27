@@ -617,7 +617,8 @@ function Busca({ dados, chap, figN = {} }) {
    diagnóstico aconteceu de verdade.
    Sem sticky, ou com motion reduzido, vira a mesma coisa em coluna:
    cada passo com o seu texto logo acima da sua prova. */
-function ModuloPassos({ mod, chap, figN = {} }) {
+function ModuloPassos({ mod, chap, figN = {}, ordem, total }) {
+  const ord = ordinal(ordem, total);
   const passos = (mod.passos || []).filter((s) => s && s.fig);
   if (!passos.length) return null;
   const [ativo, setAtivo] = useState(0);
@@ -644,7 +645,9 @@ function ModuloPassos({ mod, chap, figN = {} }) {
       <div className="c5 text-col">
         <div className="passos-cola">
           <div className="panel text">
-            <div className="beat-k">{mod.k}</div>
+            <div className="beat-k">
+              {ord ? <span className="beat-n">{ord}</span> : null}{mod.k}
+            </div>
             <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
             {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
           </div>
@@ -927,11 +930,31 @@ function Sistema({ dados }) {
         ) : null}
       </div>
       {/* as outras fundações: cor sozinha diz que cores existem, o resto
-          mostra que a mesma cabeça decidiu tempo, texto e espaço */}
+          mostra que a mesma cabeça decidiu tempo, texto e espaço.
+          Elas entram dobradas, e a razão é de ritmo, não de importância:
+          a cor já fecha o argumento do beat, e tempo, texto e espaço
+          custavam duas telas de catálogo a quem veio ver o case. Quem
+          quer o vocabulário inteiro abre, e a dobra diz o preço antes.
+          O `Derivado` fica fora da dobra de propósito: é ele que separa
+          paleta de sistema, e é o fecho do beat. */}
       <div className="c12 ds-fundacoes">
-        {dados.motion ? <CurvaMotion dados={dados.motion} /> : null}
-        {dados.tipografia ? <Tipografia dados={dados.tipografia} /> : null}
-        {dados.espaco ? <EspacoRaio dados={dados.espaco} /> : null}
+        {(dados.motion || dados.tipografia || dados.espaco) ? (
+          <details className="ds-dobra">
+            <summary className="ds-dobra-t">
+              <span className="ds-dobra-i" aria-hidden="true" />
+              <span className="ds-dobra-l">
+                <span className="ds-dobra-abrir">{t("Ver o resto do vocabulário", "See the rest of the vocabulary")}</span>
+                <span className="ds-dobra-fechar">{t("Fechar o vocabulário", "Close the vocabulary")}</span>
+              </span>
+              <span className="ds-dobra-n">{t("Tempo, texto e espaço. Duas telas.", "Time, type and space. Two screens.")}</span>
+            </summary>
+            <div className="ds-dobra-corpo">
+              {dados.motion ? <CurvaMotion dados={dados.motion} /> : null}
+              {dados.tipografia ? <Tipografia dados={dados.tipografia} /> : null}
+              {dados.espaco ? <EspacoRaio dados={dados.espaco} /> : null}
+            </div>
+          </details>
+        ) : null}
         {dados.derivado ? <Derivado dados={dados.derivado} /> : null}
         {dados.nota ? <p className="ds-nota">{renderPH(dados.nota)}</p> : null}
       </div>
@@ -950,11 +973,12 @@ function Modulos({ chap, figN = {} }) {
     <>
       {mods.map((m, i) => {
         // o módulo com escolha nunca inverte: a pergunta vem antes das abas
-        if (m.caminhos) return <ModuloCaminhos key={i} mod={m} chap={chap} figN={figN} />;
+        if (m.caminhos) return <ModuloCaminhos key={i} mod={m} chap={chap} figN={figN} ordem={i + 1} total={mods.length} />;
         // o módulo em passos conta uma sequência: texto preso, prova rolando
-        if (m.passos) return <ModuloPassos key={i} mod={m} chap={chap} figN={figN} />;
+        if (m.passos) return <ModuloPassos key={i} mod={m} chap={chap} figN={figN} ordem={i + 1} total={mods.length} />;
         const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
         const grade = figs.length > 1;
+        const ord = ordinal(i + 1, mods.length);
         return (
           /* Sem alternância: a coluna de provas fica sempre à direita, que é
              o único lado por onde ela pode sangrar para a margem (à
@@ -963,7 +987,9 @@ function Modulos({ chap, figN = {} }) {
           <Beat key={i}>
             <div className="c5 text-col">
               <div className="panel text">
-                <div className="beat-k">{m.k}</div>
+                <div className="beat-k">
+                  {ord ? <span className="beat-n">{ord}</span> : null}{m.k}
+                </div>
                 <Brush as="h2" className="beat-t">{renderPH(m.t)}</Brush>
                 {(m.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
               </div>
@@ -988,7 +1014,8 @@ function Modulos({ chap, figN = {} }) {
    seguidos desmonta o argumento. Aqui quem lê escolhe o caminho e vê a
    tela grande dele, com a troca em corte seco: a página faz o que a tela
    que ela está descrevendo faz. Teclado: setas andam entre os caminhos. */
-function ModuloCaminhos({ mod, chap, figN = {} }) {
+function ModuloCaminhos({ mod, chap, figN = {}, ordem, total }) {
+  const ord = ordinal(ordem, total);
   const caminhos = mod.caminhos || [];
   const [ativo, setAtivo] = useState(0);
   const cam = caminhos[ativo] || {};
@@ -1007,7 +1034,9 @@ function ModuloCaminhos({ mod, chap, figN = {} }) {
       <Beat>
         <div className="c5 text-col">
           <div className="panel text">
-            <div className="beat-k">{mod.k}</div>
+            <div className="beat-k">
+              {ord ? <span className="beat-n">{ord}</span> : null}{mod.k}
+            </div>
             <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
             {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
           </div>
@@ -1611,24 +1640,24 @@ function NextChapter({ next, onOpen, onHome }) {
 /* os atos do capítulo, na ordem em que a página os renderiza. `chave` é o
    campo do dado que faz a seção existir: sem ele, a seção não entra. */
 const ATOS = [
-  { k: "cena", t: ["A cena e o buraco", "The scene and the hole"], secs: [
+  { k: "cena", n: "I", kanji: "現場", t: ["A cena e o buraco", "The scene and the hole"], secs: [
     { id: "abertura", chave: "abertura", t: ["A cena", "The scene"] },
     { id: "problema", chave: "problema", t: ["O problema", "The problem"] },
     { id: "painel", chave: "painel", t: ["O tamanho do buraco", "The size of the hole"] },
     { id: "funil", chave: "funil", t: ["O funil", "The funnel"] },
   ] },
-  { k: "dado", t: ["O que o dado disse", "What the data said"], secs: [
+  { k: "dado", n: "II", kanji: "数字", t: ["O que o dado disse", "What the data said"], secs: [
     { id: "gesto", chave: "gesto", t: ["O gesto", "The gesture"] },
     { id: "busca", chave: "busca", t: ["A busca", "Search"] },
     { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
   ] },
-  { k: "resolvi", t: ["Como eu resolvi", "How I solved it"], secs: [
+  { k: "resolvi", n: "III", kanji: "設計", t: ["Como eu resolvi", "How I solved it"], secs: [
     { id: "recusei", chave: "recusei", t: ["O que recusei", "What I turned down"] },
     { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
     { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
     { id: "modulos", chave: "modulos", t: ["Os módulos", "The modules"] },
   ] },
-  { k: "mudou", t: ["O que mudou", "What changed"], secs: [
+  { k: "mudou", n: "IV", kanji: "変化", t: ["O que mudou", "What changed"], secs: [
     { id: "solucao", chave: "solucao", t: ["A solução", "The solution"] },
     { id: "antesdepois", chave: "antesDepois", t: ["Antes e depois", "Before and after"] },
     { id: "resultado", chave: "resultado", t: ["Resultado", "Result"] },
@@ -1643,7 +1672,7 @@ function indiceDo(chap) {
       const v = chap[s.chave];
       return Array.isArray(v) ? v.length > 0 : !!v;
     });
-    return secs.length ? { k: ato.k, t: ato.t, secs } : null;
+    return secs.length ? { k: ato.k, n: ato.n, kanji: ato.kanji, t: ato.t, secs } : null;
   }).filter(Boolean);
 }
 
@@ -1687,16 +1716,8 @@ function IndiceCapitulo({ chap }) {
 
   if (!planas.length) return null;
 
-  const irPara = (e, id) => {
-    e.preventDefault();
-    const el = document.getElementById(`sec-${id}`);
-    if (!el) return;
-    // foco no destino: quem navega por teclado precisa continuar de lá,
-    // não voltar pro topo do índice
-    el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
-    el.setAttribute("tabindex", "-1");
-    el.focus({ preventScroll: true });
-  };
+  // o índice e o atalho rolam pelo mesmo caminho: uma mecânica só
+  const irPara = (e, id) => { e.preventDefault(); irParaSec(id); };
 
   const n = (i) => String(i + 1).padStart(2, "0");
   let cont = -1;
@@ -1743,11 +1764,31 @@ function IndiceCapitulo({ chap }) {
    índice. Silêncio com marca, que é o que separa um ato do outro sem
    cobrar um título. `aria-hidden` porque não há conteúdo a anunciar: a
    estrutura para quem usa leitor de tela vem dos títulos das seções. */
-function Respiro() {
+function Respiro({ ato }) {
   const [ref, seen] = useReveal({ threshold: 0.6 });
+  // sem `ato` continua sendo só a pausa: é o que os outros capítulos usam
+  if (!ato) {
+    return (
+      <div ref={ref} className={`respiro ${seen || REDUCED ? "in" : ""}`} aria-hidden="true">
+        <span className="respiro-traco"></span>
+      </div>
+    );
+  }
+  /* Com `ato`, a pausa vira virada. O capítulo corre em quatro atos e
+     eles só existiam no índice da esquerda: na página, dezesseis beats
+     do mesmo tamanho passavam sem relevo e o leitor não percebia quando
+     a investigação virava decisão. Aqui a estrutura fica visível, e o
+     kanji, que aparecia solto em dois beats e sumia nos atos III e IV,
+     passa a ter um por ato. Não é aria-hidden: o nome do ato é
+     informação de estrutura, não enfeite. */
   return (
-    <div ref={ref} className={`respiro ${seen || REDUCED ? "in" : ""}`} aria-hidden="true">
-      <span className="respiro-traco"></span>
+    <div ref={ref} className={`respiro respiro-ato ${seen || REDUCED ? "in" : ""}`}>
+      <span className="respiro-traco" aria-hidden="true"></span>
+      <div className="respiro-marca">
+        <span className="respiro-kanji" lang="ja" translate="no" aria-hidden="true">{ato.kanji}</span>
+        <span className="respiro-n">{t("Ato", "Act")} {ato.n}</span>
+        <span className="respiro-t">{t(ato.t[0], ato.t[1])}</span>
+      </div>
     </div>
   );
 }
@@ -1758,9 +1799,62 @@ function Sec({ id, children }) {
   return <div className="sec-anc" id={`sec-${id}`}>{children}</div>;
 }
 
+/* A espinha dos módulos. Cinco partes do produto corriam sem numeração,
+   e catorze telas sem saber se você está na primeira ou na quarta são
+   mais longas do que catorze telas numeradas. O kicker já existia, e
+   ganhar a ordem nele custa zero altura. É a mesma numeração do índice
+   da esquerda, então o leitor já conhece o sinal. */
+function ordinal(i, total) {
+  if (!total || total < 2) return null;
+  const nn = (x) => String(x).padStart(2, "0");
+  return `${nn(i)}/${nn(total)}`;
+}
+
+/* rolar até uma âncora e deixar o foco lá. Um href de verdade quebraria
+   a rota, que também é hash: quem navega é o onClick. Quem chega por
+   teclado continua de onde caiu, não do topo do índice. */
+function irParaSec(id) {
+  const el = document.getElementById(`sec-${id}`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+  el.setAttribute("tabindex", "-1");
+  el.focus({ preventScroll: true });
+}
+
+/* ---- ATALHO: o capítulo longo deixa de ser um risco -----------------
+   Um recrutador dá três minutos e este capítulo pede vinte. O índice ao
+   lado é endereço, não atalho: lista quinze seções e não diz o que
+   custa nenhuma. Aqui o custo dos dois caminhos está escrito antes da
+   escolha, e o caminho curto é contíguo (do clímax até o fim), então
+   quem pula não cai no meio de um argumento pela metade.
+   Os dois números são medidos, não estimados: 3.821 palavras no
+   capítulo inteiro e 527 da `solucao` ao `aprendi`, a 200 palavras por
+   minuto. */
+function Atalho({ minutos = 20, curto = 3, alvo = "solucao" }) {
+  return (
+    <div className="atalho">
+      <div className="atalho-k">{t("Como ler", "How to read")}</div>
+      <p className="atalho-p">
+        {t(`O capítulo inteiro leva ${minutos} minutos.`, `The whole chapter takes ${minutos} minutes.`)}
+        {" "}
+        <span className="atalho-alt">{t(`Se você tiver ${curto},`, `If you have ${curto},`)}</span>
+      </p>
+      <button type="button" className="atalho-b" onClick={() => irParaSec(alvo)}>
+        {t("veja só o que mudou", "see just what changed")}
+        <span className="atalho-arr" aria-hidden="true">↓</span>
+      </button>
+    </div>
+  );
+}
+
 function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
   const figN = figOrder(chap);
+  /* os atos que este capítulo de fato tem. O respiro entre eles anuncia
+     o próximo, então o marcador vem do mesmo dado do índice e um
+     capítulo sem aquele ato não ganha uma virada que não existe. */
+  const atos = indiceDo(chap);
+  const ato = (i) => atos[i] || null;
   return (
     <main key={chap.id} className="chapter-main">
       <div className="chapter-back">
@@ -1778,6 +1872,9 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <IndiceCapitulo chap={chap} />
         <div className="chapter-col">
         <Tldr tldr={chap.tldr} links={chap.links} />
+        {/* o atalho vem antes do primeiro beat: a escolha tem que existir
+            antes do custo, não depois de dez telas dele */}
+        <Atalho minutos={chap.minutos || 20} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
             não desenha nada, só dá endereço e alvo de foco.
@@ -1794,7 +1891,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         {/* o funil fecha o ato I: o problema já tem tamanho e endereço */}
         <Sec id="funil"><Funil dados={chap.funil} /></Sec>
 
-        <Respiro />
+        <Respiro ato={ato(1)} />
 
         {/* ATO II · o que o dado disse. O gesto e a busca vêm antes da
             investigação porque são o que mandou olhar para onde ela
@@ -1805,7 +1902,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Sec id="investigacao"><Investigacao chap={chap} figN={figN} /></Sec>
         <Citacao dados={chap.citacao} />
 
-        <Respiro />
+        <Respiro ato={ato(2)} />
 
         {/* ATO III · como eu resolvi. `recusei` abre o ato porque o que
             ficou de fora é a primeira decisão; `sistema` traz o
@@ -1819,7 +1916,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <div style={{ height: "var(--ma-6)" }}></div>
         <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
 
-        <Respiro />
+        <Respiro ato={ato(3)} />
 
         {/* ATO IV · o que mudou */}
         <Sec id="solucao"><Solucao chap={chap} /></Sec>
@@ -1840,4 +1937,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Respiro, Sec, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Respiro, Sec, irParaSec, Atalho, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });

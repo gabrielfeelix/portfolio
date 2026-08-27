@@ -234,12 +234,11 @@ const CHAPTERS = [
       t: "Gravação de sessão no lugar de opinião",
       p: ["Gravações no Microsoft Clarity, métricas de navegação e tempo de permanência, e conversa direta com usuários sobre onde travavam.",
           "Assisti as gravações inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É um trabalho lento e é ele que sustenta o resto. Sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
-          "A diretoria queria uma direção minimalista, com foco em valor de marca. O comportamento no site apontava para o outro lado. Em vez de escolher um dos dois, propus separar as camadas: a marca continua presente em momentos específicos, e o caminho de compra passa a ser o eixo do site. Levei as gravações para sustentar a proposta, e o modelo final foi aprovado."],
+          "A diretoria queria uma direção minimalista, com foco em valor de marca. O comportamento no site apontava para o outro lado. Levei as gravações para a reunião e propus um terceiro caminho, com a marca presente em momentos escolhidos e o caminho de compra como eixo do site. O modelo final foi aprovado."],
       achados: [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
         "Havia bugs no módulo de pagamento usado no Magento. A falha aparecia nas gravações antes de aparecer em qualquer relatório.",
         "O caminho até a compra era longo demais para o tipo de produto vendido.",
-        "O gesto mais repetido da página era fechar o pop-up, e o segundo era buscar. Comprar aparecia em 0,63% dos cliques. Se todo mundo procura e quase ninguém compra, a suspeita deixa de ser o produto e passa a ser o que a busca devolve.",
       ],
     },
     /* ---- A BUSCA -------------------------------------------------------

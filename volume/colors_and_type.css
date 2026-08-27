@@ -142,6 +142,20 @@
   --ma-7: 10rem;
   --gutter: clamp(1.25rem, 4vw, 4rem); /* panel-to-panel calha         */
 
+  /* Medida de leitura: tres degraus, e o quarto e nao ter medida.
+     A faixa confortavel e 45 a 75 caracteres por linha.
+     Cuidado com o ch: ele e a largura do "0", cerca de 25% mais larga
+     que o caractere medio destas fontes, entao 68ch rende ~80 caracteres
+     reais, nao 68. Os valores abaixo ja vem calibrados contra medicao
+     por Range na pagina servida, em 1440. */
+  --med-longa:   56ch;  /* ~70 car. · a prosa que E o beat                */
+  --med-apoio:   40ch;  /* ~50 car. · o texto que acompanha a prova       */
+  --med-legenda: 52ch;  /* ~65 car. · a legenda, que aqui carrega argumento */
+  /* O quarto degrau e a excecao, e ela e declarada: dado desenhado e
+     lista curta nao tem medida de leitura, porque a linha ali e regua e
+     nao frase. Quem usa: .rec-r (tres recusas em tres colunas, 40 car.
+     de proposito), .ge-item, .fn-etapa, e as amostras do design system. */
+
   /* ============================================================
      INK STROKE — panel borders. Thick, used with PARSIMONY.
      ============================================================ */

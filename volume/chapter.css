@@ -153,11 +153,16 @@ html.ink .cover-linhas { opacity: .06; }
 .beat .panel.art image-slot { width: 100%; height: 100%; }
 .beat .panel-tone { position: absolute; inset: 0; background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 7px 7px; opacity: .14; pointer-events: none; }
 .beat-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 12px; color: var(--vermilion); }
+/* a ordem dentro da sequência de módulos. Fica no tom secundário porque
+   é orientação, não título: quem lê o kicker quer saber do que se trata,
+   e o número só responde "quanto falta" para quem foi procurar. */
+.beat-n { color: var(--fg-2); letter-spacing: .16em; }
+.beat-n::after { content: " · "; color: var(--wash-3); }
 .beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.06; margin: 10px 0 var(--ma-3); }
 /* 46ch travava a medida abaixo da coluna sempre que a coluna era larga
    (as `c8` paravam em 460px). 62ch deixa o parágrafo usar o que a coluna
    tem e continua barrando a linha longa demais nas telas grandes. */
-.beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: 62ch; color: var(--fg); }
+.beat-p { font-size: var(--t-body); line-height: var(--lh-body); max-width: var(--med-longa); color: var(--fg); }
 .beat-p + .beat-p { margin-top: var(--ma-3); }
 
 /* layout variants for rhythm */
@@ -216,8 +221,11 @@ html.ink .cover-linhas { opacity: .06; }
 .fig-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .fig-cap {
   display: flex; gap: 10px; align-items: baseline;
-  margin-top: 12px; font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: 60ch;
+  margin-top: 12px; font-size: 15px; line-height: 1.45; color: var(--fg-2);
 }
+/* a medida mora no texto, nao na linha inteira: o "fig. 07" fica na
+   margem e a frase e que respeita o degrau de legenda */
+.fig-cap > span { max-width: var(--med-legenda); }
 .fig-n {
   font-family: var(--font-condensed); font-weight: 700; font-style: normal;
   text-transform: uppercase; letter-spacing: .14em; font-size: 12px;
@@ -316,10 +324,13 @@ html.ink .cover-linhas { opacity: .06; }
 .rec-lista { list-style: none; margin: var(--ma-4) 0 0; padding: 0; display: grid; gap: var(--ma-4); grid-template-columns: repeat(3, 1fr); }
 .rec-lista li { border-left: var(--ink-stroke) solid var(--ink); padding-left: 16px; }
 .rec-o { font-family: var(--font-condensed); font-weight: 700; font-size: 19px; line-height: 1.2; margin: 0 0 8px; }
+/* excecao declarada da escala de medida: sao tres recusas em tres
+   colunas, 40 caracteres cada. A linha curta aqui e a composicao, e o
+   bloco inteiro tem 11 linhas. Alargar exigiria desfazer o trio. */
 .rec-r { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
 
 /* legenda das telas da solução: cada print diz o que provou */
-.sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: 62ch; display: flex; gap: 10px; align-items: baseline; }
+.sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: var(--med-legenda); display: flex; gap: 10px; align-items: baseline; }
 
 @media (max-width: 880px) {
   .rec-lista { grid-template-columns: 1fr; }
@@ -340,7 +351,8 @@ html.ink .cover-linhas { opacity: .06; }
 }
 /* a legenda acompanha a figura, mas a linha não: texto a 1000px de
    largura sai da faixa de leitura tão rápido quanto sai a 280px */
-.mod-figs .fig-cap, .passos-figs .fig-cap, .cam-palco .fig-cap { max-width: 68ch; }
+/* 68ch aqui rendia 80 caracteres reais, acima da faixa. Quem segura
+   agora e o degrau de legenda, aplicado no texto da legenda inteira. */
 
 /* =====================================================================
    MÓDULO EM PASSOS — o texto que acompanha a prova
@@ -367,9 +379,19 @@ html.ink .cover-linhas { opacity: .06; }
 .mod-passos .passo-vivo { margin-top: var(--ma-3); }
 .mod-passos .passo-regua { margin-top: var(--ma-3); }
 .passos-cola { position: sticky; top: calc(var(--ma-5) + 10px); }
-.passos-figs { display: grid; grid-template-columns: 1fr; gap: 26vh; padding-bottom: 12vh; }
 /* o vão entre as provas é o que dá tempo do texto trocar: sem ele duas
-   figuras disputam a faixa central e o passo pisca */
+   figuras disputam a faixa central e o passo pisca. Mas 26vh eram 234px
+   em 1440x900, escolhidos na mão e fora da escala --ma: doze calhas
+   dessas somavam 2.808px, ou 3,1 telas de rolagem sem nada dentro, e a
+   coluna de texto presa mede 630px, então nunca foi ela que pedia essa
+   altura.
+   O valor novo não é arbitrário: --ma-6 é o mesmo `margin-bottom` que
+   separa dois beats do capítulo, então a distância entre duas provas
+   dentro de um módulo passou a ser a distância entre dois beats. Medido
+   em 160, 104 e 64px, rolando de 60 em 60: nenhum recuo do passo ativo e
+   nenhum passo curto demais para ser lido nos três. Quem decidiu foi o
+   ritmo, não o observer. */
+.passos-figs { display: grid; grid-template-columns: 1fr; gap: var(--ma-6); padding-bottom: var(--ma-6); }
 .passo-fig:last-child { padding-bottom: 0; }
 
 .passo-vivo { margin-top: var(--ma-4); border-left: var(--ink-stroke) solid var(--vermilion); padding-left: 16px; }
@@ -378,7 +400,7 @@ html.ink .cover-linhas { opacity: .06; }
   letter-spacing: .14em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 6px;
 }
 .passo-t { font-size: clamp(19px, 2vw, 24px); line-height: 1.2; margin: 0 0 8px; }
-.passo-p { font-size: 16px; line-height: 1.55; color: var(--fg-2); margin: 0; max-width: 44ch; }
+.passo-p { font-size: 16px; line-height: 1.55; color: var(--fg-2); margin: 0; max-width: var(--med-apoio); }
 
 /* a troca é um corte seco com respiro, no idioma do resto do capítulo */
 @keyframes passoEntra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -587,7 +609,7 @@ html.ink .cover-linhas { opacity: .06; }
 .cam-tab:focus-visible { outline: var(--ink-stroke) solid var(--vermilion); outline-offset: 3px; }
 /* a troca de caminho não reanima: quem clicou já está olhando o quadro */
 .cam-fig .fig-img { animation: none !important; -webkit-mask-image: none; mask-image: none; }
-.cam-p { margin-top: 12px; font-size: 15.5px; line-height: 1.5; color: var(--fg); max-width: 62ch; }
+.cam-p { margin-top: 12px; font-size: 15.5px; line-height: 1.5; color: var(--fg); max-width: var(--med-longa); }
 @media (max-width: 880px) {
   .cam-tabs { grid-template-columns: 1fr; }
 }
@@ -613,7 +635,7 @@ html.ink .cover-linhas { opacity: .06; }
 .mil.on i { opacity: .5; transform: none; }
 .mil i.aceso { background: var(--vermilion); }
 .mil.on i.aceso { opacity: 1; transform: scale(1.7); box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--vermilion); }
-.pn-mil-legenda { margin-top: 14px; font-size: 15px; line-height: 1.5; color: var(--fg-2); max-width: 46ch; }
+.pn-mil-legenda { margin-top: 14px; font-size: 15px; line-height: 1.5; color: var(--fg-2); max-width: var(--med-apoio); }
 
 .pn-numeros { display: grid; grid-template-columns: repeat(3, auto); gap: var(--ma-4); justify-content: start; }
 .pn-v { font-family: var(--font-display); font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1; }
@@ -628,7 +650,7 @@ html.ink .cover-linhas { opacity: .06; }
 .pb-fill { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0;
   transition: width 760ms var(--curva); }
 .pb-n { display: block; margin-top: 6px; font-size: 13px; color: var(--fg-2); }
-.pn-nota { margin: var(--ma-4) 0 0; font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: 74ch; }
+.pn-nota { margin: var(--ma-4) 0 0; font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: var(--med-legenda); }
 
 /* =====================================================================
    FUNIL — onde a leitura perdia gente
@@ -674,7 +696,7 @@ html.ink .cover-linhas { opacity: .06; }
 .fn-marca-legendas { display: flex; gap: var(--ma-4); flex-wrap: wrap; margin-top: 10px; font-size: 14px; color: var(--fg-2); }
 .fn-tag b { font-family: var(--font-condensed); font-weight: 700; font-size: 16px; }
 .fn-tag.nosso b { color: var(--vermilion-ink); }
-.fn-marca-n { margin: 12px 0 0; font-size: 15px; line-height: 1.55; max-width: 70ch; }
+.fn-marca-n { margin: 12px 0 0; font-size: 15px; line-height: 1.55; max-width: var(--med-longa); }
 .fn-marca-fonte { margin-top: 8px; font-size: 12px; color: var(--wash-3); }
 
 /* =====================================================================
@@ -744,7 +766,7 @@ html.ink .cover-linhas { opacity: .06; }
   letter-spacing: .1em; font-size: 12.5px; color: var(--fg); }
 .ds-fpapel { color: var(--fg-2); font-weight: 600; letter-spacing: .14em; }
 .ds-fpapel::before { content: "· "; }
-.ds-fp { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--fg-2); max-width: 42ch; }
+.ds-fp { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--fg-2); max-width: var(--med-apoio); }
 
 /* a escada: um token por linha, os dois temas lado a lado */
 .ds-escada .pn-topo { align-items: center; }
@@ -787,9 +809,47 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-par-r { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
 .ds-par.claro .ds-par-tema, .ds-par.claro .ds-par-r { color: #52525b; }   /* 7.0:1 sobre #ffffff */
 .ds-par.escuro .ds-par-tema, .ds-par.escuro .ds-par-r { color: #a1a1aa; } /* 7.6:1 sobre #0e0e0e */
-.ds-caso-p { font-size: 15px; line-height: 1.55; color: var(--fg); max-width: 62ch; }
+.ds-caso-p { font-size: 15px; line-height: 1.55; color: var(--fg); max-width: var(--med-legenda); }
 .ds-caso-p + .ds-caso-p { margin-top: 12px; }
-.ds-nota { font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: 74ch; }
+.ds-nota { font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: var(--med-legenda); }
+
+/* ---- a dobra do vocabulário -----------------------------------------
+   As três fundações que não são cor entram fechadas. É <details> nativo
+   de propósito: teclado, leitor de tela e o estado aberto vêm de graça,
+   e nada disso depende de JS. A dobra declara o preço antes de ser
+   aberta, no mesmo idioma de honestidade do resto do capítulo. */
+.ds-dobra { margin-top: var(--ma-5); border-top: var(--ink-stroke) solid var(--ink); }
+.ds-dobra-t {
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  padding: var(--ma-3) 0; cursor: pointer; list-style: none;
+  transition: color var(--cut);
+}
+.ds-dobra-t::-webkit-details-marker { display: none; }
+.ds-dobra-t:hover .ds-dobra-l { color: var(--vermilion-ink); }
+.ds-dobra-t:focus-visible { outline: 3px solid var(--vermilion-ink); outline-offset: 4px; }
+/* a seta é o único sinal de estado, e ela gira na curva do volume */
+.ds-dobra-i {
+  flex: 0 0 auto; width: 11px; height: 11px; margin-right: 2px;
+  border-right: var(--ink-stroke) solid var(--vermilion);
+  border-bottom: var(--ink-stroke) solid var(--vermilion);
+  transform: rotate(45deg); transform-origin: 60% 60%;
+  transition: transform var(--cut);
+}
+.ds-dobra[open] .ds-dobra-i { transform: rotate(-135deg); }
+.ds-dobra-l {
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; font-size: 15px; color: var(--fg);
+  transition: color var(--cut);
+}
+.ds-dobra-n { font-size: 14px; line-height: 1.5; color: var(--fg-2); max-width: var(--med-legenda); }
+.ds-dobra-fechar { display: none; }
+.ds-dobra[open] .ds-dobra-abrir { display: none; }
+.ds-dobra[open] .ds-dobra-fechar { display: inline; }
+/* o corpo herda o ritmo das fundações abertas, sem inventar espaço novo */
+.ds-dobra-corpo { display: flex; flex-direction: column; gap: var(--ma-4); padding-top: var(--ma-2); padding-bottom: var(--ma-4); }
+@media (prefers-reduced-motion: reduce) {
+  .ds-dobra-i { transition: none; }
+}
 
 @media (max-width: 880px) {
   .beat-sistema .c5, .beat-sistema .c7 { grid-column: 1 / -1; }
@@ -808,7 +868,7 @@ html.ink .cover-linhas { opacity: .06; }
 .ds-fundacoes { display: grid; gap: var(--ma-4); margin-top: var(--ma-5); }
 .ds-sub-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d3);
   line-height: 1.06; margin: 8px 0 var(--ma-3); }
-.ds-sub-p { font-size: 15.5px; line-height: 1.55; color: var(--fg); max-width: 60ch; }
+.ds-sub-p { font-size: 15.5px; line-height: 1.55; color: var(--fg); max-width: var(--med-longa); }
 .ds-sub-p + .ds-sub-p { margin-top: 12px; }
 .ds-mini-nota { margin: 10px 0 var(--ma-4); font-size: 13px; color: var(--fg-2); }
 .ds-formula { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -1082,6 +1142,48 @@ html.ink .cover-linhas { opacity: .06; }
   transition-delay: var(--ma-hold);   /* a pausa antes de o reveal resolver */
 }
 .respiro.in .respiro-traco { width: 56px; }
+
+/* ---- a virada de ato -------------------------------------------------
+   O respiro era pausa muda: dezesseis beats de mesmo peso passavam sem
+   relevo e os quatro atos só existiam no índice da esquerda. Agora a
+   pausa carrega a virada, e ela usa o motivo que o capítulo já tinha:
+   o kanji vertical vazado do `prob-kanji` e do `inv-kanji`, que
+   apareciam em dois beats e sumiam nos atos III e IV. Um por ato fecha
+   o motivo em vez de abandoná-lo. */
+.respiro-ato { padding: var(--ma-6) 0 var(--ma-5); }
+.respiro-marca {
+  display: grid; grid-template-columns: auto auto;
+  align-items: center; column-gap: var(--ma-3); row-gap: 4px;
+  margin-top: var(--ma-3);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 460ms var(--curva), transform 460ms var(--curva);
+  transition-delay: var(--ma-hold);
+}
+.respiro-ato.in .respiro-marca { opacity: 1; transform: none; }
+.respiro-kanji {
+  grid-column: 1; grid-row: 1 / 3;
+  writing-mode: vertical-rl;
+  font-family: 'Reggae One', var(--font-sfx), sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1; letter-spacing: .06em;
+  color: transparent; -webkit-text-stroke: 2px var(--wash-2);
+  pointer-events: none; user-select: none;
+}
+.respiro-n {
+  grid-column: 2; grid-row: 1; align-self: end;
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .26em; font-size: 12px; color: var(--vermilion-ink);
+}
+.respiro-t {
+  grid-column: 2; grid-row: 2; align-self: start;
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(19px, 2.2vw, 28px); line-height: 1.05; color: var(--fg);
+}
+@media (max-width: 860px) {
+  .respiro-ato { padding: var(--ma-6) 0 var(--ma-5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .respiro-marca { transition: none; }
+}
 
 @media (max-width: 860px) {
   /* na tela pequena o ato já respira pela própria altura das figuras:
