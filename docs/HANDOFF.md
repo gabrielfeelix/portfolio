@@ -22,8 +22,9 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
   7,4. Traz os números medidos e a receita pra reproduzir a medição, e o
   registro das três rodadas já executadas (a A, a de escala e a D+E).
 
-O próximo trabalho sai da seção **Pendente** deste arquivo, que consolida
-as duas.
+**O próximo trabalho sai de `docs/O-QUE-FALTA.md`**, que é a lista
+completa e medida do que resta. A seção **Pendente** aqui embaixo guarda
+só o registro do que já fechou, porque é onde moram as armadilhas.
 
 > Este arquivo é relido a cada sessão, então guarda só o que **muda o que
 > você vai fazer**: regras, armadilhas que custaram retrabalho, decisões já
@@ -102,28 +103,29 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-> **Estado em 2026-08-26.** Fecharam, nesta ordem: a **Rodada A**
-> (`fb823c9`), o **Grupo B** (escala e zoom, `68855dd`), os **Grupos D e
-> E** (motion e maneirismo, `4e3b79e`) e o **Grupo A** (ritmo, `1ab1e88`). Os registros de execução, com números e com
-> o método pra reproduzir a medição, estão em
-> `docs/AUDITORIA-PCYES-2026-08-26.md`. Nada do que sobrou abaixo foi
-> tentado e falhou: é trabalho que ainda não começou ou que depende do
-> Gabriel.
+> **`docs/O-QUE-FALTA.md` é a lista completa**, medida em 2026-08-26 sobre
+> `1604128`. Esta seção não a repete: guarda só o registro do que fechou,
+> porque é onde moram as armadilhas que a próxima pessoa vai pisar.
 
-Sete grupos, **cinco fechados**. O que resta é o **C** e o **F**, que
-dependem de material que só o Gabriel tem, mais as miudezas do **G**.
+Em uma linha: falta **os quatro prints do PCYES** (travado no Gabriel, e é
+o maior), **engordar os outros quatro capítulos** (depende de material
+dele), e **o ritmo no mobile**, que é 48,3 telas em 390px e é um problema
+de ordem, não de espaço.
 
-**As duas decisões de escala continuam com ele, e não entraram aqui:**
-se o clímax da V2 (1033px) deve empatar com a abertura da V1 (~1180px)
-sangrando em `100vw`, e se o crescimento de 7,9% do documento incomoda
-mais que a escala. Se incomodar, o caminho é o Grupo A, não desfazer.
+**Fecharam, nesta ordem:** a Rodada A (`fb823c9`), o Grupo B (escala e
+zoom, `68855dd`), os Grupos D e E (motion e maneirismo, `4e3b79e`) e o
+Grupo A (ritmo, `1ab1e88` e `1604128`).
+
+**A instrumentação está em `tools/medir.mjs`.** Ela acha o Playwright
+sozinho e traz as seis medições que custaram retrabalho para descobrir:
+`beats`, `cpl`, `reveal`, `passos`, `regressao` e `diff`. Não reescreva
+medição do zero.
 
 ---
 
-### A · RITMO E LEITURABILIDADE · **FECHADO em 2026-08-26** (`1ab1e88`)
+### A · RITMO E LEITURABILIDADE · **FECHADO em 2026-08-26** (`1ab1e88`, `1604128`)
 
-**O registro completo, com os números e o método, está em
-`docs/GRUPO-A-RITMO.md`**, no fim. Aqui só o que muda o que você vai fazer.
+Registro completo, com método, no fim de `docs/GRUPO-A-RITMO.md`.
 
 | | Antes | Depois |
 |---|---|---|
@@ -134,54 +136,48 @@ mais que a escala. Se incomodar, o caminho é o Grupo A, não desfazer.
 | Palavras de conteúdo | 3.878 | **3.869** |
 
 **O argumento não encolheu: 9 palavras de diferença líquida.** O que saiu
-foi repetição (o Ato II fechava recontando o beat do `gesto` e o
-parágrafo antes da citação dizia a frase da citação). O que entrou foi
-navegação de tamanho parecido.
+foi repetição; o que entrou foi navegação de tamanho parecido.
 
-Quatro peças novas, e todas são idioma que se herda:
+**Quatro peças novas, e todas são idioma que se herda:**
 
-- **`Atalho`**, sob o `Tldr`, compartilhando a borda dele. Declara o
-  custo dos dois caminhos antes da escolha e leva ao clímax. Capítulo
-  novo ganha de graça: é `<Atalho minutos={chap.minutos || 20} />`.
+- **`Atalho`**, sob o `Tldr`, dividindo a borda dele. Só aparece em
+  capítulo com **`minutos` declarado no `data.jsx`** e com `solucao` para
+  onde levar. Só o PCYES tem, e o número é medido. Um atalho de 3 minutos
+  num capítulo de 3 minutos seria mentira, e isso já quebrou uma vez.
 - **`--med-longa` / `--med-apoio` / `--med-legenda`** em
   `colors_and_type.css`. **Componente de leitura novo amarra num degrau.**
   O quarto degrau é a exceção declarada: dado desenhado e lista curta não
-  têm medida.
-- **`Respiro ato={...}`**, a virada de ato com numeral, título e kanji.
-  Vem de `ATOS` em `Capitulo.jsx`, que agora tem `n` e `kanji`.
-- **`ordinal(i, total)`** no kicker dos módulos (`01/05`). Custo zero de
+  têm medida de leitura.
+- **`Respiro ato={...}`**, a virada de ato com numeral, título e kanji,
+  vinda de `ATOS` em `Capitulo.jsx` (que agora tem `n` e `kanji`). Ato sem
+  seção não ganha virada, porque o marcador vem de `indiceDo`.
+- **`ordinal(i, total)`** no kicker dos módulos (`01/05`), custo zero de
   altura.
 
 **As três armadilhas novas, e elas custam retrabalho:**
 
-1. **`1ch` mente 25% neste projeto.** `ch` é a largura do "0", que nestas
-   fontes é ~25% mais larga que o caractere médio: `68ch` rendia **80
-   caracteres reais**. E a aproximação antiga (`largura / (font-size *
-   0,5)`) erra para o outro lado. **Meça com `Range`, caractere a
-   caractere**, cortando onde o topo muda. Receita em `GRUPO-A-RITMO.md`.
-2. **O `i18n.jsx` substitui, não mescla.** Campo novo em `chap.sistema`
-   que não tiver contraparte em EN **simplesmente não renderiza em
+1. **`1ch` mente 25% neste projeto.** `ch` é a largura do "0", ~25% mais
+   larga que o caractere médio destas fontes: `68ch` rendia **80
+   caracteres reais**. A aproximação antiga (`largura / (font-size * 0,5)`)
+   erra para o outro lado. **Meça com `Range`**, caractere a caractere:
+   `node tools/medir.mjs cpl`.
+2. **O `i18n.jsx` substitui, não mescla** (`Object.assign(c, en)` é raso).
+   Campo novo em `chap.sistema` sem contraparte em EN **não renderiza em
    inglês**, com build verde e console limpo. Foi assim que o beat do
-   Design System perdeu motion, tipografia, espaço e o `Derivado`
-   inteiros em EN por semanas (corrigido em `1ab1e88`). **Confira o EN
-   renderizado, não o fonte.**
+   Design System perdeu motion, tipografia, espaço e o `Derivado` inteiros
+   em EN por semanas. **Confira o EN renderizado, não o fonte.**
 3. **Espaço grande escolhido na mão vira telas.** `.passos-figs` tinha
    `gap: 26vh` (234px em 1440x900) e doze dessas somavam 2.808px de
    rolagem vazia. Hoje é `--ma-6`, o mesmo valor que separa dois beats.
-   Se criar coluna de provas nova, use a escala `--ma`, não `vh`.
+   Coluna de provas nova usa a escala `--ma`, não `vh`.
 
-**O que eu decidi não fazer, e o motivo continua valendo:** não dobrar
-"As nove correções" (esconder o acabamento piora a dimensão mais fraca da
+**Decisões desta rodada que não se relitigam:** não dobrar "As nove
+correções" (esconder o acabamento piora a dimensão mais fraca da
 auditoria), não encolher o `ckMobile` (a 600px cada aparelho já mede
-~290px), e não alargar o `.beat-p` de 375px (é o `.c5` da composição
+~290px), não alargar o `.beat-p` de 375px (é o `.c5` da composição
 `c5 texto + c7 prova`, a gramática do capítulo, e 46 caracteres está no
-piso da faixa mas dentro dela).
-
-**O que ficou aberto:** 28 Tabs até o atalho (ele vem depois do índice de
-15 links no DOM); mobile em 768px ganhou só 0,7 tela e ainda mede
-44.366px, e ali o problema é outro (coluna única, ordem, não calha); e os
-seis `<div style={{ height: var(--ma-6) }}>` do Ato IV continuam sendo
-espaço na mão dentro do JSX.
+piso da faixa mas dentro dela), e não mexer na ordem do Ato II (o copy
+está soldado entre `gesto` e `busca`).
 
 ### B · A ESCALA DAS TELAS · **FECHADO em 2026-08-26**
 
@@ -233,41 +229,6 @@ própria.
 **O preço, e ele é real:** tela maior é página mais alta. O capítulo foi
 de 36.420 para 39.302px, de 40,5 para 43,7 telas de rolagem. Isso empurra
 o Grupo A, não o resolve.
-
-### C · MATERIAL QUE SÓ O GABRIEL TEM (travado)
-
-**C1. Os quatro prints do PCYES.** Só ele tem acesso à V1.
-
-| Chave | O que é | Onde | Prioridade |
-|---|---|---|---|
-| `buscaV2` | V2 sugerindo produtos e termos antes de digitar | **passo 1** de "O acabamento" | **alta** |
-| `popup` | Pop-up da V2 após 15% de rolagem | **passo 2** de "O acabamento" | **alta** |
-| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad | beat `busca` (Ato II) | **alta** |
-| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | beat `busca` (Ato II) | **alta** |
-
-`buscaV2` e `popup` são os **passos 1 e 2** de um módulo de nove: o
-leitor abre "O acabamento" em duas molduras vazias empilhadas. É o buraco
-mais visível do capítulo hoje. `buscaMouse` e `buscaMause` sustentam o
-achado da busca, que é o melhor momento do melhor case.
-
-**Como entregar:** precisa de **arquivo em disco**, imagem colada em chat
-não serve. Salvar em `volume/assets/projetos/pcyes/`, preferir `.webp`,
-e apontar o `src` na entrada de `chap.figuras` (`data.jsx`, capítulo
-`pcyes`) no formato das vizinhas:
-`src: "volume/assets/projetos/pcyes/<arquivo>.webp"`. **Alt e legenda já
-estão escritos em PT e EN: não há código a mexer.** Depois `npm run build`.
-
-**C2. Quais artefatos do FigJam mudaram uma decisão.** A resposta é dele.
-O critério está em `AUDITORIA-PORTFOLIO.md` e **não se relitiga**: o
-artefato entra só se mudou uma decisão, e entra junto da decisão que
-mudou. Os que não entram viram **uma figura só** em `investigacao` (vista
-do FigJam inteiro), com legenda que argumenta ("dez artefatos antes da
-primeira tela"), não dez beats. **Não despejar os 10.**
-
-**C3. Print do Traxium** (ele tem em casa) e **logo do IMMO**
-(`logo: null` em `data.jsx`, ele vai mandar o Figma).
-
----
 
 ### D · MOTION · **FECHADO em 2026-08-26**
 
@@ -339,35 +300,6 @@ Não foram alvo.
 
 **Não é cara de IA, e isso continua verificado:** 0 travessões, 0
 construções "não é X, é Y", vocabulário idiomático. Não relitigar.
-
-### F · OS OUTROS QUATRO CAPÍTULOS (o problema que ninguém olhou ainda)
-
-Medido: cada um mostra **4 a 6 telas de projeto** e tem 654 a 1.102
-palavras. Para portfólio de UI, quatro telas por case é pouco. O volume
-hoje é um capítulo de 20 minutos ao lado de quatro de 4 minutos.
-
-Isso **não** se resolve cortando o PCYES (decisão fechada: "não cortar
-beats pra equilibrar, o problema é falta de atalho, não excesso de
-argumento"). Resolve-se engordando os outros, e isso depende de material.
-
-Aberto e não decidido: **quanto** engordar, e com o quê.
-
----
-
-### G · OPCIONAIS E MIUDEZAS
-
-- **Antes/depois de um componente real** (opcional, da auditoria antiga):
-  card de produto da V1 ao lado do da V2. Não há documentação de token da
-  V1, então o enquadramento honesto é "a V1 não tinha sistema". **Não
-  inventar número.**
-- **Quirk pré-existente, fora de escopo:** ao navegar pra um capítulo a
-  partir de uma posição rolada, a pill do nav começa escondida até rolar
-  pra cima. O Nav é comportamento sensível, mexer só com cuidado.
-- **264 elementos de texto entre 12 e 14px.** Depois da Rodada A o piso é
-  12px e **nada** ficou abaixo disso (eram 133). Se um dia quiser subir o
-  piso pra 13px, é aqui que se mexe. Não é urgente.
-
----
 
 ### Coisas que parecem pendência e NÃO são (não procurar de novo)
 
@@ -534,28 +466,44 @@ falha real de contraste.
   FCP 4,9s → 1,5s, TBT 770ms → 190ms, CLS 0 → 0,017. Acessibilidade 100,
   SEO 100.
 
-### Como medir este site (a receita que funciona)
+### Como medir este site
+
+**A instrumentação está em `tools/medir.mjs`** desde `1604128`, e ela já
+traz as receitas que custaram retrabalho para descobrir. Não reescreva
+medição do zero.
 
 ```bash
 npm run build
-cd dist && python3 -m http.server 8788 --bind 127.0.0.1
-# rota do capítulo: http://127.0.0.1:8788/#/cap/pcyes
-# é #/cap/, NÃO #/capitulo/ — errar isso serve a página 404 e a medição
-# sai toda zerada sem avisar
+cd dist && python3 -m http.server 8793 --bind 127.0.0.1
+cd -
+node tools/medir.mjs beats       # o custo de cada batida, com barra de pulso
+node tools/medir.mjs cpl         # caracteres por linha REAIS, via Range
+node tools/medir.mjs reveal      # painel que nunca acende
+node tools/medir.mjs passos      # a troca do ModuloPassos lê limpo?
+node tools/medir.mjs regressao   # seis viewports, oito rotas e axe
+node tools/medir.mjs diff 8794 8793   # antes contra depois
+
+ROTA=odex node tools/medir.mjs beats   # qualquer capítulo
+npm i --no-save axe-core               # o axe não é dependência do site
 ```
 
-Para medir sem pegar estado de transição, injete antes de medir:
+**A rota é `#/cap/pcyes`, NÃO `#/capitulo/`.** Errar isso serve a página
+404 e a medição sai toda zerada sem avisar.
 
-```css
-*,*::before,*::after{animation:none!important;transition:none!important}
-.beat .panel,.panel{opacity:1!important;transform:none!important}
-```
+**Guarde a baseline antes de mexer:** copie o `dist/` atual para outro
+lugar e sirva numa segunda porta. Comparar contra memória não vale.
 
-**Mas para verificar reveal, faça o contrário:** deixe os efeitos
-ligados, aproxime a seção rolando de cima em passos pequenos e registre a
-**opacidade máxima que cada painel atinge enquanto está na faixa de
-leitura**. Foi assim que o bug do Design System apareceu, e ele não
-aparece de nenhum outro jeito.
+**As duas medições são opostas e as duas são necessárias.** Para layout,
+congele (`animation: none`, `transition: none`, `.panel { opacity: 1 }`),
+que é o que o `beats` faz. Para reveal, faça o contrário: deixe os efeitos
+ligados e registre a **opacidade máxima que cada painel atinge enquanto
+está na faixa de leitura**, rolando de 90 em 90px. Foi assim, e só assim,
+que o bug do Design System apareceu.
+
+**Duas alturas, e elas não se contradizem:** rolar a página inteira antes
+de medir dá um número maior, porque a `CenaScroll` tem trilho que só
+existe depois que ela roda. Use o mesmo método dos dois lados de qualquer
+comparação, e diga qual usou. O `tools/medir.mjs` rola antes, sempre.
 
 Filtre `_vercel/` do console: 404 local é esperado, não é regressão.
 
