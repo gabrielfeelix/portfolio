@@ -19,7 +19,10 @@ function Nav({ view, go, onContact, ink, onInk }) {
     setHidden(false);
     const onScroll = () => {
       const y = window.scrollY;
-      setOverHero(view === "home" && y < window.innerHeight * 0.82);
+      /* a capa do capítulo é tobira de tela cheia igual à da home, então a
+         navbar nasce escondida nas duas e só aparece depois da abertura */
+      const emCapa = view === "home" || !!(typeof chapterFor === "function" && chapterFor(view));
+      setOverHero(emCapa && y < window.innerHeight * 0.82);
       if (Math.abs(y - last) >= 6) { setHidden(y > last && y > 90); last = y; }
     };
     onScroll();
@@ -28,11 +31,10 @@ function Nav({ view, go, onContact, ink, onInk }) {
     return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
   }, [view]);
 
-  const isHome = view === "home";
   // floating centered pill on EVERY view (consistent). On home it stays hidden
   // while sitting over the red cover, then appears once past it. Hides on
   // scroll-down, returns on scroll-up.
-  const headerCls = (isHome && overHero) ? "hd-hidden"
+  const headerCls = overHero ? "hd-hidden"
     : "hd-float" + ((hidden && !menuOpen) ? " hd-hidden" : "");
   const nav = (fn) => { setMenuOpen(false); fn(); };
   const Link = ({ to, children, active }) => (

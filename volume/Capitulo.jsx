@@ -11,9 +11,19 @@ function chapOrg(id) {
   const h = [...String(id)].reduce((a, c) => a + c.charCodeAt(0), 0);
   return CHAP_ORG[h % CHAP_ORG.length];
 }
-function Tobira({ chap }) {
+function Tobira({ chap, onHome }) {
   return (
     <section className="cover">
+      {/* O breadcrumb morava numa faixa de papel ACIMA da capa, o que abria
+          uma tira branca antes da tobira e impedia a abertura de ocupar a
+          tela inteira. Agora ele mora DENTRO da capa, em tinta clara sobre
+          o fundo escuro. */}
+      <div className="cover-back">
+        <a className="back" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>
+          <span className="arr">←</span> {t("Voltar ao volume", "Back to the volume")}
+        </a>
+        <span className="cap">{chap.cap} · {VOL}</span>
+      </div>
       <div className="cover-linhas" aria-hidden="true"></div>
       <div className="cover-brilho" aria-hidden="true"></div>
       <div className="cover-varre" aria-hidden="true"></div>
@@ -1992,14 +2002,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   const ato = (i) => atos[i] || null;
   return (
     <main key={chap.id} className="chapter-main">
-      <div className="chapter-back">
-        <a className="back" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>
-          <span className="arr">←</span> {t("Voltar ao volume", "Back to the volume")}
-        </a>
-        <span className="cap">{chap.cap} · {VOL}</span>
-      </div>
-
-      <Tobira chap={chap} />
+      <Tobira chap={chap} onHome={onHome} />
 
       <div className="chapter-body shell com-indice">
         {/* o índice é coluna, não camada: entra depois da capa e fica

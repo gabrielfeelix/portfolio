@@ -261,7 +261,10 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
 .splash .btn-ghost:hover { color: #F6F3EC; opacity: .75; border-bottom-color: #F6F3EC; }
 
 /* chapter pages have their own top bar — push it clear of the floating pill */
-.chapter-main { padding-top: clamp(54px, 8vh, 74px); }
+/* a capa do capítulo começa colada no topo: o padding existia pra empurrar
+   o conteúdo abaixo do cabeçalho, mas a tobira é de tela cheia e o
+   breadcrumb dentro dela já reserva o próprio respiro */
+.chapter-main { padding-top: 0; }
 
 /* ---- header modes: hidden over cover / floating pill past it ----
    Sobre a capa da home o cabeçalho fica escondido, mas continuava ocupando
@@ -294,7 +297,9 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 /* =====================================================================
    [C] DIFERENCIAL — desenho e construo
    ===================================================================== */
-.dif { border-top: var(--ink-stroke) solid var(--ink); border-bottom: var(--ink-stroke) solid var(--ink); }
+/* só o traço de BAIXO: o de cima cortava a passagem da capa pro papel bem
+   onde a dentadura termina de morder, e o efeito morria numa régua. */
+.dif { border-bottom: var(--ink-stroke) solid var(--ink); }
 .dif .shell { padding: var(--ma-5) var(--gutter); display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--gutter); align-items: center; }
 .dif-statement { font-family: var(--font-body); font-size: clamp(1.25rem, 2.4vw, 1.7rem); line-height: 1.45; max-width: 40ch; color: var(--fg); }
 .dif-statement b { font-weight: 800; }
@@ -370,7 +375,7 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .qsc-idx i { font-style: normal; color: var(--wash-2); }
 .qsc-card { -webkit-appearance: none; appearance: none; cursor: pointer; text-align: left; width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(14px, 1.6vw, 24px); align-items: center; background: var(--paper); border: var(--ink-stroke) solid var(--ink); box-shadow: 7px 7px 0 var(--ink); padding: var(--ma-3); transition: transform var(--cut), box-shadow var(--cut); }
 .qsc-card:hover { transform: translate(-2px,-2px); box-shadow: 11px 11px 0 var(--ink); }
-.qsc-logo { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; inline-size: clamp(78px, 8vw, 116px); aspect-ratio: 1; flex: 0 0 auto; border: var(--ink-hair) solid var(--ink); background: var(--wash-1); }
+.qsc-logo { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; inline-size: clamp(78px, 8vw, 116px); aspect-ratio: 1; flex: 0 0 auto; border: var(--ink-hair) solid var(--ink); background: var(--wash-1); }
 .qsc-logo-mark { font-family: var(--font-display); text-transform: uppercase; font-size: 1.15rem; line-height: .95; text-align: center; padding: 0 8px; }
 .qsc-logo-cap { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--wash-3); }
 .qsc-name { display: block; font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: .95; }
@@ -2434,20 +2439,48 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   margin-inline: auto; text-align: center; max-width: 56ch;
 }
 
-/* ---- a chapa de marca dentro do card de empresa -------------------
-   <BrandPlate> (data.jsx) só carrega o `background` inline com a cor da
-   marca; não existe regra de tamanho pra `.brandplate` em lugar nenhum.
-   Solta dentro do quadro, ela encolhia até o tamanho natural do arquivo —
-   e as logos são faixas horizontais (a do Oderço é 332x55), então sobrava
-   uma tira azul fina boiando num quadro bege.
+/* ---- BrandPlate: a marca sobre a cor dela ----
+   Um só desenho em quatro lugares: capa do capítulo na home (.bp-rvm),
+   capa da página do capítulo (.bp-cover), miniatura do próximo capítulo
+   (.bp-thumb) e card de empresa (.bp-qsc). A retícula impede que vire
+   bloco chapado de cor num volume que é tinta sobre papel.
 
-   A chapa passa a preencher o quadro e a logo cabe dentro com respiro: o
-   resultado é o bloco da cor da marca, que é o que a chapa sempre quis ser. */
-.qsc-logo .brandplate {
-  display: grid; place-items: center;
-  inline-size: 100%; block-size: 100%; padding: 14px;
+   Estas regras BASE tinham sido removidas junto com o bloco do layout
+   antigo dos capítulos. Sem elas `.brandplate` volta a ser um <span>
+   inline sem dimensão: a chapa parava de preencher o painel e a logo
+   escorregava pro topo, deixando o resto do quadro vazio. Era isso que
+   quebrava as capas das seções e o card do Oderço ao mesmo tempo.
+   O `inset: auto` que sobrou nas variantes é override DESTAS regras — a
+   pista de que elas existiam. */
+.brandplate {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
 }
-.qsc-logo .bp-logo {
-  inline-size: 100%; block-size: auto; max-block-size: 100%;
-  object-fit: contain; display: block;
+.bp-tone {
+  position: absolute; inset: -12%;
+  background-image: radial-gradient(currentColor 1.6px, transparent 1.7px);
+  background-size: 13px 13px; opacity: .3; transform: rotate(-12deg);
 }
+.bp-logo {
+  position: relative; z-index: 1;
+  width: min(52%, 260px); height: auto; object-fit: contain;
+  transform: scale(.94); transition: transform 900ms var(--cut);
+}
+.rvm.in .bp-logo { transform: scale(1); }
+/* o hover agora mora no botão do card, não no antigo .rvm-art de tela cheia */
+.rvm-btn:hover .bp-logo { transform: scale(1.04); }
+
+/* miniatura do próximo capítulo: caixa pequena, retícula mais fina.
+   Especificidade: .nc-thumb img (width/height 100% + object-fit:cover) pega
+   qualquer <img> dentro do thumb e esticava a marca até cortá-la. Precisa
+   do seletor com o pai pra ganhar. */
+.nc-thumb .bp-logo, .bp-thumb .bp-logo {
+  width: 72%; height: auto; inset: auto; object-fit: contain; transform: none;
+}
+.bp-thumb .bp-tone { background-size: 7px 7px; opacity: .26; }
+
+/* card de empresa: a marca preenche mais, sem animação de entrada */
+.qsc-logo .bp-logo, .bp-qsc .bp-logo {
+  width: 66%; height: auto; inset: auto; object-fit: contain; transform: none;
+}
+.bp-qsc .bp-tone { background-size: 9px 9px; opacity: .24; }

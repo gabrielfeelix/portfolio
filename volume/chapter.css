@@ -35,8 +35,34 @@
    para o "role para ler" não nascer cortado. */
 .cover {
   position: relative; background: var(--ink); color: var(--paper); overflow: hidden;
-  min-height: calc(100svh - var(--cover-desconto, 124px));
+  /* tela INTEIRA: o desconto existia pra compensar a faixa de papel do
+     breadcrumb, que agora mora dentro da própria capa */
+  min-height: 100svh;
   display: flex; align-items: center;
+}
+/* o breadcrumb sobre a capa: tinta clara, sem faixa e sem régua */
+.cover-back {
+  position: absolute; inset-block-start: 0; inset-inline: 0; z-index: 4;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: clamp(76px, 9vh, 104px) var(--gutter) 0;
+  pointer-events: none;
+}
+.cover-back > * { pointer-events: auto; }
+.cover-back a.back {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .1em; font-size: 13px; color: var(--paper); text-decoration: none;
+  opacity: .88; transition: opacity var(--cut);
+}
+.cover-back a.back:hover { opacity: 1; }
+.cover-back a.back .arr { transition: transform var(--cut); }
+.cover-back a.back:hover .arr { transform: translateX(-5px); }
+.cover-back .cap {
+  font-family: var(--font-condensed); font-size: 12px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--paper); opacity: .6;
+}
+@media (max-width: 720px) {
+  .cover-back { padding-block-start: clamp(64px, 8vh, 88px); }
 }
 .cover .shell { position: relative; z-index: 2; width: 100%; padding-top: var(--ma-5); padding-bottom: var(--ma-5); display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--gutter); align-items: center; }
 .cover-art { position: relative; border: var(--ink-stroke-hi) solid var(--paper); aspect-ratio: 4/5; overflow: hidden; background: var(--wash-4); }
