@@ -1145,25 +1145,14 @@ html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel 
 .tldr-live:hover { color: var(--vermilion); border-color: var(--vermilion); }
 @media (max-width: 880px) { .tldr.has-live { grid-template-columns: 1fr; } }
 
-/* ---- ATALHO: a linha que devolve o tempo do leitor -------------------
-   Não é uma caixa nova. Ela fecha a caixa da leitura rápida por baixo,
-   compartilhando a borda, porque a pergunta "quanto isto custa" é parte
-   do mesmo bloco que responde "do que se trata". Duas caixas empilhadas
-   viravam dois avisos e o leitor pulava os dois. */
-.atalho {
-  border: var(--ink-stroke) solid var(--ink); border-top: var(--ink-hair) solid var(--ink);
-  background: var(--paper); padding: var(--ma-3);
-  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px;
-}
-.atalho-k {
-  flex: 0 0 100%;
-  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .18em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 2px;
-}
-.atalho-p { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.35; color: var(--fg); margin: 0; }
-.atalho-alt { color: var(--fg-2); }
+/* ---- COMO LER: a terceira célula do bloco de abertura ----------------
+   O atalho de leitura morava numa barra própria embaixo do bloco, e a
+   terceira célula era um "Ao vivo" que duplicava o botão de protótipo do
+   hero. Fundiram: um card, três respostas (quem fez, o que deu, quanto
+   custa ler). O botão herda o idioma do link de célula. */
+.tldr.has-ler { grid-template-columns: .85fr 1.25fr 1.1fr; }
 .atalho-b {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .1em; font-size: 13px; color: var(--vermilion-ink);
   border: 0; border-bottom: 2px solid var(--vermilion-ink); padding: 0 0 2px;
@@ -1172,9 +1161,9 @@ html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel 
 }
 .atalho-b:hover { color: var(--vermilion); border-color: var(--vermilion); }
 .atalho-b:focus-visible { outline: 3px solid var(--vermilion-ink); outline-offset: 4px; }
-/* a seta aponta para onde o gesto leva: para baixo, não para fora */
 .atalho-arr { transition: transform var(--cut); }
 .atalho-b:hover .atalho-arr { transform: translateY(2px); }
+@media (max-width: 880px) { .tldr.has-ler { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .atalho-arr { transition: none; } }
 
 

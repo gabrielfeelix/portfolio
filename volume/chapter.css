@@ -233,21 +233,6 @@ html.ink .cover-linhas { opacity: .06; }
   position: relative; overflow: hidden; background: var(--wash-1);
   border: var(--ink-stroke) solid var(--ink);
 }
-
-/* ---- o plano de tinta ------------------------------------------------
-   As figuras eram as unicas superficies emolduradas do volume sem sombra
-   dura: a home pousa os cards (.proj-card, .rail-cover, .about-photo), o
-   proprio capitulo pousa o calendario e as abas, e as 27 provas -- que
-   sao a materia do case -- ficavam secas em cima do papel. Aqui elas
-   passam a estar pousadas, com o registro deslocado na diagonal inferior
-   direita. Sem blur e sem alpha: e impressao fora de registro, nao
-   sombra de interface.
-   O deslocamento carrega a hierarquia (--q vem do grau da figura), entao
-   a mesma decisao que dimensiona a prova tambem a pesa. Altura: zero. */
-.fig-frame, .sol-panel, .cena-scroll-frame {
-  box-shadow: var(--q, var(--q-padrao)) var(--q, var(--q-padrao)) 0 var(--quadro-plano);
-  transition: box-shadow var(--cut), transform var(--cut);
-}
 /* a cena de sangria encosta nas duas bordas da tela e nao tem lado por
    onde pousar: plano nela seria uma faixa presa no rodape do quadro */
 .cena .fig-frame { box-shadow: none; }
@@ -268,7 +253,6 @@ html.ink .cover-linhas { opacity: .06; }
   box-shadow: calc(var(--q, var(--q-padrao)) + 4px) calc(var(--q, var(--q-padrao)) + 4px) 0 var(--vermilion-ink);
 }
 @media (prefers-reduced-motion: reduce) {
-  .fig-frame, .sol-panel, .cena-scroll-frame { transition: none; }
   .fig-frame:hover, .sol-panel:hover { transform: none; }
 }
 
@@ -281,11 +265,25 @@ html.ink .cover-linhas { opacity: .06; }
    O recuo e sempre PARA A DIREITA: a coluna de provas sangra por ali, e
    alinhar a borda direita mantem o degrau lendo como recuo deliberado em
    vez de desalinhamento. A borda esquerda irregular e o ritmo. */
-.fig-apoio { --q: var(--q-apoio); width: var(--fig-apoio); margin-left: auto; }
+/* o recuo de 72% alinhado à direita criava borda esquerda serrilhada e
+   buracos na coluna: duas larguras dentro da mesma pilha liam como erro
+   de layout, não como hierarquia. O degrau de apoio segue existindo onde
+   ele sempre foi legível: no peso do plano de tinta (5 contra 9px). */
+.fig-apoio { --q: var(--q-apoio); }
 .fig-plena { --q: var(--q-plena); }
-/* o climax da solucao mede 1033px, acima do degrau plena: e a maior
-   imagem de V2 do capitulo e leva o plano mais pesado junto. */
+/* o climax da solucao pousa na MESMA regua plena de todo o resto: tres
+   larguras de pagina (970, 976, 1033) liam como tres sistemas. Uma so:
+   --fig-plena. O plano mais pesado continua marcando o climax. */
 .sol-panel { --q: var(--q-plena); }
+.sol-grid { max-width: var(--fig-plena); }
+
+/* o texto do clímax corre em duas colunas na largura da página: uma
+   coluna de 549px deixava metade da tela morta exatamente no beat que
+   entrega o resultado */
+@media (min-width: 881px) {
+  .sol-intro .sol-intro-cols { column-count: 2; column-gap: var(--gutter); margin-bottom: var(--ma-3); }
+  .sol-intro .beat-p { max-width: none; }
+}
 
 /* Abaixo de 880px as colunas desabam numa pilha so e a coluna mede
    350px em 390: 72% dali seriam 252px, que e o selo que o Grupo B tirou
@@ -322,64 +320,6 @@ html.ink .cover-linhas { opacity: .06; }
 .cena .fig-cap { max-width: 62ch; padding: 0 var(--gutter); margin-inline: auto; }
 .cena.bleed .fig-cap { max-width: 1240px; padding: 0 var(--gutter); }
 
-/* cena-scroll: a mesma cena, presa na viewport enquanto o scroll corre.
-   O trilho é alto de propósito (a altura vem do JSX); dentro dele um
-   sticky de 100vh segura a imagem e o clip-path abre das bordas para
-   fora. Sem sticky (motores antigos) a imagem simplesmente fica no topo
-   do trilho, aberta, que é o estado final -- nunca some. */
-.cena-scroll { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: var(--ma-5); position: relative; }
-
-.cena-scroll-cola {
-  position: sticky; top: 0; height: 100vh; max-height: 86vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; padding: var(--ma-3) 0;
-}
-/* o frame preenche o sticky inteiro: `align-items: center` num flex faria
-   ele encolher para a altura do conteudo, e o conteudo e uma <img> em
-   position:absolute -- ou seja, zero. Bloco de 100% resolve. */
-/* largura e proporcao vem do JSX e mudam com o scroll (um quadro pequeno
-   em 21/9 -> a pagina inteira na proporcao do arquivo), por isso nao ficam
-   fixadas aqui. `max-height` segura o quadro dentro da tela quando ele
-   fica alto, e `margin: auto` mantem ele centrado. */
-.cena-scroll-frame {
-  position: relative; max-width: 100%;
-  /* o teto real vem do @media abaixo quando o índice está na tela */
-  max-height: 100%; min-height: 0; margin: auto;
-  border: var(--ink-stroke) solid var(--ink);
-  will-change: width, aspect-ratio;
-}
-/* a batida de tinta (figTinta/figTranco) anima `transform` na .fig-img, o
-   que atropelaria o zoom do parallax. Aqui o zoom vive numa camada propria
-   e a imagem fica livre para fazer a sua entrada. */
-.cena-scroll-zoom { position: absolute; inset: 0; transform-origin: center; will-change: transform; }
-/* a legenda anda com o quadro preso, ancorada logo abaixo dele */
-.cena-scroll-cap {
-  flex: 0 0 auto; width: 100%; max-width: 1240px;
-  padding: 0 var(--gutter); margin: 0 auto;
-}
-
-/* com o índice à esquerda, a cena não pode crescer por cima dele: o
-   quadro para na coluna que sobra à direita da lista, e a cena inteira
-   desloca para lá em vez de ficar centrada na tela (o que a faria
-   encostar no índice de novo). */
-@media (min-width: 1700px) {
-  .cena-scroll-cola { padding-left: calc((100vw - 1240px) / 2 + 56px + 236px - (100vw - 1240px) / 2); }
-  .cena-scroll-frame { max-width: calc(100vw - 56px - 236px - var(--ma-5) * 2); }
-}
-
-@media (max-width: 760px) {
-  .cena-scroll-cola { height: auto; max-height: none; min-height: 52vh;
-    position: sticky; top: 8vh; padding: var(--ma-3) 0; }
-  .cena-scroll-frame { max-height: 62vh; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cena-scroll { height: auto !important; }
-  .cena-scroll-cola { position: static; height: auto; display: block; padding: 0; }
-  .cena-scroll-frame { width: 100% !important; aspect-ratio: 45/19; max-height: none; }
-  .cena-scroll-zoom { transform: none !important; }
-}
-
 /* a citação que separa a investigação da decisão: a frase que destravou o
    projeto, em tinta, no tamanho de fala de painel */
 .citacao { grid-column: 1 / -1; background: var(--ink); color: var(--paper); padding: var(--ma-5) var(--ma-4); }
@@ -411,13 +351,6 @@ html.ink .cover-linhas { opacity: .06; }
 
 /* legenda das telas da solução: cada print diz o que provou */
 .sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: var(--med-longa); display: flex; gap: 10px; align-items: baseline; }
-/* o número do passo: as três telas são um caminho andado, e a legenda
-   marca onde no caminho a tela está */
-.sol-n {
-  flex: 0 0 auto; font-style: normal;
-  font-family: var(--font-condensed); font-weight: 700;
-  font-size: 13px; letter-spacing: .1em; color: var(--vermilion-ink);
-}
 
 @media (max-width: 880px) {
   .rec-lista { grid-template-columns: 1fr; }
@@ -433,7 +366,7 @@ html.ink .cover-linhas { opacity: .06; }
 .mod-figs.serie { grid-template-columns: 1fr; gap: var(--ma-4); }
 
 /* as colunas de prova avançam sobre a margem direita */
-.mod-figs, .passos-figs, .cam-palco, .sol-col, .mod-plena {
+.mod-figs, .passos-figs, .cam-palco, .mod-plena {
   margin-right: calc(-1 * var(--sangra-dir, 0px));
 }
 
@@ -449,6 +382,12 @@ html.ink .cover-linhas { opacity: .06; }
    para depois da primeira prova. Medido: -291px no modulo de pre-venda e
    -219px no de carrinho e pontos. */
 .beat:has(.mod-plena), .beat:has(.mod-figs), .beat:has(.cam-palco) { align-items: start; }
+/* no beat que TEM a linha plena, a figura lateral e curta por construcao
+   (a tela grande desceu para a linha de baixo). Presa no topo, deixava
+   um vao morto a direita enquanto o texto continuava. Centrada contra a
+   linha do texto, a composicao fecha; quando a figura lateral e a mais
+   alta, o center nao move nada, porque e ela que da a altura. */
+.beat:has(.mod-plena) > .c7 { align-self: center; }
 /* alinhadas pelo topo, o padding de cima do painel de texto vira
    desalinhamento puro: o kicker descia 40px enquanto a moldura ao lado
    comecava na linha zero da grade. Sem ele as duas colunas abrem juntas. */
@@ -1213,12 +1152,6 @@ html.ink .cover-linhas { opacity: .06; }
     overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;
     border-left: var(--ink-stroke) solid var(--ink); padding: 4px 0 4px 14px; }
   .idx-t { overflow-wrap: break-word; font-size: 13.5px; line-height: 1.3; }
-
-  /* a cena full bleed sangra em 100vw e passaria por cima da lista. O
-     padrao da casa nao mexe na .cena-scroll (ela precisa sangrar), e sim
-     no que corre dentro dela: o conteudo desvia da coluna do indice. */
-  .cena-scroll-cola { padding-left: 228px; }
-  .cena-scroll-frame { max-width: calc(100vw - 228px - var(--ma-5) * 2); }
 
   /* nesta faixa o corpo ja andou para a direita e a sobra da direita e
      exatamente a margem (var(--gutter)) mais a calha do proprio .shell:

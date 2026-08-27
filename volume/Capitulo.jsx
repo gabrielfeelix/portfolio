@@ -46,23 +46,40 @@ function Tobira({ chap }) {
 }
 
 /* ---- TL;DR strip (+ live link cell when the project is on the air) ---- */
-function Tldr({ tldr, links }) {
+function Tldr({ tldr, links, minutos }) {
   const live = links && links.vercel;
   const cell = (l, v) => (
     <div className="cell"><div className="l">{l}</div><div className="v">{renderPH(v)}</div></div>
   );
   // um bloco só. "Papel" estava duplicado com o hero e "O quê" repetia a
   // premissa: sobra o par que o recrutador procura — papel e resultado.
+  // A terceira célula é "Como ler" quando o capítulo declara `minutos`:
+  // o card "Ao vivo" duplicava o botão de protótipo do hero, e o atalho
+  // de leitura, que morava numa barra própria embaixo, é exatamente a
+  // informação que pertence a este bloco. Um card, três respostas:
+  // quem fez, o que deu, quanto custa ler.
+  const comoLer = minutos ? (
+    <div className="cell cell-ler">
+      <div className="l">{t("Como ler", "How to read")}</div>
+      <div className="v">
+        {t(`O capítulo inteiro leva ${minutos} minutos. Se você tiver 3, `, `The whole chapter takes ${minutos} minutes. If you have 3, `)}
+        <button type="button" className="atalho-b" onClick={() => irParaSec("solucao")}>
+          {t("veja só o que mudou", "see just what changed")}
+          <span className="atalho-arr" aria-hidden="true">↓</span>
+        </button>
+      </div>
+    </div>
+  ) : null;
   return (
-    <div className={`tldr ${live ? "has-live" : ""}`}>
+    <div className={`tldr ${comoLer ? "has-ler" : (live ? "has-live" : "")}`}>
       {cell(t("Papel", "Role"), tldr.papel)}
       {cell(t("Resultado", "Result"), tldr.resultado)}
-      {live ? (
+      {comoLer || (live ? (
         <div className="cell cell-live">
           <div className="l">{t("Ao vivo", "Live")}</div>
           <div className="v"><a className="tldr-live" href={live} target="_blank" rel="noreferrer">{t("Ver no ar", "See it live")} <span className="ext" aria-hidden="true">↗</span></a></div>
         </div>
-      ) : null}
+      ) : null)}
     </div>
   );
 }
@@ -210,104 +227,7 @@ function razaoAR(ar) {
   return Number.isFinite(v) && v > 0 ? v : 16 / 9;
 }
 
-/* ---- CENA-SCROLL: a prova que se abre enquanto a página rola ---------
-   A abertura do capítulo não é uma figura entre parágrafos, é a tela que
-   a pessoa via antes de tudo. Aqui ela fica presa na viewport enquanto o
-   scroll corre e o recorte abre das laterais para o centro: a leitura
-   entra no print em vez de passar por ele. Fora isso é a mesma Cena --
-   mesma moldura, mesma legenda numerada, mesmo lightbox.
 
-   A revelação é de fora a fora: o quadro entra pequeno, no meio da página,
-   e cresce até encostar nas bordas da tela mostrando a página inteira. A
-   abertura acontece na primeira metade do trilho -- o resto é a imagem
-   aberta, parada, para dar tempo de ler.
-   Com prefers-reduced-motion a imagem entra aberta e parada. */
-function CenaScroll({ fig, n, altura = 1400, arAberto = "16/9", largIni = 34, largMax = 82 }) {
-  if (!fig) return null;
-  const trilho = useRef(null);
-  const [p, setP] = useState(REDUCED ? 1 : 0);
-  // a mesma batida de tinta das outras figuras: sem `revelada` a .fig-img
-  // fica em opacity 0 (chapter.css) e o quadro sai vazio
-  const [refRev, visto] = useReveal({ threshold: 0.05, rootMargin: "0px" });
-
-  useEffect(() => {
-    if (REDUCED) return;
-    const el = trilho.current; if (!el) return;
-    let raf = 0;
-    const medir = () => {
-      raf = 0;
-      const r = el.getBoundingClientRect();
-      // 0 quando o topo do trilho encosta no topo da tela, 1 quando o
-      // trilho acabou de passar: é o intervalo em que a imagem está presa
-      const curso = r.height - window.innerHeight;
-      if (curso <= 0) { setP(1); return; }
-      setP(Math.min(1, Math.max(0, -r.top / curso)));
-    };
-    const agenda = () => { if (!raf) raf = requestAnimationFrame(medir); };
-    medir();
-    window.addEventListener("scroll", agenda, { passive: true });
-    window.addEventListener("resize", agenda);
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", agenda);
-      window.removeEventListener("resize", agenda);
-    };
-  }, []);
-
-  // a abertura termina em 70% do trilho: depois disso a imagem fica aberta
-  // e parada, que é quando dá para de fato olhar o print
-  const a = Math.min(1, p / 0.70);
-  const e = 1 - Math.pow(1 - a, 3);   // desacelera na chegada
-
-  // o quadro cresce de verdade -- de `largIni`% da tela até 100%. Antes só
-  // o clip-path fechava, e a moldura ja entrava do tamanho da pagina.
-  // no mobile o quadro nasce bem maior: 34% de 390px é um selo, e o vão
-  // ao redor fica maior que a própria cena
-  const estreito = typeof window !== "undefined" && window.innerWidth <= 760;
-  const li = estreito ? 62 : largIni;
-  const lm = estreito ? 100 : largMax;
-  const larg = li + (lm - li) * e;
-  // enquanto pequeno, mostra a primeira dobra (21/9); abrindo, vai até a
-  // proporcao do arquivo inteiro
-  const ARI = 21 / 9;
-  const arf = razaoAR(arAberto);
-  const arAtual = ARI + (arf - ARI) * e;
-  const escala = 1.06 - 0.06 * e;
-
-  return (
-    <div className={`cena-scroll bleed fig ${visto || REDUCED ? "revelada" : ""}`}
-         ref={trilho} style={{ height: altura }}>
-      <div className="cena-scroll-cola" ref={refRev}>
-        <div className="fig-frame cena-scroll-frame"
-             style={{ width: `${larg}%`, aspectRatio: arAtual }}>
-          {fig.src
-            ? <span className="cena-scroll-zoom" style={{ transform: `scale(${escala})` }}>
-                <img className="fig-img" src={fig.src} alt={fig.alt || ""} draggable="false" />
-              </span>
-            : <MangaPlate />}
-          {fig.src ? <>
-            <button className="fig-abrir" type="button" onClick={() => abrirFigura(fig)}
-                    aria-label={t("Abrir a imagem em tamanho cheio", "Open the image full size")}></button>
-            <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
-          </> : null}
-        </div>
-        {/* a legenda viaja junto com o quadro preso: fora do sticky ela
-            ficava orfa no topo do trilho, longe da imagem que descreve */}
-        {fig.legenda ? (
-          <div className="fig-cap cena-scroll-cap">
-            {n ? <i className="fig-n">fig. {String(n).padStart(2, "0")}</i> : null}
-            <span>{renderPH(fig.legenda)}</span>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-/* ---- ABERTURA: a cena antes do diagnóstico --------------------------
-   O capítulo começava no problema já formulado. Faltava o momento em que
-   o projeto chega na mesa: o que a empresa vendia, o que pediram e o que
-   eu ainda não sabia. É o que dá o que perder no resto da leitura. */
 function Abertura({ chap, figN }) {
   const ab = chap.abertura;
   if (!ab) return null;
@@ -328,10 +248,17 @@ function Abertura({ chap, figN }) {
           <Organic variant={ab.tinta || "cluster"} size={250} />
         </div>
       </Beat>
-      {/* a cena de abertura entra presa no scroll: o recorte abre das
-          laterais enquanto a página corre, e a V1 se revela em vez de
-          aparecer pronta. As outras figuras seguem em <Cena> normal. */}
-      {fig ? <CenaScroll fig={fig} n={figN[ab.fig]} arAberto={fig.ar} /> : null}
+      {/* a cena de abertura já foi um quadro que crescia preso ao scroll
+          (1.900px de trilho). O efeito era bom uma vez e cansava nas
+          seguintes, palavra do dono: "dá pra deixar ele grande sempre".
+          Agora ela entra como a maior figura do capítulo, parada, no
+          degrau plena, com o plano de tinta e o levantar de hover que
+          toda figura pousada já tem. */}
+      {fig ? (
+        <div className="mod-plena abre-plena">
+          <Figura fig={fig} n={figN[ab.fig]} className="fig-plena" />
+        </div>
+      ) : null}
     </>
   );
 }
@@ -1447,11 +1374,17 @@ function Solucao({ chap }) {
         <span className="kicker live" style={{ color: "var(--vermilion-ink)" }}>{t("no ar", "live")}</span>
       </div>
       <Beat>
-        <div className="c7 text-col">
-          <div className="panel text">
+        {/* o clímax não divide a página com espaço vazio: o texto corre
+            em duas colunas na largura inteira, imprensa, e os botões
+            fecham a linha. Era uma coluna de 549px com metade da tela
+            morta à direita, no beat que entrega o resultado. */}
+        <div className="c12 text-col">
+          <div className="panel text sol-intro">
             <div className="beat-k">{t("Solução", "Solution")}</div>
             <Brush as="h2" className="beat-t">{renderPH(chap.solucao.t)}</Brush>
-            {chap.solucao.p.map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+            <div className="sol-intro-cols">
+              {chap.solucao.p.map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+            </div>
             <div className="ai-note"><span className="b"></span> {t("Protótipo → produto no ar", "Prototype → product, live")}</div>
             <ProtoLinks links={chap.links} />
           </div>
@@ -1497,7 +1430,6 @@ function Solucao({ chap }) {
                       <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
                     </> : null}
                   </div>
-                  {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}><i className="sol-n">{String(i + 1).padStart(2, "0")}</i>{renderPH(cap)}</p> : null}
                 </React.Fragment>
               );
             })}
@@ -1860,32 +1792,6 @@ function irParaSec(id) {
   el.focus({ preventScroll: true });
 }
 
-/* ---- ATALHO: o capítulo longo deixa de ser um risco -----------------
-   Um recrutador dá três minutos e este capítulo pede vinte. O índice ao
-   lado é endereço, não atalho: lista quinze seções e não diz o que
-   custa nenhuma. Aqui o custo dos dois caminhos está escrito antes da
-   escolha, e o caminho curto é contíguo (do clímax até o fim), então
-   quem pula não cai no meio de um argumento pela metade.
-   Os dois números são medidos, não estimados: 3.821 palavras no
-   capítulo inteiro e 527 da `solucao` ao `aprendi`, a 200 palavras por
-   minuto. */
-function Atalho({ minutos = 20, curto = 3, alvo = "solucao" }) {
-  return (
-    <div className="atalho">
-      <div className="atalho-k">{t("Como ler", "How to read")}</div>
-      <p className="atalho-p">
-        {t(`O capítulo inteiro leva ${minutos} minutos.`, `The whole chapter takes ${minutos} minutes.`)}
-        {" "}
-        <span className="atalho-alt">{t(`Se você tiver ${curto},`, `If you have ${curto},`)}</span>
-      </p>
-      <button type="button" className="atalho-b" onClick={() => irParaSec(alvo)}>
-        {t("veja só o que mudou", "see just what changed")}
-        <span className="atalho-arr" aria-hidden="true">↓</span>
-      </button>
-    </div>
-  );
-}
-
 function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   useEffect(() => { window.scrollTo(0, 0); }, [chap.id]);
   const figN = figOrder(chap);
@@ -1910,14 +1816,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             preso enquanto a coluna de leitura ao lado corre */}
         <IndiceCapitulo chap={chap} />
         <div className="chapter-col">
-        <Tldr tldr={chap.tldr} links={chap.links} />
-        {/* o atalho vem antes do primeiro beat: a escolha tem que existir
-            antes do custo, não depois de dez telas dele.
-            Só aparece em capítulo que de fato cobra caro: `minutos` é
-            declarado no `data.jsx`, e capítulo de três minutos não ganha
-            um atalho de três minutos, porque aí o atalho estaria mentindo.
-            Também exige `solucao`, que é para onde ele leva. */}
-        {chap.minutos && chap.solucao ? <Atalho minutos={chap.minutos} /> : null}
+        <Tldr tldr={chap.tldr} links={chap.links} minutos={chap.minutos && chap.solucao ? chap.minutos : null} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
             não desenha nada, só dá endereço e alvo de foco.
@@ -1988,4 +1887,4 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
   );
 }
 
-Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Respiro, Sec, irParaSec, Atalho, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
+Object.assign(window, { Tobira, Tldr, renderPH, Lightbox, abrirFigura, Figura, Cena, ADPar, Abertura, Citacao, Recusei, Painel, ContaAte, Mil, Modulos, ModuloCaminhos, Calendario, figOrder, Problema, Investigacao, Aprendi, AntesDepois, DecBeat, Vocabulario, SfxBeat, Respiro, Sec, irParaSec, IndiceCapitulo, indiceDo, CurvaMotion, Tipografia, EspacoRaio, Derivado, Sistema, Decisoes, Solucao, Resultado, SistemaVolume, NextChapter, Capitulo });
