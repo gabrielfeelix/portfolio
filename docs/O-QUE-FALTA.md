@@ -176,20 +176,50 @@ Gabriel: **não fazer por conta própria.**
 
 ## 5 · As três miudezas que o Grupo A deixou abertas
 
-- **28 Tabs até o atalho.** Ele vem depois do `IndiceCapitulo`, que tem 15
-  links, na ordem do DOM. Quem navega por teclado já tem o índice como
-  atalho, então não bloqueia. Mover o `<Atalho>` para antes do
-  `<IndiceCapitulo>` faria um leitor de tela ouvir o custo antes do
-  índice, mas o `Atalho` mora dentro do `.chapter-col`, sob o `Tldr`, e
-  tirar de lá mexe no layout.
-- **Os seis `<div style={{ height: "var(--ma-6)" }}>`** do Ato IV, em
-  `Capitulo.jsx`. Funcionam (dão ar depois do clímax) mas são espaço
-  escolhido na mão dentro do JSX, que é a mesma classe de problema que o
-  `gap: 26vh` era. Viraram alvo natural de uma classe com nome.
+- **28 Tabs até o atalho · MEDIDO, e a conclusão é não mexer** (2026-08-27).
+  A ordem foi lida tecla a tecla em `/cap/pcyes`: o atalho (`.atalho-b`)
+  cai no **Tab 28**, e os Tabs 12 a 27 são o `IndiceCapitulo` inteiro, com
+  as 16 seções. Entre elas, **"13 A solução" no Tab 24** — que é
+  exatamente o destino do atalho. Quem navega por teclado chega ao destino
+  **quatro Tabs antes** de encontrar o atalho, então mover o botão não
+  encurta caminho nenhum: só mexe no layout (ele mora dentro do
+  `.chapter-col`, sob o `Tldr`). **Item fechado, não reabrir sem um caso
+  de uso novo.**
+- ~~Os seis `<div style={{ height }}>` do Ato IV~~ · **fechado em `84046f7`.**
+  Viraram `.vao-ato` em `chapter.css`. As seis larguras dão a mesma altura
+  de documento de antes (38721, 37471, 35293, 34796, 39183, 36860).
 - **`rec-r` a 40 caracteres por linha**, abaixo da faixa de 45 a 75. É
   **exceção declarada em comentário no CSS**: são três recusas em três
   colunas, e alargar exigiria desfazer o trio. Só mexa se desfizer a
   composição de propósito.
+
+## 5b · O que esta rodada fechou sozinha (2026-08-27)
+
+Nenhum destes precisa voltar. Todos medidos na página servida:
+
+- **Domínio** (`2a74b8f`): `llms.txt` e `robots.txt` apontavam para
+  `portfolio-volume.vercel.app`. Passaram para o oficial.
+- **CTA** (`7b3ec7d`): a mensagem do WhatsApp dizia "interessado nos seus
+  serviços de UX/UI Design", linguagem de freelancer. Virou convite a
+  conversar, e os botões passaram de "Fale comigo" a "Bora conversar".
+- **Página das peças** (`ccab123`), **contador** (`9cab6cc`) e **resultado
+  do cap 05** (`82df68b`): ver a seção "O que parece pendência e NÃO é".
+- **Rodapé** (`74408d0`): a peça dizia "publicado na Play Store" e o link
+  entrega um Figma. **O app não está publicado** (só fase de teste
+  fechado, informação do Gabriel), então a descrição passou a dizer o que
+  o link abre. Quando sair do teste, trocar `links.figma` pelo link da
+  loja e pôr `destino: "loja"`.
+- **Localização** (`6655314`): "Maringá, PR · Aberto a remoto" no rodapé.
+  É metadado de praça e **não** anúncio de disponibilidade: essa distinção
+  é decisão do Gabriel, que trabalha e não quer sinalizar saída. Não
+  transformar em "disponível para propostas".
+- **Dois apps na Play Store** (`87ec2e4`): `quantocobro` e `deixeiaqui`
+  estavam contados em prosa no Posfácio e não existiam como peça. Entraram
+  com `links.play` (campo novo, e `pieceLink` precisou aprender a lê-lo) e
+  `destino: "loja"`, que rende o selo "Play Store".
+- **Colisão no hero** (`8583d7f`): o tracejado do `.hero-field` cortava as
+  letras do atalho de 2 minutos. Resolvido com véu radial do próprio
+  vermelho, não com z-index (que já estava certo).
 
 ## 6 · Opcionais, e nenhum deles é urgente
 
