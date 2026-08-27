@@ -1173,14 +1173,61 @@ function useReveal(opts = {}) {
     // O teto real e (altura da raiz / altura do elemento); 0,7 dele deixa
     // margem para a raiz encolher pelo rootMargin sem empatar de novo.
     const alvo = opts.threshold ?? 0.22;
-    const alto = el.offsetHeight || 0;
     const raiz = window.innerHeight;
-    const gatilho = alto > raiz ? Math.max(0.02, (raiz / alto) * 0.7) : alvo;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setSeen(true); io.disconnect(); }
-    }, { threshold: gatilho, rootMargin: opts.rootMargin ?? "0px 0px -8% 0px" });
-    io.observe(el);
-    return () => io.disconnect();
+
+    // O gatilho depende da ALTURA do elemento, e no mount a altura
+    // costuma ser 0: imagem sem carregar, fonte sem trocar, layout ainda
+    // nao resolvido. Com `alto = 0` a conta `alto > raiz` da falso e o
+    // gatilho caia no alvo cheio (0,22 a 0,45), exatamente o caso que o
+    // bloco acima existe para evitar. Resultado medido, rolando rapido:
+    // 3 beats e 9 figuras nunca revelavam no desktop, 7 e 10 no celular,
+    // e voltavam a aparecer so quando o leitor SUBIA a pagina. Por isso a
+    // altura e lida na hora de observar, e nao uma vez no mount.
+    let io = null;
+    const liga = () => {
+      if (io) io.disconnect();
+      const alto = el.offsetHeight || 0;
+      const gatilho = alto > raiz ? Math.max(0.02, (raiz / alto) * 0.7) : alvo;
+      io = new IntersectionObserver(([e]) => {
+        // `isIntersecting` sozinho perde quem passou inteiro entre dois
+        // frames de uma rolagem rapida: o observer so chama ao CRUZAR um
+        // threshold, e um salto grande nao cruza nenhum. Quem ja ficou
+        // para tras (bottom acima da tela) tambem conta como visto: o
+        // reveal existe para nao aparecer do nada, nunca para esconder.
+        const r = e.boundingClientRect;
+        if (e.isIntersecting || r.bottom < raiz) { setSeen(true); io.disconnect(); io = null; }
+      }, { threshold: gatilho, rootMargin: opts.rootMargin ?? "0px 0px -8% 0px" });
+      io.observe(el);
+    };
+
+    liga();
+    // a altura muda quando a imagem chega e quando a fonte troca: religa
+    // o observer com o gatilho recalculado, senao o valor de mount fica.
+    let ro = null;
+    if ("ResizeObserver" in window) {
+      let h0 = el.offsetHeight;
+      ro = new ResizeObserver(() => {
+        const h = el.offsetHeight;
+        if (h !== h0) { h0 = h; if (io) liga(); }
+      });
+      ro.observe(el);
+    }
+
+    // rede de seguranca: quem ja passou da tela e visto, aconteca o que
+    // acontecer com o observer. Sem isto um beat pode ficar em opacity 0
+    // para sempre, que e a armadilha que ja mordeu tres vezes aqui.
+    const varre = () => {
+      if (!io) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < raiz && r.bottom > 0) { setSeen(true); io.disconnect(); io = null; }
+      else if (r.bottom <= 0) { setSeen(true); io.disconnect(); io = null; }
+    };
+    window.addEventListener("scroll", varre, { passive: true });
+    return () => {
+      if (io) io.disconnect();
+      if (ro) ro.disconnect();
+      window.removeEventListener("scroll", varre);
+    };
   }, []);
   return [ref, seen];
 }
