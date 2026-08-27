@@ -401,6 +401,15 @@ function Recusei({ dados }) {
    procedência em portfólio é decoração. */
 function ContaAte({ alvo, decimais = 0, sufixo = "", ligado }) {
   const [n, setN] = useState(ligado ? alvo : 0);
+  // Rede de seguranca: o numero e prova, e prova que le como zero e pior do
+  // que prova sem animacao. Se o gatilho nunca chegar (reveal que nao acende,
+  // aba em segundo plano, observer que falha), o valor final entra sozinho.
+  // O contador so anima quem viu o painel dentro da janela.
+  useEffect(() => {
+    if (ligado) return;
+    const t = setTimeout(() => setN(alvo), 2600);
+    return () => clearTimeout(t);
+  }, [ligado, alvo]);
   useEffect(() => {
     if (!ligado) return;
     if (REDUCED) { setN(alvo); return; }
