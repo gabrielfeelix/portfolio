@@ -841,7 +841,7 @@ const CHAPTERS = [
     surface: "Website · Manifesto",
     periodo: "No ar",
     year: "2026",
-    fact: "Você está lendo o resultado",
+    fact: "Zero violação WCAG, medida view a view",
     tldr: {
       papel: "Ideia, design e código, do conceito ao ar",
       oque: "Este volume: portfólio autoral desenhado e construído do zero.",
@@ -870,8 +870,9 @@ const CHAPTERS = [
               "volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
     },
     resultado: {
-      t: "Você está lendo o resultado",
-      p: ["A leitura te trouxe até aqui. Se a navegação funcionou, o argumento se provou sozinho."],
+      t: "Zero violação, medida e não prometida",
+      p: ["O volume passa em WCAG 2.1 AA sem violação: zero em papel, zero no modo tinta, zero em inglês e zero em 390px, varrido com axe-core na página servida, view a view. Em seis larguras, de 1920 a 390, nenhuma rola na horizontal, e as oito rotas carregam sem um erro de JavaScript sequer.",
+          "É pouco glamouroso e é de propósito. Um portfólio que argumenta cuidado com detalhe e reprova numa varredura automática está se contradizendo na própria vitrine. Este é o número que eu tinha como cobrar de mim mesmo, então é o que está aqui, com a ferramenta e o método na frente."],
     },
     aprendi: {
       p: ["Escolher uma metáfora forte é fácil; o difícil é não deixar ela cobrar pedágio. A cada decisão a pergunta foi a mesma: isso ajuda a ler ou só reforça que é um mangá? Quando a resposta era a segunda, saiu.",

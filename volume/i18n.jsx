@@ -510,7 +510,7 @@ if (LANG === "en") {
       premise: "A portfolio read like a manga volume.",
       role: "Concept, design and build",
       surface: "Website · Manifesto", periodo: "Live",
-      fact: "You are reading the result",
+      fact: "Zero WCAG violations, measured view by view",
       tldr: { papel: "Idea, design and code, from concept to live",
         oque: "This volume: a self-authored portfolio designed and built from scratch.",
         resultado: "This site. Manga, ink and brutalism in the service of reading" },
@@ -525,8 +525,9 @@ if (LANG === "en") {
       solucao: { t: "Cover, chapters, process and afterword",
         p: ["A list of chapters, a manga page turn, ink motion and screentone. A fast path for the recruiter, a deep path for whoever wants the full case.",
             "Actually built: from navigable prototype to published site."] },
-      resultado: { t: "You are reading the result",
-        p: ["The reading brought you this far. If the navigation worked, the argument proved itself."] },
+      resultado: { t: "Zero violations, measured and not promised",
+        p: ["The volume passes WCAG 2.1 AA with no violations: zero on paper, zero in ink mode, zero in English and zero at 390px, swept with axe-core on the served page, view by view. Across six widths, from 1920 down to 390, none scrolls horizontally, and the eight routes load without a single JavaScript error.",
+            "It is unglamorous, and that is the point. A portfolio arguing for care with detail while failing an automated sweep contradicts itself in its own shop window. This is the number I could hold myself to, so this is the one that is here, with the tool and the method up front."] },
     },
   };
   CHAPTERS.forEach((c) => {
