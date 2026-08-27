@@ -1,4 +1,23 @@
-# Handoff — Portfólio "Volume" (Gabriel Felix Barbosa)
+#**A gramática visual, desde `e7a5e55`:**
+
+- **Duas larguras de imagem, e só duas**: página é `--fig-plena` (976,
+  vale para a cena de abertura, a `solucao` e o antes/depois) e coluna é
+  a largura da coluna de provas. O grau `apoio` pesa o plano de tinta
+  (5px), não muda largura: os 72% à direita serrilhavam a pilha e
+  morreram. A cena de abertura é FIGURA PARADA no degrau plena: o
+  `CenaScroll` (quadro que crescia no scroll) saiu do código, não
+  reintroduzir.
+- **Texto sem prova ao lado não fica em meia coluna**: o intro da
+  `solucao` corre em duas colunas de imprensa na largura da página
+  (`.sol-intro-cols`). As legendas numeradas da solução saíram a pedido:
+  a tela fala, o zoom detalha.
+- **Figura lateral curta centra contra o texto** no beat com linha plena
+  (`.beat:has(.mod-plena) > .c7 { align-self: center }`).
+- **CSS morto se remove por regra, com chaves balanceadas**, nunca por
+  fatia de string: uma remoção por índice levou junto o plano de tinta e
+  a moldura da citação, com build verde, e só o axe pegou.
+
+ Handoff — Portfólio "Volume" (Gabriel Felix Barbosa)
 
 Portfólio em forma de volume de mangá. SPA React estática, sem backend.
 
@@ -169,25 +188,6 @@ foi repetição; o que entrou foi navegação de tamanho parecido.
    inglês**, com build verde e console limpo. Foi assim que o beat do
    Design System perdeu motion, tipografia, espaço e o `Derivado` inteiros
    em EN por semanas. **Confira o EN renderizado, não o fonte.**
-**A gramática visual, desde `e7a5e55`:**
-
-- **Duas larguras de imagem, e só duas**: página é `--fig-plena` (976,
-  vale para a cena de abertura, a `solucao` e o antes/depois) e coluna é
-  a largura da coluna de provas. O grau `apoio` pesa o plano de tinta
-  (5px), não muda largura: os 72% à direita serrilhavam a pilha e
-  morreram. A cena de abertura é FIGURA PARADA no degrau plena: o
-  `CenaScroll` (quadro que crescia no scroll) saiu do código, não
-  reintroduzir.
-- **Texto sem prova ao lado não fica em meia coluna**: o intro da
-  `solucao` corre em duas colunas de imprensa na largura da página
-  (`.sol-intro-cols`). As legendas numeradas da solução saíram a pedido:
-  a tela fala, o zoom detalha.
-- **Figura lateral curta centra contra o texto** no beat com linha plena
-  (`.beat:has(.mod-plena) > .c7 { align-self: center }`).
-- **CSS morto se remove por regra, com chaves balanceadas**, nunca por
-  fatia de string: uma remoção por índice levou junto o plano de tinta e
-  a moldura da citação, com build verde, e só o axe pegou.
-
 3. **Espaço grande escolhido na mão vira telas.** `.passos-figs` tinha
    `gap: 26vh` (234px em 1440x900) e doze dessas somavam 2.808px de
    rolagem vazia. Hoje é `--ma-6`, o mesmo valor que separa dois beats.
