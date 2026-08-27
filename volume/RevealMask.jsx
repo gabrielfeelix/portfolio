@@ -61,7 +61,12 @@ function Dots({ index, total }) {
 /* Um capítulo: a arte, e a barra por baixo dela.
    `chap` pode não ter arte (Locar Mais até os prints entrarem): nesse caso
    a chapa do MangaPlate assume o quadro, e o vazio fica editorial em vez
-   de ler como imagem quebrada. */
+   de ler como imagem quebrada.
+
+   O quadro é uma CHAPA DE COR com o print flutuando em cima, não o print
+   preenchendo a moldura. A cor vem de `chap.capa.bg`, que é a cor da marca
+   do cliente, e a retícula por cima é o que mantém isso como quadro de
+   mangá e não como card de template. Sem `capa` a chapa cai para tinta. */
 function RevealImageMask({ proj, chap, index, total, onOpen }) {
   const [ref, inView] = useReenter({ threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
 
@@ -80,7 +85,10 @@ function RevealImageMask({ proj, chap, index, total, onOpen }) {
         onClick={() => onOpen(proj.id)}
         aria-label={t(`Ler o capítulo ${proj.title}`, `Read the ${proj.title} chapter`)}
       >
-        <span className="rvm-art">
+        <span className="rvm-art" style={capa ? { "--rvm-bg": capa.bg } : undefined}>
+          {/* a retícula: é ela que impede a chapa de cor de virar bloco
+              chapado e mantém o quadro no idioma do volume */}
+          <span className="rvm-tone" aria-hidden="true"></span>
           <span className="rvm-mask">
             {art
               ? <img className="rvm-img" src={art} alt="" loading="lazy" draggable="false" />

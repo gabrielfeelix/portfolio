@@ -10,10 +10,15 @@
    reservado e entra quando o Gabriel tiver os arquivos.
 
    A virada corre da DIREITA para a ESQUERDA, que é o sentido de leitura do
-   mangá e o mesmo sentido da faixa de marcas na segunda dobra. A folha gira
-   na lombada (`transform-origin` no vinco, `preserve-3d`, verso escondido
-   por `backface-visibility`), e o verso é papel com screentone: virando,
-   aparece o avesso da folha, não um retângulo chapado.
+   mangá e o mesmo sentido da faixa de marcas na segunda dobra. Por isso a
+   peça de número menor ocupa a folha da DIREITA e a seguinte a da esquerda:
+   a ordem do DOM continua 001, 002 (que é a ordem de leitura, e é o que o
+   leitor de tela anuncia) e quem posiciona é o `grid-column` no app.css.
+   Avançar gira a folha da direita; voltar gira a da esquerda.
+
+   A folha gira na lombada (`transform-origin` no vinco, `preserve-3d`,
+   verso escondido por `backface-visibility`), e o verso é papel com
+   screentone: virando, aparece o avesso da folha, não um retângulo chapado.
 
    `book-slider` do briefing é componente de outro stack (shadcn/Next, com
    alias de import). Este repo é script global transpilado sem bundle, então
@@ -66,7 +71,7 @@ function Pagina({ proj, n }) {
 }
 
 function BookSlider({ items }) {
-  const [par, setPar] = useState(0);          /* índice do projeto da ESQUERDA */
+  const [par, setPar] = useState(0);          /* índice do projeto da DIREITA (o primeiro a ler) */
   const [vira, setVira] = useState(null);     /* {dir, esq, dir2} durante a virada */
   const [aberto, setAberto] = useState(false);
   const stage = useRef(null);
@@ -82,8 +87,10 @@ function BookSlider({ items }) {
     const n = par + d * 2;
     if (n < 0 || n >= total) return;
     trava.current = true;
-    /* a folha que gira carrega o conteúdo que está saindo de cena */
-    setVira({ dir: d, esq: items[par], dirp: items[par + 1] });
+    /* a folha que gira carrega o conteúdo que está saindo de cena:
+       avançando sai a folha da direita (items[par]), voltando sai a da
+       esquerda (items[par + 1]) */
+    setVira({ dir: d, folhaDir: items[par], folhaEsq: items[par + 1] });
     setPar(n);
     setTimeout(() => { setVira(null); trava.current = false; }, LV_DUR);
   };
@@ -122,7 +129,7 @@ function BookSlider({ items }) {
           {vira ? (
             <span className={`lv-folha ${vira.dir > 0 ? "adiante" : "atras"}`} aria-hidden="true">
               <span className="lv-face lv-frente">
-                <Pagina proj={vira.dir > 0 ? vira.dirp : vira.esq} n={0} />
+                <Pagina proj={vira.dir > 0 ? vira.folhaDir : vira.folhaEsq} n={0} />
               </span>
               <span className="lv-face lv-verso"></span>
             </span>

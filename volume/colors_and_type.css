@@ -62,7 +62,7 @@
 
   /* Ink & Paper — the two poles of the world */
   --ink:        #0A0A0A;   /* print black, never pure #000 */
-  --paper:      #F6F3EC;   /* off-white, faintly cream manga stock */
+  --paper:      #FFFFFF;   /* TESTE 2026-08-27: branco puro no lugar do creme #F6F3EC */
 
   /* Ink-wash grays — sumi-e dilution, 4 tones for depth.
      Warm-leaning so they read as diluted ink on cream, not cold UI gray. */

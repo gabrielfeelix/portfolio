@@ -178,7 +178,16 @@ function Splash({ onRead, onContact, onRapido, lit }) {
    o tempo todo enquanto se rola.
 
    rAF + listener passivo: o scroll nunca faz layout, so' escreve transform. */
-const BITE_FATORES = [1.28, 0.82, 1.5, 0.64, 1.12, 0.92, 1.38];
+/* Perfil SIMÉTRICO com o dente do meio esticado: a coluna central sobe mais
+   que o dobro das das pontas, e o desenho decresce parelho para os dois
+   lados. O perfil antigo era irregular (1.28, .82, 1.5, .64, ...) e lia como
+   serrilha aleatória; simétrico ele lê como uma mordida só, com centro. */
+const BITE_FATORES = [0.58, 0.84, 1.20, 1.68, 1.20, 0.84, 0.58];
+
+/* quanto de cada quadro a coluna caminha em direção ao alvo. Menor = mais
+   preguiçoso. A do meio é a mais lenta de propósito: ela chega por último e
+   é esse atraso que dá o elástico. */
+const BITE_LERP  = [0.115, 0.100, 0.086, 0.068, 0.086, 0.100, 0.115];
 
 function Bite() {
   const ref = useRef(null);
@@ -190,9 +199,15 @@ function Bite() {
     const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduz) return;
 
+    /* A posição de cada coluna NÃO é escrita direto do scroll: o scroll define
+       um ALVO e a coluna caminha até ele um pouco por quadro. É esse atraso
+       que dá o peso, e como cada coluna tem a sua velocidade, elas chegam em
+       tempos diferentes e a mordida se forma em vez de saltar pronta. */
+    const alvo  = new Array(cols.length).fill(100);
+    const atual = new Array(cols.length).fill(100);
     let raf = 0;
-    const pinta = () => {
-      raf = 0;
+
+    const medeAlvo = () => {
       const vh = window.innerHeight || 1;
       /* A mordida comeca quase junto com a rolagem (12% da primeira tela) e
          se estende ate' quase o fim dela. Comecando so' na metade, o efeito
@@ -200,13 +215,37 @@ function Bite() {
       const p = Math.min(1, Math.max(0, (window.scrollY - vh * 0.12) / (vh * 0.76)));
       for (let i = 0; i < cols.length; i++) {
         const f = BITE_FATORES[i % BITE_FATORES.length];
-        const y = Math.max(0, 100 - p * f * 100);
-        cols[i].style.transform = "translateY(" + y + "%)";
+        alvo[i] = Math.max(0, 100 - p * f * 100);
       }
     };
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(pinta); };
 
-    pinta();
+    const quadro = () => {
+      raf = 0;
+      let anda = false;
+      for (let i = 0; i < cols.length; i++) {
+        const k = BITE_LERP[i % BITE_LERP.length];
+        const d = alvo[i] - atual[i];
+        /* 0.02% é meio pixel em qualquer altura que a faixa tenha: abaixo
+           disso a coluna já chegou e o laço pode parar, senão o rAF ficaria
+           rodando para sempre atrás de um resto infinitesimal. */
+        if (Math.abs(d) < 0.02) { atual[i] = alvo[i]; }
+        else { atual[i] += d * k; anda = true; }
+        cols[i].style.transform = "translateY(" + atual[i].toFixed(3) + "%)";
+      }
+      if (anda) raf = requestAnimationFrame(quadro);
+    };
+
+    const acorda = () => { if (!raf) raf = requestAnimationFrame(quadro); };
+    const onScroll = () => { medeAlvo(); acorda(); };
+
+    /* na primeira pintura a coluna assume o alvo sem caminhar: quem chega a
+       meio da página não deve ver a mordida se montando do zero */
+    medeAlvo();
+    for (let i = 0; i < cols.length; i++) {
+      atual[i] = alvo[i];
+      cols[i].style.transform = "translateY(" + atual[i].toFixed(3) + "%)";
+    }
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
@@ -334,8 +373,8 @@ function OutrasPecas() {
         <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
       </div>
       <p className="mo-desc" style={{ maxWidth: "52ch", marginBottom: "var(--ma-3)" }}>
-        {t("Duas peças por vez, uma em cada página. A folha vira da direita para a esquerda, como se lê mangá — ou abra o índice inteiro de uma vez.",
-           "Two pieces at a time, one per page. The leaf turns right to left, the way manga reads — or open the whole index at once.")}
+        {t("Duas peças por vez, uma em cada página. A folha vira da direita para a esquerda, como se lê mangá. Quem tem pressa abre o índice inteiro de uma vez.",
+           "Two pieces at a time, one per page. The leaf turns right to left, the way manga reads. In a hurry, open the whole index at once.")}
       </p>
       <BookSlider items={all} />
     </section>
@@ -455,7 +494,9 @@ function Colofao({ onContact, onNav }) {
                  style={{ padding: "11px 20px", fontSize: 14 }}>{t("Bora conversar", "Let's talk")} <span className="arr">→</span></a>
             </div>
             <div className="row" style={{ marginTop: 10, gap: 18, flexWrap: "wrap" }}>
-              <a className="s" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">WhatsApp · {CONTATO.whatsapp.display}</a>
+              {/* o número saiu: o botão "Bora conversar" logo acima já abre o
+                  WhatsApp, e repetir o telefone em texto era o mesmo destino
+                  duas vezes na mesma linha */}
               <a className="s" href={CONTATO.linkedin.href} target="_blank" rel="noreferrer">LinkedIn</a>
               <a className="s" href={CONTATO.instagram.href} target="_blank" rel="noreferrer">Instagram</a>
               <a className="s" href={CONTATO.email.href}>{CONTATO.email.display}</a>

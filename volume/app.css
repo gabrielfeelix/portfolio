@@ -75,7 +75,9 @@
    A capa e' comida de baixo pra cima, que era o efeito da referencia. */
 .bite {
   position: absolute; inset-inline: 0; bottom: 100%; z-index: 2;
-  block-size: clamp(90px, 15vw, 210px);
+  /* mais alto que antes: o dente do meio sobe 1.68x e precisa de trilho
+     para esticar de verdade. A 210px ele batia no teto da faixa. */
+  block-size: clamp(110px, 19vw, 280px);
   display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
   align-items: end; overflow: hidden; pointer-events: none;
 }
@@ -2064,7 +2066,9 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
    torre, e a grade inteira virava uma parede de altura dupla.
    ===================================================================== */
 .rvm-list {
-  list-style: none; padding: 0 var(--gutter); max-width: 1500px;
+  /* 1660 e não 1500: nas referências o quadro é a peça grande da página e o
+     texto é a legenda dele. A 1500 o card lia como miniatura de índice. */
+  list-style: none; padding: 0 var(--gutter); max-width: 1660px;
   /* A grade subia com margem negativa pra "morder" o sumário, mas o que ela
      mordia era o TÍTULO: o primeiro card cobria metade da palavra Sumário.
      Morder o ar acima é efeito; cobrir o cabeçalho é defeito. */
@@ -2089,26 +2093,83 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 .rvm-btn:focus-visible { outline: 3px solid var(--vermilion); outline-offset: 6px; }
 
 /* ---- a arte ---- */
+/* O quadro é chapa de cor com o print flutuando em cima, e não o print
+   preenchendo a moldura. `--rvm-bg` chega do `capa.bg` de cada capítulo
+   (a cor da marca do cliente); sem ela a chapa cai para tinta. */
 .rvm-art {
+  --rvm-bg: var(--ink);
   position: relative; display: block; width: 100%; overflow: hidden;
-  aspect-ratio: 16 / 10; background: var(--wash-1);
+  /* 16/11 dá altura para a tela flutuar com ar em cima e ainda ser cortada
+     embaixo. Em 16/10 a tela encostava no topo do quadro. */
+  aspect-ratio: 16 / 11; background: var(--rvm-bg);
   border: var(--ink-stroke) solid var(--ink);
   transition: transform var(--cut), box-shadow var(--cut);
+}
+/* Duas camadas sobre a chapa, e a ordem importa:
+
+   1. o DEGRADÊ, que tira o chapado da cor lisa. Vem claro no alto e
+      escuro embaixo, então a tela flutuando ganha um fundo que abre
+      atrás dela em vez de competir.
+   2. a RETÍCULA, fraca, por cima. É ela que mantém o quadro no idioma do
+      volume: sem retícula a chapa vira card de template. Fraca porque
+      forte ela briga com a interface do print. */
+.rvm-art::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,.26), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,.10), transparent 42%, rgba(0,0,0,.30));
+}
+.rvm-tone {
+  /* -7px por passo é UMA célula da trama: a retícula anda da direita para a
+     esquerda e volta ao ponto de partida sem emenda visível. O eixo é o
+     mesmo da leitura do mangá e o mesmo da faixa de marcas. Lento de
+     propósito: a 18s isso é respiração de fundo, não animação de card. */
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background-image: radial-gradient(rgba(0,0,0,.42) 1px, transparent 1.6px);
+  background-size: 7px 7px;
+  mix-blend-mode: multiply; opacity: .34;
+  animation: rvm-tone-anda 18s linear infinite;
+  will-change: background-position;
+}
+@keyframes rvm-tone-anda {
+  from { background-position: 0 0; }
+  to   { background-position: -7px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rvm-tone { animation: none; }
 }
 .rvm-btn:hover .rvm-art { transform: translate(-4px, -4px); box-shadow: 12px 12px 0 var(--ink); }
 
 /* A máscara que abria de baixo pra cima saiu: na grade ela lia como um fade
    creme subindo em cada card a cada rolagem, e não como tinta assentando. A
    arte agora simplesmente está lá. */
-.rvm-mask { display: block; block-size: 100%; inline-size: 100%; }
+/* A tela aparece INTEIRA, de fora a fora. O corte pela borda de baixo saiu:
+   ele comia interface justo onde o print tem argumento, e num portfólio de
+   UI a tela é a prova, não a textura. A caixa centraliza e a imagem se
+   ajusta dentro dela por `object-fit: contain`, então print de desktop
+   (16/10) e print de celular (390x844) cabem sem deformar nenhum dos dois. */
+.rvm-mask {
+  position: absolute; z-index: 3;
+  inset: clamp(22px, 8%, 62px) clamp(18px, 6%, 58px);
+  display: grid; place-items: center;
+}
 
-.rvm-img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top center;
-  display: block; transition: transform 900ms var(--curva); }
-.rvm-btn:hover .rvm-img { transform: scale(1.03); }
+/* o print é uma TELA: os quatro cantos arredondados, porque agora ela
+   termina dentro do quadro em vez de ser cortada pela borda */
+.rvm-img {
+  max-inline-size: 100%; max-block-size: 100%;
+  inline-size: auto; block-size: auto; object-fit: contain;
+  display: block; border: var(--ink-stroke) solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(10,10,10,.30), 8px 8px 0 rgba(10,10,10,.34);
+  transition: transform 900ms var(--curva);
+}
+.rvm-btn:hover .rvm-img { transform: translateY(-6px) scale(1.02); }
 
 /* o selo CAP. no canto, como carimbo do quadro */
 .rvm-cap {
-  position: absolute; inset-block-start: 0; inset-inline-start: 0; z-index: 2;
+  /* z-index 4: o selo fica ACIMA da tela flutuante, como carimbo no quadro */
+  position: absolute; inset-block-start: 0; inset-inline-start: 0; z-index: 4;
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
   letter-spacing: .18em; font-size: 12px; color: var(--paper);
   background: var(--ink); padding: 8px 14px;
@@ -2118,7 +2179,8 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 
 /* o disco com a seta diagonal: some até o hover, como na referência */
 .rvm-hov {
-  position: absolute; inset-block-start: 14px; inset-inline-end: 14px; z-index: 2;
+  /* z-index 4: o disco é affordance, tem que vir na frente da tela */
+  position: absolute; inset-block-start: 14px; inset-inline-end: 14px; z-index: 4;
   inline-size: 46px; block-size: 46px; border-radius: 50%;
   display: grid; place-items: center;
   background: var(--vermilion); color: #fff;
@@ -2285,7 +2347,13 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   gap: 10px; padding: clamp(20px, 2.8vw, 38px); min-inline-size: 0;
   background: var(--paper);
 }
-.lv-pg + .lv-pg { border-inline-start: var(--ink-hair) solid var(--wash-2); }
+/* Mangá: a peça de número menor fica na folha da DIREITA, e a seguinte na
+   esquerda. A ordem do DOM continua 001, 002 — que é a ordem de leitura e a
+   que o leitor de tela anuncia — e só a posição na grade inverte. */
+.lv-book > .lv-pg:first-child  { grid-column: 2; }
+.lv-book > .lv-pg:nth-child(2) { grid-column: 1; }
+/* o fio de dobra mora na lombada, ou seja na borda interna da folha esquerda */
+.lv-book > .lv-pg:nth-child(2) { border-inline-end: var(--ink-hair) solid var(--wash-2); }
 .lv-topo {
   display: flex; align-items: baseline; justify-content: space-between;
   inline-size: 100%; border-block-end: var(--ink-hair) solid var(--wash-2);
@@ -2401,6 +2469,8 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 @media (max-width: 760px) {
   /* no telefone só cabe uma página: a segunda sai e a virada anda de um em um */
   .lv-book { grid-template-columns: minmax(0, 1fr); }
+  /* uma coluna só: a folha da direita volta pra primeira faixa */
+  .lv-book > .lv-pg:first-child { grid-column: 1; }
   .lv-book > .lv-pg:nth-child(2) { display: none; }
   .lv-book::after, .lv-folha { display: none; }
   .lv-irow { grid-template-columns: minmax(0,1fr) auto; }
@@ -2436,6 +2506,12 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   flex-direction: column; align-items: center; gap: 10px; text-align: center;
 }
 .outras > .mo-desc {
+  /* `padding-left: 96px` vem da regra base do `.mo-desc`, que nasceu na
+     lista antiga (`.mo-row`) para indentar a descrição sob um rótulo. Aqui
+     a cabeça é centralizada, e esse recuo empurrava o TEXTO 48px à direita
+     (metade do padding) enquanto a caixa continuava centrada: por isso o
+     desalinho não aparecia medindo bounding box, só medindo as linhas. */
+  padding-left: 0;
   margin-inline: auto; text-align: center; max-width: 56ch;
 }
 
