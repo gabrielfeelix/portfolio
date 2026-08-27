@@ -1100,6 +1100,17 @@ const PROJECTS = [
        trocar `links.figma` pelo link da loja e pôr `destino: "loja"`. */
     desc: "App de clube de leitura, desenhado no Figma", destino: "figma",
     links: { vercel: null, figma: "https://www.figma.com/design/1ruVWABUF6B5VibTVF430q/Untitled?node-id=0-1&t=OK5Z4v9Mv4likK9K-1" } },
+  /* Os dois apps do Posfácio ("um que lembra onde estacionei o carro, outro
+     que ajuda a calcular quanto cobrar por hora") estavam contados em prosa e
+     não existiam como peça. São os únicos trabalhos do volume publicados numa
+     loja, que é a prova mais dura da tese de "entrego o produto no ar": vale
+     mais mostrá-los do que citá-los. `destino: "loja"` é o selo próprio. */
+  { id: "quantocobro", title: "Quanto Cobro", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
+    desc: "Calcula o valor da hora de quem cobra por hora", destino: "loja",
+    links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.quantocobro" } },
+  { id: "deixeiaqui", title: "Deixei Aqui", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
+    desc: "Marca onde o carro ficou e devolve o caminho de volta", destino: "loja",
+    links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.deixeiaqui" } },
   { id: "remoctrl", title: "Remoctrl", cat: "desktop", domain: "Web app · Controle de TV", fav: false, chapterId: null,
     desc: "Controle de Smart TV Roku pelo navegador, sem instalar nada", destino: "ar",
     links: { vercel: "https://remoctrl.vercel.app/", figma: null } },
@@ -1123,7 +1134,7 @@ const PROJECTS = [
 ];
 
 /* peça só aparece no índice quando tem para onde levar */
-function pieceLink(p) { return (p.links && (p.links.vercel || p.links.figma)) || null; }
+function pieceLink(p) { return (p.links && (p.links.vercel || p.links.play || p.links.figma)) || null; }
 
 /* tag shown on a project cover: chapters carry their CAP number */
 function projTag(p) {

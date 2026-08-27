@@ -1796,6 +1796,9 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
 .mo-destino.is-ar { color: var(--vermilion-ink); }
 .mo-destino.is-proto { color: var(--wash-3); }
 .mo-destino.is-figma { color: var(--wash-3); }
+/* loja pesa como "no ar": app publicado numa loja é produto entregue, e a
+   cor de destaque é o que separa entregue de desenhado nesta lista. */
+.mo-destino.is-loja { color: var(--vermilion-ink); }
 .mo-row:hover .mo-destino { color: var(--vermilion); }
 @media (max-width: 640px) { .mo-desc { padding-left: 0; } }
 

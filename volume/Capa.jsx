@@ -329,7 +329,10 @@ function OutrasPecas({ filter, setFilter }) {
                     <span className="mo-title">{p.title}</span>
                     <span className="mo-dots" aria-hidden="true"></span>
                     <span className={`mo-destino is-${dest}`}>
-                      {dest === "proto" ? t("Protótipo", "Prototype") : dest === "figma" ? "Figma" : t("No ar", "Live")}
+                      {dest === "proto" ? t("Protótipo", "Prototype")
+                        : dest === "figma" ? "Figma"
+                        : dest === "loja" ? "Play Store"
+                        : t("No ar", "Live")}
                       <span className="ext" aria-hidden="true">↗</span>
                     </span>
                     <span className="mo-page">p. {pagina.get(p.id)}</span>

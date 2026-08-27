@@ -648,6 +648,7 @@ if (LANG === "en") {
     signamais: "SaaS · Subscriptions", "locarmais-conciliacao": "SaaS · Management",
     odex: "Desktop and Web", "oderco-revenda": "Web · Landing page", pcyes: "E-commerce · Magento",
     rodape: "App · Android", remoctrl: "Native app · Desktop", traxium: "SaaS",
+    quantocobro: "App · Android", deixeiaqui: "App · Android",
     dropchina: "E-commerce · Shopify", web2design: "Tool · Design", argel: "App · Boxing",
     "solar-site": "Website · LP", "4yu": "Website · LP", immo: "SaaS",
   };
@@ -663,6 +664,8 @@ if (LANG === "en") {
     odex: "Interface redesign", "oderco-revenda": "Reseller signup page",
     portfolio: "This volume you are reading",
     rodape: "Book club app, designed in Figma",
+    quantocobro: "Works out the hourly rate for whoever charges by the hour",
+    deixeiaqui: "Marks where the car is and walks you back to it",
   };
   PROJECTS.forEach((p) => { if (PJ_DESC_EN[p.id]) p.desc = PJ_DESC_EN[p.id]; });
   PROJECTS.forEach((p) => { if (PJ_DOMAIN_EN[p.id]) p.domain = PJ_DOMAIN_EN[p.id]; });
