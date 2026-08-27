@@ -349,8 +349,11 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .quemsou .qk { font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase; letter-spacing: .22em; font-size: 13px; color: var(--fg-2); }
 /* tres colunas agora: bio+numeros, o retrato, e o carrossel de empresas.
    O retrato entra no meio pra nao empurrar a trajetoria pro rodape. */
+/* A terceira coluna (o retrato) espremeu o carrossel de empresas, e o
+   .qsc-logo de 116px fixos estourou o card. O retrato encolhe e a coluna
+   da empresa volta a ter largura de card. */
 .qs-grid { padding: var(--ma-5) var(--gutter); display: grid;
-  grid-template-columns: 1.15fr .62fr .9fr; gap: var(--gutter); align-items: center; }
+  grid-template-columns: 1fr .46fr 1.05fr; gap: clamp(20px, 2.4vw, 40px); align-items: center; }
 @media (max-width: 1080px) {
   .qs-grid { grid-template-columns: 1fr 1fr; }
   .qs-foto { order: -1; }
@@ -365,9 +368,9 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .qsc-arr:hover { background: var(--ink); color: var(--paper); }
 .qsc-idx { font-family: var(--font-editorial); font-weight: 700; font-size: 12px; color: var(--fg-2); padding: 0 6px; }
 .qsc-idx i { font-style: normal; color: var(--wash-2); }
-.qsc-card { -webkit-appearance: none; appearance: none; cursor: pointer; text-align: left; width: 100%; display: grid; grid-template-columns: auto 1fr; gap: var(--gutter); align-items: center; background: var(--paper); border: var(--ink-stroke) solid var(--ink); box-shadow: 7px 7px 0 var(--ink); padding: var(--ma-3); transition: transform var(--cut), box-shadow var(--cut); }
+.qsc-card { -webkit-appearance: none; appearance: none; cursor: pointer; text-align: left; width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(14px, 1.6vw, 24px); align-items: center; background: var(--paper); border: var(--ink-stroke) solid var(--ink); box-shadow: 7px 7px 0 var(--ink); padding: var(--ma-3); transition: transform var(--cut), box-shadow var(--cut); }
 .qsc-card:hover { transform: translate(-2px,-2px); box-shadow: 11px 11px 0 var(--ink); }
-.qsc-logo { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 116px; height: 116px; border: var(--ink-hair) solid var(--ink); background: var(--wash-1); }
+.qsc-logo { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; inline-size: clamp(78px, 8vw, 116px); aspect-ratio: 1; flex: 0 0 auto; border: var(--ink-hair) solid var(--ink); background: var(--wash-1); }
 .qsc-logo-mark { font-family: var(--font-display); text-transform: uppercase; font-size: 1.15rem; line-height: .95; text-align: center; padding: 0 8px; }
 .qsc-logo-cap { font-family: var(--font-condensed); text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--wash-3); }
 .qsc-name { display: block; font-family: var(--font-display); text-transform: uppercase; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: .95; }
@@ -2057,8 +2060,10 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
    ===================================================================== */
 .rvm-list {
   list-style: none; padding: 0 var(--gutter); max-width: 1500px;
-  /* a grade MORDE o sumário acima, mesmo gesto da faixa que morde a capa */
-  margin: calc(-1 * clamp(28px, 5vw, 76px)) auto var(--ma-6);
+  /* A grade subia com margem negativa pra "morder" o sumário, mas o que ela
+     mordia era o TÍTULO: o primeiro card cobria metade da palavra Sumário.
+     Morder o ar acima é efeito; cobrir o cabeçalho é defeito. */
+  margin: var(--ma-3) auto var(--ma-6);
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(20px, 3vw, 44px);
 }
@@ -2087,17 +2092,10 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 }
 .rvm-btn:hover .rvm-art { transform: translate(-4px, -4px); box-shadow: 12px 12px 0 var(--ink); }
 
-/* a tinta assentando: a máscara abre de baixo pra cima quando o quadro
-   entra em cena. Transição no estado BASE, então re-anima na volta. */
-.rvm-mask {
-  display: block; block-size: 100%; inline-size: 100%;
-  -webkit-mask-image: linear-gradient(to top, #000 50%, transparent 50%);
-          mask-image: linear-gradient(to top, #000 50%, transparent 50%);
-  -webkit-mask-size: 100% 200%; mask-size: 100% 200%;
-  -webkit-mask-position: 0 0; mask-position: 0 0;
-  transition: -webkit-mask-position 900ms var(--curva), mask-position 900ms var(--curva);
-}
-.rvm.in .rvm-mask { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+/* A máscara que abria de baixo pra cima saiu: na grade ela lia como um fade
+   creme subindo em cada card a cada rolagem, e não como tinta assentando. A
+   arte agora simplesmente está lá. */
+.rvm-mask { display: block; block-size: 100%; inline-size: 100%; }
 
 .rvm-img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top center;
   display: block; transition: transform 900ms var(--curva); }
@@ -2157,7 +2155,6 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 .rvm-tag.is-live { color: var(--vermilion-ink); border-color: currentColor; }
 
 @media (prefers-reduced-motion: reduce) {
-  .rvm-mask { -webkit-mask-image: none; mask-image: none; transition: none; }
   .rvm-img, .rvm-art, .rvm-hov { transition: none; }
 }
 
@@ -2425,3 +2422,32 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   line-height: .85; letter-spacing: -.02em; display: block; }
 .qs-nl { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .14em; font-size: 11px; color: var(--fg-2); margin-block-start: 8px; display: block; }
+
+/* ---- Outras peças: a cabeça alinha com o livro ---------------------
+   O título estava colado na margem esquerda, a descrição indentada num
+   recuo próprio e o livro centrado: três eixos diferentes na mesma seção.
+   Agora tudo compartilha o eixo central do livro. */
+.outras .sec-head {
+  flex-direction: column; align-items: center; gap: 10px; text-align: center;
+}
+.outras > .mo-desc {
+  margin-inline: auto; text-align: center; max-width: 56ch;
+}
+
+/* ---- a chapa de marca dentro do card de empresa -------------------
+   <BrandPlate> (data.jsx) só carrega o `background` inline com a cor da
+   marca; não existe regra de tamanho pra `.brandplate` em lugar nenhum.
+   Solta dentro do quadro, ela encolhia até o tamanho natural do arquivo —
+   e as logos são faixas horizontais (a do Oderço é 332x55), então sobrava
+   uma tira azul fina boiando num quadro bege.
+
+   A chapa passa a preencher o quadro e a logo cabe dentro com respiro: o
+   resultado é o bloco da cor da marca, que é o que a chapa sempre quis ser. */
+.qsc-logo .brandplate {
+  display: grid; place-items: center;
+  inline-size: 100%; block-size: 100%; padding: 14px;
+}
+.qsc-logo .bp-logo {
+  inline-size: 100%; block-size: auto; max-block-size: 100%;
+  object-fit: contain; display: block;
+}

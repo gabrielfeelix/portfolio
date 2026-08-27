@@ -192,9 +192,10 @@ function Bite() {
     const pinta = () => {
       raf = 0;
       const vh = window.innerHeight || 1;
-      /* a mordida acontece na segunda metade da primeira tela: antes disso
-         a capa esta' inteira, no fim dela o papel ja' fechou */
-      const p = Math.min(1, Math.max(0, (window.scrollY - vh * 0.45) / (vh * 0.55)));
+      /* A mordida comeca quase junto com a rolagem (12% da primeira tela) e
+         se estende ate' quase o fim dela. Comecando so' na metade, o efeito
+         aparecia tarde demais: o leitor ja' tinha passado por ele. */
+      const p = Math.min(1, Math.max(0, (window.scrollY - vh * 0.12) / (vh * 0.76)));
       for (let i = 0; i < cols.length; i++) {
         const f = BITE_FATORES[i % BITE_FATORES.length];
         const y = Math.max(0, 100 - p * f * 100);
