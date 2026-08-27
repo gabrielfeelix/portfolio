@@ -1,9 +1,8 @@
 # O que falta no volume
 
-> Escrito em 2026-08-26, sobre `1604128`, com tudo medido na página
-> servida em 1440x900 depois de rolar a página inteira. Este é **o**
-> arquivo de pendência: a seção "Pendente" do `docs/HANDOFF.md` aponta
-> para cá.
+> Reescrito em 2026-08-27, sobre `07c9382`, com tudo medido na página
+> servida depois de rolar a página inteira. Este é **o** arquivo de
+> pendência: a seção "Pendente" do `docs/HANDOFF.md` aponta para cá.
 >
 > Leia junto, e nesta ordem: `docs/HANDOFF.md` (arquitetura, regras duras,
 > armadilhas), este arquivo (o que falta), e só se precisar do histórico,
@@ -16,13 +15,18 @@
 
 ## Onde o volume está hoje
 
-| Capítulo | Altura | Telas | Palavras | Leitura | Imagens | Com zoom |
-|---|---|---|---|---|---|---|
-| **pcyes** | 36.812px | 40,9 | 3.593 | **18,0 min** | 27 | 21 |
-| locarmais-conciliacao | 13.249px | 14,7 | 1.012 | 5,1 min | 4 | 4 |
-| portfolio | 11.373px | 12,6 | 565 | 2,8 min | 5 | 5 |
-| odex | 10.563px | 11,7 | 640 | 3,2 min | 4 | 2 |
-| oderco-revenda | 10.495px | 11,7 | 689 | 3,4 min | 3 | 3 |
+| Capítulo | Altura (1440) | Telas | Palavras | Leitura | Imagens |
+|---|---|---|---|---|---|
+| **pcyes** | 35.293px | 39,2 | 3.544 | **17,7 min** | 29 |
+| locarmais-conciliacao | 13.719px | 15,2 | 834 | 4,2 min | 4 |
+| portfolio | 11.710px | 13,0 | 323 | 1,6 min | 5 |
+| odex | 11.114px | 12,3 | 587 | 2,9 min | 4 |
+| oderco-revenda | 10.911px | 12,1 | 641 | 3,2 min | 3 |
+
+O PCYES em outras larguras: **36.856px (43,7 telas) em 390** e 39.178px
+(46,4 telas) em 768. O celular deixou de ser 4 telas mais caro que o
+desktop e passou a ser 4,5, mas em números absolutos caiu: media 40.779px
+antes da rodada do ritmo.
 
 Seis grupos fecharam (a Rodada A, e os Grupos A, B, D e E). O que resta
 está abaixo, em ordem de impacto.
@@ -52,9 +56,48 @@ o módulo diz "oito correções" enquanto isso. Quando o print chegar:
 A âncora de `decisoes` sobre o pop-up continua no ar: é argumento, não
 prova. E o achado do mapa de calor (182 cliques fechando) idem.
 
+## 1b · Os dados do capítulo · **trocados em `3e7dda7`, com um número a conferir**
+
+Os números saíram da amostra de 3 dias do Clarity e passaram a vir do GA4
+do trimestre (166.267 sessões). O Clarity **não saiu**: ficou com o mapa
+de calor e a gravação, que é o que ele mede bem. Usar cada ferramenta no
+que ela mede é parte do argumento.
+
+O funil mudou a conclusão do capítulo. A amostra dizia "de 63 que entram,
+uma chega ao checkout" e apontava para o checkout; o trimestre mostra que
+quem chega lá converte a **25%** (223 de 896) e que o gargalo está um
+passo antes, em transformar quem abre um produto em quem põe no carrinho
+(de 62, uma). É o que a V2 ataca com o botão de comprar no card e na
+visualização rápida.
+
+**O número a conferir, e é com o Gabriel:** o funil **sobe** de 808
+(`add_to_cart`) para 896 (`begin_checkout`). Há nota no `data.jsx`
+explicando por compra rápida e carrinho recuperado, o que é plausível,
+mas se a marcação de `add_to_cart` estiver furada o dado está errado e é
+o tipo de coisa que um avaliador atento pergunta. Vale validar no GA4.
+
+**Decisões fechadas aqui, não relitigar:**
+
+- o mix desktop/mobile publicado é **70/30 do Q2** (116.530 contra
+  50.352). O bruto de 12 meses dá 73,6/26,2, mas junho e julho têm um
+  pico de desktop que cheira a tráfego não humano.
+- a nota do suporte fala **só de desktop**. Ela já teve uma versão
+  argumentando a favor do celular (conversão 0,17% contra 0,14%) e isso
+  se contradizia com a própria função do bloco, que é justificar prints
+  de desktop. O dado do celular existe e é real, mas não é ali que entra.
+- **as logos do GA4 e do Clarity não podem ser usadas.** A política da
+  Microsoft é explícita ("our logos, app and product icons... can never be
+  used without an express license") e a do Google só abre exceção para
+  matéria jornalística e material didático. Citar o **nome em texto** é
+  uso nominativo e é permitido nas duas. Os selos ao lado das linhas de
+  fonte são desenho próprio (`SeloFonte` em `Capitulo.jsx`), e é para
+  continuarem assim.
+
 ## 2 · Os outros quatro capítulos · **o desequilíbrio que sobrou**
 
-O volume hoje é um capítulo de 18 minutos ao lado de quatro de 3 a 5.
+O volume hoje é um capítulo de quase 18 minutos ao lado de quatro entre
+1,6 e 4,2 (ver a tabela acima; `minutos: 18` no `data.jsx` continua
+honesto, a medição dá 17,7).
 Cada um dos quatro mostra **3 a 5 telas de projeto**. Para portfólio de
 UI, isso é pouco, e o Grupo B já deu a régua a eles (a `solucao` a
 1033px, com zoom).
@@ -79,29 +122,44 @@ atalho de 3 minutos num capítulo de 3 minutos seria mentira. Se algum
 capítulo passar de uns 8 minutos, declare `minutos` nele **com o número
 medido** e o atalho aparece sozinho.
 
-## 3 · O ritmo no mobile · **a frente que ninguém abriu**
+## 3 · O ritmo no mobile · **fechado em `030b1c3`, com uma ressalva**
 
-Todo o Grupo A foi medido em 1440. No celular a conta é outra e é pior:
+A rodada foi feita e o mobile encolheu 1,7 tela em 390 e 1,9 em 768, com
+o desktop intacto (33.989px nos dois builds, byte a byte). O que sobrou
+está no item 3b abaixo.
 
-| | 390x844 | 1440x900 |
-|---|---|---|
-| Altura do PCYES | 40.779px | 36.812px |
-| **Telas de rolagem** | **48,3** | 40,9 |
+**O diagnóstico anterior deste arquivo estava pela metade.** Ele dizia
+"não sobra vão morto para cortar, o problema é ordem, não espaço". A
+medição mostrou que era espaço também, em dois lugares que ninguém tinha
+olhado:
 
-Os beats mais altos em 390, medidos: `modulos` 13.007px (15,4 telas),
-`sistema` 4.214px (5,0), `decisoes` 2.396px (2,8), `abertura` 2.218px
-(2,6), `solucao` 1.955px (2,3), `busca` 1.500px (1,8).
+- a escala `--ma-*` era a mesma em 390 e em 1440. O respiro de 104px
+  entre dois beats foi calibrado para uma coluna de 1040px e estava sendo
+  aplicado a uma de 350px: dezenove beats somavam 1.976px. Os três
+  degraus grandes agora encolhem sob 880px (`--ma-5` 64→40, `--ma-6`
+  104→56, `--ma-7` 160→80). Os pequenos não mexem: são padding dentro de
+  componente e apertariam texto contra moldura.
+- o vão entre provas do `ModuloPassos` estava pagando por um mecanismo
+  **desligado** no celular. O gap grande existe no desktop para dar tempo
+  do texto trocar na coluna presa; sob 880px `passos-cola` é `static`,
+  `passo-vivo` e `passo-regua` somem e cada passo já carrega o próprio
+  texto. Virou `--ma-4`.
 
-**E o problema ali é outro, não repita o remédio de desktop.** Em 390 a
-coluna mede 350px, 26 das 27 imagens ocupam 344px (a coluna inteira, que
-é o certo), e a calha dos passos já era `--ma-5` por media query desde
-antes. Não sobra vão morto para cortar. O que existe é **ordem**: sem as
-duas colunas, texto e prova viram uma pilha só, o `ModuloPassos` solta o
-sticky e cada passo carrega o próprio texto acima da figura. É aí que a
-próxima rodada tem que olhar, e a pergunta é de sequência, não de espaço.
+**A parte de "ordem" continua de pé e não foi tocada**, e é o que resta:
+sem as duas colunas, texto e prova viram uma pilha só. A pergunta é de
+sequência, e ela segue aberta.
 
-O 768px ganhou só 0,7 tela na rodada do ritmo, pelo mesmo motivo, e ainda
-mede 44.366px.
+## 3b · As imagens horizontais no celular · **levantado, não resolvido**
+
+Em 390 a coluna mede 350px e as imagens ocupam 344px, que é o certo para
+a largura. O problema é a altura: são prints de tela **desktop**, então
+em 390 cada um vira uma faixa baixa e larga onde não se lê interface
+nenhuma. A lupa resolve para quem toca, mas o primeiro contato é a faixa.
+
+As duas saídas conhecidas são recortar cada print para o trecho que
+importa, ou deixar a imagem rolar na horizontal dentro da moldura. As
+duas mexem em 27 imagens e nas duas quem decide o enquadramento é o
+Gabriel: **não fazer por conta própria.**
 
 ## 4 · Duas decisões visuais que continuam com o Gabriel
 
@@ -178,6 +236,36 @@ lugar e sirva numa segunda porta. Comparar contra memória não vale.
 
 ---
 
+## Armadilhas que já morderam · leia antes de mexer em CSS ou reveal
+
+- **`useReveal` já quebrou por altura lida no mount** (`cdd318f`). O
+  gatilho depende de `offsetHeight`, que no mount é quase sempre 0
+  (imagem sem carregar, fonte sem trocar). Com altura 0 a proteção para
+  elemento gigante não ativava e um beat de 3.000px exigia 660px de si na
+  tela: rolando rápido, **3 beats e 9 figuras** nunca revelavam em 1440 e
+  **7 e 10** em 390, aparecendo só quando o leitor subia. Hoje a altura é
+  lida ao observar, um `ResizeObserver` religa quando ela muda e quem
+  passou batido conta como visto. **Ao mexer ali, meça rolando rápido**
+  (salto de 1400px por frame), não devagar: em passo lento o bug não
+  reproduz.
+- **Nome de classe colide entre `app.css` e `chapter.css`**, que entram
+  concatenados no mesmo arquivo. `.db-n` e `.db-v` já eram do `.dec-beat`
+  e puseram a legenda de um bloco novo em **83px de Cinzel**, com build
+  verde. Antes de criar um prefixo curto, `grep` nos cinco CSS.
+- **`height: %` numa barra pendurada direto em flex-item resolve contra
+  `auto`**: duas barras de 100% e 70,6% saíam do mesmo tamanho. Precisa
+  de uma faixa com altura própria em px.
+- **Superfície vermelha usa cores literais**, nunca `--paper`/`--ink`: o
+  modo tinta inverte esses tokens e põe tipo quase preto sobre o vermelho.
+  E o `--vermilion` (#E4231B) **reprova em AA** com creme (4,16, mínimo
+  4,5); quem passa é o `--vermilion-ink` (#B01510), com 6,40.
+- **`ContaAte` devolve um `<span>`**: sufixo escrito fora dele fica solto
+  e quebra para a linha de baixo. Use a prop `sufixo`.
+- **O i18n substitui o ramo inteiro** (`Object.assign` raso). Campo
+  numérico e de layout tem que viajar dentro do objeto EN, senão some em
+  inglês com build verde. Já mordeu em `figuras`, em `gesto`/`busca` e no
+  `funil`.
+
 ## O que parece pendência e NÃO é · não procurar de novo
 
 - **As 6 imagens sem lupa são o antes/depois.** É slider, está a 976px, e
@@ -200,6 +288,10 @@ lugar e sirva numa segunda porta. Comparar contra memória não vale.
   `RevealChapters` em `RevealMask.jsx`.
 - **O `.view` é CSS órfão.** A regra foi corrigida em `4e3b79e` mas o
   elemento não existe mais no DOM.
+- **As 3 figuras que uma varredura acusa como "sem revelar" não são
+  figuras.** São os `<span className="fig">` de altura 0, que não usam
+  `useReveal`. As `<figure>` de prova revelam todas, medido rolando até o
+  fim.
 - **A ordem do Ato II não se mexe.** `gesto` termina em "foi o que mandou
   olhar para a busca" e `busca` abre em "o mapa de calor dizia". A
   sequência está soldada no copy de propósito, e isso foi verificado.

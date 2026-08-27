@@ -112,6 +112,7 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Decisões fechadas (não relitigar)
 
+- **A nota do suporte fala só de desktop** (2026-08-27): o bloco vermelho antes do Ato I existe para justificar por que as provas grandes são prints de desktop, e o número publicado é o mix do Q2, **70/30** (116.530 sessões contra 50.352). Ele já teve uma versão que argumentava a favor do celular (conversão 0,17% contra 0,14%, rejeição menor) e o Gabriel recusou: contradiz a própria função do bloco. O dado do celular é real e pode entrar em outro lugar, **não ali**. O bruto de 12 meses (73,6/26,2) não se usa: junho e julho têm pico de desktop com cara de tráfego não humano.
 - **Coverflow**: as capas laterais esmaecidas violam contraste no axe. Gabriel decidiu (2026-05-29) **aceitar** — é preview periférico decorativo e a capa focada carrega o texto legível. Exceção consciente à WCAG 1.4.3. Não mexer.
 - **Hero**: aprovado, não mexer. O obi foi recusado.
 - **Onde entra o Design System** (2026-08-26): depois das Decisões, antes dos Módulos. Nunca no começo. O argumento é "antes de desenhar 40 telas, construí o vocabulário", então o DS chega como resposta a um problema já posto e cada tela vira prova de que o sistema funciona.
@@ -122,18 +123,35 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-> **`docs/O-QUE-FALTA.md` é a lista completa**, medida em 2026-08-26 sobre
-> `1604128`. Esta seção não a repete: guarda só o registro do que fechou,
-> porque é onde moram as armadilhas que a próxima pessoa vai pisar.
+> **`docs/O-QUE-FALTA.md` é a lista completa**, reescrita em 2026-08-27
+> sobre `07c9382`. Esta seção não a repete: guarda só o registro do que
+> fechou, porque é onde moram as armadilhas que a próxima pessoa vai
+> pisar.
 
-Em uma linha: falta **os quatro prints do PCYES** (travado no Gabriel, e é
-o maior), **engordar os outros quatro capítulos** (depende de material
-dele), e **o ritmo no mobile**, que é 48,3 telas em 390px e é um problema
-de ordem, não de espaço.
+Em uma linha: falta **o print do pop-up** (travado no Gabriel), **engordar
+os outros quatro capítulos** (depende de material dele) e **a ordem dos
+blocos no celular**, que é o que sobrou do ritmo mobile.
 
 **Fecharam, nesta ordem:** a Rodada A (`fb823c9`), o Grupo B (escala e
-zoom, `68855dd`), os Grupos D e E (motion e maneirismo, `4e3b79e`) e o
-Grupo A (ritmo, `1ab1e88` e `1604128`).
+zoom, `68855dd`), os Grupos D e E (motion e maneirismo, `4e3b79e`), o
+Grupo A (ritmo, `1ab1e88` e `1604128`) e a rodada de 2026-08-27
+(`030b1c3` a `07c9382`): nota do suporte, ritmo no celular, bug do reveal
+e a troca dos dados do Clarity pelo GA4.
+
+**Três coisas dessa última rodada mudam o que você vai fazer:**
+
+- **o `useReveal` estava quebrado e não era percepção**: rolando rápido, 3
+  beats e 9 figuras nunca revelavam em 1440 e 7 e 10 em 390. Corrigido em
+  `cdd318f`. Ao mexer em reveal, **meça rolando rápido**, salto de 1400px
+  por frame: em passo lento o bug não reproduz.
+- **os números do capítulo agora são do GA4 do trimestre**, não da amostra
+  de 3 dias do Clarity, e a conclusão do funil mudou junto: o gargalo não
+  é o checkout (quem chega lá converte a 25%), é o passo anterior. O
+  Clarity ficou com mapa de calor e gravação.
+- **as logos do GA4 e do Clarity não podem ser usadas** (política da
+  Microsoft proíbe sem licença; a do Google só abre exceção para
+  jornalismo e material didático). Nome em texto é permitido. Os selos são
+  desenho próprio e é para continuarem assim.
 
 **A instrumentação está em `tools/medir.mjs`.** Ela acha o Playwright
 sozinho e traz as seis medições que custaram retrabalho para descobrir:
