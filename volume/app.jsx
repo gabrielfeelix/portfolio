@@ -97,7 +97,7 @@ function Rapido({ onOpen, onContact, onNav }) {
 
         <div className="rap-cta">
           <p className="rap-lead">{t("Dois minutos e você já sabe como eu trabalho.", "Two minutes and you already know how I work.")}</p>
-          <button className="btn btn-primary" onClick={onContact}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></button>
+          <button className="btn btn-primary" onClick={onContact}>{t("Bora conversar", "Let's talk")} <span className="arr">→</span></button>
         </div>
       </div>
       <Colofao onContact={onContact} onNav={onNav} />
@@ -394,7 +394,7 @@ function App() {
   const openEmpresa = (id) => { setView("empresa:" + id); top(); };
   const openProject = (p) => { if (p) openChapter(p.id); };
   const [stamp, setStamp] = useState(0);           // hanko press no CTA de contato
-  // todo "Fale comigo" / "Comece um capítulo comigo" abre o WhatsApp com a
+  // todo "Bora conversar" / "Vamos trocar uma ideia" abre o WhatsApp com a
   // mensagem pronta. Antes rolava até o rodapé, que só adiava o contato.
   const goContact = () => {
     if (!REDUCED) { setStamp(Date.now()); setTimeout(() => setStamp(0), 900); }

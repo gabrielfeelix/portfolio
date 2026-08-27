@@ -134,7 +134,7 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
               <span className="ens-k">{t("Antes", "Before")}</span><span className="ens-n"><span className="arr" style={{ display: "inline-block", transform: "scaleX(-1)" }}>→</span> {older.name}</span>
             </button> : null}
           </div>
-          <button type="button" className="btn btn-primary" onClick={onContact}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></button>
+          <button type="button" className="btn btn-primary" onClick={onContact}>{t("Bora conversar", "Let's talk")} <span className="arr">→</span></button>
           <div className="emp-switch-side right">
             {newer ? <button type="button" className="emp-navbtn al-r" onClick={() => onEmpresa(newer.id)}>
               <span className="ens-k">{t("Depois", "After")}</span><span className="ens-n">{newer.name} <span className="arr">→</span></span>

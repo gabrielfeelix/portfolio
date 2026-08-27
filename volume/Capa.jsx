@@ -56,7 +56,7 @@ function Nav({ view, go, onContact, ink, onInk }) {
           <Link to="processo" active={view === "processo"}>{t("Processo", "Process")}</Link>
           <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
              className="btn btn-secondary nav-contact nav-contact-m"
-             onClick={() => setMenuOpen(false)}>{t("Fale comigo", "Get in touch")}</a>
+             onClick={() => setMenuOpen(false)}>{t("Bora conversar", "Let's talk")}</a>
         </div>
         <button type="button" className="btn btn-secondary btn-sm lang-toggle" onClick={toggleLang}
                 aria-label={t("Read in English", "Ler em português")} title={t("English", "Português")}>
@@ -68,7 +68,7 @@ function Nav({ view, go, onContact, ink, onInk }) {
           <span lang="ja" translate="no" aria-hidden="true">墨</span>
         </button>
         <a href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
-           className="btn btn-secondary nav-contact nav-contact-d">{t("Fale comigo", "Get in touch")}</a>
+           className="btn btn-secondary nav-contact nav-contact-d">{t("Bora conversar", "Let's talk")}</a>
       </nav>
       <div className="v-rule"></div>
       <div className="v-volline">
@@ -146,7 +146,7 @@ function Splash({ onRead, onContact, onRapido, lit }) {
         <p className="splash-sub">{t("Desenho, construo e publico.", "I design, build and ship.")} <span className="red">{t("Design e código", "Design and code")}</span> {t("na mesma mão.", "in the same hand.")}</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>{t("Começar a ler", "Start reading")} <span className="arr">→</span></button>
-          <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Fale comigo", "Get in touch")}</a>
+          <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Bora conversar", "Let's talk")}</a>
         </div>
         {onRapido ? (
           <a className="splash-rapido" href="#/rapido" onClick={(e) => { e.preventDefault(); onRapido(); }}>
@@ -427,7 +427,7 @@ function Colofao({ onContact, onNav }) {
           <div className="foot-meta">
             <div className="row">
               <a className="btn btn-primary" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer"
-                 style={{ padding: "11px 20px", fontSize: 14 }}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></a>
+                 style={{ padding: "11px 20px", fontSize: 14 }}>{t("Bora conversar", "Let's talk")} <span className="arr">→</span></a>
             </div>
             <div className="row" style={{ marginTop: 10, gap: 18, flexWrap: "wrap" }}>
               <a className="s" href={CONTATO.whatsapp.href} target="_blank" rel="noreferrer">WhatsApp · {CONTATO.whatsapp.display}</a>

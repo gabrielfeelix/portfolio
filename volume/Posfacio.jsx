@@ -129,7 +129,7 @@ function Posfacio({ onContact, t: tweaks = {}, onEmpresa, onProject, onNav }) {
             <Seal size={48} alt={t("Selo de Gabriel", "Gabriel's seal")} />
             <div className="nm">{AUTOR}<small>UX / Product Designer · {VOL}</small></div>
             <div className="pos-sign-cta">
-              <button className="btn btn-primary" onClick={onContact}>{t("Fale comigo", "Get in touch")} <span className="arr">→</span></button>
+              <button className="btn btn-primary" onClick={onContact}>{t("Bora conversar", "Let's talk")} <span className="arr">→</span></button>
             </div>
           </div>
         </div>

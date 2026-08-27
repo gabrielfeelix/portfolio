@@ -114,7 +114,7 @@ function Processo({ onContact, onNav }) {
         {/* uma chamada só, no fim. Antes ela vivia dentro do painel sticky,
             então reaparecia colada nos 6 passos. */}
         <div className="proc-cta-row">
-          <button className="btn btn-primary" onClick={onContact}>{t("Comece um capítulo comigo", "Start a chapter with me")} <span className="arr">→</span></button>
+          <button className="btn btn-primary" onClick={onContact}>{t("Vamos trocar uma ideia", "Let's trade ideas")} <span className="arr">→</span></button>
         </div>
       </section>
 

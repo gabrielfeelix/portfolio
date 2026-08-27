@@ -634,7 +634,7 @@ if (LANG === "en") {
 
   /* a mensagem que abre a conversa no WhatsApp */
   CONTATO.whatsapp.href = "https://wa.me/5544998775978?text=" + encodeURIComponent(
-    "Hi Gabriel! I came from your portfolio and I'm interested in your UX/UI Design work.");
+    "Hi Gabriel! I came from your portfolio and I'd love to chat.");
 
   /* filter categories */
   const catAll = CATS.find((c) => c.key === "todos"); if (catAll) catAll.label = "All";
