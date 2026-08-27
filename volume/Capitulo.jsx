@@ -1369,10 +1369,10 @@ function Solucao({ chap }) {
   const n = shots.length;
   return (
     <>
-      <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("O caminho de compra, do começo ao fim", "The buying path, end to end")}</Brush>
-        <span className="kicker live" style={{ color: "var(--vermilion-ink)" }}>{t("no ar", "live")}</span>
-      </div>
+      {/* sem cabeçalho de seção aqui: era um h2 fixo ("O caminho de
+          compra, do começo ao fim" + "no ar") igual nos cinco capítulos,
+          por cima do título que o beat já tem. Título genérico repetido
+          em todo case não é título, é carimbo. */}
       <Beat>
         {/* o clímax não divide a página com espaço vazio: o texto corre
             em duas colunas na largura inteira, imprensa, e os botões
