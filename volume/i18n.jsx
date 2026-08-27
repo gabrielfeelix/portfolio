@@ -38,6 +38,17 @@ if (LANG === "en") {
       tldr: { papel: "UX/UI Designer, project owner",
         oque: "A Magento hardware store, redesigned from the home page to the checkout.",
         resultado: "I argued against the brief with session recordings in hand, and the opposite direction is the one that got approved" },
+      /* o i18n SUBSTITUI o ramo inteiro (Object.assign raso), entao os
+         numeros viajam junto: sem `desktop`/`mobile` aqui o grafico
+         zerava em ingles, com build verde. */
+      notaSuporte: {
+        k: "Before we start",
+        p: "This project was designed mobile first, and you will see phone screens along the way. But 6 out of every 10 visits to the store come from a computer, so the large exhibits in this chapter are desktop screenshots: that is where most people actually buy.",
+        p2: "And it is not only volume. Conversion is practically the same on both (0.15% on desktop against 0.14% on mobile), but the average order value on mobile is 44% lower. Desktop does not just bring more people: it brings the bigger order.",
+        fonte: "Google Analytics 4 · 12 months · 331,593 sessions",
+        desktop: 60, mobile: 40,
+        lDesk: "computer", lMob: "phone",
+      },
       figuras: {
         abertura: { alt: "V1 home opening on a brand campaign, with the first product below the fold",
           legenda: "The V1 first fold: the campaign fills the screen and the first product only shows up after scrolling." },

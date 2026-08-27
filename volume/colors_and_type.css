@@ -206,6 +206,23 @@
   --ma-hold: 380ms; /* the pause before a reveal resolves              */
 }
 
+/* ---- a escala do MA no celular ---------------------------------------
+   Os degraus grandes da escala foram calibrados em 1440, onde a coluna de
+   leitura mede perto de 1040px. Em 390 a coluna mede 350: o mesmo respiro
+   de 104px que separa dois beats no desktop vira, no celular, um vao que
+   custa mais de um terco de tela por batida, e dezenove beats somavam
+   1.976px, ou 2,3 telas de rolagem sem nada dentro.
+   Encolhem so os tres degraus grandes, que sao os que separam blocos. Os
+   pequenos (--ma-1 a --ma-4) sao padding dentro de componente e nao tem
+   gordura: mexer neles apertaria texto contra moldura. */
+@media (max-width: 880px) {
+  :root {
+    --ma-5: 2.5rem;   /* 64 -> 40 */
+    --ma-6: 3.5rem;   /* 104 -> 56 */
+    --ma-7: 5rem;     /* 160 -> 80 */
+  }
+}
+
 /* =====================================================================
    SEMANTIC ELEMENT STYLES
    ===================================================================== */

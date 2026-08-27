@@ -190,6 +190,94 @@ function Figura({ fig, n, ar, className = "" }) {
   );
 }
 
+/* ---- NOTA DE SUPORTE: por que as provas sao prints de desktop --------
+   O capitulo foi desenhado mobile first e mostra telas de celular ao
+   longo do caminho, mas as provas grandes sao quase todas desktop, e sem
+   esta nota isso parece descuido em vez de decisao. Ela entra logo abaixo
+   do `Tldr`, antes do Ato I: e a ultima coisa que o leitor le antes de
+   comecar, e responde a pergunta no momento em que ela nasce.
+
+   O numero e o mix limpo (60/40), nao o bruto dos doze meses (73,6/26,2):
+   junho e julho tiveram um pico de desktop que cheira a trafego nao
+   humano ou campanha desktop-only, e cravar o numero inflado seria dar
+   municao a quem perguntar. O mix sem esses meses e defensavel.
+
+   A segunda linha e o achado que vale mais que o split: a conversao e
+   praticamente igual nos dois (0,15% contra 0,14%), mas o ticket do
+   celular e 44% menor. Acesso desktop nao e so volume, e valor por
+   pedido. */
+function NotaSuporte({ dados }) {
+  if (!dados) return null;
+  const [ref, seen] = useReveal({ threshold: 0.35 });
+  const on = seen || REDUCED;
+  const d = dados.desktop, m = dados.mobile;
+  return (
+    <aside className={`nota-sup ${on ? "revelada" : ""}`} ref={ref}>
+      <div className="ns-corpo">
+        <div className="ns-txt">
+          <div className="ns-k">{dados.k}</div>
+          <p className="ns-p">{renderPH(dados.p)}</p>
+          {dados.p2 ? <p className="ns-p ns-p2">{renderPH(dados.p2)}</p> : null}
+          {dados.fonte ? <div className="ns-fonte">{dados.fonte}</div> : null}
+        </div>
+
+        {/* os dois aparelhos, desenhados no mesmo traco do resto do volume:
+            a tela preenche de baixo para cima na proporcao do acesso, entao
+            o desenho E o grafico, nao uma ilustracao ao lado de um numero */}
+        <div className="ns-graf" aria-hidden="true">
+          <div className="ns-item ns-desk">
+            <svg className="ns-svg" viewBox="0 0 132 92" fill="none">
+              {/* tampa */}
+              <rect x="10" y="6" width="112" height="70" rx="2"
+                    stroke="var(--ink)" strokeWidth="2.6" fill="var(--paper)" />
+              {/* a tela como copo: preenche de baixo para cima */}
+              <clipPath id="ns-cd"><rect x="14" y="10" width="104" height="62" rx="1" /></clipPath>
+              <g clipPath="url(#ns-cd)">
+                {/* o rect parte encostado no pe da tela e sobe a fracao do
+                    acesso. O translate vai em unidade de viewBox, nao em
+                    porcentagem: `%` aqui seria relativo a altura do proprio
+                    rect e o desenho mentiria a proporcao. */}
+                <rect x="14" y="72" width="104" height="62" fill="var(--vermilion)"
+                      style={{ transform: on ? `translateY(${-(62 * d / 100).toFixed(2)}px)` : "translateY(0)",
+                               transition: "transform 900ms var(--curva) 120ms" }} />
+              </g>
+              <rect x="14" y="10" width="104" height="62" rx="1"
+                    stroke="var(--ink)" strokeWidth="1.4" fill="none" />
+              {/* base */}
+              <path d="M2 82 h128 l-6 8 H8 Z" stroke="var(--ink)" strokeWidth="2.6"
+                    strokeLinejoin="round" fill="var(--paper)" />
+            </svg>
+            <div className="ns-n">
+              <b><ContaAte alvo={d} ligado={on} />%</b>
+              <span>{dados.lDesk}</span>
+            </div>
+          </div>
+
+          <div className="ns-item ns-mob">
+            <svg className="ns-svg ns-svg-mob" viewBox="0 0 52 92" fill="none">
+              <rect x="6" y="4" width="40" height="84" rx="6"
+                    stroke="var(--ink)" strokeWidth="2.6" fill="var(--paper)" />
+              <clipPath id="ns-cm"><rect x="10" y="12" width="32" height="68" rx="2" /></clipPath>
+              <g clipPath="url(#ns-cm)">
+                <rect x="10" y="80" width="32" height="68" fill="var(--vermilion)"
+                      style={{ transform: on ? `translateY(${-(68 * m / 100).toFixed(2)}px)` : "translateY(0)",
+                               transition: "transform 900ms var(--curva) 240ms" }} />
+              </g>
+              <rect x="10" y="12" width="32" height="68" rx="2"
+                    stroke="var(--ink)" strokeWidth="1.4" fill="none" />
+              <line x1="20" y1="8" x2="32" y2="8" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            <div className="ns-n">
+              <b><ContaAte alvo={m} ligado={on} />%</b>
+              <span>{dados.lMob}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 /* ---- CENA: a figura de linha inteira que corta o texto ---------------
    Entra onde a leitura precisa respirar e ver o estado inteiro da tela.
    Sangra até a borda porque é o equivalente da splash page: o painel que
@@ -1817,6 +1905,10 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <IndiceCapitulo chap={chap} />
         <div className="chapter-col">
         <Tldr tldr={chap.tldr} links={chap.links} minutos={chap.minutos && chap.solucao ? chap.minutos : null} />
+        {/* a nota do suporte responde, antes do Ato I, por que as provas
+            grandes sao desktop num projeto desenhado mobile first. So
+            aparece em capitulo que declara `notaSuporte`. */}
+        <NotaSuporte dados={chap.notaSuporte} />
         <div style={{ height: "var(--ma-6)" }}></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
             não desenha nada, só dá endereço e alvo de foco.

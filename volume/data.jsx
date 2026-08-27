@@ -74,6 +74,26 @@ const CHAPTERS = [
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
       resultado: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
     },
+    /* ---- a nota do suporte, antes do Ato I --------------------------
+       O capítulo foi desenhado mobile first e mostra telas de celular ao
+       longo do caminho, mas as provas grandes são prints de desktop.
+       Sem esta nota isso parece descuido; com ela, é decisão declarada.
+
+       Os números saem do GA4 da loja, 12 meses (27/ago/2025 a
+       26/ago/2026, 331.593 sessões). O bruto do período é 73,6% desktop
+       contra 26,2% mobile, mas junho e julho tiveram um pico de desktop
+       que cheira a tráfego não humano ou campanha desktop-only: o mix
+       dos meses sem esse pico é 60/40, e é esse que está aqui, porque é
+       o que se defende se alguém perguntar. Se remedir, atualize os dois
+       números E a linha do ticket. */
+    notaSuporte: {
+      k: "Antes de começar",
+      p: "Este projeto foi desenhado mobile first, e você vai ver telas de celular ao longo do caminho. Mas 6 de cada 10 acessos da loja vêm do computador, então as provas grandes deste capítulo são prints de desktop: é onde a maior parte das pessoas de fato compra.",
+      p2: "E não é só volume. A conversão é praticamente igual nos dois (0,15% no computador contra 0,14% no celular), só que o ticket médio do celular é 44% menor. O computador não traz só mais gente: traz o pedido maior.",
+      fonte: "Google Analytics 4 · 12 meses · 331.593 sessões",
+      desktop: 60, mobile: 40,
+      lDesk: "computador", lMob: "celular",
+    },
     /* ---- as figuras do capítulo -------------------------------------
        Cada prova é referenciada por chave no bloco que ela sustenta, e a
        numeração sai da ordem de leitura (figOrder, em Capitulo.jsx). Sem

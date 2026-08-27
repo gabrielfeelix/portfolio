@@ -467,11 +467,70 @@ html.ink .cover-linhas { opacity: .06; }
   /* sem coluna presa, cada passo carrega o próprio texto acima da prova */
   .passos-cola { position: static; }
   .passos-cola .passo-vivo, .passo-regua { display: none; }
-  .passos-figs { gap: var(--ma-5); padding-bottom: 0; }
+  /* o vao entre provas existe no desktop para dar tempo do texto trocar na
+     coluna presa: sem ele duas figuras disputam a faixa central e o passo
+     pisca. Aqui em cima essa troca esta DESLIGADA (`passos-cola` e static,
+     `passo-vivo` e `passo-regua` somem) e cada passo ja carrega o proprio
+     texto acima da figura, entao o gap grande estava pagando por um
+     mecanismo que nao roda. Vira separacao entre passos, que e --ma-4. */
+  .passos-figs { gap: var(--ma-4); padding-bottom: 0; }
   .passo-movel { display: block; margin-bottom: 14px; border-left: var(--ink-stroke) solid var(--vermilion); padding-left: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .passo-vivo { animation: none; }
+}
+
+/* ---- NOTA DE SUPORTE: a ressalva antes do Ato I ----------------------
+   Mora entre o `Tldr` e o primeiro ato. Nao e caixa de aviso: e um bloco
+   do volume, com a mesma moldura de traco e o mesmo plano de tinta do
+   resto. O vermilion entra na barra da esquerda e no preenchimento das
+   telas, que e onde ele ja significa "olhe aqui" no capitulo inteiro. */
+.nota-sup {
+  margin: var(--ma-4) 0 0;
+  border: var(--ink-stroke) solid var(--ink);
+  border-left: 6px solid var(--vermilion);
+  background: var(--paper);
+  padding: var(--ma-3);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity var(--ma-hold) var(--curva), transform var(--ma-hold) var(--curva);
+}
+.nota-sup.revelada { opacity: 1; transform: none; }
+.ns-corpo { display: grid; grid-template-columns: 1fr auto; gap: var(--gutter); align-items: center; }
+.ns-k {
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .16em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 8px;
+}
+.ns-p { font-size: 15.5px; line-height: 1.55; color: var(--fg); margin: 0; max-width: var(--med-longa); }
+.ns-p2 { margin-top: 10px; color: var(--fg-2); }
+.ns-fonte {
+  margin-top: 12px; font-family: var(--font-condensed); text-transform: uppercase;
+  letter-spacing: .12em; font-size: 12px; color: var(--fg-2);
+}
+
+/* os dois aparelhos, alinhados pela base como duas colunas de grafico */
+.ns-graf { display: flex; gap: var(--ma-3); align-items: flex-end; flex: none; }
+.ns-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.ns-svg { display: block; width: 118px; height: auto; }
+.ns-svg-mob { width: 46px; }
+.ns-n { text-align: center; line-height: 1.2; }
+.ns-n b {
+  display: block; font-family: var(--font-condensed); font-weight: 700;
+  font-size: 21px; color: var(--ink);
+}
+.ns-n span {
+  display: block; margin-top: 2px; font-family: var(--font-condensed);
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: var(--fg-2);
+}
+
+@media (max-width: 880px) {
+  /* empilha: o texto primeiro, o desenho embaixo e centrado. Em 350px de
+     coluna as duas colunas espremeriam o paragrafo a menos de 30ch. */
+  .ns-corpo { grid-template-columns: 1fr; gap: var(--ma-3); }
+  .ns-graf { justify-content: center; }
+  .nota-sup { padding: var(--ma-3) var(--ma-2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nota-sup { transition: none; }
 }
 
 /* ---- calendário: a data de publicação, rabiscada a mão ----
