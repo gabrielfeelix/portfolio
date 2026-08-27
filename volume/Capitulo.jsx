@@ -653,6 +653,10 @@ function ModuloPassos({ mod, chap, figN = {}, ordem, total }) {
             <div className="beat-k">
               {ord ? <span className="beat-n">{ord}</span> : null}{mod.k}
             </div>
+            {/* o buraco antes da resposta: sem isto o módulo lia como
+                catálogo, solução atrás de solução sem o problema de cada
+                uma. O título responde o que esta linha pergunta. */}
+            {mod.buraco ? <p className="mod-buraco"><span className="mb-k">{t("O buraco", "The hole")}</span>{renderPH(mod.buraco)}</p> : null}
             <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
             {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
           </div>
@@ -951,16 +955,19 @@ function Sistema({ dados }) {
                 <span className="ds-dobra-abrir">{t("Ver o resto do vocabulário", "See the rest of the vocabulary")}</span>
                 <span className="ds-dobra-fechar">{t("Fechar o vocabulário", "Close the vocabulary")}</span>
               </span>
-              <span className="ds-dobra-n">{t("Tempo, texto e espaço. Duas telas.", "Time, type and space. Two screens.")}</span>
+              <span className="ds-dobra-n">{t("Tempo, texto, espaço e o caso que fecha. Três telas.", "Time, type, space and the closing case. Three screens.")}</span>
             </summary>
             <div className="ds-dobra-corpo">
               {dados.motion ? <CurvaMotion dados={dados.motion} /> : null}
               {dados.tipografia ? <Tipografia dados={dados.tipografia} /> : null}
               {dados.espaco ? <EspacoRaio dados={dados.espaco} /> : null}
+              {/* o Derivado fechava o beat solto, depois da dobra, e lia
+                  como seção órfã: um caso de cor aparecendo sem problema
+                  anunciado. Dentro do vocabulário ele é o fecho certo. */}
+              {dados.derivado ? <Derivado dados={dados.derivado} /> : null}
             </div>
           </details>
         ) : null}
-        {dados.derivado ? <Derivado dados={dados.derivado} /> : null}
         {dados.nota ? <p className="ds-nota">{renderPH(dados.nota)}</p> : null}
       </div>
     </Beat>
@@ -1002,6 +1009,7 @@ function Modulos({ chap, figN = {} }) {
                 <div className="beat-k">
                   {ord ? <span className="beat-n">{ord}</span> : null}{m.k}
                 </div>
+                {m.buraco ? <p className="mod-buraco"><span className="mb-k">{t("O buraco", "The hole")}</span>{renderPH(m.buraco)}</p> : null}
                 <Brush as="h2" className="beat-t">{renderPH(m.t)}</Brush>
                 {(m.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
               </div>
@@ -1056,6 +1064,10 @@ function ModuloCaminhos({ mod, chap, figN = {}, ordem, total }) {
             <div className="beat-k">
               {ord ? <span className="beat-n">{ord}</span> : null}{mod.k}
             </div>
+            {/* o buraco antes da resposta: sem isto o módulo lia como
+                catálogo, solução atrás de solução sem o problema de cada
+                uma. O título responde o que esta linha pergunta. */}
+            {mod.buraco ? <p className="mod-buraco"><span className="mb-k">{t("O buraco", "The hole")}</span>{renderPH(mod.buraco)}</p> : null}
             <Brush as="h2" className="beat-t">{renderPH(mod.t)}</Brush>
             {(mod.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
           </div>
@@ -1141,6 +1153,8 @@ function figOrder(chap) {
   if (chap.problema) marca(chap.problema.fig);
   if (chap.busca) (chap.busca.figs || []).forEach(marca);
   if (chap.investigacao) marca(chap.investigacao.fig);
+  // a V1.2 vem antes das decisões da V2: é a primeira resposta do Ato III
+  if (chap.ponte) (chap.ponte.passos || []).forEach((s) => marca(s.fig));
   (chap.decisoes || []).forEach((d) => { marca(d.fig); marca(d.figExtra); });
   (chap.modulos || []).forEach((m) => {
     (m.figs || []).forEach(marca);
@@ -1483,7 +1497,7 @@ function Solucao({ chap }) {
                       <span className="fig-lupa">{t("Ampliar", "Zoom")}</span>
                     </> : null}
                   </div>
-                  {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}>{renderPH(cap)}</p> : null}
+                  {cap ? <p className="sol-cap" style={{ gridColumn: "1 / -1" }}><i className="sol-n">{String(i + 1).padStart(2, "0")}</i>{renderPH(cap)}</p> : null}
                 </React.Fragment>
               );
             })}
@@ -1671,6 +1685,7 @@ const ATOS = [
     { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
   ] },
   { k: "resolvi", n: "III", kanji: "設計", t: ["Como eu resolvi", "How I solved it"], secs: [
+    { id: "v12", chave: "ponte", t: ["A V1.2", "The V1.2"] },
     { id: "recusei", chave: "recusei", t: ["O que recusei", "What I turned down"] },
     { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
     { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
@@ -1793,20 +1808,25 @@ function Respiro({ ato }) {
       </div>
     );
   }
-  /* Com `ato`, a pausa vira virada. O capítulo corre em quatro atos e
-     eles só existiam no índice da esquerda: na página, dezesseis beats
-     do mesmo tamanho passavam sem relevo e o leitor não percebia quando
-     a investigação virava decisão. Aqui a estrutura fica visível, e o
-     kanji, que aparecia solto em dois beats e sumia nos atos III e IV,
-     passa a ter um por ato. Não é aria-hidden: o nome do ato é
-     informação de estrutura, não enfeite. */
+  /* Com `ato`, a pausa vira virada, e a virada é uma banda de tinta que
+     toma a largura da página. A primeira versão era um marcador discreto
+     de 300px e o leitor passava reto: num capítulo de quarenta telas, a
+     estrutura precisa ser um lugar onde o olho PARA, muda de cor, respira
+     e recomeça. É o mesmo plano de fundo da citação, então a página já
+     tinha esse gesto: superfície `--ink`, texto `--paper`, vermelho no
+     par `--vermilion-sobre-ink` (a armadilha nº 3: superfície que pinta
+     ink inverte o vermelho). O kanji vazado é o motivo do capítulo
+     (`problema` e `investigacao` já o usavam) fechando um por ato.
+     O nome do ato não é aria-hidden: é estrutura, não enfeite. */
   return (
     <div ref={ref} className={`respiro respiro-ato ${seen || REDUCED ? "in" : ""}`}>
-      <span className="respiro-traco" aria-hidden="true"></span>
-      <div className="respiro-marca">
+      <div className="respiro-banda">
         <span className="respiro-kanji" lang="ja" translate="no" aria-hidden="true">{ato.kanji}</span>
-        <span className="respiro-n">{t("Ato", "Act")} {ato.n}</span>
-        <span className="respiro-t">{t(ato.t[0], ato.t[1])}</span>
+        <div className="respiro-texto">
+          <span className="respiro-n">{t("Ato", "Act")} {ato.n}<span className="respiro-de" aria-hidden="true"> · {ato.n === "I" ? "1" : ato.n === "II" ? "2" : ato.n === "III" ? "3" : "4"}/4</span></span>
+          <span className="respiro-t">{t(ato.t[0], ato.t[1])}</span>
+        </div>
+        <span className="respiro-risco" aria-hidden="true"></span>
       </div>
     </div>
   );
@@ -1907,7 +1927,10 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             ritmo achatam o relevo e o leitor não percebe quando a
             investigação vira decisão. */}
 
-        {/* ATO I · a cena e o buraco */}
+        {/* ATO I · a cena e o buraco. A banda anuncia o primeiro ato
+            como anuncia os outros três: sem ela o "Ato II" caía do céu,
+            porque o leitor nunca tinha visto o "Ato I". */}
+        <Respiro ato={ato(0)} />
         <Sec id="abertura"><Abertura chap={chap} figN={figN} /></Sec>
         <Sec id="problema"><Problema chap={chap} figN={figN} /></Sec>
         <Sec id="painel"><Painel dados={chap.painel} /></Sec>
@@ -1933,6 +1956,11 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             prova de que o sistema funciona. `decisoes` são as quatro
             âncoras, sem figura: argumento antes de prova. */}
         <SfxBeat word={chap.sfx} />
+        {/* A PONTE. A cronologia real: a investigação apontou o buraco
+            mais caro no fim do funil, a V2 tinha data, e a primeira
+            resposta não esperou o redesenho. Antes, este módulo morava no
+            meio dos outros e a linha do tempo lia embaralhada. */}
+        {chap.ponte ? <Sec id="v12"><ModuloPassos mod={chap.ponte} chap={chap} figN={figN} /></Sec> : null}
         <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
         <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <Sec id="decisoes"><Decisoes chap={chap} figN={figN} /></Sec>

@@ -158,6 +158,21 @@ html.ink .cover-linhas { opacity: .06; }
    e o número só responde "quanto falta" para quem foi procurar. */
 .beat-n { color: var(--fg-2); letter-spacing: .16em; }
 .beat-n::after { content: " · "; color: var(--wash-3); }
+
+/* o buraco antes da resposta: o setup que faltava a cada módulo. O
+   título do módulo é a resposta; esta linha é a pergunta, no mesmo
+   gesto do traço vermelho que o passo vivo já usa. */
+.mod-buraco {
+  margin: 12px 0 2px; padding-left: 14px;
+  border-left: var(--ink-stroke) solid var(--vermilion);
+  font-size: 15px; line-height: 1.5; color: var(--fg-2);
+  max-width: var(--med-longa);
+}
+.mb-k {
+  display: block; margin-bottom: 3px;
+  font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .14em; font-size: 12px; color: var(--vermilion-ink);
+}
 .beat-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.06; margin: 10px 0 var(--ma-3); }
 /* 46ch travava a medida abaixo da coluna sempre que a coluna era larga
    (as `c8` paravam em 460px). 62ch deixa o parágrafo usar o que a coluna
@@ -395,7 +410,14 @@ html.ink .cover-linhas { opacity: .06; }
 .rec-r { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 0; }
 
 /* legenda das telas da solução: cada print diz o que provou */
-.sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: var(--med-legenda); display: flex; gap: 10px; align-items: baseline; }
+.sol-cap { margin-top: 10px; margin-bottom: var(--ma-3); font-size: 15px; line-height: 1.45; color: var(--fg-2); max-width: var(--med-longa); display: flex; gap: 10px; align-items: baseline; }
+/* o número do passo: as três telas são um caminho andado, e a legenda
+   marca onde no caminho a tela está */
+.sol-n {
+  flex: 0 0 auto; font-style: normal;
+  font-family: var(--font-condensed); font-weight: 700;
+  font-size: 13px; letter-spacing: .1em; color: var(--vermilion-ink);
+}
 
 @media (max-width: 880px) {
   .rec-lista { grid-template-columns: 1fr; }
@@ -753,6 +775,18 @@ html.ink .cover-linhas { opacity: .06; }
   transition: width 760ms var(--curva); }
 .pb-n { display: block; margin-top: 6px; font-size: 13px; color: var(--fg-2); }
 .pn-nota { margin: var(--ma-4) 0 0; font-size: 14px; line-height: 1.55; color: var(--fg-2); max-width: var(--med-legenda); }
+/* dentro de um painel de largura cheia, a nota a meia largura lia como
+   texto quebrado no meio do card, com um vão morto à direita. Em duas
+   colunas ela usa o card inteiro e cada linha continua na faixa de
+   leitura, que é o gesto de imprensa que o volume já veste. */
+@media (min-width: 881px) {
+  /* `40ch` de largura mínima por coluna: o painel largo ganha duas, e o
+     painel estreito (a escada do DS mora numa coluna de 549px) fica com
+     uma, sem precisar listar quem é quem */
+  .painel .pn-nota { max-width: none; column-count: 2; column-width: 40ch; column-gap: var(--gutter); }
+  .ds-derivado .ds-sub-p { max-width: none; column-count: 2; column-width: 40ch; column-gap: var(--gutter); }
+  .ds-derivado .ds-sub-p + .ds-sub-p { margin-top: 14px; }
+}
 
 /* =====================================================================
    FUNIL — onde a leitura perdia gente
@@ -1252,45 +1286,61 @@ html.ink .cover-linhas { opacity: .06; }
 .respiro.in .respiro-traco { width: 56px; }
 
 /* ---- a virada de ato -------------------------------------------------
-   O respiro era pausa muda: dezesseis beats de mesmo peso passavam sem
-   relevo e os quatro atos só existiam no índice da esquerda. Agora a
-   pausa carrega a virada, e ela usa o motivo que o capítulo já tinha:
-   o kanji vertical vazado do `prob-kanji` e do `inv-kanji`, que
-   apareciam em dois beats e sumiam nos atos III e IV. Um por ato fecha
-   o motivo em vez de abandoná-lo. */
-.respiro-ato { padding: var(--ma-6) 0 var(--ma-5); }
-.respiro-marca {
-  display: grid; grid-template-columns: auto auto;
-  align-items: center; column-gap: var(--ma-3); row-gap: 4px;
-  margin-top: var(--ma-3);
-  opacity: 0; transform: translateY(10px);
+   A banda de tinta. Num capítulo de quarenta telas a estrutura precisa
+   ser um lugar onde o olho para, muda de cor e recomeça, e a página já
+   tinha o gesto: a citação pinta `--ink` e escreve em `--paper`. A
+   primeira versão da virada era um marcador de 300px em cima do papel e
+   o leitor passava reto, tanto que reclamou que "o Ato II caiu do céu".
+   O vermelho aqui é `--vermilion-sobre-ink`, porque superfície que pinta
+   ink inverte o par (armadilha nº 3 do handoff). */
+/* o pai `.respiro` centraliza com `place-items: center`, que encolhe a
+   banda à largura do texto: aqui ela toma a coluna inteira */
+.respiro-ato { padding: var(--ma-6) 0; display: block; }
+.respiro-banda {
+  width: 100%;
+  position: relative; overflow: hidden;
+  background: var(--ink); color: var(--paper);
+  border: var(--ink-stroke) solid var(--ink);
+  padding: var(--ma-5) var(--ma-4);
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; transform: translateY(14px);
   transition: opacity 460ms var(--curva), transform 460ms var(--curva);
   transition-delay: var(--ma-hold);
 }
-.respiro-ato.in .respiro-marca { opacity: 1; transform: none; }
+.respiro-ato.in .respiro-banda { opacity: 1; transform: none; }
 .respiro-kanji {
-  grid-column: 1; grid-row: 1 / 3;
+  position: absolute; right: 4%; top: 50%; transform: translateY(-50%);
   writing-mode: vertical-rl;
   font-family: 'Reggae One', var(--font-sfx), sans-serif;
-  font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1; letter-spacing: .06em;
-  color: transparent; -webkit-text-stroke: 2px var(--wash-2);
+  font-size: clamp(4rem, 8vw, 6.5rem); line-height: 1; letter-spacing: .06em;
+  color: transparent; -webkit-text-stroke: 2px rgba(128, 128, 128, .35);
   pointer-events: none; user-select: none;
 }
+.respiro-texto { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; }
 .respiro-n {
-  grid-column: 2; grid-row: 1; align-self: end;
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
-  letter-spacing: .26em; font-size: 12px; color: var(--vermilion-ink);
+  letter-spacing: .26em; font-size: 13px; color: var(--vermilion-sobre-ink);
 }
+.respiro-de { color: var(--paper); opacity: .55; letter-spacing: .18em; }
 .respiro-t {
-  grid-column: 2; grid-row: 2; align-self: start;
   font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(19px, 2.2vw, 28px); line-height: 1.05; color: var(--fg);
+  font-size: clamp(26px, 3.4vw, 44px); line-height: 1.04; max-width: 18ch;
 }
+/* o risco: o traço que já era o respiro, agora crescendo dentro da banda */
+.respiro-risco {
+  display: block; height: 3px; width: 0; margin-top: 6px;
+  background: var(--vermilion-sobre-ink);
+  transition: width 520ms var(--curva); transition-delay: calc(var(--ma-hold) + 120ms);
+}
+.respiro-ato.in .respiro-risco { width: 72px; }
 @media (max-width: 860px) {
-  .respiro-ato { padding: var(--ma-6) 0 var(--ma-5); }
+  .respiro-ato { padding: var(--ma-5) 0; }
+  .respiro-banda { padding: var(--ma-4) var(--ma-3); }
+  .respiro-kanji { font-size: 3.4rem; right: 2%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .respiro-marca { transition: none; }
+  .respiro-banda, .respiro-risco { transition: none; }
+  .respiro-ato .respiro-risco { width: 72px; }
 }
 
 @media (max-width: 860px) {

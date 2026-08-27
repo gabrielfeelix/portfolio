@@ -246,6 +246,7 @@ const CHAPTERS = [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
         "Havia bugs no módulo de pagamento usado no Magento. A falha aparecia nas gravações antes de aparecer em qualquer relatório.",
         "O caminho até a compra era longo demais para o tipo de produto vendido.",
+        "Fora das gravações, o catálogo tinha buracos próprios. Lançamento sem reserva, configurador que só servia quem já sabia a peça, carrinho que levava a pessoa para fora da página.",
       ],
     },
     /* ---- A BUSCA -------------------------------------------------------
@@ -296,7 +297,7 @@ const CHAPTERS = [
     solucao: {
       t: "Marca presente, produto no eixo",
       p: ["Em vez de escolher entre valor de marca e convers\u00e3o, separei as camadas. A marca aparece em momentos espec\u00edficos e o caminho de compra passa a ser o eixo do site.",
-          "As tr\u00eas telas abaixo s\u00e3o o mesmo argumento em tr\u00eas escalas. O checkout abre no meio de pagamento, a vitrine compra sem abrir o produto, e o mobile repete a regra numa tela em que n\u00e3o cabe repetir nada por engano.",
+          "As tr\u00eas telas abaixo s\u00e3o o mesmo caminho, andado do come\u00e7o ao fim. A vitrine compra sem abrir o produto, o checkout abre no meio de pagamento, e o mobile repete a regra numa tela em que n\u00e3o cabe repetir nada por engano.",
           "O sistema saiu junto, uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espa\u00e7amento, estado e cor a cada tela nova."],
       slots: 1,
       /* a s\u00edntese precisa de prova nova, n\u00e3o de resumo. Como `decisoes`
@@ -310,12 +311,14 @@ const CHAPTERS = [
          e a vitrine saíam a 282px de largura em 1440 (20% da tela), as
          menores telas de conteúdo do capítulo, justamente no beat que
          entrega o resultado. Em largura cheia vão a ~549px. */
-      shots: [{ fig: "checkout" },
-              { fig: "vitrine" },
+      /* a ordem das telas é a ordem do caminho: começo, fim, bolso.
+         Mostrar o fim primeiro quebrava a cronologia que o título promete. */
+      shots: [{ fig: "vitrine" },
+              { fig: "checkout" },
               "volume/assets/projetos/pcyes/s5.webp"],
-      legendas: ["O fim do caminho: o checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
-                 "O come\u00e7o dele: na vitrine, comprar deixou de exigir a p\u00e1gina do produto.",
-                 "No mobile, a mesma regra: a vitrine compra sem abrir o produto e o pre\u00e7o fica fixo na base da tela."],
+      legendas: ["Onde o caminho come\u00e7a. Na vitrine, comprar deixou de exigir a p\u00e1gina do produto.",
+                 "Onde ele termina. O checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
+                 "E onde ele cabe no bolso. A mesma regra na tela pequena, com o pre\u00e7o fixo na base."],
     },
     /* ---- O DESIGN SYSTEM -------------------------------------------
        Entra aqui, e não no começo, porque o argumento é de ordem: antes
@@ -437,32 +440,14 @@ const CHAPTERS = [
        Três partes do produto que não cabiam na lista de decisões: a
        pré-venda, o configurador e o que a V2 passou a ter e a V1 não
        tinha. Cada uma entra com as telas dela ao lado do argumento. */
-    modulos: [
-      { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
-        p: ["A PCYES lança edição limitada e coleção com o Maringá FC, e a V1 tratava lançamento igual a qualquer produto. Ou tinha estoque, ou sumia da vitrine.",
-            "Na V2, produto anunciado antes de chegar entra em pré-venda com reserva. A pessoa vê quantas reservas já saíram, quantas ainda existem e a data prevista de entrega, e o cartão só é cobrado no despacho.",
-            "A escassez aqui não é truque de urgência inventada. O número de reservas é real e a data também, e é isso que faz a barra funcionar em vez de irritar."],
-        figs: ["prevenda", "contador"] },
-      { k: "Monte seu PC", t: "Três caminhos para a mesma máquina",
-        p: ["Montar PC separa dois públicos que não se misturam. Quem sabe o modelo do processador que quer e quem só sabe o jogo que joga. O configurador antigo servia bem o primeiro e abandonava o segundo.",
-            "A entrada do módulo pergunta uma coisa só e abre um dos três caminhos. Escolha um aqui do lado para ver como cada um se comporta."],
-        figs: ["mspCaminhos"],
-        /* a seção faz o que a tela que ela descreve faz: quem lê escolhe o
-           caminho em vez de atravessar três parágrafos em fila */
-        caminhos: [
-          { t: "Eu já sei o que quero", para: "Montar do zero", fig: "mspBuilder",
-            p: "Oito etapas, uma peça por vez, com a lista filtrada pelo que é compatível com o que já foi escolhido. O total e a parcela ficam à vista o tempo inteiro, então ninguém descobre o preço no fim." },
-          { t: "Me ajuda a escolher", para: "Três perguntas", fig: "mspJogos",
-            p: "Em vez de perguntar orçamento, pergunta o que a pessoa joga, edita ou faz no dia a dia. A recomendação sai de Valorant e Premiere, não de soquete e TDP, e volta como uma build pronta que ainda dá para editar peça a peça." },
-          { t: "Quero pronto", para: "Setups testados", fig: "mspProntas",
-            p: "Nove máquinas montadas e testadas viram produto de vitrine, com nome, uso, preço fechado e compra em um clique, do mesmo jeito que se compra um mouse." },
-        ] },
-      /* este módulo lê como sequência, não como bloco de texto + mosaico de
-         telas: o argumento só fecha se a pessoa vir um estado de cada vez.
-         `passos` liga cada trecho de texto à figura que o sustenta, e o
-         texto fica preso à esquerda enquanto a prova correspondente passa. */
-      { k: "Correção antes da V2", t: "O checkout melhorou sem esperar o redesenho",
-        p: ["A V2 tem data para entrar no ar, e o checkout da V1 estava perdendo venda no meio do caminho. Em vez de esperar, propus uma correção pequena na versão que já estava rodando."],
+    /* ---- A PONTE: a V1.2 ---------------------------------------------
+       O elo cronológico do capítulo. A investigação terminou apontando o
+       buraco mais caro no fim do funil, e a V2 tinha data. A história só
+       faz sentido se a correção de urgência vem ANTES do redesenho: é a
+       primeira resposta, não um módulo perdido no meio dos outros. */
+    ponte: { k: "Antes da V2 · a V1.2", t: "O checkout melhorou sem esperar o redesenho",
+        buraco: "As gravações mostraram o módulo de pagamento falhando exatamente onde a compra acontece, e a V2 tinha data para entrar no ar.",
+        p: ["Esperar o redesenho custava venda todo dia. Propus uma correção pequena na versão que já estava rodando, a V1.2, e ela conta em cinco estados o que mudou."],
         passos: [
           { k: "O estado bom", t: "Mesmo funcionando, era longo demais",
             p: "Com tudo carregado, cada meio de pagamento ocupa uma linha inteira. O bloco desce por metade da tela e empurra a decisão para longe de quem já escolheu o produto.",
@@ -480,8 +465,33 @@ const CHAPTERS = [
             p: "No mobile a diferença fica literal. A V1.2 termina onde a V1 ainda tem um quarto de tela pela frente. Mesma compra, menos caminho.",
             fig: "ckMobile" },
         ] },
+    modulos: [
+      { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
+        buraco: "A PCYES vive de lançamento, edição limitada, coleção com o Maringá FC. A V1 tratava lançamento igual a qualquer produto. Ou tinha estoque, ou sumia da vitrine.",
+        p: ["Na V2, produto anunciado antes de chegar entra em pré-venda com reserva. A pessoa vê quantas reservas já saíram, quantas ainda existem e a data prevista de entrega, e o cartão só é cobrado no despacho.",
+            "A escassez aqui não é truque de urgência inventada. O número de reservas é real e a data também, e é isso que faz a barra funcionar em vez de irritar."],
+        figs: ["prevenda", "contador"] },
+      { k: "Monte seu PC", t: "Três caminhos para a mesma máquina",
+        buraco: "Montar PC separa dois públicos que não se misturam, e o configurador antigo servia bem quem já sabe a peça e abandonava quem só sabe o jogo que joga.",
+        p: ["A entrada do módulo pergunta uma coisa só e abre um dos três caminhos. Escolha um aqui do lado para ver como cada um se comporta."],
+        figs: ["mspCaminhos"],
+        /* a seção faz o que a tela que ela descreve faz: quem lê escolhe o
+           caminho em vez de atravessar três parágrafos em fila */
+        caminhos: [
+          { t: "Eu já sei o que quero", para: "Montar do zero", fig: "mspBuilder",
+            p: "Oito etapas, uma peça por vez, com a lista filtrada pelo que é compatível com o que já foi escolhido. O total e a parcela ficam à vista o tempo inteiro, então ninguém descobre o preço no fim." },
+          { t: "Me ajuda a escolher", para: "Três perguntas", fig: "mspJogos",
+            p: "Em vez de perguntar orçamento, pergunta o que a pessoa joga, edita ou faz no dia a dia. A recomendação sai de Valorant e Premiere, não de soquete e TDP, e volta como uma build pronta que ainda dá para editar peça a peça." },
+          { t: "Quero pronto", para: "Setups testados", fig: "mspProntas",
+            p: "Nove máquinas montadas e testadas viram produto de vitrine, com nome, uso, preço fechado e compra em um clique, do mesmo jeito que se compra um mouse." },
+        ] },
+      /* este módulo lê como sequência, não como bloco de texto + mosaico de
+         telas: o argumento só fecha se a pessoa vir um estado de cada vez.
+         `passos` liga cada trecho de texto à figura que o sustenta, e o
+         texto fica preso à esquerda enquanto a prova correspondente passa. */
       { k: "O que a V1 não tinha", t: "Carrinho lateral e programa de pontos",
-        p: ["Duas coisas entraram na V2 e não existiam antes. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
+        buraco: "Na V1, pôr no carrinho levava a pessoa para fora da página, e programa de fidelidade não existia.",
+        p: ["Duas coisas entraram na V2. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
             "As duas resolvem o mesmo problema por vias diferentes, e as duas dão motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],
         figs: ["sidecart", "points"] },
       /* AS EXECU\u00c7\u00d5ES ----------------------------------------------------
@@ -491,6 +501,7 @@ const CHAPTERS = [
          diferente do mesmo caminho. `buscaV2` e `popup` ainda s\u00e3o
          molduras pendentes: caem em MangaPlate at\u00e9 o print subir. */
       { k: "O acabamento", t: "As nove corre\u00e7\u00f5es que encurtaram o caminho",
+        buraco: "O caminho at\u00e9 a compra era longo porque cada dobra somava um atrito pequeno, e atrito somado \u00e9 caminho longo.",
         p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas nove s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
         passos: [
           { k: "A entrada", t: "A busca deixou de exigir ortografia",

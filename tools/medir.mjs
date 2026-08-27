@@ -184,7 +184,7 @@ async function reveal(porta = 8793) {
     if (abrirDobra) await p.evaluate(() => { const d = document.querySelector(".ds-dobra"); if (d) d.open = true; });
     await p.waitForTimeout(400);
     const r = await p.evaluate(async () => {
-      const els = [...document.querySelectorAll(".panel, .respiro-marca, .atalho, .ds-dobra-t")];
+      const els = [...document.querySelectorAll(".panel, .respiro-banda, .atalho, .ds-dobra-t")];
       const max = new Map(els.map((e) => [e, 0]));
       const H = window.innerHeight;
       for (let y = 0; y < document.documentElement.scrollHeight; y += 90) {
