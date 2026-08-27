@@ -486,25 +486,38 @@ html.ink .cover-linhas { opacity: .06; }
    resto. O vermilion entra na barra da esquerda e no preenchimento das
    telas, que e onde ele ja significa "olhe aqui" no capitulo inteiro. */
 .nota-sup {
+  position: relative; isolation: isolate;
   margin: var(--ma-4) 0 0;
   border: var(--ink-stroke) solid var(--ink);
-  border-left: 6px solid var(--vermilion);
-  background: var(--paper);
+  /* o vermelho de tinta, nao o de interacao: sobre #E4231B o creme rende
+     4,16 de contraste e reprova em AA (min 4,5), e o capitulo fecha com
+     axe 0. Sobre --vermilion-ink rende 6,40. */
+  background: var(--vermilion-ink);
   padding: var(--ma-3);
   opacity: 0; transform: translateY(10px);
   transition: opacity var(--ma-hold) var(--curva), transform var(--ma-hold) var(--curva);
 }
+/* a mesma trama da capa: sem ela o vermelho chapado grita em vez de ler
+   como tinta. Sai da faixa do texto para nao sujar a leitura. */
+.nota-sup::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .45;
+  background-image: radial-gradient(rgba(10,10,10,.55) 1.2px, transparent 1.3px);
+  background-size: 9px 9px;
+}
 .nota-sup.revelada { opacity: 1; transform: none; }
 .ns-corpo { display: grid; grid-template-columns: 1fr auto; gap: var(--gutter); align-items: center; }
+/* superficie vermelha: cores LITERAIS, nunca --paper/--ink. O modo tinta
+   inverte esses tokens e poria tipo quase preto sobre o vermelho. Mesma
+   regra que a capa segue desde sempre. */
 .ns-k {
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
-  letter-spacing: .16em; font-size: 12px; color: var(--vermilion-ink); margin-bottom: 8px;
+  letter-spacing: .16em; font-size: 12px; color: #F6F3EC; margin-bottom: 8px;
 }
-.ns-p { font-size: 15.5px; line-height: 1.55; color: var(--fg); margin: 0; max-width: var(--med-longa); }
-.ns-p2 { margin-top: 10px; color: var(--fg-2); }
+.ns-p { font-size: 15.5px; line-height: 1.55; color: #F6F3EC; margin: 0; max-width: var(--med-longa); }
+.ns-p2 { margin-top: 10px; color: rgba(246,243,236,.92); }
 .ns-fonte {
   margin-top: 12px; font-family: var(--font-condensed); text-transform: uppercase;
-  letter-spacing: .12em; font-size: 12px; color: var(--fg-2);
+  letter-spacing: .12em; font-size: 12px; color: rgba(246,243,236,.86);
 }
 
 /* os dois aparelhos, alinhados pela base como duas colunas de grafico */
@@ -513,13 +526,16 @@ html.ink .cover-linhas { opacity: .06; }
 .ns-svg { display: block; width: 118px; height: auto; }
 .ns-svg-mob { width: 46px; }
 .ns-n { text-align: center; line-height: 1.2; }
+/* o numero e o sinal sao uma palavra so: em bloco o `%` caia para a linha
+   de baixo sozinho e lia como outro dado. `white-space: nowrap` segura o
+   par junto em qualquer largura. */
 .ns-n b {
-  display: block; font-family: var(--font-condensed); font-weight: 700;
-  font-size: 21px; color: var(--ink);
+  display: block; white-space: nowrap; font-family: var(--font-condensed); font-weight: 700;
+  font-size: 22px; color: #F6F3EC;
 }
 .ns-n span {
   display: block; margin-top: 2px; font-family: var(--font-condensed);
-  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: var(--fg-2);
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: rgba(246,243,236,.88);
 }
 
 @media (max-width: 880px) {
