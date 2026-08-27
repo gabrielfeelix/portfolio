@@ -578,44 +578,110 @@ if (LANG === "en") {
 
   /* companies */
   const CO_EN = {
-    ttt: { role: "Where I started", period: "Early career", note: "First real products",
-      blurb: "My first contact with real product work. Where the urge to design and build became a craft.",
-      story: [
-        { k: "What I did", p: "Quick research, information architecture and low and high fidelity prototyping. I took the whole cycle, from framing the request to the documentation the dev team built from." },
-        { k: "The challenge", p: "It was my first contact with product that actually shipped. Understanding that a screen doesn't end in Figma, and that thin documentation becomes someone else's rework, was what the period was about." },
-        { k: "What I learned", p: "To write for whoever implements. Labels, empty states, what happens when a field fails: if that isn't in the spec, someone decides for you, and usually decides on the fly." },
+    ttt: { role: "UX/UI Design intern", period: "2024 · 11 months · remote",
+      anos: "2024", note: "Where I saw a product team from the inside",
+      blurb: "A product training programme with forty interns. I joined to design and ended up coordinating people.",
+      abre: "My first place in design paid nothing and never had a single real user. Even so, it was there that I first saw how a product team organises itself from the inside. That is what holds up everything that came after.",
+      falaApos: 1,
+      fala: "Interns coordinating interns. Nobody there had any mileage, and the squad still had to ship every week.",
+      atos: [
+        { k: "The programme", p: [
+          "A founder wanted to build a development company and, instead of hiring, built a school. Around forty interns, half in design and half in code, split into squads with real agile rituals: planning, daily, review. All remote, voluntary and part time.",
+          "None of us had experience. The whole structure leaned on the idea that people learning together ship faster than people learning alone, which is sometimes true and sometimes just organised noise.",
+        ] },
+        { k: "How an intern became a coordinator", p: [
+          "The founder watched who stepped up and moved them into coordination. That is how I got the design squad: backlog, rituals and delivery tracking, run out of Trello and FigJam, with people my age and my level of mileage on the other end of the call.",
+          "Coordinating with no authority and no repertoire teaches one specific thing: when you have no seniority to argue from, what is left is what is written down. If the definition wasn't clear on the card, the delivery came out different from the conversation, and the card was to blame.",
+        ] },
+        { k: "What passed through my hands", p: [
+          "Flow and journey mapping, from rough sketch to internal validation. Facilitating sessions and talks on agile method. Hiring and onboarding new designers, training included.",
+          "And a job with no name: taking the founder's idea, which arrived spoken, and handing it back drawn as a flow in FigJam so the rest of the team could disagree with it. It became routine, and it was the most useful part.",
+        ] },
+        { k: "What was missing, and it was a lot", p: [
+          "Testing with a real user, at no point. That needs saying plainly, because it is the difference between an honest portfolio and a dressed up CV.",
+          "What you learn in a place like that is how a product operation organises itself. How a screen gets validated is a different thing, and it only came later.",
+        ] },
+        { k: "Leaving", p: [
+          "Voluntary and part time doesn't pay bills. I left for a sales job, which felt like a detour at the time and today reads as part of the CV: I spent a while on the side of someone who has to convince people, and that changes how you defend a design decision.",
+        ] },
       ],
+      fecha: "I left with no case to show, and with something no case teaches: what happens to a team when nobody writes the definition down.",
       skills: [
-        { k: "Information architecture", p: "content and navigation structure for the first screens" },
-        { k: "Prototyping", p: "low and high fidelity in Figma, from sketch to clickable" },
-        { k: "Quick research", p: "gathering references and context before designing" },
-        { k: "Documentation and handoff", p: "specifying states and behaviour for the dev team" },
+        { k: "Squad coordination", p: "backlog, rituals and delivery tracking in Trello and FigJam" },
+        { k: "Flows and journeys", p: "from rough sketch to internal validation with the team" },
+        { k: "Facilitation", p: "sessions and talks on agile method for the design squad" },
+        { k: "Hiring and onboarding", p: "interviewing, onboarding and training new designers" },
+        { k: "Documentation", p: "product definitions organised for the team to consult" },
       ] },
-    locar: { role: "Real product work", period: "Product", note: "IMMO, Signamais and co.",
-      blurb: "Where I designed real product and learned the handoff end to end.",
-      story: [
-        { k: "The context", p: "SaaS products for the real estate and rental market. Locarmais, IMMO, Locar Fácil and Signa Mais share a dev team and part of the user base, so interface decisions rarely stayed inside a single system." },
-        { k: "What I built", p: "The financial module from scratch, the heaviest project of the period: reconciliation with five statuses, acquirers with different fees, taxes and payout terms, automatic, batch and forced reconciliation with mandatory justification, statement imports from several sources, and a history trail with author and timestamp. Also the Signa Mais e-signature platform and the agency portfolio dashboards." },
-        { k: "The challenge", p: "Reconciliation is dense business logic and every acquirer has its own. The way through was interviewing and shadowing the finance team running the process on spreadsheets, then turning that into screens usable without training." },
-        { k: "The result", p: "The module went to production and replaced a paid reconciliation platform. The finance team stopped keeping parallel spreadsheets and stopped filing tickets with the dev team to pull reports." },
-        { k: "What I learned", p: "This is where I tested with actual users of the system, not colleagues. Watching someone stall on a screen I considered obvious changed how I write labels and order fields." },
+    locar: { role: "UX Designer", period: "2025 to 2026 · 13 months · Maringá",
+      anos: "2025 · 26", note: "IMMO, Signa Mais and the finance module",
+      blurb: "Where I designed real product, tested with real users and met my first heavy business logic.",
+      abre: "Thirteen months in a group with five real estate products, an inherited visual base and one clear rule from above: solve it without formal research. It was there that I designed the most complex thing of my career so far.",
+      falaApos: 1,
+      fala: "Solve it, but without research. Surveys and interviews were within reach, and the order was still to ship a new feature.",
+      atos: [
+        { k: "The ground", p: [
+          "Locarmais, IMMO, Locar Fácil, Signa Mais and Credfacil shared a dev team and part of the user base. Dense business logic SaaS, the kind where a wrong screen doesn't annoy anyone: it breaks somebody's month end close.",
+          "All built on AdminLTE, an admin template put in place before I arrived. New features landed on top of it, gradually. I worked mainly on IMMO and Locarmais, and spent the whole period designing inside a visual vocabulary that wasn't mine.",
+        ] },
+        { k: "The house rule", p: [
+          "Management measured output. A new feature counted for more than an improved one, and the order was to solve things without formal research, even though running a survey and booking interviews was perfectly possible.",
+          "You can fight for method, and I did. You can also find the source nobody forbade. The finance team ran reconciliation on a parallel spreadsheet every month: that was field research served on a plate, it just didn't go by that name.",
+        ] },
+        { k: "The finance module", p: [
+          "I designed the heaviest project of the period from scratch. Reconciliation with five statuses. Acquirers with different fees, taxes and payout terms. Automatic, batch and forced reconciliation with mandatory justification. Statement imports from several sources. A history trail with author and timestamp, and the source data side by side for whoever has to check.",
+          "The hard part wasn't designing any of those screens. It was deciding the order they appear in, and what stays visible when the numbers don't match. Dense business logic isn't solved with a pretty component: it's solved by choosing what the user sees first when something has gone wrong.",
+        ] },
+        { k: "What changed in the operation", p: [
+          "The module went to production and brought in house a reconciliation that had been running on a paid platform, which made receivables forecasting more reliable.",
+          "The finance team stopped keeping the parallel spreadsheet. And stopped filing tickets with the dev team just to pull a report. Two habits died, and a dead habit is the hardest result to earn.",
+        ] },
+        { k: "The first time I really tested", p: [
+          "It was the only place where I tested with real users of the system, not colleagues standing in for them. I interviewed, recorded, analysed and built hypotheses on what I saw, not on what I thought.",
+          "Watching someone stall on a screen I considered obvious is the cheapest and most humbling lesson in this job. It permanently changed how I write labels and order fields.",
+        ] },
+        { k: "And I looked at someone else's work", p: [
+          "I built the IMMO system and, along the way, became the UX reference for another designer on the team: reviewing deliverables, giving direction and following through. First time part of my job was looking at someone's work, which is nothing like looking at your own.",
+        ] },
       ],
+      fecha: "I arrived knowing how to draw a screen. I left knowing the screen is the last thing: before it there is somebody's operation, and it is almost never written down anywhere.",
       skills: [
         { k: "Process mapping", p: "interviews and shadowing the finance team in operation" },
         { k: "Business logic on screen", p: "multi-acquirer reconciliation, five statuses, audit trail" },
         { k: "Testing with real users", p: "users of the system itself, not proxy users" },
         { k: "Dashboards and metrics", p: "portfolio, contract conversion, targets and churn" },
-        { k: "Handoff", p: "flow documentation and support through refinement and QA" },
+        { k: "Design system", p: "maintaining and growing what existed: components, states and patterns" },
+        { k: "Design direction", p: "reviewing and following through on another designer's delivery" },
       ] },
-    oderco: { role: "Design for a team of brands", period: "Current", note: "PCYES, Odex, Tonante, Vinik, Skul",
-      blurb: "Today. I run design for a whole team of brands, from e-commerce to SaaS.",
-      story: [
-        { k: "The context", p: "A national electronics distributor with five in-house brands (PCYES, Vinik, Skul, Odex and Tonante), each with its own audience and channel, plus the internal systems. I'm the only designer, so the queue and the prioritising are mine too." },
-        { k: "What I built", p: "The PCYES e-commerce redesign, including the component library and palette the whole site runs on. The Odex platform interface and the energy storage page for the new battery line. The Oderço reseller signup page, with a two-step form and automatic company lookup." },
-        { k: "The challenge", p: "At PCYES the board wanted a minimal direction focused on brand value, and the metrics called for a shorter path to purchase. I brought session recordings into the conversation and proposed separating the two layers instead of choosing between them: the brand shows up at defined moments and the product holds the spine of the page. That's the model that got approved." },
-        { k: "What I learned", p: "On the storage page the dev team had no window and the trade show had a date, so I implemented it straight in Magento: changed the home, created and indexed categories, rebuilt header and footer, fixed redirects. Designing while knowing what implementation costs changed what I propose." },
-        { k: "Side effect", p: "While documenting the RD Station API for the lead routing automation, the dev team saw that connecting RD to the internal CRM was viable. The operation ran on three parallel systems and went down to two." },
+    oderco: { role: "UX/UI Designer", period: "2026 · current · Maringá",
+      anos: "2026 →", note: "PCYES, Odex, Tonante, Vinik, Skul",
+      blurb: "Today. Sole designer at a national distributor, running five brands across three fronts at once.",
+      abre: "I'm the only designer at a national distributor with five in-house brands. E-commerce, platform and internal systems running at the same time, with nobody above me to review it. The queue is mine, and so is the prioritising.",
+      falaApos: 2,
+      fala: "The board wanted minimalism. The session recordings showed people giving up before buying. I didn't pick a side: I separated the layers.",
+      atos: [
+        { k: "The house", p: [
+          "An electronics distributor founded in 1988, which started knocking on doors across Paraná and today distributes nationwide. Five in-house brands: PCYES in gaming, Vinik across segments, Skul in PC assembly, Odex in solar energy and Tonante in music.",
+          "Each brand has its own audience, channel and tone. Sole designer means the coherence between them is my responsibility too, and that there is nobody to turn to when the call is hard.",
+        ] },
+        { k: "PCYES V2", p: [
+          "The e-commerce redesign started in February and came out of bad metrics, not out of wanting a new look. I went after the why with session recordings in Microsoft Clarity, GA4 and conversations with people who buy.",
+          "What surfaced was specific: payment methods didn't show above the fold in checkout, the Magento payment module had a bug, and the path to purchase ran too long. None of that is design opinion. It is recorded behaviour.",
+        ] },
+        { k: "The fight worth having", p: [
+          "The board wanted a minimal direction focused on brand value, in line with the sector's reference brands. That was the first version's choice, and it's a defensible one. Behaviour on the site said otherwise.",
+          "I brought the recordings into the conversation instead of my opinion, and proposed not choosing: separate the two layers. The brand shows up at defined moments and the product holds the spine of the page. That is the model that got approved, and it is what is going live.",
+        ] },
+        { k: "When the deadline didn't wait", p: [
+          "On the Odex energy storage page, the dev team had no window and the trade show had a date. I implemented it straight in Magento: changed the home, created and indexed categories, rebuilt header and footer, fixed redirects.",
+          "It was uncomfortable and it was right. Designing while knowing what implementation costs changed what I propose: today I kill on my own the idea I know will die in the dev queue.",
+        ] },
+        { k: "The side effect", p: [
+          "To automate the lead routing on the reseller signup page, I documented the RD Station API. Reading that documentation, the dev team saw that connecting RD to the internal CRM was viable.",
+          "The operation ran on three parallel systems and went down to two. It wasn't in scope, nobody asked, and it is the delivery I most like telling.",
+        ] },
       ],
+      fecha: "The best thing I've done here wasn't a screen. It was documenting an API and watching the company go from three systems to two.",
       skills: [
         { k: "Design System", p: "PCYES component library and palette, applied across the site" },
         { k: "E-commerce and checkout", p: "checkout rebuilt, add-to-cart on the shelf, sticky price column" },

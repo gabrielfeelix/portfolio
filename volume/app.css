@@ -109,7 +109,7 @@
 /* manga 集中線 speed-lines (top-left) + halftone burst (bottom-right) */
 .splash .hero-speedlines { position: absolute; z-index: 0; pointer-events: none;
   width: 760px; height: 760px; top: -390px; left: -390px;
-  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(246,243,236,.5) 0 .3deg, transparent .3deg 3deg);
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.5) 0 .3deg, transparent .3deg 3deg);
   /* opaque near the corner, fading OUT before reaching the text */
   -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 54%); mask-image: radial-gradient(circle, #000 0%, transparent 54%);
   opacity: .2; }
@@ -127,10 +127,10 @@
 
 /* backdrop: dashed ink curves + red dots + × register marks (ref-style) */
 .hero-field { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
-.hero-field .hf-path { fill: none; stroke: rgba(246,243,236,.5); stroke-width: 2; stroke-dasharray: 6 9; }
+.hero-field .hf-path { fill: none; stroke: rgba(255,255,255,.5); stroke-width: 2; stroke-dasharray: 6 9; }
 .hero-field .hf-red  { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 10; opacity: .3; }
 .hero-field .hf-dot  { fill: var(--ink); }
-.hero-field .hf-x    { stroke: rgba(246,243,236,.6); stroke-width: 2.4; }
+.hero-field .hf-x    { stroke: rgba(255,255,255,.6); stroke-width: 2.4; }
 .splash.lit .hero-field { animation: hf-drift 20s ease-in-out infinite alternate; }
 @keyframes hf-drift { from { transform: translateY(-12px); } to { transform: translateY(12px); } }
 .splash.lit .hf-path, .splash.lit .hf-red { animation: hf-march 9s linear infinite; }
@@ -209,9 +209,9 @@
 .cursor-ring.hover { width: 46px; height: 46px; border-color: var(--vermilion);
   background: color-mix(in srgb, var(--vermilion) 14%, transparent); }
 /* over the red cover: flip to cream — literal, the cover ignores modo tinta */
-.cursor-layer.on-red .cursor-dot { background: #F6F3EC; }
-.cursor-layer.on-red .cursor-ring { border-color: #F6F3EC; }
-.cursor-layer.on-red .cursor-ring.hover { border-color: #F6F3EC; background: color-mix(in srgb, #F6F3EC 18%, transparent); }
+.cursor-layer.on-red .cursor-dot { background: #FFFFFF; }
+.cursor-layer.on-red .cursor-ring { border-color: #FFFFFF; }
+.cursor-layer.on-red .cursor-ring.hover { border-color: #FFFFFF; background: color-mix(in srgb, #FFFFFF 18%, transparent); }
 
 /* a11y: screen-reader-only text + skip link */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -243,24 +243,24 @@ html.ink .eq-logo { background: var(--paper); }   /* card de projeto mantém a m
    modes — so these use literal print colors, never the invertible
    --paper/--ink tokens (modo tinta flips those and would set near-black
    type on red). */
-.splash-id { color: rgba(246,243,236,.85); }
-.splash-id i { color: rgba(246,243,236,.5); }
-.splash-id b { color: #F6F3EC; }
-.splash-h { color: #F6F3EC; }
-.splash-h .sh-ghost { color: transparent; -webkit-text-stroke: 2px #F6F3EC; }
-.splash-sub { color: rgba(246,243,236,.92); }
+.splash-id { color: rgba(255,255,255,.85); }
+.splash-id i { color: rgba(255,255,255,.5); }
+.splash-id b { color: #FFFFFF; }
+.splash-h { color: #FFFFFF; }
+.splash-h .sh-ghost { color: transparent; -webkit-text-stroke: 2px #FFFFFF; }
+.splash-sub { color: rgba(255,255,255,.92); }
 .splash-sub .red { color: #0A0A0A; font-weight: 800; }
-.rotw-box { background: #0A0A0A; color: #F6F3EC; box-shadow: 4px 4px 0 rgba(10,10,10,.4); }
-.splash-kana { color: rgba(246,243,236,.7); }
-.splash-scroll { color: rgba(246,243,236,.8); }
-.splash-scroll:hover { color: #F6F3EC; }
-.ss-wheel { background: #F6F3EC; }
+.rotw-box { background: #0A0A0A; color: #FFFFFF; box-shadow: 4px 4px 0 rgba(10,10,10,.4); }
+.splash-kana { color: rgba(255,255,255,.7); }
+.splash-scroll { color: rgba(255,255,255,.8); }
+.splash-scroll:hover { color: #FFFFFF; }
+.ss-wheel { background: #FFFFFF; }
 /* a capa é superfície vermelha: herda as cores de .on-red do kit em vez de
    redefinir cada variante na mão */
-.splash .btn { --btn-fg: #F6F3EC; --btn-bg: var(--vermilion); --btn-acento: #F6F3EC;
+.splash .btn { --btn-fg: #FFFFFF; --btn-bg: var(--vermilion); --btn-acento: #FFFFFF;
   --btn-acento-fg: var(--vermilion); --btn-elev: #0A0A0A; }
-.splash .btn-primary:hover { background: #0A0A0A; color: #F6F3EC; border-color: #0A0A0A; }
-.splash .btn-ghost:hover { color: #F6F3EC; opacity: .75; border-bottom-color: #F6F3EC; }
+.splash .btn-primary:hover { background: #0A0A0A; color: #FFFFFF; border-color: #0A0A0A; }
+.splash .btn-ghost:hover { color: #FFFFFF; opacity: .75; border-bottom-color: #FFFFFF; }
 
 /* chapter pages have their own top bar — push it clear of the floating pill */
 /* a capa do capítulo começa colada no topo: o padding existia pra empurrar
@@ -359,11 +359,15 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 /* A terceira coluna (o retrato) espremeu o carrossel de empresas, e o
    .qsc-logo de 116px fixos estourou o card. O retrato encolhe e a coluna
    da empresa volta a ter largura de card. */
-.qs-grid { padding: var(--ma-5) var(--gutter); display: grid;
-  grid-template-columns: 1fr .46fr 1.05fr; gap: clamp(20px, 2.4vw, 40px); align-items: center; }
-@media (max-width: 1080px) {
-  .qs-grid { grid-template-columns: 1fr 1fr; }
-  .qs-foto { order: -1; }
+/* duas colunas largas no lugar das três estreitas: o retrato era .46fr
+   espremido entre a bio e o card de empresa, e por isso nunca tinha
+   presença. Com a empresa fora daqui (virou `.ondeestou`) sobra medida
+   para o texto respirar e para a foto ter tamanho. */
+.qs-grid { padding: var(--ma-6) var(--gutter); display: grid;
+  grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 4vw, 72px); align-items: center; }
+@media (max-width: 900px) {
+  .qs-grid { grid-template-columns: 1fr; }
+  .qs-foto { order: -1; max-width: 460px; }
 }
 .qs-bio { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.5; max-width: 46ch; margin: var(--ma-2) 0 0; color: var(--fg); }
 .qs-left .gl { display: inline-block; margin-top: var(--ma-3); }
@@ -635,12 +639,53 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
 .emp-meta .v { font-family: var(--font-condensed); font-weight: 600; font-size: 16px; color: var(--paper); margin-top: 4px; }
 
 .emp-body { padding-top: var(--ma-6); }
-.emp-story { margin-bottom: var(--ma-6); border-top: var(--ink-stroke) solid var(--ink); }
-.es-beat { display: grid; grid-template-columns: clamp(72px, 12vw, 128px) 1fr; gap: var(--gutter); align-items: start; padding: var(--ma-4) 0; border-bottom: var(--ink-hair) solid var(--ink); animation: empin 460ms var(--curva) both; }
+/* ---- A HISTÓRIA da empresa: capítulo, não ficha ---------------------
+   O layout antigo (`.es-beat`) dava uma linha de texto por bloco numerado
+   e terminava lendo como tabela. Aqui o número desce para âncora da seta e
+   quem ocupa a página é o parágrafo, com título de ato de verdade. ---- */
+.emp-hist { margin-bottom: var(--ma-6); }
 @keyframes empin { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* a abertura: corpo maior, régua vermelha, respiro antes do primeiro ato */
+.eh-abre {
+  font-family: var(--font-body); font-size: clamp(1.18rem, 1.7vw, 1.5rem);
+  line-height: 1.42; color: var(--ink); max-width: 46ch; text-wrap: pretty;
+  margin: 0 0 var(--ma-6); padding-inline-start: var(--ma-3);
+  border-inline-start: 5px solid var(--vermilion);
+  animation: empin 520ms var(--curva) both;
+}
+
+.eh-ato {
+  display: grid; grid-template-columns: clamp(72px, 12vw, 128px) 1fr;
+  gap: var(--gutter); align-items: start;
+  padding: var(--ma-5) 0; border-block-start: var(--ink-hair) solid var(--wash-2);
+  animation: empin 460ms var(--curva) both;
+}
+.eh-ato:first-of-type { border-block-start: var(--ink-stroke) solid var(--ink); }
+.eh-num { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .es-n { font-family: var(--font-display); font-size: clamp(2.6rem, 7vw, 5rem); line-height: .8; color: transparent; -webkit-text-stroke: 2px var(--wash-3); }
-.es-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .2em; font-size: 13px; color: var(--vermilion-ink); }
-.es-p { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.55; color: var(--wash-4); margin-top: 12px; max-width: 52ch; text-wrap: pretty; }
+.eh-k {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: .98;
+  margin: 0 0 var(--ma-3); color: var(--ink); max-width: 22ch; text-wrap: balance;
+}
+.eh-p {
+  font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.58;
+  color: var(--wash-4); margin: 0; max-width: 56ch; text-wrap: pretty;
+}
+.eh-p + .eh-p { margin-block-start: var(--ma-3); }
+
+/* o fecho: a frase que sai com o leitor, em display, com o selo embaixo */
+.eh-fecha {
+  display: flex; flex-direction: column; align-items: center; gap: var(--ma-3);
+  text-align: center; padding: var(--ma-6) 0 var(--ma-5);
+  border-block-start: var(--ink-stroke) solid var(--ink);
+}
+.ehf-p {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.5rem, 3.1vw, 2.6rem); line-height: 1.04;
+  margin: 0; max-width: 24ch; color: var(--ink); text-wrap: balance;
+}
 
 .emp-quick { margin-bottom: var(--ma-6); }
 .eq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
@@ -975,7 +1020,7 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
   .rail-info { animation: none !important; }
   .proc-text { transition: none !important; }
   .pv-sl, .pv-blob, .proc-scrollhint .dn { animation: none !important; }
-  .es-beat { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .eh-ato, .eh-abre { animation: none !important; opacity: 1 !important; transform: none !important; }
   .emp-cover-sl { display: none; }
 }
 @media (max-width: 880px) {
@@ -1084,7 +1129,8 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
   .emp-blocks { grid-template-columns: 1fr; }
   .emp-meta { flex-wrap: wrap; }
   .emp-meta .m { flex: 1 1 40%; }
-  .es-beat { grid-template-columns: 1fr; gap: 6px; }
+  .eh-ato { grid-template-columns: 1fr; gap: 6px; }
+  .eh-num { flex-direction: row; align-items: center; gap: 14px; }
   .es-n { font-size: 2.4rem; }
   .emp-switch { grid-template-columns: 1fr; }
   .emp-switch-side, .emp-switch-side.right { justify-content: flex-start; }
@@ -1115,26 +1161,26 @@ header.hd-hidden:not(.hd-float) .v-volline { display: none; }
    manter a hierarquia; o vermelho-selo continua o único acento.
    ===================================================================== */
 html.ink {
-  --ink:   #F2EFE7;
-  --paper: #161310;
-  --wash-1:#3B372F;   /* faintest: hairlines               */
-  --wash-2:#6E6759;   /* light wash                         */
-  --wash-3:#ABA495;   /* mid wash: secondary text (AA)      */
-  --wash-4:#DFDACD;   /* deep wash: near-"ink"              */
+  --ink:   #EFEFEF;
+  --paper: #131313;
+  --wash-1:#373737;   /* faintest: hairlines               */
+  --wash-2:#686868;   /* light wash                         */
+  --wash-3:#A5A5A5;   /* mid wash: secondary text (AA)      */
+  --wash-4:#DADADA;   /* deep wash: near-"ink"              */
   --vermilion-ink:#F4695C;   /* pressed red, legível no escuro */
   --vermilion-tint:#5A1511;  /* focus halo, invertido          */
   /* as superficies que pintam o fundo com var(--ink) tambem viram: aqui
      o fundo delas fica CLARO, entao o texto em cima escurece. */
   --vermilion-sobre-ink:#B01510;  /* vermelho legivel sobre o fundo claro */
-  --sobre-ink-2:        #4A463D;  /* apoio escuro sobre o mesmo fundo     */
+  --sobre-ink-2:        #464646;  /* apoio escuro sobre o mesmo fundo     */
   /* o plano de tinta nao pode virar junto com --ink: no modo tinta o
      --ink e claro, e um plano claro atras do quadro vira halo de UI em
      vez de sombra impressa. Aqui ele e a lavagem mais fraca, que ainda
-     le contra o papel escuro (#3B372F sobre #161310). */
+     le contra o papel escuro (#373737 sobre #131313). */
   --quadro-plano: var(--wash-1);
 }
 html.ink .rc-cover, html.ink .sol-img, html.ink .pc-art img, html.ink .cover-img { opacity: .9; }
-html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel de verdade */
+html.ink .splash { color: #FFFFFF; }   /* a capa continua vermelha: texto papel de verdade */
 
 /* toggle 墨 no nav: é um botão secundário pequeno do sistema, só quadrado.
    O estado ligado usa a mesma regra de selecionado das outras variantes. */
@@ -1221,17 +1267,17 @@ html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel 
   position: absolute; right: 4%; top: 50%; transform: translateY(-50%) skewX(-5deg);
   font-family: 'Reggae One', var(--font-sfx), Impact, sans-serif;
   font-size: clamp(5.5rem, 13vw, 10rem); line-height: 1; z-index: 1;
-  color: transparent; -webkit-text-stroke: 2px rgba(246,243,236,.2);
+  color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.2);
   pointer-events: none; user-select: none;
 }
 .impact-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .2em; font-size: 12px; color: #F4695C; }
 .impact-t { position: relative; z-index: 2; font-family: var(--font-display); text-transform: uppercase;
-  color: #F6F3EC; font-size: clamp(1.5rem, 3.2vw, 2.5rem); line-height: 1.02;
+  color: #FFFFFF; font-size: clamp(1.5rem, 3.2vw, 2.5rem); line-height: 1.02;
   margin-top: 12px; max-width: 22ch; }
 .impact-live { display: inline-flex; align-items: center; gap: 8px; margin-top: var(--ma-3);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .12em; font-size: 12px; color: #F6F3EC;
+  letter-spacing: .12em; font-size: 12px; color: #FFFFFF;
   border-bottom: 2px solid var(--vermilion); padding-bottom: 2px; transition: color var(--cut); }
 .impact-live:hover { color: #F4695C; }
 
@@ -1283,8 +1329,8 @@ html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel 
 .sis-modes { display: flex; gap: 10px; }
 .md { width: 52px; height: 52px; display: grid; place-items: center;
   font-family: var(--font-display); font-size: 1.6rem; border: var(--ink-stroke) solid var(--ink); }
-.md-paper { background: #F6F3EC; color: #0A0A0A; }
-.md-ink { background: #161310; color: #F2EFE7; }
+.md-paper { background: #FFFFFF; color: #0A0A0A; }
+.md-ink { background: #131313; color: #EFEFEF; }
 @media (max-width: 880px) { .sis-grid { grid-template-columns: 1fr; } }
 
 /* ---- MARCADOR DE PÁGINA: a fita que fica presa no volume ---- */
@@ -1342,7 +1388,7 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   box-shadow: 15px -7px 0 -13px currentColor, -13px -11px 0 -13px currentColor,
               9px 13px 0 -13px currentColor, -11px 10px 0 -14px currentColor;
   animation: splat-drops .58s ease-out forwards; }
-.ink-splat.on-red { color: #F6F3EC; }
+.ink-splat.on-red { color: #FFFFFF; }
 @keyframes splat-core { from { transform: scale(.25); opacity: .4; } to { transform: scale(1.3); opacity: 0; } }
 @keyframes splat-drops { from { transform: scale(.35); opacity: .45; } to { transform: scale(1.65); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .ink-splat { display: none; } }
@@ -1388,11 +1434,11 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   letter-spacing: .2em; font-size: 12px; color: var(--fg-2); margin-bottom: 12px; }
 .bs-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
 .bs-chip { display: inline-flex; align-items: center; gap: 12px;
-  background: #F6F3EC; border: var(--ink-hair) solid var(--ink); padding: 9px 16px; }
+  background: #FFFFFF; border: var(--ink-hair) solid var(--ink); padding: 9px 16px; }
 .bs-logo { height: 30px; width: auto; max-width: 72px; object-fit: contain;
   filter: grayscale(1); opacity: .85; transition: filter var(--cut), opacity var(--cut); }
 .bs-name { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .1em; font-size: 12px; color: #38362F; }
+  letter-spacing: .1em; font-size: 12px; color: #363636; }
 .bs-chip:hover .bs-logo { filter: none; opacity: 1; }
 
 /* ---- SPLASH: atalho da leitura rápida ---- */
@@ -1406,8 +1452,8 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
    esses tokens e poria tipo quase preto sobre o vermelho. */
 .splash-rapido { display: inline-flex; align-items: center; gap: 8px; margin-top: var(--ma-3);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .16em; font-size: 12px; color: rgba(246,243,236,.75);
-  border-bottom: 1.5px solid rgba(246,243,236,.4); padding-bottom: 3px;
+  letter-spacing: .16em; font-size: 12px; color: rgba(255,255,255,.75);
+  border-bottom: 1.5px solid rgba(255,255,255,.4); padding-bottom: 3px;
   position: relative; z-index: 1; isolation: isolate;
   transition: color var(--cut), border-color var(--cut); }
 /* O véu que abre o corredor: o mesmo vermelho da superfície, difuso nas
@@ -1419,7 +1465,7 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   inset: -10px -14px; border-radius: 999px; pointer-events: none;
   background: radial-gradient(ellipse at center,
     #E4231B 0%, #E4231B 58%, rgba(228,35,27,.85) 78%, rgba(228,35,27,0) 100%); }
-.splash-rapido:hover { color: #F6F3EC; border-color: #F6F3EC; }
+.splash-rapido:hover { color: #FFFFFF; border-color: #FFFFFF; }
 .splash-rapido .arr { transition: transform var(--cut); }
 .splash-rapido:hover .arr { transform: translateX(4px); }
 
@@ -1601,7 +1647,7 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
   inline-size: 100%; block-size: auto; max-block-size: 56%; object-fit: contain; display: block;
   /* nenhum filtro e nenhum blend: os arquivos em marcas/mono/ já são a marca
      em tinta sobre transparente. Não existe fundo pra esconder — nem com
-     multiply, que aqui pioraria (os PNGs originais são gravados em #F6F3EC,
+     multiply, que aqui pioraria (os PNGs originais são gravados em creme,
      não em branco, então multiplicar papel por papel escurece o retângulo
      em vez de sumir com ele). */
   opacity: .72; transition: opacity var(--cut);
@@ -1620,8 +1666,8 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
    a mesma arte vira papel sobre tinta e mantém a leitura monocromática. */
 /* a chapa da empresa carrega a marca em papel, então precisa ser tinta nos
    dois modos: com var(--wash-4) ela clareava no modo tinta e a logo sumia */
-html.ink .emp-logo { background: #1E1A16; border-color: var(--wash-4); }
-html.ink .emp-logo-mark { color: #F2EFE7; }
+html.ink .emp-logo { background: #1B1B1B; border-color: var(--wash-4); }
+html.ink .emp-logo-mark { color: #EFEFEF; }
 html.ink .mk { background: var(--paper); }
 html.ink .mk-logo { filter: invert(1); opacity: .82; }
 html.ink .mk:hover .mk-logo { opacity: 1; }
@@ -1786,7 +1832,12 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
 /* a coluna direita do diferencial hospeda uma trilha max-content: sem
    min-width:0 o grid item se recusa a encolher e estoura a linha */
 .dif-right { min-width: 0; }
-.eq-card.is-flat { cursor: default; opacity: .72; }
+/* o card sem destino era rebaixado por `opacity: .72`, o que arrastava o
+   texto junto e derrubava o contraste da categoria abaixo do AA. O estado
+   "não clicável" agora é dito pela chapa de fundo e pelo cursor, não por
+   apagar a peça inteira. */
+.eq-card.is-flat { cursor: default; background: var(--wash-1); }
+.eq-card.is-flat .eq-title { color: var(--wash-4); }
 
 /* índice: o cap agora é a categoria (o que o filtro acima controla), então
    ganha largura fixa pra os títulos alinharem numa coluna só */
@@ -1946,8 +1997,8 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
 html.ink .ad-tag { background: var(--paper); color: var(--ink); }
 /* a tag "depois" e o punho ficam no par vermelho-escuro + papel nos DOIS
    modos: --vermilion puro nao aguenta texto em cima (4,0-4,2:1). */
-html.ink .ad-tag-d { background: #B01510; color: #F6F3EC; }
-html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
+html.ink .ad-tag-d { background: #B01510; color: #FFFFFF; }
+html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 
 @media (prefers-reduced-motion: reduce) {
   .ad-box .ad-clip, .ad-box .ad-linha { transition: none !important; }
@@ -2390,7 +2441,9 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   letter-spacing: .22em; font-size: 11px; color: var(--fg-2); margin-inline-end: auto;
 }
 .lv-num {
-  font-family: var(--font-display); font-size: 15px; color: var(--wash-2); letter-spacing: .04em;
+  /* --wash-2 dá 2,19:1 em 15px e o axe reprova. --wash-3 dá 6,48:1 e a
+     numeração da folha continua secundária pela escala, não pela lavagem. */
+  font-family: var(--font-display); font-size: 15px; color: var(--wash-3); letter-spacing: .04em;
 }
 /* o slot da marca: declarado e vazio até as logos entrarem */
 /* Era um quadrado tracejado esperando logo. Virou o slot da tinta: cada
@@ -2610,3 +2663,271 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   width: 66%; height: auto; inset: auto; object-fit: contain; transform: none;
 }
 .bp-qsc .bp-tone { background-size: 9px 9px; opacity: .24; }
+
+/* =====================================================================
+   RODAPÉ — a retícula que faltava
+   O rodapé é a única chapa de tinta cheia do volume e estava lisa: sem a
+   retícula ele lia como bloco de UI, não como área impressa. Os pontos são
+   papel a 7% e somem descendo, para não competir com o texto do colofão.
+   ===================================================================== */
+.v-foot { position: relative; }
+.v-foot::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  opacity: .07;
+  background-image: radial-gradient(var(--paper) 1.1px, transparent 1.2px);
+  background-size: 9px 9px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 86%);
+          mask-image: linear-gradient(to bottom, #000 0%, transparent 86%);
+}
+.v-foot > .shell { position: relative; z-index: 1; }
+
+/* =====================================================================
+   PÁGINA DE EMPRESA — linha do tempo, balão e setas
+   ===================================================================== */
+
+/* ---- linha do tempo: uma régua de tinta com três paradas ---------- */
+.emp-linha { margin-block-end: var(--ma-5); }
+.el-trilho {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  position: relative;
+}
+/* o trilho passa NA ALTURA do ponto, não no meio da caixa: por isso o top
+   é calculado a partir do topo do botão e não com 50% */
+.el-trilho::before {
+  content: ""; position: absolute; inset-inline: 12%; top: 30px; height: 0;
+  border-block-start: var(--ink-hair) solid var(--wash-2);
+}
+.el-no { position: relative; }
+.el-btn {
+  -webkit-appearance: none; appearance: none; background: none; border: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  inline-size: 100%; padding: 0; cursor: pointer; color: inherit;
+  text-align: center;
+}
+.el-btn:disabled { cursor: default; }
+.el-ano {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .16em; font-size: 12px; color: var(--wash-3);
+  block-size: 16px; line-height: 16px;
+}
+.el-ponto {
+  inline-size: 15px; block-size: 15px; border-radius: 50%;
+  background: var(--paper); border: 2.5px solid var(--wash-2);
+  position: relative; z-index: 1; transition: background var(--cut), border-color var(--cut), transform var(--cut);
+}
+.el-nome {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1rem, 1.6vw, 1.35rem); line-height: 1; color: var(--wash-3);
+  transition: color var(--cut);
+}
+.el-papel {
+  font-family: var(--font-condensed); font-weight: 500; text-transform: uppercase;
+  /* --wash-2 reprovou no axe: 2,19:1 em texto de 12px. --wash-3 dá 6,48:1. */
+  letter-spacing: .12em; font-size: 12px; color: var(--wash-3);
+}
+.el-btn:hover:not(:disabled) .el-ponto { border-color: var(--ink); transform: scale(1.15); }
+.el-btn:hover:not(:disabled) .el-nome  { color: var(--ink); }
+.el-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+/* a empresa aberta: ponto cheio de tinta e nome em tinta */
+.el-no.on .el-ponto { background: var(--ink); border-color: var(--ink); }
+.el-no.on .el-nome  { color: var(--ink); }
+.el-no.on .el-ano   { color: var(--ink); }
+/* a atual ganha o selo vermelho, que é estado ao vivo e não decoração */
+.el-no.atual .el-ponto { border-color: var(--vermilion); }
+.el-no.atual.on .el-ponto { background: var(--vermilion); border-color: var(--vermilion); }
+.el-no.atual .el-papel { color: var(--vermilion-ink); }
+
+/* ---- o balão de fala --------------------------------------------- */
+.emp-balao { margin: 0 0 var(--ma-5); max-width: 60ch; }
+.eb-bolha {
+  position: relative; margin: 0;
+  background: var(--paper); border: var(--ink-stroke) solid var(--ink);
+  border-radius: 26px; padding: var(--ma-3) var(--ma-4);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.eb-bolha p {
+  margin: 0; font-family: var(--font-body); font-size: var(--t-lead);
+  line-height: 1.42; text-wrap: pretty;
+}
+.eb-aspa {
+  position: absolute; top: -14px; left: 22px; background: var(--paper);
+  padding: 0 8px; font-size: 22px; line-height: 1; color: var(--vermilion-ink);
+}
+/* o rabicho: triângulo de tinta atrás, triângulo de papel na frente, um
+   pixel acima, para a ponta sair com contorno. Um triângulo feito de
+   border não aceita border própria, daí os dois. */
+.eb-bolha::before, .eb-bolha::after {
+  content: ""; position: absolute; inline-size: 0; block-size: 0;
+  border-inline: 17px solid transparent;
+}
+.eb-bolha::before { bottom: -25px; left: 52px; border-block-start: 25px solid var(--ink); }
+.eb-bolha::after  { bottom: -19px; left: 52px; border-block-start: 21px solid var(--paper); }
+.eb-fonte {
+  margin-block-start: 30px; margin-inline-start: 96px;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .16em; font-size: 12px; color: var(--wash-3);
+}
+
+/* ---- as setas entre os beats -------------------------------------- */
+/* a coluna do número virou pilha: número em cima, seta descendo até o
+   próximo beat. `grid-row: 1` não entra aqui porque a coluna é flex, não
+   grid: quem posiciona continua sendo o `.eh-ato`. */
+.es-seta {
+  inline-size: clamp(28px, 3.4vw, 40px); block-size: auto;
+  color: var(--wash-4); opacity: .55; margin-inline-start: 4px;
+  animation: seta-entra 700ms var(--curva) both 260ms;
+}
+@keyframes seta-entra { from { opacity: 0; transform: translateY(-10px); } to { opacity: .55; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .es-seta { animation: none; opacity: .55; }
+}
+
+@media (max-width: 720px) {
+  .el-trilho { grid-template-columns: 1fr; gap: var(--ma-3); }
+  .el-trilho::before { display: none; }
+  .el-btn { flex-direction: row; align-items: center; gap: 12px; text-align: left; }
+  .el-nome { font-size: 1.1rem; }
+  .el-papel { margin-inline-start: auto; }
+  .es-seta { inline-size: 24px; }
+  .eb-fonte { margin-inline-start: 0; }
+}
+
+/* ---- a dobra: o balão de mangá vira faixa que corta a leitura ------
+   O balão não é decoração ao lado do texto, é a virada da história: ele
+   entra depois do ato que arma o conflito (`falaApos`), atravessa a medida
+   inteira e traz retícula atrás, para que a página tenha uma dobra visual
+   no meio em vez de rolar parágrafo até o fim. --------------------- */
+.emp-balao {
+  position: relative; max-width: none;
+  margin: 0; padding: var(--ma-6) var(--ma-4);
+  border-block: var(--ink-stroke) solid var(--ink);
+  display: flex; flex-direction: column; align-items: center;
+  overflow: hidden;
+}
+.emp-balao::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(var(--ink) 1.5px, transparent 1.7px);
+  background-size: 10px 10px; opacity: .13;
+  -webkit-mask-image: radial-gradient(ellipse 74% 84% at 50% 50%, transparent 26%, #000 92%);
+          mask-image: radial-gradient(ellipse 74% 84% at 50% 50%, transparent 26%, #000 92%);
+}
+.eb-bolha { position: relative; z-index: 1; max-width: 46ch; }
+.eb-bolha p {
+  font-size: clamp(1.12rem, 1.9vw, 1.5rem); line-height: 1.34;
+  font-weight: 500; text-wrap: balance;
+}
+.eb-fonte { position: relative; z-index: 1; margin-inline-start: 0; }
+
+/* =====================================================================
+   QUEM SOU · ONDE ESTOU — as duas seções que substituíram a de três colunas
+   ===================================================================== */
+
+/* ---- o texto em corpo de leitura ---------------------------------- */
+.qs-bio { font-size: clamp(1.12rem, 1.5vw, 1.38rem); line-height: 1.46; max-width: 40ch; }
+.qs-bio-2 { margin-block-start: var(--ma-3); color: var(--wash-4); font-size: clamp(1rem, 1.25vw, 1.15rem); }
+
+/* motion: entra quando a seção é vista, uma coisa por vez. O `.on` vem do
+   useReveal, que desconecta no primeiro disparo, então isto acontece uma
+   vez só e não fica piscando a cada rolagem. */
+.quemsou .qs-left > *,
+.quemsou .qs-nums > div {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 620ms var(--curva), transform 620ms var(--curva);
+}
+.quemsou.on .qs-left > *,
+.quemsou.on .qs-nums > div { opacity: 1; transform: none; }
+.quemsou.on .qs-left > *:nth-child(1) { transition-delay: 40ms; }
+.quemsou.on .qs-left > *:nth-child(2) { transition-delay: 110ms; }
+.quemsou.on .qs-left > *:nth-child(3) { transition-delay: 180ms; }
+.quemsou.on .qs-left > *:nth-child(5) { transition-delay: 520ms; }
+
+/* ---- o retrato: maior, com moldura de prancha e retícula na quina --- */
+.qs-foto { position: relative; margin: 0; }
+.qs-foto img { aspect-ratio: 4 / 5; }
+/* a foto entra por baixo da própria moldura, revelada de baixo pra cima */
+.quemsou .qs-foto img {
+  clip-path: inset(0 0 100% 0); transition: clip-path 900ms var(--curva) 120ms,
+    filter var(--cut), transform var(--cut), box-shadow var(--cut);
+}
+.quemsou.on .qs-foto img { clip-path: inset(0 0 0 0); }
+.qsf-tone {
+  position: absolute; inset-block-start: -18px; inset-inline-end: -18px;
+  inline-size: clamp(90px, 12vw, 150px); block-size: clamp(90px, 12vw, 150px);
+  z-index: -1; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(var(--ink) 1.6px, transparent 1.8px);
+  background-size: 10px 10px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0, #000, transparent 76%);
+          mask-image: radial-gradient(circle at 100% 0, #000, transparent 76%);
+}
+.qsf-cap {
+  display: block; margin-block-start: 14px;
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .16em; font-size: 12px; color: var(--wash-3);
+}
+
+/* ---- ONDE ESTOU HOJE ---------------------------------------------- */
+.ondeestou { border-block-start: var(--ink-stroke) solid var(--ink); padding-block: var(--ma-6); }
+.oe-grid {
+  display: grid; grid-template-columns: clamp(180px, 22vw, 300px) 1fr;
+  gap: clamp(24px, 3.5vw, 56px); align-items: center;
+}
+/* `position: relative` NÃO é opcional aqui. `.brandplate` é
+   `position: absolute; inset: 0` na regra base, então sem um pai
+   posicionado ela sobe até o viewport e pinta a tela inteira de azul.
+   Foi exatamente o que aconteceu, e o sintoma (chapa cobrindo o site) não
+   aponta pra causa (falta de contexto de posicionamento no botão). */
+.oe-chapa {
+  -webkit-appearance: none; appearance: none; padding: 0; cursor: pointer;
+  position: relative;
+  border: var(--ink-stroke) solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
+  background: var(--paper); aspect-ratio: 1; overflow: hidden;
+  transition: transform var(--cut), box-shadow var(--cut);
+}
+.oe-chapa:hover { transform: translate(-3px,-3px); box-shadow: 15px 15px 0 var(--vermilion); }
+.oe-chapa:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.oe-nome { font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(2.2rem, 5.4vw, 4.2rem); line-height: .92; margin: 10px 0 8px; }
+.oe-papel { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .12em; font-size: 13px; color: var(--wash-3); }
+.oe-blurb { font-family: var(--font-body); font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+  line-height: 1.45; max-width: 44ch; margin: var(--ma-3) 0 var(--ma-3); color: var(--wash-4); }
+.ondeestou .oe-copy > * { opacity: 0; transform: translateY(14px);
+  transition: opacity 560ms var(--curva), transform 560ms var(--curva); }
+.ondeestou.on .oe-copy > * { opacity: 1; transform: none; }
+.ondeestou.on .oe-copy > *:nth-child(2) { transition-delay: 90ms; }
+.ondeestou.on .oe-copy > *:nth-child(3) { transition-delay: 150ms; }
+.ondeestou.on .oe-copy > *:nth-child(4) { transition-delay: 210ms; }
+.ondeestou.on .oe-copy > *:nth-child(5) { transition-delay: 290ms; }
+
+.oe-antes { margin-block-start: var(--ma-6); border-block-start: var(--ink-hair) solid var(--wash-2); padding-block-start: var(--ma-3); }
+.oe-antes-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-2); }
+.oe-lista { list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.oe-item {
+  -webkit-appearance: none; appearance: none; cursor: pointer; inline-size: 100%;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+  background: var(--paper); border: var(--ink-hair) solid var(--ink);
+  padding: 14px 16px; text-align: left; color: inherit;
+  transition: background var(--cut), color var(--cut), transform var(--cut);
+}
+.oe-item:hover { transform: translateY(-2px); background: var(--ink); color: var(--paper); }
+.oe-item:hover .oe-ano, .oe-item:hover .oe-item-papel { color: var(--paper); opacity: .75; }
+.oe-item:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.oe-ano { font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
+  font-size: 12px; color: var(--wash-3); }
+.oe-item-nome { font-family: var(--font-display); text-transform: uppercase; font-size: 1.25rem; line-height: 1; }
+.oe-item-papel { display: none; }
+.oe-item .arr { transition: transform var(--cut); }
+.oe-item:hover .arr { transform: translateX(4px); }
+
+@media (max-width: 760px) {
+  .oe-grid { grid-template-columns: 1fr; }
+  .oe-chapa { max-inline-size: 190px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quemsou .qs-left > *, .quemsou .qs-nums > div, .ondeestou .oe-copy > * { opacity: 1; transform: none; transition: none; }
+  .quemsou .qs-foto img { clip-path: none; transition: none; }
+}

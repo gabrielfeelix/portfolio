@@ -903,57 +903,135 @@ const VOL = "VOL. 2026";
 
 /* ---- trajetória de empresas + páginas dedicadas. Atual = Oderço ----
    `story` blocks: real onde sei (projetos), [assim] onde é pessoal. */
+/* ---- as três empresas -----------------------------------------------
+   Biografia, não copy de produto: cada linha aqui saiu do material que o
+   Gabriel escreveu, e nada foi inferido.
+
+   A forma é de capítulo, não de lista: `abre` é o gancho, `atos` são os
+   blocos de história com mais de um parágrafo cada, `fala` é o balão de
+   mangá que marca a virada (entra depois do ato `falaApos`) e `fecha` é a
+   frase que sai com o leitor. Bullet point é o que isto NÃO é: quem lê
+   uma página de empresa quer saber o que aconteceu, em que ordem, e o que
+   mudou por causa disso. `anos` é o que a linha do tempo imprime. ------ */
 const COMPANIES = [
   {
-    id: "ttt", name: "TT&T", role: "Onde comecei", period: "Início de carreira", atual: false,
-    note: "Primeiros produtos de verdade", logo: null, logoInv: null,   /* sem arquivo: cai no wordmark */
-    blurb: "Meu primeiro contato com produto de verdade. Onde a vontade de desenhar e construir virou ofício.",
-    story: [
-      { k: "O que eu fazia", p: "Pesquisa rápida, arquitetura da informação e prototipação de baixa e alta fidelidade. Peguei o ciclo inteiro, do levantamento da demanda até a documentação que o time de desenvolvimento usava pra construir." },
-      { k: "O desafio", p: "Era meu primeiro contato com produto que ia pro ar de verdade. Entender que uma tela não termina no Figma, e que documentação mal escrita vira retrabalho de outra pessoa, foi o que ocupou o período." },
-      { k: "O que aprendi", p: "A escrever pra quem vai implementar. Rótulo, estado vazio, o que acontece quando o campo falha: se isso não está no material, alguém decide por você, e normalmente decide no improviso." },
+    id: "ttt", name: "TT&T", role: "Estagiário em UX/UI Design", period: "2024 · 11 meses · remoto",
+    anos: "2024", atual: false,
+    note: "Onde vi um time de produto por dentro", logo: null, logoInv: null,   /* sem arquivo: cai no wordmark */
+    blurb: "Programa de formação em produto com quarenta estagiários. Entrei pra desenhar e acabei coordenando gente.",
+    abre: "Meu primeiro lugar em design não pagava nada e não teve um único usuário real. Ainda assim foi ali que eu vi, pela primeira vez, como um time de produto se organiza por dentro. E é isso que sustenta tudo o que veio depois.",
+    falaApos: 1,
+    fala: "Estagiário coordenando estagiário. Ninguém ali tinha bagagem, e mesmo assim o squad precisava entregar toda semana.",
+    atos: [
+      { k: "O programa", p: [
+        "Um fundador queria montar uma empresa de desenvolvimento e, em vez de contratar, montou uma escola. Cerca de quarenta estagiários, metade em design e metade em código, divididos em squads com ritual ágil de verdade: planning, daily, review. Tudo remoto, voluntário e meio período.",
+        "Nenhum de nós tinha experiência. A estrutura toda se apoiava na ideia de que gente aprendendo junto entrega mais rápido do que gente aprendendo sozinha, o que às vezes é verdade e às vezes é só barulho organizado.",
+      ] },
+      { k: "Como um estagiário virou coordenador", p: [
+        "O fundador olhava quem tomava frente e puxava pra coordenação. Foi assim que eu peguei o squad de design: backlog, rituais e acompanhamento de entrega, tocados em Trello e FigJam, com gente da minha idade e do meu nível de bagagem do outro lado da chamada.",
+        "Coordenar sem autoridade e sem repertório ensina uma coisa específica: quando você não tem argumento de senioridade, sobra o argumento escrito. Se a definição não estava clara no card, a entrega vinha diferente da conversa, e a culpa era do card.",
+      ] },
+      { k: "O que passou pela minha mão", p: [
+        "Mapeamento de fluxo e jornada, do rabiscoframe à validação interna. Facilitação de dinâmica e apresentação de método ágil pro time. Seleção e integração de designer novo, capacitação inclusive.",
+        "E uma função que não tinha nome: pegar a ideia do fundador, que chegava falada, e devolver desenhada em fluxo no FigJam pra que o resto do time pudesse discordar dela. Virou rotina, e foi a parte mais útil.",
+      ] },
+      { k: "O que faltava, e faltava muito", p: [
+        "Teste com usuário real, em momento nenhum. Isso precisa ser dito com todas as letras, porque é a diferença entre um portfólio honesto e um currículo enfeitado.",
+        "O que se aprende num lugar assim é como uma operação de produto se organiza. Como se valida uma tela é outra coisa, e só veio depois.",
+      ] },
+      { k: "A saída", p: [
+        "Voluntário e meio período não paga conta. Saí pra trabalhar com vendas, o que na época pareceu um desvio e hoje parece parte do currículo: passei um tempo do lado de quem precisa convencer alguém, e isso muda como você defende uma decisão de design.",
+      ] },
     ],
+    fecha: "Saí de lá sem um caso pra mostrar, e com uma coisa que caso nenhum ensina: o que acontece com um time quando ninguém escreve a definição.",
     skills: [
-      { k: "Arquitetura da informação", p: "organização de conteúdo e navegação das primeiras telas" },
-      { k: "Prototipação", p: "baixa e alta fidelidade no Figma, do rascunho ao navegável" },
-      { k: "Pesquisa rápida", p: "levantamento de referência e contexto antes de desenhar" },
-      { k: "Documentação e handoff", p: "especificação de estado e comportamento pro time de dev" },
+      { k: "Coordenação de squad", p: "backlog, rituais e acompanhamento de entrega em Trello e FigJam" },
+      { k: "Fluxo e jornada", p: "do rabiscoframe à validação interna com o time" },
+      { k: "Facilitação", p: "dinâmica e apresentação de método ágil pro squad de design" },
+      { k: "Seleção e integração", p: "entrevista, onboarding e capacitação de designer novo" },
+      { k: "Documentação", p: "definição de produto organizada pra consulta do time" },
     ],
     related: [],
   },
   {
-    id: "locar", name: "Locarmais", capa: { logo: "volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" }, role: "Produto de verdade", period: "Produto", atual: false,
-    note: "IMMO, Signamais e cia",
+    id: "locar", name: "Locarmais", capa: { logo: "volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },
+    role: "UX Designer", period: "2025 a 2026 · 13 meses · Maringá",
+    anos: "2025 · 26", atual: false,
+    note: "IMMO, Signa Mais e o financeiro",
     logo: "volume/assets/logos/mono/locarmais.png", logoInv: "volume/assets/logos/mono-inv/locarmais.png",
-    blurb: "Onde desenhei produto de verdade e aprendi o handoff de ponta a ponta.",
-    story: [
-      { k: "O contexto", p: "Produtos SaaS pro mercado imobiliário e de locação. Locarmais, IMMO, Locar Fácil e Signa Mais dividem time de desenvolvimento e parte da base de usuário, então decisão de interface raramente ficava presa em um sistema só." },
-      { k: "O que construí", p: "O módulo financeiro do zero, que foi o projeto mais pesado do período: conciliação com cinco status, adquirentes com taxa, imposto e prazo de repasse diferentes entre si, conciliação automática, em lote e forçada com justificativa obrigatória, importação de extrato de várias origens e histórico com autoria e horário. Também a plataforma de assinatura eletrônica Signa Mais e os painéis de carteira de imobiliária." },
-      { k: "O desafio", p: "Conciliação é regra de negócio densa e cada adquirente tem a sua. O caminho foi entrevistar e acompanhar o time financeiro que rodava o processo na planilha, e transformar aquilo em tela que se usa sem treinamento." },
-      { k: "O resultado", p: "O módulo entrou em produção e substituiu uma plataforma de conciliação contratada. O time financeiro parou de manter planilha paralela e parou de abrir chamado pro time de dev pra tirar relatório." },
-      { k: "O que aprendi", p: "Foi onde testei com usuário real do sistema, não com colega. Ver alguém travar numa tela que eu tinha como óbvia mudou meu jeito de escrever rótulo e de ordenar campo." },
+    blurb: "Onde desenhei produto de verdade, testei com usuário de verdade e enfrentei a primeira regra de negócio pesada.",
+    abre: "Treze meses num grupo com cinco produtos do mercado imobiliário, uma base visual herdada e uma regra clara vinda de cima: resolver sem pesquisa formal. Foi ali que eu desenhei a coisa mais complexa da minha carreira até hoje.",
+    falaApos: 1,
+    fala: "Resolve, mas sem pesquisa. Dava pra fazer formulário e entrevista, e mesmo assim a ordem era entregar função nova.",
+    atos: [
+      { k: "O terreno", p: [
+        "Locarmais, IMMO, Locar Fácil, Signa Mais e Credfacil dividiam time de desenvolvimento e parte da base de usuário. SaaS de regra de negócio densa, do tipo em que uma tela errada não incomoda: quebra o fechamento do mês de alguém.",
+        "Tudo montado sobre o AdminLTE, um template administrativo implementado antes da minha entrada. Função nova entrava em cima dele, gradualmente. Eu atuei principalmente em IMMO e Locarmais, e passei o período inteiro desenhando dentro de um vocabulário visual que não era meu.",
+      ] },
+      { k: "A regra da casa", p: [
+        "A gestão media output. Função nova valia mais que função melhorada, e a ordem era resolver sem pesquisa formal, mesmo sendo tecnicamente possível montar formulário e marcar entrevista.",
+        "Dá pra brigar por método, e eu briguei. Também dá pra achar a fonte que ninguém proibiu. O time financeiro rodava a conciliação numa planilha paralela todo mês: era pesquisa de campo servida na mesa, só não chamava por esse nome.",
+      ] },
+      { k: "O módulo financeiro", p: [
+        "Desenhei do zero o projeto mais pesado do período. Conciliação com cinco status. Adquirentes com taxa, imposto e prazo de repasse diferentes entre si. Conciliação automática, em lote e forçada com justificativa obrigatória. Importação de extrato de várias origens. Histórico com autoria e horário, e a origem dos dados lado a lado pra quem precisa conferir.",
+        "A parte difícil não foi desenhar nenhuma dessas telas. Foi decidir a ordem em que elas aparecem, e o que fica visível quando o número não bate. Regra de negócio densa não se resolve com componente bonito: se resolve escolhendo o que o usuário vê primeiro quando alguma coisa deu errado.",
+      ] },
+      { k: "O que mudou na operação", p: [
+        "O módulo entrou em produção e trouxe pra dentro de casa uma conciliação que rodava numa plataforma contratada, o que tornou a projeção de recebimento mais confiável.",
+        "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado pro time de desenvolvimento só pra tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
+      ] },
+      { k: "A primeira vez que testei de verdade", p: [
+        "Foi o único lugar onde testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
+        "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou pra sempre meu jeito de escrever rótulo e de ordenar campo.",
+      ] },
+      { k: "E olhei o trabalho de outra pessoa", p: [
+        "Fiz o sistema da IMMO e, no caminho, virei a referência de UX de outro designer do time: revisão de entrega, direção e acompanhamento. Primeira vez que parte do meu trabalho era olhar o trabalho de alguém, que é bem diferente de olhar o próprio.",
+      ] },
     ],
+    fecha: "Entrei sabendo desenhar tela. Saí sabendo que a tela é a última coisa: antes dela existe a operação de alguém, e ela quase nunca está escrita em lugar nenhum.",
     skills: [
       { k: "Mapeamento de processo", p: "entrevista e acompanhamento do time financeiro em operação" },
       { k: "Regra de negócio em tela", p: "conciliação multi-adquirente com cinco status e trilha de auditoria" },
       { k: "Teste com usuário real", p: "usuários do próprio sistema, não usuário proxy" },
       { k: "Dashboard e indicador", p: "carteira, aproveitamento de contrato, meta e churn" },
-      { k: "Handoff", p: "documentação de fluxo e apoio ao refinamento e QA" },
+      { k: "Design system", p: "manutenção e evolução do que existia: componente, estado e padrão" },
+      { k: "Direção de designer", p: "revisão e acompanhamento da entrega de outro designer do time" },
     ],
     related: ["locarmais", "signamais", "immo"],
   },
   {
-    id: "oderco", name: "Grupo Oderço", capa: { logo: "volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" }, role: "Design de um time de marcas", period: "Atual", atual: true,
+    id: "oderco", name: "Grupo Oderço", capa: { logo: "volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" },
+    role: "UX/UI Designer", period: "2026 · atual · Maringá",
+    anos: "2026 →", atual: true,
     note: "PCYES, Odex, Tonante, Vinik, Skul",
     logo: "volume/assets/logos/mono/oderco.png", logoInv: "volume/assets/logos/mono-inv/oderco.png",
-    blurb: "Hoje. Toco o design de um time inteiro de marcas, do e-commerce ao SaaS.",
-    story: [
-      { k: "O contexto", p: "Distribuidora nacional de eletrônicos com cinco marcas próprias (PCYES, Vinik, Skul, Odex e Tonante), cada uma com público e canal diferente, mais as frentes de sistema interno. Sou o designer da casa, então a fila e a priorização também são minhas." },
-      { k: "O que construí", p: "O redesign do e-commerce PCYES, incluindo a biblioteca de componentes e a paleta que sustentam o site inteiro. A interface da plataforma Odex e a página de armazenamento de energia da linha de baterias. A página de cadastro de revenda da Oderço, com formulário em duas etapas e consulta automática de CNPJ." },
-      { k: "O desafio", p: "No PCYES a diretoria queria direção minimalista focada em valor de marca, e as métricas pediam caminho de compra mais curto. Levei gravação de sessão pra conversa e propus separar as duas camadas em vez de escolher entre elas: a marca aparece em momentos definidos e o produto ocupa o eixo da página. O modelo foi aprovado assim." },
-      { k: "O que aprendi", p: "Na página de armazenamento o time de dev não tinha janela e a feira tinha data, então implementei direto no Magento: alterei a home, criei e indexei categoria, refiz header e footer e ajustei redirecionamento. Desenhar sabendo o que custa implementar mudou o que eu proponho." },
-      { k: "Efeito colateral", p: "Ao documentar a API do RD Station pra automação da esteira de lead, o time de desenvolvimento viu que dava pra conectar o RD ao CRM interno. A operação usava três sistemas em paralelo e passou a usar dois." },
+    blurb: "Hoje. Designer único de uma distribuidora nacional, tocando cinco marcas em três frentes ao mesmo tempo.",
+    abre: "Sou o único designer de uma distribuidora nacional com cinco marcas próprias. E-commerce, plataforma e sistema interno rodando ao mesmo tempo, sem ninguém acima pra revisar. A fila é minha, e a prioridade também.",
+    falaApos: 2,
+    fala: "A diretoria queria minimalismo. A gravação de sessão mostrava gente desistindo antes de comprar. Não escolhi um lado: separei as camadas.",
+    atos: [
+      { k: "A casa", p: [
+        "Uma distribuidora de eletrônicos fundada em 1988, que começou batendo de porta em porta no Paraná e hoje distribui pro país inteiro. Cinco marcas próprias: PCYES no gamer, Vinik no multissegmento, Skul na industrialização de PC, Odex na energia solar e Tonante no musical.",
+        "Cada marca tem público, canal e tom diferentes. Designer único significa que a coerência entre elas também é responsabilidade minha, e que não existe a quem recorrer quando a decisão é difícil.",
+      ] },
+      { k: "O PCYES V2", p: [
+        "O redesign do e-commerce começou em fevereiro e parte de métrica ruim, não de vontade de mudar visual. Fui atrás do porquê com gravação de sessão no Microsoft Clarity, GA4 e conversa com quem compra.",
+        "O que apareceu foi específico: forma de pagamento não aparecia na primeira dobra do checkout, o módulo de pagamento do Magento tinha bug, e o caminho até a compra era longo demais. Nada disso é opinião de design. É comportamento gravado.",
+      ] },
+      { k: "A briga que valeu a pena", p: [
+        "A diretoria queria direção minimalista focada em valor de marca, na linha das marcas de referência do setor. Foi essa a escolha da primeira versão, e é uma escolha defensável. O comportamento no site dizia outra coisa.",
+        "Levei as gravações pra conversa em vez de levar minha opinião, e propus não escolher: separar as duas camadas. A marca aparece em momentos definidos e o produto ocupa o eixo da página. O modelo foi aprovado assim, e é o que está indo pro ar.",
+      ] },
+      { k: "Quando o prazo não esperou", p: [
+        "Na página de armazenamento de energia da Odex, o time de desenvolvimento não tinha janela e a feira tinha data. Implementei direto no Magento: alterei a home, criei e indexei categoria, refiz header e footer e ajustei redirecionamento.",
+        "Foi desconfortável e foi certo. Desenhar sabendo o que custa implementar mudou o que eu proponho: hoje eu corto sozinho a ideia que sei que vai morrer na fila do dev.",
+      ] },
+      { k: "O efeito colateral", p: [
+        "Pra automatizar a esteira de lead da página de cadastro de revenda, documentei a API do RD Station. Ao ler a documentação, o time de desenvolvimento viu que dava pra conectar o RD ao CRM interno.",
+        "A operação usava três sistemas em paralelo e passou a usar dois. Não estava no escopo, ninguém pediu, e é a entrega que eu mais gosto de contar.",
+      ] },
     ],
+    fecha: "A melhor coisa que fiz aqui não foi uma tela. Foi documentar uma API e a empresa sair de três sistemas para dois.",
     skills: [
       { k: "Design System", p: "biblioteca de componentes e paleta do PCYES, aplicadas em todo o site" },
       { k: "E-commerce e checkout", p: "checkout reconstruído, carrinho na vitrine, coluna de preço fixa" },

@@ -367,7 +367,7 @@ function ChapterList({ onOpen }) {
 function OutrasPecas() {
   const all = pieceProjects();
   return (
-    <section className="outras" id="outras">
+        <section className="outras" id="outras">
       <div className="sec-head">
         <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Outros projetos", "Other projects")}</Brush>
         <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("projeto", "project") : t("projetos", "projects")}</span>
@@ -407,33 +407,48 @@ function Sumario({ onOpen }) {
 }
 
 /* ---------- [E] QUEM SOU ---------- */
-function QuemSou({ onSobre, onEmpresa }) {
-  const [ci, setCi] = useState(COMPANIES.findIndex((c) => c.atual) >= 0 ? COMPANIES.findIndex((c) => c.atual) : 0);
-  const c = COMPANIES[ci];
-  const move = (d) => setCi((p) => (p + d + COMPANIES.length) % COMPANIES.length);
+/* ---------- [E] QUEM SOU ----------
+   Era uma seção só, em três colunas: bio à esquerda, retrato no meio e o
+   card de empresa à direita, com setinha pra trocar de empresa. O retrato
+   ficava pequeno, o texto ficava pequeno e a empresa atual, que é a
+   informação mais forte da página, entrava como um card de canto.
+
+   Agora são duas seções. A primeira é sobre a pessoa, em duas colunas
+   largas, com o retrato grande e o texto em corpo de leitura. A segunda é
+   sobre onde ele está hoje, com a marca em chapa cheia e a trajetória
+   inteira logo abaixo, sem carrossel: as três empresas ficam visíveis de
+   uma vez, que era o que o par de setas escondia. ---------------------- */
+function QuemSou({ onSobre }) {
+  const [ref, visto] = useReveal({ threshold: 0.22 });
+  const noAr = PROJECTS.filter((p) => p.links && (p.links.vercel || p.links.play)).length;
+  /* Os numeros saem de PROJECTS, contados na hora. Numero escrito na mao
+     envelhece e mente sozinho quando um projeto entra; contado, ele se
+     corrige. */
+  const nums = [
+    { n: "+2", l: t("Anos na área", "Years in the field") },
+    { n: String(PROJECTS.length), l: t("Projetos", "Projects") },
+    { n: String(noAr), l: t("No ar", "Live") },
+  ];
   return (
-    <section className="quemsou" style={{ marginTop: "var(--ma-6)" }}>
+    <section className={"quemsou" + (visto ? " on" : "")} ref={ref} style={{ marginTop: "var(--ma-6)" }}>
       <div className="shell qs-grid">
         <div className="qs-left">
           <div className="qk">{t("Quem sou", "Who I am")}</div>
-          <p className="qs-bio">{t("UX/Product Designer. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar.", "UX/Product Designer. I left law behind when I found out I could design and build real product. I've read manga since I was a kid, and I take every project from prototype to live.")}</p>
-          {/* Os numeros saem de PROJECTS, contados na hora: 23 projetos, e
-              os que tem link publicado (vercel ou Play Store) sao os que
-              estao no ar. Numero escrito na mao envelhece e mente sozinho
-              quando um projeto entra; contado, ele se corrige. */}
+          <p className="qs-bio">
+            {t("UX/Product Designer. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade.",
+               "UX/Product Designer. I left law behind when I found out I could design and build real product.")}
+          </p>
+          <p className="qs-bio qs-bio-2">
+            {t("Leio mangá desde criança, e é de lá que vem o jeito de organizar este portfólio: capítulo, página, respiro. Levo cada projeto do protótipo ao ar, e quando o prazo aperta eu implemento.",
+               "I've read manga since I was a kid, and that's where the shape of this portfolio comes from: chapters, pages, breathing room. I take every project from prototype to live, and when the deadline bites, I implement it myself.")}
+          </p>
           <div className="qs-nums">
-            <div>
-              <b className="qs-n">+2</b>
-              <span className="qs-nl">{t("Anos na área", "Years in the field")}</span>
-            </div>
-            <div>
-              <b className="qs-n">{PROJECTS.length}</b>
-              <span className="qs-nl">{t("Projetos", "Projects")}</span>
-            </div>
-            <div>
-              <b className="qs-n">{PROJECTS.filter((p) => p.links && (p.links.vercel || p.links.play)).length}</b>
-              <span className="qs-nl">{t("No ar", "Live")}</span>
-            </div>
+            {nums.map((x, i) => (
+              <div key={i} style={{ transitionDelay: (140 + i * 110) + "ms" }}>
+                <b className="qs-n">{x.n}</b>
+                <span className="qs-nl">{x.l}</span>
+              </div>
+            ))}
           </div>
           {/* "Saiba mais" no lugar de "Ver posfacio": o rotulo antigo pedia
               que o visitante ja' soubesse o que e' um posfacio pra querer
@@ -443,29 +458,56 @@ function QuemSou({ onSobre, onEmpresa }) {
           </a>
         </div>
 
-        <div className="qs-foto">
+        <figure className="qs-foto">
           <img src="uploads/gabrielfelix-foto.png" alt={t("Retrato de Gabriel Felix Barbosa", "Portrait of Gabriel Felix Barbosa")} loading="lazy" draggable="false" />
+          <span className="qsf-tone" aria-hidden="true"></span>
+          <figcaption className="qsf-cap">{AUTOR} · {t("Maringá, PR", "Maringá, Brazil")}</figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- [E2] ONDE ESTOU HOJE ---------- */
+function OndeEstou({ onEmpresa }) {
+  const [ref, visto] = useReveal({ threshold: 0.2 });
+  const atual = COMPANIES.find((c) => c.atual) || COMPANIES[COMPANIES.length - 1];
+  const antes = COMPANIES.filter((c) => c.id !== atual.id);
+  return (
+    <section className={"ondeestou" + (visto ? " on" : "")} ref={ref}>
+      <div className="shell">
+        <div className="oe-grid">
+          <button type="button" className="oe-chapa" onClick={() => onEmpresa(atual.id)}
+                  aria-label={t(`Ver minha história na ${atual.name}`, `See my story at ${atual.name}`)}>
+            {atual.capa ? <BrandPlate capa={atual.capa} className="bp-qsc" /> : <CompanyLogo company={atual} kind="qsc" />}
+          </button>
+          <div className="oe-copy">
+            <div className="qk"><span className="qsc-now">{t("Onde estou hoje", "Where I am today")}</span></div>
+            <Brush as="h2" className="oe-nome">{atual.name}</Brush>
+            <div className="oe-papel">{atual.role} · {atual.period}</div>
+            <p className="oe-blurb">{atual.blurb}</p>
+            <a className="btn btn-seta" href="#" onClick={(e) => { e.preventDefault(); onEmpresa(atual.id); }}>
+              <span className="arr" aria-hidden="true">→</span> {t("Ver minha história aqui", "Read my story here")}
+            </a>
+          </div>
         </div>
 
-        <div className="qs-company">
-          <div className="qsc-head">
-            <span className="qsc-k">{c.atual ? <span className="qsc-now">{t("Empresa atual", "Current company")}</span> : <span>{t("Já passei por", "I've worked at")}</span>}</span>
-            <div className="qsc-nav">
-              <button type="button" className="qsc-arr" aria-label={t("Empresa anterior", "Previous company")} onClick={() => move(-1)}>←</button>
-              <span className="qsc-idx">{String(ci + 1).padStart(2, "0")} <i>/</i> {String(COMPANIES.length).padStart(2, "0")}</span>
-              <button type="button" className="qsc-arr" aria-label={t("Próxima empresa", "Next company")} onClick={() => move(1)}>→</button>
-            </div>
-          </div>
-          <button type="button" className="qsc-card" onClick={() => onEmpresa(c.id)} aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
-            <span className="qsc-logo">
-              {c.capa ? <BrandPlate capa={c.capa} className="bp-qsc" /> : <CompanyLogo company={c} kind="qsc" />}
-            </span>
-            <span className="qsc-body">
-              <span className="qsc-name">{c.name}</span>
-              <span className="qsc-role">{c.role}</span>
-              <span className="qsc-go">{t("Ver minha história", "See my story")} <span className="arr" aria-hidden="true">→</span></span>
-            </span>
-          </button>
+        {/* a trajetória inteira, sem carrossel: as duas anteriores ficam à
+            vista em vez de esperar alguém achar a seta */}
+        <div className="oe-antes">
+          <div className="oe-antes-k">{t("Antes disso", "Before that")}</div>
+          <ul className="oe-lista">
+            {antes.map((c) => (
+              <li key={c.id}>
+                <button type="button" className="oe-item" onClick={() => onEmpresa(c.id)}>
+                  <span className="oe-ano">{c.anos}</span>
+                  <span className="oe-item-nome">{c.name}</span>
+                  <span className="oe-item-papel">{c.role}</span>
+                  <span className="arr" aria-hidden="true">→</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
@@ -526,11 +568,12 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, onNav, onRap
         <Bite />
         <Diferencial />
         <Sumario onOpen={onOpen} />
-        <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
+        <QuemSou onSobre={onSobre} />
+        <OndeEstou onEmpresa={onEmpresa} />
         <Colofao onContact={onContact} onNav={onNav} />
       </div>
     </main>
   );
 }
 
-Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, Colofao, Capa });
+Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, OndeEstou, Colofao, Capa });

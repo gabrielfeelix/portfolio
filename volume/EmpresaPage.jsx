@@ -31,6 +31,114 @@ function EmpresaSkills({ company }) {
   );
 }
 
+/* ---- A LINHA DO TEMPO ----------------------------------------------
+   As três empresas numa régua só, na ordem em que aconteceram. Antes disso
+   a única forma de andar entre elas era o par "Antes/Depois" no pé da
+   página, que mostra o vizinho mas não mostra a trajetória. Aqui a pessoa
+   vê os três pontos de uma vez e sabe onde está. O ponto cheio é a empresa
+   aberta; o anel vermelho é a atual. ---------------------------------- */
+function EmpresaLinha({ companies, company, onEmpresa }) {
+  return (
+    <nav className="emp-linha" aria-label={t("Linha do tempo", "Timeline")}>
+      <ol className="el-trilho">
+        {companies.map((c) => {
+          const aqui = c.id === company.id;
+          return (
+            <li className={"el-no" + (aqui ? " on" : "") + (c.atual ? " atual" : "")} key={c.id}>
+              <button type="button" className="el-btn" onClick={() => { if (!aqui) onEmpresa(c.id); }}
+                      aria-current={aqui ? "true" : undefined}
+                      disabled={aqui}>
+                <span className="el-ano">{c.anos}</span>
+                <span className="el-ponto" aria-hidden="true"></span>
+                <span className="el-nome">{c.name}</span>
+                <span className="el-papel">{c.atual ? t("hoje", "today") : c.role}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
+/* ---- O BALÃO ---------------------------------------------------------
+   A frase que resume o conflito da empresa, num balão de mangá de verdade:
+   moldura de tinta, rabicho apontando pra história que vem abaixo. Vem
+   ANTES dos beats de propósito, porque é ele que arma o problema que os
+   beats resolvem. O rabicho é feito com dois triângulos empilhados (o de
+   tinta atrás, o de papel à frente) para que a ponta tenha contorno: um
+   triângulo CSS não aceita border. ------------------------------------ */
+function EmpresaFala({ company }) {
+  if (!company.fala) return null;
+  return (
+    <figure className="emp-balao">
+      <blockquote className="eb-bolha">
+        <span className="eb-aspa" aria-hidden="true">「</span>
+        <p>{company.fala}</p>
+      </blockquote>
+      <figcaption className="eb-fonte">
+        {company.name} · {company.anos}
+      </figcaption>
+    </figure>
+  );
+}
+
+/* seta de nanquim entre um beat e o próximo: haste em curva leve e ponta
+   cheia, desenhada e não montada com borda, senão vira ícone de UI */
+function SetaBeat() {
+  return (
+    <svg className="es-seta" viewBox="0 0 44 104" fill="none" aria-hidden="true" focusable="false">
+      <path d="M22.5 6 C 14.5 28, 29 46, 21.5 68" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M21 88 L12.4 65.5 L21.2 71 L30 64.5 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+/* ---- A HISTÓRIA ------------------------------------------------------
+   Capítulo, não lista. A página abre com um parágrafo de gancho em corpo
+   maior (`abre`), atravessa os atos (`atos`, cada um com título e mais de
+   um parágrafo), vira no balão de mangá depois do ato `falaApos`, e fecha
+   com uma frase solta em display (`fecha`).
+
+   O que isto substituiu era um `story[]` de blocos de um parágrafo cada,
+   numerados: lia como ficha, não como história. Aqui o número continua,
+   porque ele é a âncora da seta de nanquim que liga um ato ao próximo, mas
+   quem carrega o texto é o parágrafo. ---------------------------------- */
+function EmpresaHistoria({ company }) {
+  const atos = company.atos || [];
+  const virada = typeof company.falaApos === "number" ? company.falaApos : -1;
+  return (
+    <div className="emp-hist">
+      {company.abre ? (
+        <p className="eh-abre">{renderPH(company.abre)}</p>
+      ) : null}
+
+      {atos.map((a, i) => (
+        <React.Fragment key={i}>
+          <section className="eh-ato" style={{ animationDelay: (i * 80) + "ms" }}>
+            <div className="eh-num">
+              <span className="es-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              {i < atos.length - 1 ? <SetaBeat /> : null}
+            </div>
+            <div className="eh-corpo">
+              <h2 className="eh-k">{a.k}</h2>
+              {a.p.map((par, j) => <p className="eh-p" key={j}>{renderPH(par)}</p>)}
+            </div>
+          </section>
+          {i === virada ? <EmpresaFala company={company} /> : null}
+        </React.Fragment>
+      ))}
+
+      {company.fecha ? (
+        <div className="eh-fecha">
+          <p className="ehf-p">{renderPH(company.fecha)}</p>
+          <Seal size={38} alt="" />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function EmpresaQuick({ company, onProject }) {
   if (!company.related || !company.related.length) return null;
   return (
@@ -112,17 +220,9 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
       </section>
 
       <div className="emp-body shell">
-        <div className="emp-story">
-          {company.story.map((b, i) => (
-            <div className="es-beat" key={i} style={{ animationDelay: (i * 90) + "ms" }}>
-              <div className="es-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</div>
-              <div className="es-body">
-                <div className="es-k">{b.k}</div>
-                <p className="es-p">{renderPH(b.p)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <EmpresaLinha companies={companies} company={company} onEmpresa={onEmpresa} />
+
+        <EmpresaHistoria company={company} />
 
         <EmpresaSkills company={company} />
 
@@ -147,4 +247,4 @@ function EmpresaPage({ company, companies, onHome, onEmpresa, onProject, onConta
     </main>
   );
 }
-Object.assign(window, { EmpresaQuick, EmpresaSkills, EmpresaPage });
+Object.assign(window, { EmpresaQuick, EmpresaSkills, EmpresaLinha, EmpresaFala, EmpresaHistoria, SetaBeat, EmpresaPage });

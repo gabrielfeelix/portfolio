@@ -194,10 +194,10 @@ button { color: inherit; }
   --btn-acento: var(--vermilion); --btn-acento-fg: #fff; --btn-elev: var(--paper);
 }
 .on-red {
-  --btn-fg: #F6F3EC; --btn-bg: var(--vermilion);
-  --btn-acento: #F6F3EC; --btn-acento-fg: var(--vermilion); --btn-elev: #0A0A0A;
+  --btn-fg: #FFFFFF; --btn-bg: var(--vermilion);
+  --btn-acento: #FFFFFF; --btn-acento-fg: var(--vermilion); --btn-elev: #0A0A0A;
 }
-.on-red .btn-primary:hover { background: #0A0A0A; color: #F6F3EC; border-color: #0A0A0A; }
+.on-red .btn-primary:hover { background: #0A0A0A; color: #FFFFFF; border-color: #0A0A0A; }
 
 /* fila de botões: mesma elevação para todos, senão o primário parece
    maior que o vizinho e o par lê como desalinhado */

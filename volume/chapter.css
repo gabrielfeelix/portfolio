@@ -540,13 +540,13 @@ html.ink .cover-linhas { opacity: .06; }
    regra que a capa segue desde sempre. */
 .ns-k {
   font-family: var(--font-condensed); font-weight: 700; text-transform: uppercase;
-  letter-spacing: .16em; font-size: 12px; color: #F6F3EC; margin-bottom: 8px;
+  letter-spacing: .16em; font-size: 12px; color: #FFFFFF; margin-bottom: 8px;
 }
-.ns-p { font-size: 15.5px; line-height: 1.55; color: #F6F3EC; margin: 0; max-width: var(--med-longa); }
-.ns-p2 { margin-top: 10px; color: rgba(246,243,236,.92); }
+.ns-p { font-size: 15.5px; line-height: 1.55; color: #FFFFFF; margin: 0; max-width: var(--med-longa); }
+.ns-p2 { margin-top: 10px; color: rgba(255,255,255,.92); }
 .ns-fonte {
   margin-top: 12px; font-family: var(--font-condensed); text-transform: uppercase;
-  letter-spacing: .12em; font-size: 12px; color: rgba(246,243,236,.86);
+  letter-spacing: .12em; font-size: 12px; color: rgba(255,255,255,.86);
 }
 
 /* os dois aparelhos, alinhados pela base como duas colunas de grafico */
@@ -563,11 +563,11 @@ html.ink .cover-linhas { opacity: .06; }
    par junto em qualquer largura. */
 .ns-n b {
   display: block; white-space: nowrap; font-family: var(--font-condensed); font-weight: 700;
-  font-size: 27px; color: #F6F3EC;
+  font-size: 27px; color: #FFFFFF;
 }
 .ns-n span {
   display: block; margin-top: 2px; font-family: var(--font-condensed);
-  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: rgba(246,243,236,.88);
+  text-transform: uppercase; letter-spacing: .12em; font-size: 12px; color: rgba(255,255,255,.88);
 }
 
 @media (max-width: 880px) {
@@ -740,7 +740,7 @@ html.ink .cover-linhas { opacity: .06; }
   transition: transform 320ms var(--curva); }
 .lb-cap { color: var(--paper); font-size: 15px; line-height: 1.45; max-width: 70ch; text-align: center; opacity: .92; }
 .lb-dica { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .16em;
-  font-size: 12px; color: rgba(246,243,236,.5); }
+  font-size: 12px; color: rgba(255,255,255,.5); }
 @media (prefers-reduced-motion: reduce) {
   .lb, .lb-quadro, .lb-quadro img { animation: none !important; transition: none !important; }
 }

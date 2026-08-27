@@ -62,14 +62,17 @@
 
   /* Ink & Paper — the two poles of the world */
   --ink:        #0A0A0A;   /* print black, never pure #000 */
-  --paper:      #FFFFFF;   /* TESTE 2026-08-27: branco puro no lugar do creme #F6F3EC */
+  --paper:      #FFFFFF;   /* branco puro. decidido em 2026-08-27, era o creme #F6F3EC */
 
   /* Ink-wash grays — sumi-e dilution, 4 tones for depth.
-     Warm-leaning so they read as diluted ink on cream, not cold UI gray. */
-  --wash-1:     #DEDAD0;   /* faintest wash — hairlines, tone fills   */
-  --wash-2:     #B4AFA3;   /* light wash — muted captions, disabled    */
-  --wash-3:     #635e52;   /* mid wash — secondary text, metadata (AA on paper) */
-  --wash-4:     #38362F;   /* deep wash — near-ink, panel shade        */
+     NEUTROS desde 2026-08-27: eram quentes, desenhados para o papel creme.
+     Contra o papel branco o quente virava bege e lia como sujeira.
+     Cada tom trocou por um cinza de MESMA luminancia relativa, entao
+     nenhuma razao de contraste mudou. Nao reintroduza calor aqui. */
+  --wash-1:     #DADADA;   /* faintest wash — hairlines, tone fills   */
+  --wash-2:     #AFAFAF;   /* light wash — muted captions, disabled    */
+  --wash-3:     #5E5E5E;   /* mid wash — secondary text, metadata (AA on paper) */
+  --wash-4:     #363636;   /* deep wash — near-ink, panel shade        */
 
   /* Vermilion — the seal. INTENT ONLY.
      Use on: the screen's single primary action · the live/active state ·
@@ -81,7 +84,7 @@
      modo papel, fundo quase-branco no modo tinta. Texto em cima delas
      nao pode ter cor fixa -- estes dois tokens sao o par que vira. */
   --vermilion-sobre-ink: #F4695C;  /* vermelho legivel sobre o fundo preto */
-  --sobre-ink-2:         #C9C3B6;  /* apoio: papel rebaixado, nao opacidade */
+  --sobre-ink-2:         #C3C3C3;  /* apoio: papel rebaixado, nao opacidade */
   --vermilion-tint:#F2C9C5;   /* the ONE allowed soft red — focus halo  */
 
   /* ---- Semantic color roles -------------------------------------- */

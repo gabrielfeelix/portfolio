@@ -234,8 +234,8 @@ function NotaSuporte({ dados }) {
         {/* os dois aparelhos, desenhados no traco do volume: a tela preenche
             de baixo para cima na proporcao do acesso, entao o desenho E o
             grafico, nao uma ilustracao ao lado de um numero.
-            Sobre a superficie vermelha o traco e o preenchimento sao creme
-            literal (#F6F3EC) e o vazio da tela e um tinto de preto: com os
+            Sobre a superficie vermelha o traco e o preenchimento sao branco
+            literal (#FFFFFF) e o vazio da tela e um tinto de preto: com os
             tokens --ink/--paper o desenho sumia no vermelho, e no modo
             tinta eles ainda invertiam. */}
         <div className="ns-graf" aria-hidden="true">
@@ -243,7 +243,7 @@ function NotaSuporte({ dados }) {
             <svg className="ns-svg" viewBox="0 0 132 92" fill="none">
               {/* tampa */}
               <rect x="10" y="6" width="112" height="70" rx="2"
-                    stroke="#F6F3EC" strokeWidth="2.6" fill="none" />
+                    stroke="#FFFFFF" strokeWidth="2.6" fill="none" />
               {/* a tela como copo: preenche de baixo para cima */}
               <clipPath id="ns-cd"><rect x="14" y="10" width="104" height="62" rx="1" /></clipPath>
               <g clipPath="url(#ns-cd)">
@@ -251,14 +251,14 @@ function NotaSuporte({ dados }) {
                     acesso. O translate vai em unidade de viewBox, nao em
                     porcentagem: `%` aqui seria relativo a altura do proprio
                     rect e o desenho mentiria a proporcao. */}
-                <rect x="14" y="72" width="104" height="62" fill="#F6F3EC"
+                <rect x="14" y="72" width="104" height="62" fill="#FFFFFF"
                       style={{ transform: on ? `translateY(${-(62 * d / 100).toFixed(2)}px)` : "translateY(0)",
                                transition: "transform 900ms var(--curva) 120ms" }} />
               </g>
               <rect x="14" y="10" width="104" height="62" rx="1"
-                    stroke="#F6F3EC" strokeWidth="1.4" fill="none" />
+                    stroke="#FFFFFF" strokeWidth="1.4" fill="none" />
               {/* base */}
-              <path d="M2 82 h128 l-6 8 H8 Z" stroke="#F6F3EC" strokeWidth="2.6"
+              <path d="M2 82 h128 l-6 8 H8 Z" stroke="#FFFFFF" strokeWidth="2.6"
                     strokeLinejoin="round" fill="none" />
             </svg>
             <div className="ns-n">
@@ -270,16 +270,16 @@ function NotaSuporte({ dados }) {
           <div className="ns-item ns-mob">
             <svg className="ns-svg ns-svg-mob" viewBox="0 0 52 92" fill="none">
               <rect x="6" y="4" width="40" height="84" rx="6"
-                    stroke="#F6F3EC" strokeWidth="2.6" fill="none" />
+                    stroke="#FFFFFF" strokeWidth="2.6" fill="none" />
               <clipPath id="ns-cm"><rect x="10" y="12" width="32" height="68" rx="2" /></clipPath>
               <g clipPath="url(#ns-cm)">
-                <rect x="10" y="80" width="32" height="68" fill="#F6F3EC"
+                <rect x="10" y="80" width="32" height="68" fill="#FFFFFF"
                       style={{ transform: on ? `translateY(${-(68 * m / 100).toFixed(2)}px)` : "translateY(0)",
                                transition: "transform 900ms var(--curva) 240ms" }} />
               </g>
               <rect x="10" y="12" width="32" height="68" rx="2"
-                    stroke="#F6F3EC" strokeWidth="1.4" fill="none" />
-              <line x1="20" y1="8" x2="32" y2="8" stroke="#F6F3EC" strokeWidth="2" strokeLinecap="round" />
+                    stroke="#FFFFFF" strokeWidth="1.4" fill="none" />
+              <line x1="20" y1="8" x2="32" y2="8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <div className="ns-n">
               <b><ContaAte alvo={m} sufixo="%" ligado={on} /></b>
@@ -1688,11 +1688,11 @@ function Resultado({ chap }) {
    language and audited a11y. This spread surfaces it as specification. */
 const SIS_WASHES = [
   ["--ink", "#0A0A0A", t("tinta", "ink")],
-  ["--wash-4", "#38362F", t("sombra", "shade")],
-  ["--wash-3", "#635E52", t("meio", "mid")],
-  ["--wash-2", "#B4AFA3", t("diluída", "diluted")],
-  ["--wash-1", "#DEDAD0", t("véu", "veil")],
-  ["--paper", "#F6F3EC", t("papel", "paper")],
+  ["--wash-4", "#363636", t("sombra", "shade")],
+  ["--wash-3", "#5E5E5E", t("meio", "mid")],
+  ["--wash-2", "#AFAFAF", t("diluída", "diluted")],
+  ["--wash-1", "#DADADA", t("véu", "veil")],
+  ["--paper", "#FFFFFF", t("papel", "paper")],
 ];
 const SIS_MA = [["ma-1", 8], ["ma-2", 16], ["ma-3", 24], ["ma-4", 40], ["ma-5", 64], ["ma-6", 104]];
 function SistemaVolume() {
