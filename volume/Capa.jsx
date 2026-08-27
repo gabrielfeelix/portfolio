@@ -301,6 +301,10 @@ function catLabel(key) {
 function OutrasPecas({ filter, setFilter }) {
   const all = pieceProjects();
   const items = filter === "todos" ? all : all.filter((p) => p.cat === filter);
+  // A pagina e a identidade da peca no volume, entao ela sai da posicao na
+  // lista COMPLETA. Numerar pelo indice da lista filtrada reiniciava em 008
+  // a cada categoria e dava a mesma pagina para pecas diferentes.
+  const pagina = new Map(all.map((p, i) => [p.id, String(8 + i * 14).padStart(3, "0")]));
   return (
     <section className="outras" id="outras">
       <div className="sec-head">
@@ -314,7 +318,7 @@ function OutrasPecas({ filter, setFilter }) {
           <span className="kicker">{t("Cada item leva direto ao trabalho publicado", "Each item goes straight to the published work")}</span>
         </div>
         <ol className="mo-list">
-          {items.map((p, i) => {
+          {items.map((p) => {
             const live = pieceLink(p);
             const dest = p.destino || "ar";
             return (
@@ -328,7 +332,7 @@ function OutrasPecas({ filter, setFilter }) {
                       {dest === "proto" ? t("Protótipo", "Prototype") : dest === "figma" ? "Figma" : t("No ar", "Live")}
                       <span className="ext" aria-hidden="true">↗</span>
                     </span>
-                    <span className="mo-page">p. {String(8 + i * 14).padStart(3, "0")}</span>
+                    <span className="mo-page">p. {pagina.get(p.id)}</span>
                   </span>
                   {p.desc ? <span className="mo-desc">{p.desc}</span> : null}
                 </a>
