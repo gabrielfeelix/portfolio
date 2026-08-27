@@ -268,6 +268,23 @@ lugar e sirva numa segunda porta. Comparar contra memória não vale.
 
 ## O que parece pendência e NÃO é · não procurar de novo
 
+- **O resultado do capítulo 05 não é mais circular** (`82df68b`). Era
+  "Você está lendo o resultado" e virou o número medido do axe: 0
+  violação em 1440 papel, 1440 tinta, 1440 EN e 390. O `fact` do card
+  mudou junto, nos dois idiomas. Se for mexer no texto, **remeça antes**
+  com `node tools/medir.mjs regressao`: o parágrafo cita quatro
+  combinações, seis larguras e oito rotas, e número em copy que não bate
+  com a medição é pior do que não ter número.
+- **`ContaAte` não fica mais preso em zero** (`9cab6cc`). Há uma rede de
+  segurança de 2600ms: sem gatilho, o valor final entra sozinho. Uma
+  varredura que abra o capítulo e leia o painel **sem rolar** vai
+  encontrar os números certos, e isso é o comportamento desejado, não
+  reveal disparando cedo demais.
+- **A página das "Outras peças" sai de um Map sobre a lista completa**
+  (`ccab123`), não do índice do `map`. Parece indireção desnecessária e
+  não é: numerar pelo índice da lista filtrada dava a mesma página a
+  peças diferentes, medido em 11 das 12 peças. **Não simplificar de
+  volta para `(p, i)`.**
 - **As 6 imagens sem lupa são o antes/depois.** É slider, está a 976px, e
   é assim de propósito. As outras 21 abrem em tamanho cheio.
 - **Nenhuma figura está órfã.** A figura `marca` é a régua do funil,
