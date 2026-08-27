@@ -385,9 +385,17 @@ function App() {
     setTimeout(() => setTurn(null), 660);
   };
 
+  /* Ir para uma âncora da home tinha DOIS saltos secos em sequência: `top()`
+     jogava no hero e, 70ms depois, `scrollTo(..., false)` teleportava para a
+     seção. Quem clicava "Capítulos" no rodapé via a página piscar no hero e
+     reaparecer no sumário. Agora, já estando na home, não há salto nenhum: só
+     a rolagem suave. Vindo de outra vista, a home precisa montar antes de a
+     âncora existir, então sobe primeiro e rola depois de dois quadros. */
   const goHome = (anchor) => {
+    if (!anchor) { setView("home"); top(); return; }
+    if (view === "home") { scrollTo(anchor, true); return; }
     setView("home"); top();
-    if (anchor) setTimeout(() => scrollTo(anchor, false), 70);
+    requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(anchor, true)));
   };
   const goView = (v) => { setView(v); top(); };
   const openEmpresa = (id) => { setView("empresa:" + id); top(); };

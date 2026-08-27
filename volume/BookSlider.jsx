@@ -27,8 +27,73 @@
 
 const LV_DUR = 620;   /* casa com a animação lv-vira no app.css */
 
+/* Cada página do livro carrega UMA animação de tinta diferente, no slot que
+   antes era um quadrado tracejado vazio. São as treze do `organic.jsx`, na
+   ordem em que a folha as encontra: a peça 001 abre com `magatama` e nenhuma
+   se repete até virar o livro inteiro. O índice do projeto é que escolhe,
+   então a mesma peça mostra sempre a mesma tinta. */
+const LV_TINTAS = ["magatama", "orbit", "drip", "yin", "amoeba", "ripple",
+                   "cluster", "split", "trail", "merge", "bounce", "three", "twin"];
+
 /* uma página: só tipografia, o destino real e o espaço da logo */
-function Pagina({ proj, n }) {
+function Pagina({ proj, n, tinta }) {
+  const ref = useRef(null);
+
+  /* A FOLHA TEM ALTURA FIXA. Quando a peça tem texto demais, quem cede é o
+     corpo do texto e não o livro: `--lv-fit` desce em passos até o conteúdo
+     caber na página. Antes era o contrário, o livro crescia para acomodar a
+     peça mais falante, e uma folha de 640px ao lado de uma de 360 não é
+     livro, é acordeão.
+
+     Roda em `useLayoutEffect` (antes da pintura) para o leitor nunca ver o
+     texto grande piscar e encolher. */
+  const ajusta = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    /* A medida é por RETÂNGULO, não por `scrollHeight`. Num container flex
+       com `overflow: hidden`, `scrollHeight` pode empatar com `clientHeight`
+       mesmo com o texto visivelmente cortado, e foi o que aconteceu: o laço
+       nunca entrava. O fundo do último filho em fluxo contra o fundo útil da
+       página é medida que não depende de interpretação do motor. */
+    const fundoUtil = () => {
+      const r = el.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(el).paddingBottom) || 0;
+      return r.bottom - pad;
+    };
+    const fundoConteudo = () => {
+      let y = -Infinity;
+      for (let i = 0; i < el.children.length; i++) {
+        const c = el.children[i];
+        /* a tinta é absoluta e decorativa: não conta como conteúdo */
+        if (c.classList.contains("lv-marca")) continue;
+        y = Math.max(y, c.getBoundingClientRect().bottom);
+      }
+      return y;
+    };
+
+    let f = 1;
+    el.style.setProperty("--lv-fit", "1");
+    /* Piso em .82. A folha já é dimensionada para caber a peça mais falante,
+       então o ajuste aqui é retoque, não salvamento: se alguma página chegar
+       ao piso, o problema é texto longo demais no data.jsx e é lá que se
+       resolve, porque abaixo disso o corpo sai do mínimo legível do volume. */
+    while (f > 0.82 && fundoConteudo() > fundoUtil() + 0.5) {
+      f -= 0.035;
+      el.style.setProperty("--lv-fit", f.toFixed(3));
+    }
+  }, []);
+
+  useLayoutEffect(ajusta);
+  useEffect(() => {
+    window.addEventListener("resize", ajusta, { passive: true });
+    /* as fontes do volume chegam depois da primeira pintura e mudam a altura
+       do texto: sem re-medir aqui, o ajuste calcularia sobre a fonte de
+       fallback e erraria a conta na hora que mais importa, o primeiro olhar */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusta);
+    return () => window.removeEventListener("resize", ajusta);
+  }, [ajusta]);
+
   if (!proj) {
     /* número ímpar de peças: a última folha fica com o verso à mostra */
     return (
@@ -45,18 +110,29 @@ function Pagina({ proj, n }) {
     : t("Ver no ar", "See it live");
 
   return (
-    <span className="lv-pg">
+    <span className="lv-pg" ref={ref}>
       <span className="lv-topo">
+        {/* o logo entra DENTRO da linha de topo, ao lado da categoria: ali ele
+            não custa altura nenhuma e o branco do meio da folha continua
+            livre, que é onde a tela do produto vai entrar depois */}
+        {proj.marca
+          ? <img className="lv-logo" src={proj.marca} alt="" aria-hidden="true"
+                 loading="lazy" draggable="false" />
+          : null}
         <span className="lv-cat">{catLabel(proj.cat)}</span>
         <span className="lv-num">{String(n).padStart(3, "0")}</span>
       </span>
 
-      {/* o slot da marca fica declarado e vazio até as logos entrarem */}
-      <span className="lv-marca" aria-hidden="true"></span>
+      {/* o quadrado tracejado vazio virou a tinta da página */}
+      <span className="lv-marca">
+        <Organic variant={tinta} size={62} />
+      </span>
 
       <span className="lv-t">{proj.title}</span>
       <span className="lv-dom">{proj.domain}</span>
       {proj.desc ? <span className="lv-desc">{proj.desc}</span> : null}
+      {/* o argumento da peça ocupa o branco que sobrava no meio da folha */}
+      {proj.sobre ? <span className="lv-sobre">{proj.sobre}</span> : null}
 
       {live ? (
         <a className="btn btn-seta lv-go" href={live} target="_blank" rel="noreferrer"
@@ -122,14 +198,16 @@ function BookSlider({ items }) {
     <div className="livro">
       <div className="lv-stage" ref={stage} onTouchStart={onStart} onTouchEnd={onEnd}>
         <div className="lv-book">
-          <Pagina proj={items[par]} n={par + 1} />
-          <Pagina proj={items[par + 1]} n={par + 2} />
+          <Pagina proj={items[par]} n={par + 1} tinta={LV_TINTAS[par % LV_TINTAS.length]} />
+          <Pagina proj={items[par + 1]} n={par + 2} tinta={LV_TINTAS[(par + 1) % LV_TINTAS.length]} />
 
           {/* a folha que vira: frente é a página que sai, verso é o avesso */}
           {vira ? (
             <span className={`lv-folha ${vira.dir > 0 ? "adiante" : "atras"}`} aria-hidden="true">
               <span className="lv-face lv-frente">
-                <Pagina proj={vira.dir > 0 ? vira.folhaDir : vira.folhaEsq} n={0} />
+                {/* avançar levanta a folha da ESQUERDA; voltar, a da direita */}
+                <Pagina proj={vira.dir > 0 ? vira.folhaEsq : vira.folhaDir} n={0}
+                        tinta={LV_TINTAS[(vira.dir > 0 ? par + 1 : par) % LV_TINTAS.length]} />
               </span>
               <span className="lv-face lv-verso"></span>
             </span>

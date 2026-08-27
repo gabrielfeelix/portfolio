@@ -1,0 +1,13 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Variante `mono` da TraxiumLogo do produto: hexágono de selo, o traço
+       do trajeto e os checkpoints. O original pinta gradiente verde; aqui
+       vale a versão de traço, que é a que cabe num volume de tinta. -->
+  <path d="M20 2.5 L34.5 11 V29 L20 37.5 L5.5 29 V11 Z"
+        fill="none" stroke="#0A0A0A" stroke-width="1.5"/>
+  <path d="M11 26 L17 18 L23 22 L29 13" stroke="#0A0A0A" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="11" cy="26" r="2" fill="#0A0A0A"/>
+  <circle cx="17" cy="18" r="2" fill="#0A0A0A"/>
+  <circle cx="23" cy="22" r="2" fill="#0A0A0A"/>
+  <circle cx="29" cy="13" r="2.6" fill="none" stroke="#0A0A0A" stroke-width="1.4"/>
+</svg>

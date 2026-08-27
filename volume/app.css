@@ -2326,7 +2326,14 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   perspective: 2400px;
 }
 .lv-book {
-  position: relative; inline-size: min(100%, 1100px); min-block-size: clamp(360px, 42vw, 470px);
+  /* ALTURA FIXA, e menor que antes. `block-size` e não `min-block-size`: com
+     mínimo, a peça mais falante esticava o livro e a folha vizinha vinha
+     junto. Agora a folha manda no texto, e não o contrário. Quem cede é o
+     corpo, via `--lv-fit` (ver `ajusta` no BookSlider.jsx). */
+  /* 430/500 sai de medição, não de gosto: a página mais alta pede 400px em
+     1440, 395 em 1280 e 423 em 1024 (a do Quanto Cobro). Este intervalo cobre
+     as três sem o texto precisar encolher. */
+  position: relative; inline-size: min(100%, 1100px); block-size: clamp(430px, 42vw, 500px);
   display: grid; grid-template-columns: 1fr 1fr;
   background: var(--paper); border: var(--ink-stroke) solid var(--ink);
   box-shadow: 14px 14px 0 var(--ink);
@@ -2343,47 +2350,86 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
 
 /* ---- a página ---- */
 .lv-pg {
+  /* `overflow: hidden` + `min-block-size: 0` são o que torna o estouro
+     MENSURÁVEL: sem eles a página cresce em silêncio e `scrollHeight` nunca
+     passa de `clientHeight`, então o ajuste automático não teria o que ver. */
   position: relative; display: flex; flex-direction: column; align-items: flex-start;
-  gap: 10px; padding: clamp(20px, 2.8vw, 38px); min-inline-size: 0;
+  gap: calc(10px * var(--lv-fit, 1)); padding: clamp(18px, 2.4vw, 32px); min-inline-size: 0;
+  min-block-size: 0; block-size: 100%; overflow: hidden;
   background: var(--paper);
 }
 /* Mangá: a peça de número menor fica na folha da DIREITA, e a seguinte na
    esquerda. A ordem do DOM continua 001, 002 — que é a ordem de leitura e a
    que o leitor de tela anuncia — e só a posição na grade inverte. */
-.lv-book > .lv-pg:first-child  { grid-column: 2; }
-.lv-book > .lv-pg:nth-child(2) { grid-column: 1; }
+/* `grid-row: 1` é obrigatório aqui. Sem ele, o posicionamento automático já
+   passou da coluna 1 ao colocar a primeira página na coluna 2, e manda a
+   segunda para uma LINHA NOVA: o livro vira duas faixas empilhadas e cada
+   página fica com metade da altura. Era o que cortava o texto. */
+.lv-book > .lv-pg:first-child  { grid-column: 2; grid-row: 1; }
+.lv-book > .lv-pg:nth-child(2) { grid-column: 1; grid-row: 1; }
 /* o fio de dobra mora na lombada, ou seja na borda interna da folha esquerda */
 .lv-book > .lv-pg:nth-child(2) { border-inline-end: var(--ink-hair) solid var(--wash-2); }
 .lv-topo {
-  display: flex; align-items: baseline; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   inline-size: 100%; border-block-end: var(--ink-hair) solid var(--wash-2);
   padding-block-end: 10px; margin-block-end: 4px;
 }
+/* O logo do produto, na linha de topo. Passa pelo filtro de tinta: a folha é
+   preto sobre papel e um ícone colorido de loja quebraria isso. A cor do
+   produto tem lugar no volume, mas é o quadro do capítulo, não a folha. */
+.lv-logo {
+  block-size: 22px; inline-size: auto; max-inline-size: 76px;
+  object-fit: contain; object-position: left center;
+  margin-inline-end: 10px; flex: 0 0 auto;
+  filter: grayscale(1) contrast(1.15) brightness(.55);
+  opacity: .9;
+}
 .lv-cat {
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .22em; font-size: 11px; color: var(--fg-2);
+  letter-spacing: .22em; font-size: 11px; color: var(--fg-2); margin-inline-end: auto;
 }
 .lv-num {
   font-family: var(--font-display); font-size: 15px; color: var(--wash-2); letter-spacing: .04em;
 }
 /* o slot da marca: declarado e vazio até as logos entrarem */
+/* Era um quadrado tracejado esperando logo. Virou o slot da tinta: cada
+   página do livro roda uma animação diferente do `organic.jsx`, e o
+   tracejado saiu porque moldura de placeholder em cima de desenho pronto
+   lê como imagem que não carregou. */
+/* A tinta NÃO entra no fluxo: empilhada acima do nome ela empurrava a página
+   inteira para baixo e obrigava o livro a crescer. Aqui ela ocupa o canto
+   morto de baixo, à direita do botão, que é espaço que já existia vazio. */
 .lv-marca {
-  display: block; inline-size: 56px; block-size: 56px; flex: 0 0 auto;
-  border: var(--ink-hair) dashed var(--wash-2); opacity: .5;
+  position: absolute; z-index: 0; pointer-events: none;
+  inset-block-end: clamp(20px, 2.8vw, 38px); inset-inline-end: clamp(20px, 2.8vw, 38px);
+  display: block; inline-size: 62px; block-size: 62px;
+  opacity: .55;
 }
 .lv-t {
   font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem); line-height: 1; letter-spacing: -.01em;
+  font-size: calc(clamp(1.5rem, 2.6vw, 2.4rem) * var(--lv-fit, 1));
+  line-height: 1; letter-spacing: -.01em;
 }
 .lv-dom {
   font-family: var(--font-condensed); text-transform: uppercase;
   letter-spacing: .14em; font-size: 11px; color: var(--wash-3);
 }
 .lv-desc {
-  font-family: var(--font-body); font-size: .98rem; line-height: 1.5;
-  color: var(--fg-2); max-width: 32ch;
+  font-family: var(--font-body); font-size: calc(.98rem * var(--lv-fit, 1)); line-height: 1.45;
+  color: var(--fg-2); max-width: 34ch;
 }
-.lv-go { margin-block-start: auto; }
+/* O argumento da peça, no branco que sobrava no meio da folha. Menor que a
+   `.lv-desc` de propósito: a descrição é a chamada e este é o corpo, e a
+   folha precisa dos dois pesos para ler como página e não como card. */
+/* Sem `max-width`: a coluna da folha já é a medida, e limitar em 46ch só
+   fazia o texto ficar mais alto do que precisava e estourar a página. */
+.lv-sobre {
+  font-family: var(--font-body); font-size: calc(.84rem * var(--lv-fit, 1)); line-height: 1.52;
+  color: var(--wash-3);
+  padding-block-start: calc(10px * var(--lv-fit, 1)); margin-block-start: 2px;
+  border-block-start: var(--ink-hair) solid var(--wash-1);
+}
+.lv-go { margin-block-start: auto; position: relative; z-index: 1; max-inline-size: calc(100% - 76px); }
 .lv-sem {
   margin-block-start: auto; font-family: var(--font-condensed); text-transform: uppercase;
   letter-spacing: .14em; font-size: 11px; color: var(--wash-3);
@@ -2400,23 +2446,26 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   position: absolute; inset-block: 0; inline-size: 50%; z-index: 4;
   transform-style: preserve-3d; pointer-events: none;
 }
-/* adiante: a folha da DIREITA gira para a esquerda, presa na lombada */
+/* Mangá é encadernado à DIREITA: a lombada fica desse lado e a borda solta
+   da folha fica à esquerda. Por isso avançar levanta a folha da ESQUERDA e
+   a gira para a direita, por cima do vinco. O contrário disso é livro
+   ocidental, e era o que estava aqui. */
 .lv-folha.adiante {
-  inset-inline-start: 50%; transform-origin: left center;
+  inset-inline-start: 0; transform-origin: right center;
   animation: lv-vira-adiante 620ms var(--curva) forwards;
 }
-/* atras: a folha da esquerda volta, girando para a direita */
+/* voltar desfaz o gesto: a folha da direita cai de volta para a esquerda */
 .lv-folha.atras {
-  inset-inline-start: 0; transform-origin: right center;
+  inset-inline-start: 50%; transform-origin: left center;
   animation: lv-vira-atras 620ms var(--curva) forwards;
 }
 @keyframes lv-vira-adiante {
   from { transform: rotateY(0deg); }
-  to   { transform: rotateY(-176deg); }
+  to   { transform: rotateY(176deg); }
 }
 @keyframes lv-vira-atras {
   from { transform: rotateY(0deg); }
-  to   { transform: rotateY(176deg); }
+  to   { transform: rotateY(-176deg); }
 }
 .lv-face {
   position: absolute; inset: 0; display: block; overflow: hidden;
@@ -2470,7 +2519,7 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
   /* no telefone só cabe uma página: a segunda sai e a virada anda de um em um */
   .lv-book { grid-template-columns: minmax(0, 1fr); }
   /* uma coluna só: a folha da direita volta pra primeira faixa */
-  .lv-book > .lv-pg:first-child { grid-column: 1; }
+  .lv-book > .lv-pg:first-child { grid-column: 1; grid-row: 1; }
   .lv-book > .lv-pg:nth-child(2) { display: none; }
   .lv-book::after, .lv-folha { display: none; }
   .lv-irow { grid-template-columns: minmax(0,1fr) auto; }
