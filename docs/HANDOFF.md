@@ -103,16 +103,15 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 ## Pendente
 
 > **Estado em 2026-08-26.** Fecharam, nesta ordem: a **Rodada A**
-> (`fb823c9`), o **Grupo B** (escala e zoom, `68855dd`) e os **Grupos D e
-> E** (motion e maneirismo). Os registros de execução, com números e com
+> (`fb823c9`), o **Grupo B** (escala e zoom, `68855dd`), os **Grupos D e
+> E** (motion e maneirismo, `4e3b79e`) e o **Grupo A** (ritmo, `1ab1e88`). Os registros de execução, com números e com
 > o método pra reproduzir a medição, estão em
 > `docs/AUDITORIA-PCYES-2026-08-26.md`. Nada do que sobrou abaixo foi
 > tentado e falhou: é trabalho que ainda não começou ou que depende do
 > Gabriel.
 
-Sete grupos, **quatro fechados**. O que resta de verdade é o **A**, que o
-Gabriel decidiu tratar como projeto à parte, mais o **C** e o **F**, que
-dependem de material que só ele tem.
+Sete grupos, **cinco fechados**. O que resta é o **C** e o **F**, que
+dependem de material que só o Gabriel tem, mais as miudezas do **G**.
 
 **As duas decisões de escala continuam com ele, e não entraram aqui:**
 se o clímax da V2 (1033px) deve empatar com a abertura da V1 (~1180px)
@@ -121,23 +120,68 @@ mais que a escala. Se incomodar, o caminho é o Grupo A, não desfazer.
 
 ---
 
-### A · RITMO E LEITURABILIDADE (o maior item aberto)
+### A · RITMO E LEITURABILIDADE · **FECHADO em 2026-08-26** (`1ab1e88`)
 
-**Tem documento próprio: `docs/GRUPO-A-RITMO.md`.** Ele traz o custo
-medido **beat a beat**, as três frentes (cortar ou dobrar, atalho de 3
-minutos, medida tipográfica sistemática), o que é decisão do Gabriel e o
-critério de aceite. O prompt para abrir a sessão está em
-`docs/PROMPT-GRUPO-A.md`.
+**O registro completo, com os números e o método, está em
+`docs/GRUPO-A-RITMO.md`**, no fim. Aqui só o que muda o que você vai fazer.
 
-**Decisão do Gabriel: isto é projeto à parte, não se ataca por partes.**
-Palavra dele: *"o ritmo vai ser um design à parte, vai exigir um esforço
-considerável"*. Não comece numa sessão que também vai fazer outra coisa.
+| | Antes | Depois |
+|---|---|---|
+| Altura do documento | 39.302px | **36.812px** |
+| Telas de rolagem | 43,7 | **40,9** |
+| Caminho padrão | 19,4 min | **18,0 min** |
+| Caminho curto declarado | não existia | **3 min** |
+| Palavras de conteúdo | 3.878 | **3.869** |
 
-O tamanho do problema: **39.302px, 43,7 telas, 4.029 palavras, ~20 min**,
-contra 9.234 a 11.504px dos outros capítulos. E o achado que reordena o
-ataque: **`sec-modulos` (14,9 telas) e `sec-sistema` (4,7 telas) são
-47% do documento**, enquanto os oito beats de diagnóstico do Ato I e II
-somam ~8 telas juntos. Cortar diagnóstico é o corte caro e resolve pouco.
+**O argumento não encolheu: 9 palavras de diferença líquida.** O que saiu
+foi repetição (o Ato II fechava recontando o beat do `gesto` e o
+parágrafo antes da citação dizia a frase da citação). O que entrou foi
+navegação de tamanho parecido.
+
+Quatro peças novas, e todas são idioma que se herda:
+
+- **`Atalho`**, sob o `Tldr`, compartilhando a borda dele. Declara o
+  custo dos dois caminhos antes da escolha e leva ao clímax. Capítulo
+  novo ganha de graça: é `<Atalho minutos={chap.minutos || 20} />`.
+- **`--med-longa` / `--med-apoio` / `--med-legenda`** em
+  `colors_and_type.css`. **Componente de leitura novo amarra num degrau.**
+  O quarto degrau é a exceção declarada: dado desenhado e lista curta não
+  têm medida.
+- **`Respiro ato={...}`**, a virada de ato com numeral, título e kanji.
+  Vem de `ATOS` em `Capitulo.jsx`, que agora tem `n` e `kanji`.
+- **`ordinal(i, total)`** no kicker dos módulos (`01/05`). Custo zero de
+  altura.
+
+**As três armadilhas novas, e elas custam retrabalho:**
+
+1. **`1ch` mente 25% neste projeto.** `ch` é a largura do "0", que nestas
+   fontes é ~25% mais larga que o caractere médio: `68ch` rendia **80
+   caracteres reais**. E a aproximação antiga (`largura / (font-size *
+   0,5)`) erra para o outro lado. **Meça com `Range`, caractere a
+   caractere**, cortando onde o topo muda. Receita em `GRUPO-A-RITMO.md`.
+2. **O `i18n.jsx` substitui, não mescla.** Campo novo em `chap.sistema`
+   que não tiver contraparte em EN **simplesmente não renderiza em
+   inglês**, com build verde e console limpo. Foi assim que o beat do
+   Design System perdeu motion, tipografia, espaço e o `Derivado`
+   inteiros em EN por semanas (corrigido em `1ab1e88`). **Confira o EN
+   renderizado, não o fonte.**
+3. **Espaço grande escolhido na mão vira telas.** `.passos-figs` tinha
+   `gap: 26vh` (234px em 1440x900) e doze dessas somavam 2.808px de
+   rolagem vazia. Hoje é `--ma-6`, o mesmo valor que separa dois beats.
+   Se criar coluna de provas nova, use a escala `--ma`, não `vh`.
+
+**O que eu decidi não fazer, e o motivo continua valendo:** não dobrar
+"As nove correções" (esconder o acabamento piora a dimensão mais fraca da
+auditoria), não encolher o `ckMobile` (a 600px cada aparelho já mede
+~290px), e não alargar o `.beat-p` de 375px (é o `.c5` da composição
+`c5 texto + c7 prova`, a gramática do capítulo, e 46 caracteres está no
+piso da faixa mas dentro dela).
+
+**O que ficou aberto:** 28 Tabs até o atalho (ele vem depois do índice de
+15 links no DOM); mobile em 768px ganhou só 0,7 tela e ainda mede
+44.366px, e ali o problema é outro (coluna única, ordem, não calha); e os
+seis `<div style={{ height: var(--ma-6) }}>` do Ato IV continuam sendo
+espaço na mão dentro do JSX.
 
 ### B · A ESCALA DAS TELAS · **FECHADO em 2026-08-26**
 
