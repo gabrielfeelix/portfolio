@@ -119,11 +119,143 @@ function RevealImageMask({ proj, chap, index, total, onOpen }) {
   );
 }
 
+/* ---------- O BARALHO QUE SE DISTRIBUI --------------------------------
+   Os cinco capítulos chegavam já sentados na grade. Agora chegam como um
+   baralho na mão: empilhados no centro da primeira fileira, em leque, e
+   a rolagem distribui carta por carta até o lugar de cada uma.
+
+   A regra que sustenta isso: o LEQUE É SEMPRE UM DELTA sobre o layout que
+   o CSS já calculou, nunca uma posição escrita à mão. Mede-se a grade com
+   as cartas limpas, guarda-se o vetor de cada uma até o centro do baralho,
+   e o scroll interpola esse vetor de volta a zero. Em p = 1 o transform é
+   identidade e o que sobra é a `.rvm-list` de sempre. Se a grade mudar de
+   colunas, de gap ou de largura, o leque acompanha sozinho.
+
+   Por isso também o desalinho da coluna par virou `margin-block-start` no
+   CSS e não `transform`: transform aqui é território do baralho, e duas
+   fontes escrevendo a mesma propriedade é bug garantido.
+
+   Custo: rAF com listener passivo, igual ao `Bite`. O scroll só escreve
+   `transform`, nunca lê layout. A leitura acontece uma vez na montagem,
+   de novo em `fonts.ready` (a fonte chega depois da primeira pintura e
+   muda altura) e a cada resize com debounce.
+
+   Não roda com `prefers-reduced-motion`, nem abaixo de 860px, onde a
+   grade é de uma coluna só e o leque não teria para onde abrir. Nos dois
+   casos as cartas ficam com `transform` vazio, que é a grade de hoje. */
+
+const DECK_MIN_W = 861;   /* o breakpoint da grade de 2 colunas, mais 1 */
+const DECK_ATRASO = 0.42; /* quanto do percurso é gasto escalonando as cartas */
+
+/* A pose de cada carta dentro do baralho, relativa ao lugar final dela.
+   `i = 0` é a carta de cima. O leque abre para os dois lados a partir do
+   meio, então o desenho tem centro em vez de ler como pilha torta. */
+function poseLeque(i, n) {
+  const meio = (n - 1) / 2;
+  return {
+    rot: (i - meio) * 6,
+    dx:  (i - meio) * 26,
+    dy:  i * 10,
+    esc: 0.9 - i * 0.014,
+  };
+}
+
 /* A espinha do volume: os capítulos de caseProjects(), na ordem de leitura. */
 function RevealChapters({ onOpen }) {
   const items = caseProjects();
+  const listRef = useRef(null);
+
+  useEffect(() => {
+    const lista = listRef.current;
+    if (!lista) return;
+    const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const cartas = Array.prototype.slice.call(lista.children);
+    const n = cartas.length;
+    let alvos = [];      /* vetor de cada carta até o centro do baralho */
+    let faixa = null;    /* topo absoluto e altura da lista */
+    let raf = 0;
+    let vivo = false;    /* o baralho está ligado nesta largura? */
+
+    function limpar() {
+      cartas.forEach((c) => { c.style.transform = ""; c.style.zIndex = ""; });
+    }
+
+    function medir() {
+      vivo = !reduz && window.innerWidth >= DECK_MIN_W;
+      limpar();
+      if (!vivo) { alvos = []; return; }
+      const lr = lista.getBoundingClientRect();
+      const primeira = cartas[0].getBoundingClientRect();
+      /* o baralho se forma no centro horizontal da lista, na altura da
+         PRIMEIRA FILEIRA: é onde o olho já está quando a seção entra, e
+         evita que as cartas comecem fora da tela. */
+      const cx = lr.left + lr.width / 2;
+      const cy = primeira.top + primeira.height / 2;
+      alvos = cartas.map((c) => {
+        const b = c.getBoundingClientRect();
+        return { dx: cx - (b.left + b.width / 2), dy: cy - (b.top + b.height / 2) };
+      });
+      /* a âncora é o CENTRO DO BARALHO, não o topo da lista. Ancorado no
+         topo, o leque terminava de distribuir com p = 0,92 antes de o
+         baralho chegar ao meio da tela: quem rolava via a grade pronta e
+         perdia o movimento inteiro. Medido em 1440 x 900. */
+      faixa = { centro: cy + window.scrollY };
+    }
+
+    function passo() {
+      raf = 0;
+      if (!vivo || !alvos.length) return;
+      const vh = window.innerHeight;
+      const centro = faixa.centro - window.scrollY;
+      /* p = 0 com o baralho entrando por baixo (88% da tela) e p = 1 com
+         ele no terço de cima (26%). O percurso inteiro cabe em pouco mais
+         de meia tela de rolagem, e o baralho está visível de ponta a
+         ponta: não existe trecho do movimento que aconteça fora do campo. */
+      const p = Math.max(0, Math.min(1, (vh * 0.88 - centro) / (vh * 0.62)));
+      for (let i = 0; i < n; i++) {
+        /* cada carta parte depois da anterior: é o atraso que faz o
+           baralho se distribuir em vez de explodir de uma vez só */
+        const q = Math.max(0, Math.min(1, (p - (i / n) * DECK_ATRASO) / (1 - DECK_ATRASO)));
+        const e = 1 - Math.pow(1 - q, 3);
+        const L = poseLeque(i, n);
+        const a = alvos[i];
+        const resto = 1 - e;
+        const dx = (a.dx + L.dx) * resto;
+        const dy = (a.dy + L.dy) * resto;
+        const rot = L.rot * resto;
+        const esc = L.esc + (1 - L.esc) * e;
+        const c = cartas[i];
+        c.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${rot}deg) scale(${esc})`;
+        /* a carta de cima do baralho é a primeira do volume */
+        c.style.zIndex = String(n - i);
+      }
+    }
+
+    function agenda() { if (!raf) raf = requestAnimationFrame(passo); }
+    function remedir() { medir(); passo(); }
+
+    let t = 0;
+    function noResize() { clearTimeout(t); t = setTimeout(remedir, 140); }
+
+    remedir();
+    /* a fonte chega depois da primeira pintura e muda a altura da barra
+       embaixo do card: sem esta segunda medida o leque erra o alvo */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(remedir);
+
+    window.addEventListener("scroll", agenda, { passive: true });
+    window.addEventListener("resize", noResize);
+    return () => {
+      window.removeEventListener("scroll", agenda);
+      window.removeEventListener("resize", noResize);
+      clearTimeout(t);
+      if (raf) cancelAnimationFrame(raf);
+      limpar();
+    };
+  }, []);
+
   return (
-    <ol className="rvm-list">
+    <ol className="rvm-list" ref={listRef}>
       {items.map((p, i) => (
         <RevealImageMask key={p.id} proj={p} chap={chapterFor(p.id)}
                          index={i} total={items.length} onOpen={onOpen} />
@@ -132,4 +264,4 @@ function RevealChapters({ onOpen }) {
   );
 }
 
-Object.assign(window, { RevealImageMask, RevealChapters, useReenter, Dots });
+Object.assign(window, { RevealImageMask, RevealChapters, useReenter, Dots, poseLeque });

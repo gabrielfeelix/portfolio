@@ -397,44 +397,43 @@ const SUM_BGS = [
   ["v4", "grão e vinheta"],
 ];
 
-/* Seletor flutuante. Só aparece com `?lab=1` na URL, então funciona no
-   domínio oficial sem ficar visível para ninguém que não saiba dele.
+/* Seletor flutuante, na lateral direita da home. Fica visível enquanto a
+   variante não está decidida; quando estiver, o vencedor vira o padrão no
+   CSS e este componente sai do arquivo junto com as outras três.
    A escolha vai para o localStorage e sobrevive ao reload. */
 function LabBg() {
-  const on = (() => {
-    try { return new URLSearchParams(window.location.search).get("lab") === "1"; }
-    catch (e) { return false; }
-  })();
   const [bg, setBg] = useState(() => {
     try { return window.localStorage.getItem("sumbg") || "off"; } catch (e) { return "off"; }
   });
 
   useEffect(() => {
-    if (!on) return;
     const raiz = document.documentElement;
     if (bg === "off") delete raiz.dataset.sumbg;
     else raiz.dataset.sumbg = bg;
     try { window.localStorage.setItem("sumbg", bg); } catch (e) { /* modo privado */ }
-  }, [on, bg]);
+    return () => { delete document.documentElement.dataset.sumbg; };
+  }, [bg]);
 
-  if (!on) return null;
   return (
-    <div className="labbg" role="group" aria-label="Fundo do sumário">
-      <span className="labbg-k">fundo</span>
+    <div className="labbg" role="group" aria-label={t("Fundo do sumário", "Contents background")}>
+      <span className="labbg-k">{t("fundo", "bg")}</span>
       {SUM_BGS.map(([v, nome]) => (
         <button type="button" key={v} title={nome}
                 className={`labbg-b ${bg === v ? "on" : ""}`}
                 onClick={() => setBg(v)}>{v}</button>
       ))}
       <button type="button" className={`labbg-b ${bg === "off" ? "on" : ""}`}
-              title="sem fundo, como está hoje"
+              title={t("sem fundo", "no background")}
               onClick={() => setBg("off")}>off</button>
     </div>
   );
 }
 
 function Sumario({ onOpen }) {
-  const n = caseProjects().length;
+  const casos = caseProjects();
+  const n = casos.length;
+  const noAr = casos.filter((p) => p.links && (p.links.vercel || p.links.play)).length;
+  const outras = pieceProjects().length;
   return (
     <div className="sum-zone">
       <span className="sum-bg" aria-hidden="true">
@@ -442,12 +441,28 @@ function Sumario({ onOpen }) {
       </span>
       <LabBg />
 
-      {/* a cabeça continua na medida do texto (.shell, 1240px) */}
-      <section className="shell sumario-sec" style={{ paddingTop: "var(--ma-6)" }}>
-        <div className="sec-head" id="sumario">
-          <Brush as="h2">{t("Sumário", "Contents")}</Brush>
-          <span className="kicker">{String(n).padStart(2, "0")} {n === 1 ? t("capítulo", "chapter") : t("capítulos", "chapters")}</span>
-        </div>
+      {/* A cabeça era um par: título à esquerda, kicker à direita, na
+          régua da página. Virou bloco centrado, que é o que segura o
+          baralho embaixo: o leque abre no eixo do título em vez de brotar
+          debaixo de um cabeçalho alinhado num canto.
+
+          Os três números são CONTADOS, não escritos: capítulo, quantos
+          estão no ar e quantas peças sobram no índice. Número escrito à
+          mão aqui envelhece na primeira peça nova. */}
+      <section className="shell sum-head" id="sumario">
+        <span className="sh-kick">{t("Sumário", "Contents")}</span>
+        <Brush as="h2" className="sh-title">
+          {t("O volume em cinco capítulos", "The volume in five chapters")}
+        </Brush>
+        <p className="sh-sub">
+          {t("Cada capítulo é um produto que foi ao ar: o problema, o que eu decidi e o que mudou depois. O primeiro é o mais longo de propósito.",
+             "Each chapter is a product that shipped: the problem, what I decided, and what changed after. The first one is the longest on purpose.")}
+        </p>
+        <ul className="sh-meta">
+          <li><b>{String(n).padStart(2, "0")}</b> {n === 1 ? t("capítulo", "chapter") : t("capítulos", "chapters")}</li>
+          <li><b>{String(noAr).padStart(2, "0")}</b> {t("no ar", "live")}</li>
+          <li><b>{String(outras).padStart(2, "0")}</b> {t("outras peças", "other pieces")}</li>
+        </ul>
       </section>
 
       {/* os capítulos saem da .shell pra tomar a tela inteira. Fora do

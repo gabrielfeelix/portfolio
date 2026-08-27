@@ -2128,11 +2128,17 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
   gap: clamp(20px, 3vw, 44px);
 }
 /* a coluna da direita desce: a linha desalinhada é a quebra de calha da
-   página dupla, e impede que a grade leia como tabela */
-.rvm:nth-child(even) { transform: translateY(clamp(20px, 4vw, 64px)); }
+   página dupla, e impede que a grade leia como tabela.
+
+   É MARGEM, não transform, e isso não é detalhe: o baralho de
+   RevealMask.jsx escreve `transform` nestas mesmas cartas a cada quadro
+   de rolagem. Duas fontes escrevendo a mesma propriedade é bug garantido,
+   então o desalinho virou layout e o transform ficou inteiro para o
+   movimento. */
+.rvm:nth-child(even) { margin-block-start: clamp(20px, 4vw, 64px); }
 @media (max-width: 860px) {
   .rvm-list { grid-template-columns: minmax(0, 1fr); }
-  .rvm:nth-child(even) { transform: none; }
+  .rvm:nth-child(even) { margin-block-start: 0; }
 }
 .rvm { display: block; }
 
@@ -3002,15 +3008,16 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 /* --- o seletor. Ferramenta de decisão, não peça do site: só renderiza
        com ?lab=1 e não deve sobreviver à escolha. ---------------------- */
 .labbg {
-  position: fixed; z-index: 90; right: 16px; bottom: 16px;
-  display: flex; align-items: center; gap: 4px;
-  padding: 6px; background: var(--ink); border: 2px solid var(--ink);
-  box-shadow: 5px 5px 0 var(--vermilion);
+  position: fixed; z-index: 90; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: stretch; gap: 3px;
+  padding: 7px 6px; background: var(--ink); border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--vermilion);
 }
 .labbg-k {
   font-family: var(--font-condensed); text-transform: uppercase;
-  letter-spacing: .18em; font-size: 10px; color: var(--sobre-ink-2);
-  padding-inline: 6px 4px;
+  letter-spacing: .16em; font-size: 9px; color: var(--sobre-ink-2);
+  text-align: center; padding-block-end: 3px;
 }
 .labbg-b {
   -webkit-appearance: none; appearance: none; cursor: pointer;
@@ -3024,4 +3031,82 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 
 @media (max-width: 860px) {
   [data-sumbg="v1"] .sum-kanji { font-size: 46vw; right: -.2em; opacity: .34; }
+}
+
+
+/* =====================================================================
+   SUMÁRIO · A CABEÇA
+   ---------------------------------------------------------------------
+   Era título à esquerda e kicker à direita, na régua da página. O baralho
+   embaixo abre a partir do centro, e um cabeçalho ancorado num canto
+   deixava o leque parecendo desalinhado com a própria seção.
+
+   Agora é bloco centrado: olho, título, uma frase e três números. Os
+   números são contados em runtime sobre PROJECTS, nunca escritos.
+   ===================================================================== */
+.sum-head {
+  padding-block-start: var(--ma-6);
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--ma-2);
+}
+.sh-kick {
+  font-family: var(--font-condensed); font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--tr-kicker);
+  font-size: var(--t-kicker); color: var(--vermilion-ink);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+/* os dois traços de nanquim ao lado do olho: dão a ele peso de abertura
+   de capítulo em vez de etiqueta solta no ar */
+.sh-kick::before, .sh-kick::after {
+  content: ""; inline-size: clamp(18px, 4vw, 42px);
+  block-size: var(--ink-hair); background: currentColor;
+}
+.sh-title {
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: var(--lh-tight); letter-spacing: var(--tr-display);
+  max-inline-size: 16ch; margin: 0;
+}
+.sh-sub {
+  max-inline-size: var(--med-legenda); margin: 0;
+  font-size: var(--t-lead); line-height: 1.45; color: var(--fg-2);
+  text-wrap: balance;
+}
+.sh-meta {
+  list-style: none; margin: var(--ma-2) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(14px, 3vw, 38px);
+  font-family: var(--font-condensed); text-transform: uppercase;
+  letter-spacing: .14em; font-size: var(--t-kicker); color: var(--fg-2);
+}
+.sh-meta li { display: inline-flex; align-items: baseline; gap: 7px; }
+/* o número em fonte editorial: é ele que carrega o dado, o rótulo só
+   explica. Mesma hierarquia dos números do "quem sou". */
+.sh-meta b {
+  font-family: var(--font-editorial); font-weight: 700;
+  font-size: 1.5rem; letter-spacing: 0; color: var(--ink);
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .sh-meta { gap: 12px 22px; }
+  .sh-meta b { font-size: 1.25rem; }
+}
+
+/* =====================================================================
+   SUMÁRIO · O BARALHO
+   O movimento inteiro é escrito por RevealMask.jsx em `transform`. O CSS
+   só prepara o terreno: origem no centro da carta, aviso de composição, e
+   a garantia de que a transição declarada nos filhos não tenta interpolar
+   o que o rAF já está interpolando quadro a quadro.
+   ===================================================================== */
+.rvm {
+  transform-origin: 50% 50%;
+  will-change: transform;
+  /* sem back-face o Chromium ainda promove a camada, mas para de fazer
+     o passe de sub-pixel que serrilha a borda de nanquim na rotação */
+  backface-visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rvm { will-change: auto; transform: none; }
 }
