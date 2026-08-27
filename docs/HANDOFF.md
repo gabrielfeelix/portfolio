@@ -1,3 +1,74 @@
+# Estado — home reformada (2026-08-27)
+
+Rodada sobre a home, a partir da referência `viper-template.framer.website`.
+Commits: `8ff035f` (estrutura), `d0bc910` (correções de leitura), `294eab3`
+(alinhamento e chapa), `496a46b` (capa do capítulo).
+
+## O que existe agora
+
+| Peça | Onde | Estado |
+|---|---|---|
+| Dentadura (capa engolida) | `Capa.jsx` `Bite()` + `.bite` em `app.css` | Colunas de papel sobem coladas ao scroll, fatores em `BITE_FATORES`. Começa aos 12% da 1ª tela |
+| Faixa de marcas | `.mk*` em `app.css` | Cards quadrados até 132px, marquee direita→esquerda |
+| Capítulos | `RevealMask.jsx` + `.rvm*` | Grade 2×2, arte + barra fina (dots de posição, título, domínio, tags). 460px por card |
+| Livro das peças | `BookSlider.jsx` + `.lv*` | 2 projetos por spread, sem imagem, virada direita→esquerda girando na lombada |
+| Sobre mim | `Capa.jsx` `QuemSou` | Retrato + números contados de `PROJECTS` em runtime |
+| Botão de seta | `.btn-seta` em `kit.css` | Disco + tinta varrendo no hover |
+
+## Decisões que não devem ser refeitas
+
+- **`book-slider` do briefing não foi usado.** `@/components/ui/book-slider` é
+  shadcn/Next; este repo é script global sem bundle nem alias. O livro é
+  escrito à mão no idioma do volume.
+- **Tabs por categoria saíram** (`CatNav` deletado, estado `filter` removido de
+  `app.jsx`). Não reintroduzir: escondiam 14 das peças atrás de um clique.
+- **`.rvm-mask`** (fade subindo no card) e **`.rvm-sfx`** (onomatopeia gigante)
+  foram removidos a pedido. Ambos vinham do layout de tela cheia.
+- **Números do "sobre mim" são contados, nunca escritos à mão** — hoje 23
+  projetos e 17 no ar. Escrito à mão, envelhece sozinho.
+- **A arte dos cards é `shots[]`, não `cover`.** Capa de marca é último recurso.
+
+## Armadilha que já custou duas rodadas
+
+`.brandplate` / `.bp-tone` / `.bp-logo` (app.css) **não têm dono óbvio**: as
+variantes (`.nc-thumb`, `.bp-thumb`, `.qsc-logo`, `.bp-qsc`, `.bp-cover`)
+carregam `inset: auto`, que é override das regras base. Remover o bloco base
+quebra ao mesmo tempo a capa das páginas de capítulo e o card de empresa na
+home, e o sintoma não aponta para a causa. Se alguma chapa de marca aparecer
+solta no topo de um quadro, é isso.
+
+## Pendências
+
+1. **Logos do livro** — cada página tem `.lv-marca`, um quadrado tracejado
+   vazio reservado. Falta o Gabriel fornecer os arquivos e ligar o `<img>`
+   em `BookSlider.jsx` (`Pagina`).
+2. **Início da dentadura** — hoje 12% da primeira tela
+   (`Capa.jsx`, dentro de `Bite`). Pode começar antes se ele pedir.
+3. **Projetos sem print** — `hub`, `isabella`, `signamais`, `locarmais-site`
+   só têm `cover.webp`; `traxium` está com a pasta vazia. Sem `shots[]`,
+   caem no cover.
+4. **Vercel** — a conta conectada (`freela1`, hobby) não tem **nenhum**
+   projeto, então não há Web Analytics para consultar. O site no ar é
+   `gabrielfelix-ux.4yu.com.br`. Se ele quiser visitas por região, o
+   projeto precisa existir nessa conta ou a conta certa precisa ser ligada.
+
+## Como verificar
+
+Não existe suíte de testes. O que foi usado:
+
+```bash
+npm run build
+cd dist && python3 -m http.server 8817
+~/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+  --headless --no-sandbox --remote-debugging-port=9333 --user-data-dir=/tmp/cdp
+```
+
+Depois, via CDP, medir o DOM em vez de julgar por screenshot comprimido —
+uma seta branca fina de 14px some num JPEG de página inteira e parece bug
+quando não é. Matar Chromium e servidor ao terminar.
+
+---
+
 #**A gramática visual, desde `e7a5e55`:**
 
 - **Duas larguras de imagem, e só duas**: página é `--fig-plena` (976,
