@@ -123,42 +123,21 @@ mais que a escala. Se incomodar, o caminho é o Grupo A, não desfazer.
 
 ### A · RITMO E LEITURABILIDADE (o maior item aberto)
 
+**Tem documento próprio: `docs/GRUPO-A-RITMO.md`.** Ele traz o custo
+medido **beat a beat**, as três frentes (cortar ou dobrar, atalho de 3
+minutos, medida tipográfica sistemática), o que é decisão do Gabriel e o
+critério de aceite. O prompt para abrir a sessão está em
+`docs/PROMPT-GRUPO-A.md`.
+
 **Decisão do Gabriel: isto é projeto à parte, não se ataca por partes.**
 Palavra dele: *"o ritmo vai ser um design à parte, vai exigir um esforço
-considerável"*. Não comece isso numa sessão que também vai fazer outra
-coisa.
+considerável"*. Não comece numa sessão que também vai fazer outra coisa.
 
-O tamanho do problema, medido em 1440x900 na página servida:
-
-| Medida | PCYES | Outros capítulos |
-|---|---|---|
-| Altura | **36.420px** | 9.234 a 11.504px |
-| Telas de rolagem | **40,5** | 10,3 a 12,8 |
-| Palavras | **3.995** (~20 min) | 654 a 1.102 |
-
-Um recrutador dá 3 minutos. O capítulo pede 20.
-
-Sub-itens, e eles **não** são independentes (por isso o Gabriel quer
-tratar como um projeto só):
-
-1. **Cortar ou dobrar conteúdo.** 16 beats. O Ato I e II somam 8 beats
-   de diagnóstico antes da primeira solução.
-2. **Atalho de 3 minutos dentro do capítulo.** Não é o `#/rapido`, que é
-   global e resolve escolha *entre* capítulos. É um "ver só o que mudou"
-   no topo do PCYES que pula para `solucao` + `antesDepois` +
-   `resultado`. O `IndiceCapitulo` hoje é lista de 15 seções, não atalho.
-3. **Linhas ainda fora da faixa 45 a 75 CPL.** Depois da Rodada A o
-   `.beat-p` foi de 35 para **44 CPL** (295px → 375px), e a mediana do
-   capítulo de 40 para 43. Mas ainda sobram os dois extremos:
-   - **curto demais:** `.rec-r` a 38 CPL (282px), `.ds-caso-p` a ~35,
-     `.ds-sub-p` no mobile a 34.
-   - **longo demais:** `.pn-nota` a **85 CPL** (592px com fonte de 14px,
-     4 ocorrências) e `.ds-nota` a 85. O teto confortável é 75.
-   Ou seja: a medida do capítulo não é sistemática. Cada componente
-   escolheu a sua, que é exatamente o que o beat do Design System diz que
-   não se deve fazer.
-
----
+O tamanho do problema: **39.302px, 43,7 telas, 4.029 palavras, ~20 min**,
+contra 9.234 a 11.504px dos outros capítulos. E o achado que reordena o
+ataque: **`sec-modulos` (14,9 telas) e `sec-sistema` (4,7 telas) são
+47% do documento**, enquanto os oito beats de diagnóstico do Ato I e II
+somam ~8 telas juntos. Cortar diagnóstico é o corte caro e resolve pouco.
 
 ### B · A ESCALA DAS TELAS · **FECHADO em 2026-08-26**
 
