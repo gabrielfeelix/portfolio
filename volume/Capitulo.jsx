@@ -146,8 +146,13 @@ function Figura({ fig, n, ar, className = "" }) {
   // o quadro estoura quando entra na viewport (o respingo vive no CSS) e,
   // tendo arquivo, abre no lightbox para quem quiser ler os detalhes.
   const [ref, seen] = useReveal({ threshold: 0.22 });
+  // o degrau de escala mora na FIGURA, nunca no modulo: `chap.modulos` e
+  // redeclarado inteiro no i18n.jsx (Object.assign raso), entao campo de
+  // layout ali sumiria em ingles com build verde. `chap.figuras` e o unico
+  // ramo mesclado chave a chave, e por isso e onde `grau` pode viver.
+  const grau = fig.grau === "apoio" ? "fig-apoio" : fig.grau === "plena" ? "fig-plena" : "";
   return (
-    <figure className={`fig ${className} ${seen || REDUCED ? "revelada" : ""}`} ref={ref}>
+    <figure className={`fig ${grau} ${className} ${seen || REDUCED ? "revelada" : ""}`} ref={ref}>
       <div className="fig-frame" style={{ aspectRatio: fig.ar || ar || "16/10" }}>
         {fig.src
           ? <img className="fig-img" src={fig.src} alt={fig.alt || ""} loading="lazy" draggable="false" />
@@ -976,7 +981,14 @@ function Modulos({ chap, figN = {} }) {
         if (m.caminhos) return <ModuloCaminhos key={i} mod={m} chap={chap} figN={figN} ordem={i + 1} total={mods.length} />;
         // o módulo em passos conta uma sequência: texto preso, prova rolando
         if (m.passos) return <ModuloPassos key={i} mod={m} chap={chap} figN={figN} ordem={i + 1} total={mods.length} />;
-        const figs = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
+        const todas = (m.figs || []).map((k) => [k, chap.figuras && chap.figuras[k]]).filter(([, f]) => f);
+        // a figura PLENA sai da coluna de provas e desce para uma linha
+        // propria de doze colunas. A ordem que sobra e a de uma pagina de
+        // mangá: os paineis de fala com o detalhe ao lado, e embaixo a
+        // splash com a tela inteira. O degrau vem de `chap.figuras`, que e
+        // o ramo que o i18n mescla -- ver o comentario em `Figura`.
+        const plenas = todas.filter(([, f]) => f.grau === "plena");
+        const figs = todas.filter(([, f]) => f.grau !== "plena");
         const grade = figs.length > 1;
         const ord = ordinal(i + 1, mods.length);
         return (
@@ -994,14 +1006,21 @@ function Modulos({ chap, figN = {} }) {
                 {(m.p || []).map((para, j) => <p className="beat-p" key={j}>{renderPH(para)}</p>)}
               </div>
             </div>
-            <div className="c7">
-              {/* série: os estados empilham em coluna, porque a leitura é
-                  uma sequência (antes, antes em rede lenta, depois) e não
-                  um mosaico de telas soltas */}
-              <div className={`mod-figs ${m.serie ? "serie" : (grade ? "grade" : "")}`}>
-                {figs.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} ar={grade ? "16/10" : "16/10"} />)}
+            {figs.length ? (
+              <div className="c7">
+                {/* série: os estados empilham em coluna, porque a leitura é
+                    uma sequência (antes, antes em rede lenta, depois) e não
+                    um mosaico de telas soltas */}
+                <div className={`mod-figs ${m.serie ? "serie" : (grade ? "grade" : "")}`}>
+                  {figs.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} ar="16/10" />)}
+                </div>
               </div>
-            </div>
+            ) : null}
+            {plenas.length ? (
+              <div className="c12 mod-plena">
+                {plenas.map(([k, f]) => <Figura key={k} fig={f} n={figN[k]} ar="16/10" />)}
+              </div>
+            ) : null}
           </Beat>
         );
       })}

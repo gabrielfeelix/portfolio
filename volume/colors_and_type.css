@@ -159,6 +159,31 @@
   /* ============================================================
      INK STROKE — panel borders. Thick, used with PARSIMONY.
      ============================================================ */
+  /* ---- QUADRO — o plano de tinta atrás do painel -------------------
+     A casa inteira já carimba: .proj-card (6px), .rail-cover (9px),
+     .pv-frame (10px), .about-photo (9px), .cal (8px), .dec (7px). As
+     figuras do capítulo eram as ÚNICAS superfícies emolduradas do volume
+     sem o plano, e é isso que as fazia ler como adesivo seco em cima do
+     papel enquanto todo o resto está pousado nele.
+     Não é sombra de UI: sem blur e sem alpha, é o registro deslocado da
+     impressão. O deslocamento é o GRAU DA PROVA, não decoração, e por
+     isso são três valores e não um. Custo de altura: zero, box-shadow
+     não ocupa caixa. */
+  --quadro-plano: var(--ink);
+  --q-apoio:   5px;   /* detalhe de execução      */
+  --q-padrao:  9px;   /* a tela que prova         */
+  --q-plena:  13px;   /* o argumento do módulo    */
+
+  /* ---- ESCALA DAS PROVAS — três degraus, declarados ----------------
+     Doze das trinta imagens do PCYES nasciam em 606x379 idênticos: a
+     tela que carrega o argumento ocupava a mesma área que o detalhe de
+     componente. Os degraus abaixo são medidos na coluna de provas.
+     A regra que sustenta a ordem: NUNCA rebaixar a apoio uma comparação
+     V1/V2 (a régua do Grupo B) nem o clímax da solução, que continua
+     sendo a maior imagem de V2 do capítulo. */
+  --fig-plena: 976px;  /* sai da coluna e toma a largura da página  */
+  --fig-apoio:   72%;  /* recua dentro da coluna, alinhado à direita */
+
   --ink-stroke:    3px;    /* standard panel edge                      */
   --ink-stroke-hi: 5px;    /* splash / emphatic panel                  */
   --ink-hair:      1.5px;  /* structural rule                          */

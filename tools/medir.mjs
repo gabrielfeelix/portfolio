@@ -172,8 +172,15 @@ async function cpl(porta = 8793) {
    verde. O último painel marca baixo na varredura só porque a página
    acaba antes de ele acender: por isso lê de novo parado no fim.     */
 async function reveal(porta = 8793) {
+  // W/H pelo ambiente: um beat MAIS ALTO QUE ~4x a tela nunca alcanca os
+  // 22% de threshold do IntersectionObserver, e o painel dele nunca
+  // acende. Em 1440x900 o beat da `solucao` mede 3.233px e passa raspando
+  // (ratio 0,28). Em 1920, onde ele mede 4.048, a margem some. Varrer so
+  // em 1440x900 dava verde num bug que existia na tela do Gabriel.
+  const W = +(process.env.W || 1440), H = +(process.env.H || 900);
+  console.log(`viewport ${W}x${H}`);
   for (const abrirDobra of [false, true]) {
-    const p = await pagina(porta, { congelar: false, rolar: false });
+    const p = await pagina(porta, { w: W, h: H, congelar: false, rolar: false });
     if (abrirDobra) await p.evaluate(() => { const d = document.querySelector(".ds-dobra"); if (d) d.open = true; });
     await p.waitForTimeout(400);
     const r = await p.evaluate(async () => {
@@ -277,8 +284,9 @@ async function regressao(porta = 8793) {
 
 /* ---- diff: antes contra depois, medidos do mesmo jeito ------------- */
 async function diff(antes = 8794, depois = 8793) {
+  const LARG = +(process.env.W || 1440);
   const ler = async (porta) => {
-    const p = await pagina(porta);
+    const p = await pagina(porta, { w: LARG });
     const d = await p.evaluate(() => {
       const t = document.querySelector(".chapter-col")?.innerText || "";
       return { doc: document.documentElement.scrollHeight,
@@ -290,6 +298,7 @@ async function diff(antes = 8794, depois = 8793) {
   };
   const A = await ler(antes), B = await ler(depois);
   const l = (n, a, b, s = "") => console.log(n.padEnd(22) + String(a).padStart(9) + String(b).padStart(11) + String((b - a > 0 ? "+" : "") + (b - a)).padStart(10) + s);
+  console.log(`viewport ${LARG}px`);
   console.log("                        ANTES     DEPOIS      DELTA");
   l("altura", A.doc, B.doc, "px");
   l("telas", (A.doc / 900).toFixed(1), (B.doc / 900).toFixed(1));
@@ -302,7 +311,170 @@ async function diff(antes = 8794, depois = 8793) {
   });
 }
 
-const cmds = { beats, cpl, reveal, passos, regressao, diff };
+
+/* ---- figuras: a escala e a ordem visual de cada prova ---------------
+   Duas perguntas que print não responde: **quanto** cada imagem ocupa da
+   dobra (altura renderizada / altura da viewport) e **em que ordem** ela
+   chega em relação ao título da seção. Imagem que aparece acima do
+   próprio título lê como abertura sem legenda, e é o que estava sendo
+   reclamado a olho. Tudo sai de getBoundingClientRect na página rolada. */
+async function figuras(porta = 8793) {
+  const p = await pagina(porta);
+  // o grau mora em `chap.figuras`, o unico ramo que o i18n mescla chave a
+  // chave: TINTA=1 e EN=1 conferem que ele sobrevive ao tema e ao idioma,
+  // que e onde este projeto ja perdeu campo inteiro com build verde.
+  if (process.env.TINTA) { await p.evaluate(() => document.documentElement.classList.add("ink")); await p.waitForTimeout(400); }
+  if (process.env.EN) {
+    await p.evaluate(() => { const b = [...document.querySelectorAll("button,a")].find((e) => /^\s*(EN|English)\s*$/i.test(e.textContent || "")); if (b) b.click(); });
+    await p.waitForTimeout(1500);
+    await p.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += 1200) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); } window.scrollTo(0, 0); });
+    await p.waitForTimeout(600);
+  }
+  const d = await p.evaluate(() => {
+    const secs = [...document.querySelectorAll(".sec-anc")];
+    const dentro = (img) => secs.find((s) => s.contains(img));
+    const topoDoc = (el) => { const r = el.getBoundingClientRect(); return Math.round(r.top + window.scrollY); };
+    const imgs = [...document.querySelectorAll(".chapter-main img")].filter((i) => i.offsetParent !== null || i.getBoundingClientRect().height > 0);
+    return {
+      vh: window.innerHeight, vw: window.innerWidth,
+      doc: document.documentElement.scrollHeight,
+      figs: imgs.map((i) => {
+        const r = i.getBoundingClientRect();
+        const s = dentro(i);
+        const tit = s ? s.querySelector("h2,h3,.sec-t,.sec-k") : null;
+        const frame = i.closest(".fig-frame, .sol-panel, .ad-quadro, .ad-fig");
+        const fr = frame ? frame.getBoundingClientRect() : r;
+        return {
+          src: (i.getAttribute("src") || "").split("/").pop(),
+          sec: s ? s.id.replace("sec-", "") : "(fora)",
+          w: Math.round(fr.width), h: Math.round(fr.height),
+          ar: +(fr.width / Math.max(1, fr.height)).toFixed(2),
+          dobra: +(fr.height / window.innerHeight).toFixed(2),
+          topo: topoDoc(frame || i),
+          titulo: tit ? topoDoc(tit) : null,
+          nat: i.naturalWidth ? `${i.naturalWidth}x${i.naturalHeight}` : "?",
+          classe: (frame ? frame.className : i.className).split(/\s+/).filter((c) => c && c !== "fig-frame" && c !== "fig-img").join(".") || "-",
+          plano: frame ? getComputedStyle(frame).boxShadow : "-",
+          grau: (i.closest(".fig-plena") && "plena") || (i.closest(".fig-apoio") && "apoio") || (frame && frame.classList.contains("sol-panel") && "climax") || "padrao",
+        };
+      }),
+    };
+  });
+  console.log(`viewport ${d.vw}x${d.vh} · doc ${d.doc}px · ${d.figs.length} imagens`);
+  console.log(" larg  alt   ar  dobra  antesTit  seção          arquivo");
+  let acima = 0, grandes = 0;
+  const porSec = {};
+  for (const f of d.figs) {
+    const antes = f.titulo != null && f.topo < f.titulo;
+    if (antes) acima++;
+    if (f.dobra > 0.72) grandes++;
+    porSec[f.sec] = (porSec[f.sec] || 0) + 1;
+    const barra = "▇".repeat(Math.max(1, Math.round(f.dobra * 12)));
+    console.log(`${String(f.w).padStart(5)}${String(f.h).padStart(5)}${String(f.ar).padStart(6)}${String(f.dobra).padStart(6)}  ${(antes ? "ACIMA" : "  .  ").padStart(8)}  ${f.sec.padEnd(14)} ${f.src.slice(0, 26).padEnd(27)} ${barra}`);
+  }
+  const alturas = d.figs.map((f) => f.h).sort((a, b) => a - b);
+  const med = alturas[Math.floor(alturas.length / 2)];
+  const dist = {};
+  for (const f of d.figs) { const k = Math.round(f.h / 100) * 100; dist[k] = (dist[k] || 0) + 1; }
+  console.log(`\nmediana de altura ${med}px · min ${alturas[0]} · max ${alturas[alturas.length - 1]}`);
+  console.log("distribuição de altura (px arredondado à centena):");
+  for (const k of Object.keys(dist).sort((a, b) => a - b)) console.log(`  ${String(k).padStart(5)}px  ${"■".repeat(dist[k])} ${dist[k]}`);
+  console.log("\nplano de tinta (box-shadow computado) por grau:");
+  const porGrau = {};
+  for (const f of d.figs) {
+    if (f.plano === "-") continue;
+    const k = `${f.grau}  ${f.plano === "none" ? "SEM PLANO" : f.plano}`;
+    porGrau[k] = (porGrau[k] || 0) + 1;
+  }
+  for (const k of Object.keys(porGrau).sort()) console.log(`  ${String(porGrau[k]).padStart(3)}x  ${k}`);
+
+  console.log("\ncorte: proporção do arquivo contra a proporção da moldura");
+  console.log(" natural      arNat  arMoldura  corte%  arquivo");
+  for (const f of d.figs) {
+    if (f.nat === "?") continue;
+    const [nw, nh] = f.nat.split("x").map(Number);
+    const an = nw / nh;
+    // object-fit: cover → sobra o eixo maior. quanto do arquivo fica fora
+    const perda = an > f.ar ? 1 - f.ar / an : 1 - an / f.ar;
+    console.log(`${f.nat.padStart(9)}${String(an.toFixed(2)).padStart(11)}${String(f.ar).padStart(11)}${String(Math.round(perda * 100)).padStart(7)}  ${f.src}`);
+  }
+  console.log(`\nimagens acima do próprio título: ${acima}`);
+  console.log(`imagens ocupando mais de 72% da dobra: ${grandes} de ${d.figs.length}`);
+  console.log("figuras por seção:", JSON.stringify(porSec));
+  console.log("pageerror:", erros(p).length);
+  await p.close();
+}
+
+
+/* ---- ordem: o título chega antes da prova? -------------------------
+   A reclamação "a imagem aparece antes do título" é medível: para cada
+   beat, o topo do `.beat-t` contra o topo da primeira `.fig-frame` dentro
+   dele. Delta negativo = a prova entra acima do próprio título, e quem
+   rola encontra uma tela sem saber do que ela é prova. */
+async function ordem(porta = 8793) {
+  const p = await pagina(porta);
+  const d = await p.evaluate(() => {
+    const topo = (el) => Math.round(el.getBoundingClientRect().top + window.scrollY);
+    return [...document.querySelectorAll(".beat, .mod-passos, .cam-palco")].map((b) => {
+      // o ancora honesto e o TOPO DO BLOCO DE TEXTO, nao o h2: o kicker
+      // vermelho ("PRE-VENDA") e a primeira coisa que o leitor encontra, e
+      // um h2 27px abaixo dele nao e "prova antes do titulo", e a abertura
+      // normal de um beat de duas colunas. Medir pelo h2 acusava 5 falsos.
+      const t = b.querySelector(".beat-k, .beat-t, .mod-t, .sec-t");
+      const f = b.querySelector(".fig-frame, .plate");
+      if (!t && !f) return null;
+      return {
+        k: (b.querySelector(".beat-k")?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 30),
+        t: (b.querySelector(".beat-t, .mod-t, .sec-t")?.innerText || "(sem título)").replace(/\s+/g, " ").trim().slice(0, 34),
+        yt: t ? topo(t) : null, yf: f ? topo(f) : null,
+        h: Math.round(b.getBoundingClientRect().height),
+      };
+    }).filter(Boolean);
+  });
+  console.log("  yTexto    yFigura   delta   altura  título   (yTexto = topo do bloco de texto, o kicker)");
+  let ruins = 0;
+  for (const b of d) {
+    if (b.yt == null || b.yf == null) { console.log(`${String(b.yt ?? "-").padStart(9)}${String(b.yf ?? "-").padStart(10)}${"-".padStart(8)}${String(b.h).padStart(9)}  ${b.t}`); continue; }
+    const delta = b.yf - b.yt;
+    if (delta < 0) ruins++;
+    console.log(`${String(b.yt).padStart(9)}${String(b.yf).padStart(10)}${String(delta).padStart(8)}${String(b.h).padStart(9)}  ${b.t}${delta < 0 ? "   << PROVA ANTES DO TÍTULO" : ""}`);
+  }
+  console.log(`\nbeats com a prova acima do título: ${ruins} de ${d.length}`);
+  await p.close();
+}
+
+
+/* ---- dados: os paineis desenhados leem como prancha ou como card? ---
+   Tres perguntas medidas no DOM, e nenhuma delas print responde: os
+   paineis estao pousados (plano de tinta) ou flutuando secos; o vazio
+   dos trilhos e chapado (gramatica de progress bar) ou trama de
+   meio-tom; e quanto do capitulo eles ocupam em fila. */
+async function dados(porta = 8793) {
+  const p = await pagina(porta);
+  if (process.env.TINTA) { await p.evaluate(() => document.documentElement.classList.add("ink")); await p.waitForTimeout(400); }
+  const d = await p.evaluate(() => {
+    const paineis = [...document.querySelectorAll(".painel")].map((e) => ({
+      cls: e.className.replace("painel", "").trim() || "numeros",
+      h: Math.round(e.getBoundingClientRect().height),
+      plano: getComputedStyle(e).boxShadow,
+    }));
+    const trilhos = [...document.querySelectorAll(".pb-trilho, .fn-trilho, .ge-trilho, .fn-faixa")].map((e) => {
+      const c = getComputedStyle(e);
+      return { cls: e.className, img: c.backgroundImage === "none" ? "CHAPADO" : "trama", cor: c.backgroundColor, tam: c.backgroundSize };
+    });
+    return { paineis, trilhos };
+  });
+  console.log("painel                altura  plano de tinta");
+  for (const x of d.paineis) console.log(`  ${x.cls.padEnd(20)}${String(x.h).padStart(6)}  ${x.plano}`);
+  const chapados = d.trilhos.filter((t) => t.img === "CHAPADO");
+  console.log(`\ntrilhos: ${d.trilhos.length} · com trama de meio-tom: ${d.trilhos.length - chapados.length} · chapados: ${chapados.length}`);
+  if (d.trilhos[0]) console.log(`  amostra: ${d.trilhos[0].img} ${d.trilhos[0].cor} ${d.trilhos[0].tam}`);
+  if (chapados.length) console.log("  ainda chapados:", chapados.map((t) => t.cls).join(", "));
+  console.log("pageerror:", erros(p).length);
+  await p.close();
+}
+
+const cmds = { beats, cpl, reveal, passos, regressao, diff, figuras, ordem, dados };
 if (!cmds[CMD]) { console.log("comandos:", Object.keys(cmds).join(", ")); process.exit(1); }
 await cmds[CMD](...ARGS.map((a) => (/^\d+$/.test(a) ? +a : a)));
 await browser.close();

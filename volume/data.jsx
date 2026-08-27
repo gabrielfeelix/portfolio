@@ -98,25 +98,25 @@ const CHAPTERS = [
       quickview: { src: "volume/assets/projetos/pcyes/quickview.webp",
         alt: "Visualização rápida aberta sobre a listagem, com galeria, ficha resumida e botão de comprar",
         legenda: "Visualização rápida na listagem: avaliar o produto, ampliar a foto e comprar sem trocar de página." },
-      sku: { src: "volume/assets/projetos/pcyes/sku-editor.webp",
+      sku: { grau: "apoio",  /* o gerador de HTML e ferramenta interna, do mesmo ramo da esteira */ src: "volume/assets/projetos/pcyes/sku-editor.webp",
         alt: "Ferramenta interna com o formulário do produto à esquerda e o HTML gerado à direita",
         legenda: "A ferramenta interna: o formulário do SKU de um lado, o HTML pronto e formatado do outro, na hora." },
-      skuFila: { src: "volume/assets/projetos/pcyes/sku-fila.webp",
+      skuFila: { grau: "apoio",  /* a esteira e ferramenta de bastidor, nao a loja que o cliente ve */ src: "volume/assets/projetos/pcyes/sku-fila.webp",
         alt: "Esteira de produção com a fila de SKUs e as cinco etapas de cada produto",
         legenda: "A esteira: cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publicação, e o time enxerga em que etapa cada produto está." },
       contraste: { src: "volume/assets/projetos/pcyes/contraste.webp",
         alt: "Home da V1 passando de uma seção escura para uma dobra branca no meio da rolagem",
         legenda: "A V1 alternava dobras escuras e uma dobra branca inteira no meio do caminho. De madrugada, esse salto de brilho é a parte que cansa a leitura." },
-      libras: { src: "volume/assets/projetos/pcyes/libras.webp", ar: "8/5",
+      libras: { grau: "apoio",  /* o VLibras e um widget no canto, nao uma dobra */ src: "volume/assets/projetos/pcyes/libras.webp", ar: "8/5",
         alt: "Tradutor VLibras aberto sobre a home da V2, com o avatar em Libras ao lado do banner",
         legenda: "O tradutor de Libras entra pelo ícone de acessibilidade do header e traduz a página em uso. A V1 não tinha: quem tem Libras como primeira língua lia um site em segunda língua." },
-      contador: { src: "volume/assets/projetos/pcyes/contador.webp", ar: "1/1",
+      contador: { grau: "apoio",  /* o contador de reservas e um componente, nao uma tela: nasceu a 606x606, o maior quadrado do capitulo para a menor coisa dele */ src: "volume/assets/projetos/pcyes/contador.webp", ar: "1/1",
         alt: "Contagem regressiva da pré-venda correndo, com dias, horas, minutos e segundos",
         legenda: "A contagem corre de verdade na tela, e o número de reservas ao lado é o que sobrou. Escassez que existe, não a que o texto promete." },
-      prevenda: { src: "volume/assets/projetos/pcyes/prevenda.webp",
+      prevenda: { grau: "plena",  /* a tela de pre-venda E o argumento do modulo */ src: "volume/assets/projetos/pcyes/prevenda.webp",
         alt: "Página de produto em pré-venda com barra de reservas, prazo de entrega e preço de reserva",
         legenda: "A pré-venda mostra quantas reservas já foram feitas, quantas restam e quando o produto chega." },
-      sidecart: { src: "volume/assets/projetos/pcyes/sidecart.webp",
+      sidecart: { grau: "plena",  /* o carrinho lateral E o argumento do modulo */ src: "volume/assets/projetos/pcyes/sidecart.webp",
         alt: "Carrinho lateral aberto sobre a página do produto, com barra de brinde e pontos do pedido",
         legenda: "O carrinho lateral abre sobre a página. Adicionar um item deixou de tirar a pessoa de onde ela estava." },
       points: { src: "volume/assets/projetos/pcyes/points.webp",
@@ -140,7 +140,7 @@ const CHAPTERS = [
       ckV12: { src: "volume/assets/projetos/pcyes/ck-v12.webp", ar: "1800/913",
         alt: "Checkout da V1.2 com os quatro meios de pagamento lado a lado em uma única linha",
         legenda: "V1.2: os quatro meios cabem em uma linha e o frete condensa em três opções. O mesmo checkout ficou 60% mais curto." },
-      popup: { ar: "16/9",
+      popup: { grau: "apoio",  /* o pop-up e um comportamento de entrada, nao uma dobra da loja */ ar: "16/9",
         alt: "Pop-up de captação da V2 aparecendo depois da pessoa rolar parte da página",
         legenda: "V2: o pop-up só aparece depois de 15% de rolagem. Quem acabou de chegar vê a loja primeiro; quem já demonstrou interesse é que recebe a oferta." },
       buscaMouse: { ar: "16/9",
@@ -1120,9 +1120,27 @@ function useReveal(opts = {}) {
     // sem IntersectionObserver (impressão, motores antigos): nunca esconda
     // conteúdo atrás de um reveal que não vai disparar
     if (!("IntersectionObserver" in window)) { setSeen(true); return; }
+    // O threshold e uma FRACAO DO PROPRIO ELEMENTO, e um elemento mais
+    // alto que a tela nunca alcanca a sua. O beat da `solucao` mede
+    // 3.233px em 1440 (ratio maximo 0,28: passa raspando) e 4.049px em
+    // 1920, onde o maximo cai para 0,22 e empata com o gatilho. Resultado
+    // medido: o `.panel text` do climax ficava em opacity 0 PARA SEMPRE,
+    // 710px de vao no lugar do texto, com build verde e console limpo.
+    // E a terceira vez que a armadilha do `.beat .panel { opacity: 0 }`
+    // morde neste projeto -- ver docs/HANDOFF.md.
+    //
+    // Nao adianta so conferir a posicao dentro do callback: o observer so
+    // CHAMA o callback ao cruzar um threshold, e um elemento gigante nao
+    // cruza mais nenhum depois de entrar. Quem tem que ceder e o gatilho.
+    // O teto real e (altura da raiz / altura do elemento); 0,7 dele deixa
+    // margem para a raiz encolher pelo rootMargin sem empatar de novo.
+    const alvo = opts.threshold ?? 0.22;
+    const alto = el.offsetHeight || 0;
+    const raiz = window.innerHeight;
+    const gatilho = alto > raiz ? Math.max(0.02, (raiz / alto) * 0.7) : alvo;
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setSeen(true); io.disconnect(); }
-    }, { threshold: opts.threshold ?? 0.22, rootMargin: opts.rootMargin ?? "0px 0px -8% 0px" });
+    }, { threshold: gatilho, rootMargin: opts.rootMargin ?? "0px 0px -8% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);

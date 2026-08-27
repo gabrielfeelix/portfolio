@@ -1083,6 +1083,11 @@ html.ink {
      o fundo delas fica CLARO, entao o texto em cima escurece. */
   --vermilion-sobre-ink:#B01510;  /* vermelho legivel sobre o fundo claro */
   --sobre-ink-2:        #4A463D;  /* apoio escuro sobre o mesmo fundo     */
+  /* o plano de tinta nao pode virar junto com --ink: no modo tinta o
+     --ink e claro, e um plano claro atras do quadro vira halo de UI em
+     vez de sombra impressa. Aqui ele e a lavagem mais fraca, que ainda
+     le contra o papel escuro (#3B372F sobre #161310). */
+  --quadro-plano: var(--wash-1);
 }
 html.ink .rc-cover, html.ink .sol-img, html.ink .pc-art img, html.ink .cover-img { opacity: .9; }
 html.ink .splash { color: #F6F3EC; }   /* a capa continua vermelha: texto papel de verdade */
@@ -1824,7 +1829,11 @@ html.ink .about-photo.has-photo { background: var(--wash-1); }
   --ad-pos: 100%;
   position: relative; overflow: hidden; cursor: ew-resize; touch-action: pan-y;
   border: var(--ink-stroke) solid var(--ink); background: var(--wash-1);
-  box-shadow: 10px 10px 0 var(--ink); user-select: none;
+  /* o slider ja pousava, mas com --ink cru: no modo tinta esse token vira
+     CLARO e o plano virava halo em volta da moldura clara. --quadro-plano
+     e o par que nao inverte junto, e --q-plena amarra o deslocamento ao
+     mesmo grau das figuras grandes do capitulo. */
+  box-shadow: var(--q-plena) var(--q-plena) 0 var(--quadro-plano); user-select: none;
 }
 .ad-img { display: block; width: 100%; }
 .ad-clip { position: absolute; inset: 0; width: var(--ad-pos); overflow: hidden; will-change: width; }

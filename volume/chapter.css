@@ -213,11 +213,76 @@ html.ink .cover-linhas { opacity: .06; }
    de mangá conta: painel, fala, painel. A moldura vazia é sinal honesto
    de print que ainda não subiu, nunca um buraco no layout.
    ===================================================================== */
-.fig { margin: 0; }
+.fig { margin: 0; --q: var(--q-padrao); }
 .fig-frame {
   position: relative; overflow: hidden; background: var(--wash-1);
   border: var(--ink-stroke) solid var(--ink);
 }
+
+/* ---- o plano de tinta ------------------------------------------------
+   As figuras eram as unicas superficies emolduradas do volume sem sombra
+   dura: a home pousa os cards (.proj-card, .rail-cover, .about-photo), o
+   proprio capitulo pousa o calendario e as abas, e as 27 provas -- que
+   sao a materia do case -- ficavam secas em cima do papel. Aqui elas
+   passam a estar pousadas, com o registro deslocado na diagonal inferior
+   direita. Sem blur e sem alpha: e impressao fora de registro, nao
+   sombra de interface.
+   O deslocamento carrega a hierarquia (--q vem do grau da figura), entao
+   a mesma decisao que dimensiona a prova tambem a pesa. Altura: zero. */
+.fig-frame, .sol-panel, .cena-scroll-frame {
+  box-shadow: var(--q, var(--q-padrao)) var(--q, var(--q-padrao)) 0 var(--quadro-plano);
+  transition: box-shadow var(--cut), transform var(--cut);
+}
+/* a cena de sangria encosta nas duas bordas da tela e nao tem lado por
+   onde pousar: plano nela seria uma faixa presa no rodape do quadro */
+.cena .fig-frame { box-shadow: none; }
+
+/* pousar tem contrapartida: quem esta pousado levanta. O hover levanta o
+   quadro e alonga o plano, que e o mesmo gesto do .qsc-card e do .cl-btn
+   na home -- e de quebra anuncia que a figura abre, junto com a lupa. */
+@media (hover: hover) and (pointer: fine) {
+  .fig-frame:hover, .sol-panel:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: calc(var(--q, var(--q-padrao)) + 4px) calc(var(--q, var(--q-padrao)) + 4px) 0 var(--quadro-plano);
+  }
+}
+/* teclado ve o mesmo levantar que o mouse: o foco do .fig-abrir mora
+   dentro do quadro, entao focus-within e o seletor honesto aqui. */
+.fig-frame:focus-within, .sol-panel:focus-within {
+  transform: translate(-2px, -2px);
+  box-shadow: calc(var(--q, var(--q-padrao)) + 4px) calc(var(--q, var(--q-padrao)) + 4px) 0 var(--vermilion-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fig-frame, .sol-panel, .cena-scroll-frame { transition: none; }
+  .fig-frame:hover, .sol-panel:hover { transform: none; }
+}
+
+/* ---- os tres degraus da prova ---------------------------------------
+   Doze das trinta imagens nasciam em 606x379 identicos. O degrau nao e
+   estilo: e o que a figura E. `plena` sai da coluna e toma a largura da
+   pagina (o argumento do modulo); `padrao` vale a coluna inteira (a tela
+   que prova); `apoio` recua dentro da coluna (o detalhe de execucao, o
+   componente, a ferramenta de bastidor).
+   O recuo e sempre PARA A DIREITA: a coluna de provas sangra por ali, e
+   alinhar a borda direita mantem o degrau lendo como recuo deliberado em
+   vez de desalinhamento. A borda esquerda irregular e o ritmo. */
+.fig-apoio { --q: var(--q-apoio); width: var(--fig-apoio); margin-left: auto; }
+.fig-plena { --q: var(--q-plena); }
+/* o climax da solucao mede 1033px, acima do degrau plena: e a maior
+   imagem de V2 do capitulo e leva o plano mais pesado junto. */
+.sol-panel { --q: var(--q-plena); }
+
+/* Abaixo de 880px as colunas desabam numa pilha so e a coluna mede
+   350px em 390: 72% dali seriam 252px, que e o selo que o Grupo B tirou
+   do capitulo. O degrau de apoio existe para criar diferenca DENTRO de
+   uma coluna larga; sem coluna, ele nao tem o que diferenciar e sai de
+   cena. O plano de tinta fica, e encolhe junto com a tela. */
+@media (max-width: 880px) {
+  .fig-apoio { width: 100%; margin-left: 0; }
+  .fig-plena, .sol-panel, .fig { --q: var(--q-apoio); }
+  .mod-plena { margin-top: var(--ma-3); }
+}
+
 .fig-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .fig-cap {
   display: flex; gap: 10px; align-items: baseline;
@@ -346,9 +411,28 @@ html.ink .cover-linhas { opacity: .06; }
 .mod-figs.serie { grid-template-columns: 1fr; gap: var(--ma-4); }
 
 /* as colunas de prova avançam sobre a margem direita */
-.mod-figs, .passos-figs, .cam-palco, .sol-col {
+.mod-figs, .passos-figs, .cam-palco, .sol-col, .mod-plena {
   margin-right: calc(-1 * var(--sangra-dir, 0px));
 }
+
+/* ---- a linha da figura plena ----------------------------------------
+   Ela desce para uma faixa de doze colunas e para em --fig-plena (976px,
+   a medida do antes/depois). O teto e deliberado: o climax da `solucao`
+   mede 1033px e continua sendo a maior imagem de V2 do capitulo, que e a
+   regua que o Grupo B fechou. Plena e o segundo degrau, nao um empate. */
+.mod-plena { margin-top: var(--ma-4); }
+.mod-plena .fig { max-width: var(--fig-plena); }
+/* o beat com figura plena nao pode centralizar as colunas: a coluna de
+   texto e curta, a linha de baixo e alta, e centralizar joga o titulo
+   para depois da primeira prova. Medido: -291px no modulo de pre-venda e
+   -219px no de carrinho e pontos. */
+.beat:has(.mod-plena), .beat:has(.mod-figs), .beat:has(.cam-palco) { align-items: start; }
+/* alinhadas pelo topo, o padding de cima do painel de texto vira
+   desalinhamento puro: o kicker descia 40px enquanto a moldura ao lado
+   comecava na linha zero da grade. Sem ele as duas colunas abrem juntas. */
+.beat:has(.mod-plena) .panel.text,
+.beat:has(.mod-figs) .panel.text,
+.beat:has(.cam-palco) .panel.text { padding-top: 0; }
 /* a legenda acompanha a figura, mas a linha não: texto a 1000px de
    largura sai da faixa de leitura tão rápido quanto sai a 280px */
 /* 68ch aqui rendia 80 caracteres reais, acima da faixa. Quem segura
@@ -619,7 +703,23 @@ html.ink .cover-linhas { opacity: .06; }
    medida: cada ponto é uma pessoa que entrou na loja, e os poucos acesos
    são as que compraram. Ao lado, contadores e barras que crescem quando o
    bloco entra na tela. Nada aqui é imagem. */
-.painel { border: var(--ink-stroke) solid var(--ink); background: var(--paper); padding: var(--ma-4); }
+.painel { border: var(--ink-stroke) solid var(--ink); background: var(--paper); padding: var(--ma-4);
+  /* mesmo plano das provas e do calendario: os tres paineis de dado eram
+     as ultimas superficies emolduradas do capitulo ainda flutuando secas.
+     Pousados, param de ler como card de dashboard e passam a ler como a
+     prancha impressa que o resto do volume ja e. Altura: zero. */
+  box-shadow: var(--q-padrao) var(--q-padrao) 0 var(--quadro-plano); }
+
+/* ---- o trilho deixa de ser progress bar ------------------------------
+   Nove trilhos cinza chapados em tres paineis seguidos: essa e a
+   gramatica de barra de progresso, e era ela que dava "cara de UI" a um
+   bloco cujo conteudo e argumento, nao interface. O vazio agora e TOM,
+   a mesma trama de meio-tom que `.tone-dots-fine` ja declarava em
+   colors_and_type.css e que nenhum componente usava. O cheio continua
+   tinta cheia: tinta sobre trama e a leitura de uma pagina impressa, e a
+   diferenca entre os dois passa a ser de MATERIA, nao so de cor.
+   O 4px e o passo fino: em trilho de 12px, 5px ja rendia duas fileiras
+   de ponto e virava ruido. */
 .pn-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--gutter); flex-wrap: wrap; }
 .pn-t { font-family: var(--font-display); text-transform: uppercase; font-size: var(--t-d2); line-height: 1.04; margin: 8px 0 0; max-width: 22ch; }
 .pn-fonte { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase; letter-spacing: .14em;
@@ -646,7 +746,9 @@ html.ink .cover-linhas { opacity: .06; }
 .pb-topo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .pb-l { font-size: 15px; color: var(--fg); }
 .pb-v { font-family: var(--font-condensed); font-weight: 700; font-size: 15px; }
-.pb-trilho { margin-top: 7px; height: 12px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
+.pb-trilho { margin-top: 7px; height: 12px; background-color: var(--paper);
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 4px 4px;
+  border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
 .pb-fill { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0;
   transition: width 760ms var(--curva); }
 .pb-n { display: block; margin-top: 6px; font-size: 13px; color: var(--fg-2); }
@@ -667,7 +769,9 @@ html.ink .cover-linhas { opacity: .06; }
 .fn-cab { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .fn-l { font-size: 15px; color: var(--fg); }
 .fn-v { font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1; }
-.fn-trilho { margin-top: 7px; height: 14px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
+.fn-trilho { margin-top: 7px; height: 14px; background-color: var(--paper);
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 4px 4px;
+  border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
 .fn-preenche { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0;
   transition: width 820ms var(--curva); }
 /* a última etapa é a que importa: recebe tinta */
@@ -682,7 +786,9 @@ html.ink .cover-linhas { opacity: .06; }
 }
 /* a régua: faixa saudável em wash, a marca da categoria, o nosso ponto */
 .fn-regua { position: relative; height: 34px; margin-top: 12px; border-bottom: var(--ink-stroke) solid var(--ink); }
-.fn-faixa { position: absolute; top: 9px; bottom: 9px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); }
+.fn-faixa { position: absolute; top: 9px; bottom: 9px; background-color: var(--paper);
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 4px 4px;
+  border: var(--ink-hair) solid var(--ink); }
 .fn-regua::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--wash-2, var(--wash-1)); }
 .fn-alvo { position: absolute; top: 2px; bottom: 2px; width: 2px; background: var(--ink); }
 .fn-nosso {
@@ -712,7 +818,9 @@ html.ink .cover-linhas { opacity: .06; }
   color: var(--wash-3); background: var(--wash-1); padding: 1px 6px; border: var(--ink-hair) solid var(--ink);
 }
 .ge-p { margin-left: auto; font-family: var(--font-condensed); font-weight: 700; font-size: 15px; }
-.ge-trilho { margin-top: 7px; height: 12px; background: var(--wash-1); border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
+.ge-trilho { margin-top: 7px; height: 12px; background-color: var(--paper);
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.2px); background-size: 4px 4px;
+  border: var(--ink-hair) solid var(--ink); position: relative; overflow: hidden; }
 .ge-preenche { position: absolute; inset: 0 auto 0 0; background: var(--wash-3); width: 0;
   transition: width 760ms var(--curva); }
 /* o ruído é o que domina a página: entra em tinta */
