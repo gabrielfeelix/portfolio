@@ -147,6 +147,19 @@ function RevealImageMask({ proj, chap, index, total, onOpen }) {
 const DECK_MIN_W = 861;   /* o breakpoint da grade de 2 colunas, mais 1 */
 const DECK_ATRASO = 0.42; /* quanto do percurso é gasto escalonando as cartas */
 
+/* Quanto de cada quadro a carta caminha em direção ao alvo da rolagem.
+   Menor = mais preguiçosa. É o mesmo mecanismo das colunas do `Bite`, e é
+   ele que tira o movimento do 1:1: sem lerp a carta é escrava do scroll e
+   para no instante em que a roda para, o que lê como arrasto e não como
+   peso. Os fatores caem de cima para baixo, então a última carta do
+   baralho chega depois das outras e o leque fecha com atraso.
+
+   Mais baixos que os do `Bite` (0,068 a 0,115) de propósito: aqui a peça
+   é grande e o percurso é longo, e no fator dele o baralho parecia
+   nervoso. */
+const DECK_LERP = [0.080, 0.070, 0.061, 0.052, 0.045];
+const DECK_PARADO = 0.0016;  /* diferença abaixo da qual a carta assenta */
+
 /* A pose de cada carta dentro do baralho, relativa ao lugar final dela.
    `i = 0` é a carta de cima. O leque abre para os dois lados a partir do
    meio, então o desenho tem centro em vez de ler como pilha torta. */
@@ -173,9 +186,10 @@ function RevealChapters({ onOpen }) {
     const cartas = Array.prototype.slice.call(lista.children);
     const n = cartas.length;
     let alvos = [];      /* vetor de cada carta até o centro do baralho */
-    let faixa = null;    /* topo absoluto e altura da lista */
+    let faixa = null;    /* centro absoluto do baralho */
     let raf = 0;
     let vivo = false;    /* o baralho está ligado nesta largura? */
+    let suave = [];      /* o progresso AMACIADO de cada carta, que persegue o da rolagem */
 
     function limpar() {
       cartas.forEach((c) => { c.style.transform = ""; c.style.zIndex = ""; });
@@ -201,23 +215,44 @@ function RevealChapters({ onOpen }) {
          baralho chegar ao meio da tela: quem rolava via a grade pronta e
          perdia o movimento inteiro. Medido em 1440 x 900. */
       faixa = { centro: cy + window.scrollY };
+      /* nasce já no alvo: quem chega na página com a seção no meio da tela
+         não deve ver o baralho se montar do zero. */
+      suave = cartas.map((_, i) => alvoDe(i, progresso()));
     }
 
+    /* o progresso cru da rolagem, 0 a 1 */
+    function progresso() {
+      const vh = window.innerHeight;
+      const centro = faixa.centro - window.scrollY;
+      /* p = 0 com o baralho entrando por baixo (90% da tela) e p = 1 com
+         ele no topo (4%). O alcance foi de 0,62 para 0,86 de tela: o mesmo
+         movimento espalhado por mais rolagem é o que o deixa mais lento
+         sem deixá-lo mole. */
+      return Math.max(0, Math.min(1, (vh * 0.9 - centro) / (vh * 0.86)));
+    }
+
+    /* o alvo de UMA carta: o progresso da rolagem, deslocado pelo atraso
+       que escalona a distribuição */
+    function alvoDe(i, p) {
+      return Math.max(0, Math.min(1, (p - (i / n) * DECK_ATRASO) / (1 - DECK_ATRASO)));
+    }
+
+    /* Um quadro. A rolagem não escreve o transform: ela só move o ALVO, e
+       cada carta persegue o alvo dela por lerp. Enquanto sobrar diferença
+       o quadro se reagenda sozinho, então o movimento continua depois de a
+       roda parar, que é exatamente o peso que faltava. */
     function passo() {
       raf = 0;
       if (!vivo || !alvos.length) return;
-      const vh = window.innerHeight;
-      const centro = faixa.centro - window.scrollY;
-      /* p = 0 com o baralho entrando por baixo (88% da tela) e p = 1 com
-         ele no terço de cima (26%). O percurso inteiro cabe em pouco mais
-         de meia tela de rolagem, e o baralho está visível de ponta a
-         ponta: não existe trecho do movimento que aconteça fora do campo. */
-      const p = Math.max(0, Math.min(1, (vh * 0.88 - centro) / (vh * 0.62)));
+      const p = progresso();
+      let mexeu = false;
       for (let i = 0; i < n; i++) {
-        /* cada carta parte depois da anterior: é o atraso que faz o
-           baralho se distribuir em vez de explodir de uma vez só */
-        const q = Math.max(0, Math.min(1, (p - (i / n) * DECK_ATRASO) / (1 - DECK_ATRASO)));
-        const e = 1 - Math.pow(1 - q, 3);
+        const alvo = alvoDe(i, p);
+        const d = alvo - suave[i];
+        if (Math.abs(d) > DECK_PARADO) { suave[i] += d * DECK_LERP[i]; mexeu = true; }
+        else { suave[i] = alvo; }
+
+        const e = 1 - Math.pow(1 - suave[i], 3);
         const L = poseLeque(i, n);
         const a = alvos[i];
         const resto = 1 - e;
@@ -230,10 +265,11 @@ function RevealChapters({ onOpen }) {
         /* a carta de cima do baralho é a primeira do volume */
         c.style.zIndex = String(n - i);
       }
+      if (mexeu) raf = requestAnimationFrame(passo);
     }
 
     function agenda() { if (!raf) raf = requestAnimationFrame(passo); }
-    function remedir() { medir(); passo(); }
+    function remedir() { medir(); agenda(); }
 
     let t = 0;
     function noResize() { clearTimeout(t); t = setTimeout(remedir, 140); }
