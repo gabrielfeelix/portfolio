@@ -369,12 +369,12 @@ function OutrasPecas() {
   return (
     <section className="outras" id="outras">
       <div className="sec-head">
-        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Outras peças", "Other pieces")}</Brush>
-        <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
+        <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Outros projetos", "Other projects")}</Brush>
+        <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("projeto", "project") : t("projetos", "projects")}</span>
       </div>
       <p className="mo-desc" style={{ maxWidth: "52ch", marginBottom: "var(--ma-3)" }}>
-        {t("Duas peças por vez, uma em cada página. A folha vira da direita para a esquerda, como se lê mangá. Quem tem pressa abre o índice inteiro de uma vez.",
-           "Two pieces at a time, one per page. The leaf turns right to left, the way manga reads. In a hurry, open the whole index at once.")}
+        {t("Dois projetos por vez, um em cada página. A folha vira da esquerda para a direita, como se folheia mangá. Quem tem pressa abre o índice inteiro de uma vez.",
+           "Two projects at a time, one per page. The leaf turns left to right, the way manga is flipped. In a hurry, open the whole index at once.")}
       </p>
       <BookSlider items={all} />
     </section>

@@ -2379,6 +2379,7 @@ html.ink .ad-punho { background: #B01510; color: #F6F3EC; }
    produto tem lugar no volume, mas é o quadro do capítulo, não a folha. */
 .lv-logo {
   block-size: 22px; inline-size: auto; max-inline-size: 76px;
+  border-radius: 6px; overflow: hidden;
   object-fit: contain; object-position: left center;
   margin-inline-end: 10px; flex: 0 0 auto;
   filter: grayscale(1) contrast(1.15) brightness(.55);
