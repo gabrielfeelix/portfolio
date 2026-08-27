@@ -36,7 +36,7 @@ button { color: inherit; }
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: blur(3px);
   border-bottom: var(--ink-stroke) solid var(--ink);
-  transition: transform .34s cubic-bezier(.4,0,.2,1), box-shadow .34s ease;
+  transition: transform .34s var(--curva), box-shadow .34s var(--curva);
   will-change: transform;
 }
 /* slide up out of view when scrolling down; springs back on scroll up */
@@ -63,7 +63,7 @@ button { color: inherit; }
 .v-navlinks a:not(.nav-contact)::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2.5px;
   background: var(--vermilion); transform: scaleX(0); transform-origin: left;
-  transition: transform .26s cubic-bezier(.4,0,.2,1);
+  transition: transform .26s var(--curva);
 }
 .v-navlinks a:not(.nav-contact):hover { color: var(--vermilion); letter-spacing: .17em; }
 .v-navlinks a:not(.nav-contact):hover::after { transform: scaleX(1); }

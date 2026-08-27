@@ -263,6 +263,81 @@ clímax da V2 para em 1033px. Para empatar de vez, as telas da `solucao`
 teriam que sangrar em `100vw` como a cena da V1 sangra. Isso é decisão
 visual do Gabriel, na tela dele, e não foi tomada aqui.
 
+## Registro de execução · motion e maneirismo (Grupos D e E)
+
+Executada em 2026-08-26 sobre `68855dd`. Tudo medido na página servida em
+1440x900, contando no DOM, não no fonte.
+
+**D · motion.** O inventário do fonte era pior que o da auditoria: 22
+valores distintos de `cubic-bezier` escritos na mão. O que a auditoria via
+como "5 curvas" era o computed style de uma página só.
+
+| Rota | Curvas em `transition` antes | Depois | Elementos |
+|---|---|---|---|
+| `#/cap/pcyes` | 6 | **1** | 2.392 |
+| home | 6 | **1** | 337 |
+| os outros 4 capítulos | 6 | **1** | 146 a 173 |
+| `#/rapido`, `#/processo` | 6 | **1** | 94 e 104 |
+
+A curva única é `cubic-bezier(.16,1,.3,1)`, exatamente a que o beat do
+Design System defende. Ela virou o token `--curva`, e **`--cut` passou a
+ser `180ms var(--curva)`**: como `--cut` é o token de transição usado 94
+vezes no volume, essa linha sozinha unificou a maior parte do site.
+
+Quem foge dela agora tem nome e motivo, que é a diferença entre exceção e
+acidente: **`--curva-corte`** (`.85,0,.9,.2`) só no corte de mangá, e
+**`--curva-carimbo`** (`.2,1.25,.3,1`) só no que carimba, onde o
+overshoot é o gesto. O carimbo substituiu quatro overshoots escolhidos na
+mão (`.2,1.4`, `.22,1.2`, `.2,1.3`, `.2,1.1`) que não tinham razão para
+diferir entre si.
+
+Ficaram de fora de propósito e estão declarados no CSS: a camada
+decorativa `organic` e o campo do hero (`linear` / `ease-in-out`, que é
+ambiente, não interface), o `steps(29)` da tinta, e dois literais do hero
+aprovado (`rotw-in` / `rotw-out` e `sig-draw`).
+
+**Bug antigo achado no caminho:**
+`.view { animation: viewcut var(--cut) cubic-bezier(.85,0,.9,.2) both }`
+declarava **duas timing functions** na mesma shorthand, o que invalida a
+declaração inteira. Build verde, console limpo, animação nunca rodou.
+Corrigido, mas `.view` não existe mais no DOM: hoje é CSS órfão.
+
+**E · maneirismo.** Medido no texto renderizado, nos dois idiomas:
+
+| | Antes | Depois |
+|---|---|---|
+| Dois-pontos explicativos, PT | 39 | **22** |
+| Dois-pontos explicativos, EN | 37 | **22** |
+| Travessões | 0 | **0** |
+| Palavras, PT | 4.019 | 4.029 |
+
+21 quebras em `data.jsx` e as 15 contrapartes em `i18n.jsx`. O critério
+foi quebrar só **prosa**, onde o gesto era afirmação, dois-pontos,
+revelação. As **legendas ficaram intactas**: ali o "X: descrição" é
+rótulo de legenda, não tique, e uniformizar isso quebraria o idioma das
+figuras. O grosso dos 22 restantes é legenda.
+
+**Verificação.** `axe` (wcag2a + wcag2aa) com **0 violação** em 1440
+papel, 1440 tinta, 1440 EN, 390 e 1700. `scrollWidth == clientWidth` nos
+cinco. **0 `pageerror`** nas oito rotas do site. Altura do documento
+**39.302px, idêntica** à de antes: nem o motion nem o texto mexeram no
+ritmo. A varredura de reveal em passos de 90px não achou painel morto (o
+`Resultado` marca 0,47 durante a varredura só porque a página acaba antes
+de ele terminar de acender; parado no fim, ele chega a 1,0).
+
+### Nota depois de D e E
+
+| Dimensão | Antes | Depois | Por quê |
+|---|---|---|---|
+| Motion | 6,5 | **9,0** | Uma curva em todas as transições do site, e as duas exceções viraram token com nome. |
+| Voz e ownership | 9,0 | **9,0** | O tique caiu de 39 para 22 dois-pontos, mas o conteúdo não mudou: a dimensão já estava alta por outro motivo. |
+| As outras seis | iguais | iguais | Não foram alvo. |
+
+Média das oito dimensões: **8,3** (era 8,0 depois da Rodada A e da
+escala). O que segura a nota agora é só o **ritmo** (5,0), que é o Grupo
+A, e a **apresentação** (7,5), que depende de uma decisão visual do
+Gabriel e dos quatro prints que só ele tem.
+
 ## Registro de execução
 
 Rodada A, executada em 2026-08-26. Tudo verificado **medindo na página

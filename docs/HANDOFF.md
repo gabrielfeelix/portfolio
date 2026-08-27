@@ -18,9 +18,9 @@ Portfólio em forma de volume de mangá. SPA React estática, sem backend.
   leiturabilidade.**
 - `docs/AUDITORIA-PCYES-2026-08-26.md` (o capítulo só, e é justamente o
   que a outra deixou de fora): craft, motion, leiturabilidade, escala das
-  imagens e apresentação do design. **Nota atual: 8,0 para mid**, era
+  imagens e apresentação do design. **Nota atual: 8,3 para mid**, era
   7,4. Traz os números medidos e a receita pra reproduzir a medição, e o
-  registro das duas rodadas já executadas (a A e a de escala).
+  registro das três rodadas já executadas (a A, a de escala e a D+E).
 
 O próximo trabalho sai da seção **Pendente** deste arquivo, que consolida
 as duas.
@@ -102,15 +102,22 @@ Custaram uma rodada inteira de retrabalho. As três agem juntas:
 
 ## Pendente
 
-> **Estado em 2026-08-26.** A Rodada A caiu em `fb823c9` e o **Grupo B
-> (escala das telas e zoom) caiu na sequência**: ver o registro de
-> execução em `docs/AUDITORIA-PCYES-2026-08-26.md`, que tem os números e
-> o método pra reproduzir a medição. Nada do que sobrou abaixo foi
+> **Estado em 2026-08-26.** Fecharam, nesta ordem: a **Rodada A**
+> (`fb823c9`), o **Grupo B** (escala e zoom, `68855dd`) e os **Grupos D e
+> E** (motion e maneirismo). Os registros de execução, com números e com
+> o método pra reproduzir a medição, estão em
+> `docs/AUDITORIA-PCYES-2026-08-26.md`. Nada do que sobrou abaixo foi
 > tentado e falhou: é trabalho que ainda não começou ou que depende do
 > Gabriel.
 
-Sete grupos. O **A** é o que vale mais agora, e é o que o Gabriel decidiu
-tratar como projeto à parte.
+Sete grupos, **quatro fechados**. O que resta de verdade é o **A**, que o
+Gabriel decidiu tratar como projeto à parte, mais o **C** e o **F**, que
+dependem de material que só ele tem.
+
+**As duas decisões de escala continuam com ele, e não entraram aqui:**
+se o clímax da V2 (1033px) deve empatar com a abertura da V1 (~1180px)
+sangrando em `100vw`, e se o crescimento de 7,9% do documento incomoda
+mais que a escala. Se incomodar, o caminho é o Grupo A, não desfazer.
 
 ---
 
@@ -239,52 +246,76 @@ primeira tela"), não dez beats. **Não despejar os 10.**
 
 ---
 
-### D · MOTION (o capítulo contradiz a própria tese)
+### D · MOTION · **FECHADO em 2026-08-26**
 
-O beat do Design System argumenta, com todas as letras: *"Uma curva só,
-para tudo que se move. A alternativa é cada componente escolher a sua, e
-aí o site inteiro parece feito por pessoas diferentes."*
+O capítulo contradizia a própria tese. Agora não contradiz mais, e a
+regra virou token. Medido em 1440 na página servida, contando
+`transitionTimingFunction` de todo elemento com transição viva:
 
-Inventário medido no capítulo:
+| Rota | Curvas antes | Curvas depois | Elementos |
+|---|---|---|---|
+| `#/cap/pcyes` | 6 | **1** | 2.392 |
+| home | 6 | **1** | 337 |
+| `odex`, `oderco-revenda`, `portfolio`, `locarmais` | 6 | **1** | 146 a 173 |
+| `#/rapido`, `#/processo` | 6 | **1** | 94 e 104 |
 
-```
-ease (padrão do browser)          1002 elementos  ← camada decorativa `organic`
-cubic-bezier(0.2, 0.9, 0.1, 1)     129
-cubic-bezier(0.16, 1, 0.3, 1)       42  ← a curva que o texto defende
-cubic-bezier(0.72, 0.02, 0.28, 1)   29
-cubic-bezier(0.4, 0, 0.2, 1)         1
-+ ease-in-out e linear em animações
-```
+**O idioma novo, e é ele que a próxima pessoa precisa saber.** Três
+tokens em `colors_and_type.css`, e quem foge do primeiro tem nome e
+motivo:
 
-A curva defendida é a **quarta** mais usada. Unificar nos componentes de
-conteúdo; a camada decorativa pode ficar no `ease`.
+- **`--curva`** = `cubic-bezier(.16,1,.3,1)`, a curva que o beat do
+  Design System defende. É a de tudo que se move. `--cut` virou
+  `180ms var(--curva)`, e como `--cut` é o token de transição usado 94
+  vezes, essa linha só sozinha unificou a maior parte do site.
+- **`--curva-corte`** = `.85,0,.9,.2`, só no corte de mangá: `cutflash`,
+  `viewcut`, `sfxpop`, `ptwipe`, `vcut`, `pvsl`.
+- **`--curva-carimbo`** = `.2,1.25,.3,1`, só no que carimba: `stamp`,
+  `hanko`, `bm-drop`. Eram quatro overshoots escolhidos na mão
+  (`.2,1.4`, `.22,1.2`, `.2,1.3`, `.2,1.1`) sem razão para diferirem.
 
-Ressalva honesta pra não inflar o problema: os 1002 `ease` são **uma**
-camada decorativa (as partículas `<i>` de `organic.jsx`), não mil
-componentes distintos. O problema real são as **quatro curvas em
-componentes de conteúdo**.
+**Componente novo herda `var(--curva)`.** Escrever `cubic-bezier` na mão
+num componente de conteúdo é regressão, e ela é medível pela varredura
+acima.
 
-**O que está bom no motion e não se mexe:** `prefers-reduced-motion`
-tratado em 14 pontos do CSS, durações sensatas (0,18s a 0,82s),
-`will-change` onde precisa.
+Ficaram de fora de propósito: a camada decorativa `organic` e o campo do
+hero (`linear` / `ease-in-out`, que é ambiente, não interface), o
+`steps(29)` da tinta, e dois literais do hero aprovado (`rotw-in` /
+`rotw-out` e `sig-draw`).
 
----
+**Bug achado de passagem, e ele era antigo:**
+`.view { animation: viewcut var(--cut) cubic-bezier(.85,0,.9,.2) both }`
+punha **duas timing functions** na mesma shorthand. Isso invalida a
+declaração inteira, sem erro de console e com build verde. A animação
+nunca rodou. Corrigido, mas `.view` não existe mais no DOM: hoje é CSS
+órfão, sem efeito visual.
 
-### E · TEXTO (maneirismo, não conteúdo)
+### E · TEXTO · **FECHADO em 2026-08-26**
 
-O conteúdo do PCYES está bom e **não precisa reescrita**. O que precisa é
-quebrar um tique de ritmo, medido no capítulo:
+O conteúdo não foi reescrito, e continua não precisando. O que caiu foi o
+tique de ritmo. Medido no texto renderizado do capítulo (`innerText`, não
+no fonte):
 
-- **60 dois-pontos explicativos** em ~250 frases. Uma em cada quatro
-  frases faz o mesmo gesto: afirmação, dois-pontos, revelação. Fica
-  previsível no Ato III e IV. Quebrar uns 20.
-- "deixou de / passou a" **14 vezes**, "em vez de" **10 vezes**.
+| | Antes | Depois |
+|---|---|---|
+| Dois-pontos explicativos, PT | 39 | **22** |
+| Dois-pontos explicativos, EN | 37 | **22** |
+| Travessões | 0 | **0** |
+| Palavras, PT | 4.019 | 4.029 |
+| Altura do documento | 39.302px | **39.302px** |
 
-**Não é cara de IA, e isso foi verificado:** 0 travessões, 0 construções
-"não é X, é Y", frase média de 18,6 palavras, só 5 frases acima de 45
-palavras, vocabulário idiomático e brasileiro. Não relitigar isso.
+Foram 21 quebras em `data.jsx` e as 15 contrapartes em `i18n.jsx`.
 
----
+**O critério, e ele é o que segura a próxima rodada:** quebrei só
+**prosa**, onde o gesto era afirmação, dois-pontos, revelação. As
+**legendas** ficaram intactas de propósito: ali o "X: descrição" é rótulo
+de legenda, não maneirismo, e uniformizar isso quebraria o idioma das
+figuras. Os 22 que restam são majoritariamente legenda.
+
+"deixou de / passou a" e "em vez de" continuam em 9 ocorrências cada.
+Não foram alvo.
+
+**Não é cara de IA, e isso continua verificado:** 0 travessões, 0
+construções "não é X, é Y", vocabulário idiomático. Não relitigar.
 
 ### F · OS OUTROS QUATRO CAPÍTULOS (o problema que ninguém olhou ainda)
 

@@ -169,8 +169,8 @@ const CHAPTERS = [
     },
     problema: {
       t: "Bonita de ver, difícil de comprar",
-      p: ["A primeira versão do site foi construída em cima da marca: vídeo, animação, muita presença institucional. Ficou bonita e ficou lenta de comprar.",
-          "As pessoas não chegavam ao checkout. Para comprar qualquer coisa era obrigatório abrir a página do produto: vitrine, home e categoria não deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
+      p: ["A primeira versão do site foi construída em cima da marca, com vídeo, animação e muita presença institucional. Ficou bonita e ficou lenta de comprar.",
+          "As pessoas não chegavam ao checkout. Para comprar qualquer coisa era obrigatório abrir a página do produto. Vitrine, home e categoria não deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
           "E quem chegava ao checkout não finalizava. A etapa final concentrava o abandono, e não estava claro por quê.",
           "Somando, o site cobrava três pedágios de quem só queria comprar um mouse: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho e descobrir no escuro se dava para pagar do jeito que a pessoa queria. Cada um desses pedágios tem o seu jeito de sumir com o cliente."],
     },
@@ -192,7 +192,7 @@ const CHAPTERS = [
         { l: "Sessões com erro de script", v: 23.5, d: 1, n: "Uma em cada quatro esbarrava em falha técnica." },
         { l: "Sessões identificadas como robô", v: 41, n: "O que sobrava de gente real era ainda menor." },
       ],
-      nota: "Os números de comportamento vêm de uma amostra curta do Clarity, e é assim que eles entram aqui: como indício que orientou onde olhar, não como medida definitiva. O que sustenta a decisão é a soma deles com as gravações e com a conversão do trimestre.",
+      nota: "Os números de comportamento vêm de uma amostra curta do Clarity, e é assim que eles entram aqui, como indício que orientou onde olhar, não como medida definitiva. O que sustenta a decisão é a soma deles com as gravações e com a conversão do trimestre.",
     },
     /* ---- O FUNIL E O GESTO ----------------------------------------
        O painel acima dá o tamanho do buraco; estes dois dizem onde ele
@@ -228,12 +228,12 @@ const CHAPTERS = [
         { el: "Próximo do carrossel", sel: "Next", v: 22, p: 2.76, tipo: "neutro" },
         { el: "Comprar", sel: "BUTTON.action.primary", v: 5, p: 0.63, tipo: "compra" },
       ],
-      leitura: "Somados, os dois botões de fechar dão 182 cliques: 22,8% de tudo que se clicava na página. Comprar tinha 5. O site pedia atenção antes de oferecer qualquer coisa, e a pessoa gastava o primeiro gesto se livrando dele. Foi o que tirou o pop-up da chegada na V2, e o que mandou olhar para a busca: se o segundo gesto mais comum é procurar e a compra não acontece, o problema está no que a busca devolve.",
+      leitura: "Somados, os dois botões de fechar dão 182 cliques, 22,8% de tudo que se clicava na página. Comprar tinha 5. O site pedia atenção antes de oferecer qualquer coisa, e a pessoa gastava o primeiro gesto se livrando dele. Foi o que tirou o pop-up da chegada na V2, e o que mandou olhar para a busca. Se o segundo gesto mais comum é procurar e a compra não acontece, o problema está no que a busca devolve.",
     },
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
       p: ["Gravações no Microsoft Clarity, métricas de navegação e tempo de permanência, e conversa direta com usuários sobre onde travavam.",
-          "Assisti as gravações inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É um trabalho lento e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
+          "Assisti as gravações inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É um trabalho lento e é ele que sustenta o resto. Sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
           "A diretoria queria uma direção minimalista, com foco em valor de marca. O comportamento no site apontava para o outro lado. Em vez de escolher um dos dois, propus separar as camadas: a marca continua presente em momentos específicos, e o caminho de compra passa a ser o eixo do site. Levei as gravações para sustentar a proposta, e o modelo final foi aprovado."],
       achados: [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
@@ -273,7 +273,7 @@ const CHAPTERS = [
       { d: "Pop-up depois de 15% de rolagem, nunca na chegada",
         r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas \u00e1reas de fechar, contra 5 no bot\u00e3o de comprar. A capta\u00e7\u00e3o de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele s\u00f3 aparece depois de a pessoa rolar 15% da p\u00e1gina, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem j\u00e1 est\u00e1 olhando." },
       { d: "Formas de pagamento na primeira dobra do checkout",
-        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no m\u00f3dulo de pagamento do Magento: o erro aparecia na sess\u00e3o gravada e n\u00e3o aparecia em relat\u00f3rio nenhum. Fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
+        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no m\u00f3dulo de pagamento do Magento. O erro aparecia na sess\u00e3o gravada e n\u00e3o aparecia em relat\u00f3rio nenhum. Fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
       { d: "Adicionar ao carrinho direto da home e da vitrine",
         r: "porque exigir a p\u00e1gina do produto cobrava cliques que n\u00e3o precisavam existir. Quem j\u00e1 sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda est\u00e1 decidindo continua com a p\u00e1gina completa \u00e0 disposi\u00e7\u00e3o." },
     ],
@@ -289,9 +289,9 @@ const CHAPTERS = [
     },
     solucao: {
       t: "Marca presente, produto no eixo",
-      p: ["Em vez de escolher entre valor de marca e convers\u00e3o, separei as camadas: a marca aparece em momentos espec\u00edficos e o caminho de compra passa a ser o eixo do site.",
+      p: ["Em vez de escolher entre valor de marca e convers\u00e3o, separei as camadas. A marca aparece em momentos espec\u00edficos e o caminho de compra passa a ser o eixo do site.",
           "As tr\u00eas telas abaixo s\u00e3o o mesmo argumento em tr\u00eas escalas. O checkout abre no meio de pagamento, a vitrine compra sem abrir o produto, e o mobile repete a regra numa tela em que n\u00e3o cabe repetir nada por engano.",
-          "O sistema saiu junto: uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espa\u00e7amento, estado e cor a cada tela nova."],
+          "O sistema saiu junto, uma biblioteca no Figma com os componentes que aparecem em toda a compra, para o time de tecnologia implementar sem redecidir espa\u00e7amento, estado e cor a cada tela nova."],
       slots: 1,
       /* a s\u00edntese precisa de prova nova, n\u00e3o de resumo. Como `decisoes`
          devolveu as figuras, `checkout` e `vitrine` chegam aqui inteiras
@@ -324,7 +324,7 @@ const CHAPTERS = [
       k: "Antes das telas",
       t: "A V1 tinha cores. A V2 tem um sistema que sabe o que cada cor faz",
       p: ["Quarenta telas desenhadas na mão viram quarenta decisões repetidas sobre espaçamento, estado e cor. Antes de desenhar, construí o vocabulário: 239 tokens no arquivo de tema, 69 componentes montados em cima deles.",
-          "O que muda não é a quantidade de cor, é o endereço dela. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela. Na V2 ele tem nome e função: ink-muted não é um cinza, é o papel \u201ctexto secundário\u201d. Quando o tema vira, ele vira sozinho."],
+          "O que muda não é a quantidade de cor, é o endereço dela. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela. Na V2 ele tem nome e função. O ink-muted não é um cinza, é o papel \u201ctexto secundário\u201d. Quando o tema vira, ele vira sozinho."],
       /* o par que prova o argumento: o mesmo token, os dois temas.
          Escala aqui é papel, não valor: surface é fundo, ink é texto,
          edge é borda. */
@@ -342,7 +342,7 @@ const CHAPTERS = [
       /* a cor que carrega função. Cada uma responde a uma pergunta do
          cliente, e é por isso que não podem ser a mesma. */
       funcoes: [
-        { n: "Comprar", c: "#22c55e", f: "Ação", p: "O verde do botão de compra. É gesto, não informação: só aparece onde dá para agir." },
+        { n: "Comprar", c: "#22c55e", f: "Ação", p: "O verde do botão de compra. É gesto, não informação, e só aparece onde dá para agir." },
         { n: "Economia", c: "#15803d", ce: "#4ade80", f: "Informação", p: "O \u201c-15% OFF\u201d e a menção ao Pix. Mesma família do verde de comprar, papel diferente, e por isso valor diferente." },
         { n: "Pré-venda", c: "#f97316", f: "Espera", p: "Laranja é o produto que ainda não chegou. Reserva, contador e prazo usam essa cor e nenhuma outra usa." },
         { n: "Coin", c: "#facc15", f: "Saldo", p: "O dourado do programa de pontos. Saldo, nível e validade. Fora do PCYES Points, essa cor não aparece." },
@@ -379,7 +379,7 @@ const CHAPTERS = [
       tipografia: {
         k: "Tipografia",
         t: "Duas famílias, uma escala",
-        p: "Figtree carrega título e Inter carrega texto e interface. A escala não é contínua de propósito: são cinco degraus com distância suficiente para a hierarquia ser óbvia sem ninguém precisar comparar dois textos lado a lado.",
+        p: "Figtree carrega título e Inter carrega texto e interface. A escala não é contínua de propósito. São cinco degraus com distância suficiente para a hierarquia ser óbvia sem ninguém precisar comparar dois textos lado a lado.",
         familias: [{ n: "Figtree", f: "Display, títulos" }, { n: "Inter", f: "Texto e interface" }],
         escala: [
           { n: "h1", px: 80, fam: "Figtree", peso: 400, pn: "regular" },
@@ -395,7 +395,7 @@ const CHAPTERS = [
       espaco: {
         k: "Espaço e raio",
         t: "O ritmo entre as seções tem quatro valores, não quarenta",
-        p: "Distância entre seções costuma ser o lugar onde o sistema vaza: alguém escreve 72, outro escreve 80, e a página perde o compasso. Aqui são quatro degraus, e eles encolhem juntos no mobile, onde o vão de desktop vira tela vazia.",
+        p: "Distância entre seções costuma ser o lugar onde o sistema vaza. Alguém escreve 72, outro escreve 80, e a página perde o compasso. Aqui são quatro degraus, e eles encolhem juntos no mobile, onde o vão de desktop vira tela vazia.",
         ritmo: [
           { l: "sm", d: 56, m: 40 },
           { l: "md", d: 88, m: 56 },
@@ -418,7 +418,7 @@ const CHAPTERS = [
       derivado: {
         k: "O caso que fecha",
         t: "O card de produto não guarda cor nenhuma",
-        p: ["O fundo da foto do produto é o componente mais repetido da loja: aparece na home, na vitrine, na busca, no carrinho. Seria o candidato natural a ter um cinza escolhido na mão.",
+        p: ["O fundo da foto do produto é o componente mais repetido da loja, e aparece na home, na vitrine, na busca, no carrinho. Seria o candidato natural a ter um cinza escolhido na mão.",
             "Não tem. O fundo é a cor de texto do tema rebaixada a 10% e 3% de opacidade, em diagonal. No claro, isso é preto quase transparente; no escuro, é branco quase transparente. Mesma regra, dois resultados, nenhum valor guardado.",
             "É a diferença entre uma paleta e um sistema. Paleta é uma lista de cores. Sistema é uma regra que produz a cor certa em um contexto que ninguém previu."],
         formula: "rgba(var(--foreground-rgb), .10) → .03",
@@ -433,12 +433,12 @@ const CHAPTERS = [
        tinha. Cada uma entra com as telas dela ao lado do argumento. */
     modulos: [
       { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
-        p: ["A PCYES lança edição limitada e coleção com o Maringá FC, e a V1 tratava lançamento igual a qualquer produto: ou tinha estoque, ou sumia da vitrine.",
+        p: ["A PCYES lança edição limitada e coleção com o Maringá FC, e a V1 tratava lançamento igual a qualquer produto. Ou tinha estoque, ou sumia da vitrine.",
             "Na V2, produto anunciado antes de chegar entra em pré-venda com reserva. A pessoa vê quantas reservas já saíram, quantas ainda existem e a data prevista de entrega, e o cartão só é cobrado no despacho.",
             "A escassez aqui não é truque de urgência inventada. O número de reservas é real e a data também, e é isso que faz a barra funcionar em vez de irritar."],
         figs: ["prevenda", "contador"] },
       { k: "Monte seu PC", t: "Três caminhos para a mesma máquina",
-        p: ["Montar PC separa dois públicos que não se misturam: quem sabe o modelo do processador que quer e quem só sabe o jogo que joga. O configurador antigo servia bem o primeiro e abandonava o segundo.",
+        p: ["Montar PC separa dois públicos que não se misturam. Quem sabe o modelo do processador que quer e quem só sabe o jogo que joga. O configurador antigo servia bem o primeiro e abandonava o segundo.",
             "A entrada do módulo pergunta uma coisa só e abre um dos três caminhos. Escolha um aqui do lado para ver como cada um se comporta."],
         figs: ["mspCaminhos"],
         /* a seção faz o que a tela que ela descreve faz: quem lê escolhe o
@@ -449,7 +449,7 @@ const CHAPTERS = [
           { t: "Me ajuda a escolher", para: "Três perguntas", fig: "mspJogos",
             p: "Em vez de perguntar orçamento, pergunta o que a pessoa joga, edita ou faz no dia a dia. A recomendação sai de Valorant e Premiere, não de soquete e TDP, e volta como uma build pronta que ainda dá para editar peça a peça." },
           { t: "Quero pronto", para: "Setups testados", fig: "mspProntas",
-            p: "Nove máquinas montadas e testadas viram produto de vitrine: nome, uso, preço fechado e compra em um clique, do mesmo jeito que se compra um mouse." },
+            p: "Nove máquinas montadas e testadas viram produto de vitrine, com nome, uso, preço fechado e compra em um clique, do mesmo jeito que se compra um mouse." },
         ] },
       /* este módulo lê como sequência, não como bloco de texto + mosaico de
          telas: o argumento só fecha se a pessoa vir um estado de cada vez.
@@ -471,12 +471,12 @@ const CHAPTERS = [
             p: "Selecionar Pix abre o que acontece depois de finalizar, em três passos. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela.",
             fig: "ckV12Pix" },
           { k: "No celular", t: "A mesma decisão, na tela pequena",
-            p: "No mobile a diferença fica literal: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente. Mesma compra, menos caminho.",
+            p: "No mobile a diferença fica literal. A V1.2 termina onde a V1 ainda tem um quarto de tela pela frente. Mesma compra, menos caminho.",
             fig: "ckMobile" },
         ] },
       { k: "O que a V1 não tinha", t: "Carrinho lateral e programa de pontos",
         p: ["Duas coisas entraram na V2 e não existiam antes. O carrinho lateral, que abre sobre a página em vez de levar a pessoa embora, com a barra de brinde mostrando o quanto falta para ganhar algo, e o PCYES Points, com saldo, níveis e validade abertos na tela.",
-            "As duas resolvem o mesmo problema por vias diferentes: dar motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],
+            "As duas resolvem o mesmo problema por vias diferentes, e as duas dão motivo para continuar comprando sem cobrar mais um clique de quem já decidiu."],
         figs: ["sidecart", "points"] },
       /* AS EXECU\u00c7\u00d5ES ----------------------------------------------------
          As seis decis\u00f5es que implementam a tese, com as figuras que antes
@@ -503,7 +503,7 @@ const CHAPTERS = [
             p: "Coluna fixa \u00e0 direita no desktop, barra fixa na base no mobile. \u00c9 a informa\u00e7\u00e3o que a pessoa mais reconsulta, e era a que mais exigia voltar ao topo.",
             fig: "preco" },
           { k: "A ficha", t: "Descri\u00e7\u00e3o gerada a partir do SKU",
-            p: "As fichas eram inconsistentes, cada uma escrita por uma pessoa diferente em um ano diferente. Uma ferramenta interna passou a gerar o HTML com hierarquia de t\u00edtulos e imagens formatadas: o que era manual e desigual virou padr\u00e3o.",
+            p: "As fichas eram inconsistentes, cada uma escrita por uma pessoa diferente em um ano diferente. Uma ferramenta interna passou a gerar o HTML com hierarquia de t\u00edtulos e imagens formatadas. O que era manual e desigual virou padr\u00e3o.",
             fig: "sku" },
           { k: "A esteira", t: "E o time passou a ver onde cada produto est\u00e1",
             p: "Cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publica\u00e7\u00e3o. A fila deixou de ser combinado de bastidor e virou tela.",
@@ -556,7 +556,7 @@ const CHAPTERS = [
     },
     aprendi: {
       p: ["Valor de marca e conversão foram tratados como escolhas opostas no começo do projeto. Não são. O problema não era a marca aparecer, era ela ocupar o lugar do produto na hierarquia da página.",
-          "E a lição mais cara: chegar em uma conversa difícil com gravação de sessão em vez de opinião muda completamente o rumo da discussão.",
+          "E a lição mais cara foi outra. Chegar em uma conversa difícil com gravação de sessão em vez de opinião muda completamente o rumo da discussão.",
           "Perseguir o bug do módulo de pagamento até a origem também comprou mais confiança com o time de tecnologia do que qualquer apresentação que eu tivesse feito."],
     },
   },

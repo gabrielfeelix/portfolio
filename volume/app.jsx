@@ -256,7 +256,7 @@ function App() {
       const rad = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] },
-        { duration: 560, easing: "cubic-bezier(.2,.9,.1,1)", pseudoElement: "::view-transition-new(root)" }
+        { duration: 560, easing: "cubic-bezier(.16,1,.3,1)", pseudoElement: "::view-transition-new(root)" }
       );
     }).catch(() => {});
   };
