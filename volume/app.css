@@ -74,7 +74,12 @@
    perfil de dentes se FORMA durante a rolagem em vez de estar la' parado.
    A capa e' comida de baixo pra cima, que era o efeito da referencia. */
 .bite {
-  position: absolute; inset-inline: 0; bottom: 100%; z-index: 2;
+  /* `bottom: calc(100% - 1px)`, e não `100%`: a faixa morde 1px do papel.
+     Encostada exata, a linha de recorte da faixa e o topo do papel são a
+     mesma coordenada arredondada por caminhos diferentes (a faixa recorta
+     camadas compositadas, o papel pinta normal), e em DPR fracionário
+     sobrava um fio horizontal entre dente e papel. */
+  position: absolute; inset-inline: 0; bottom: calc(100% - 1px); z-index: 2;
   /* mais alto que antes: o dente do meio sobe 1.68x e precisa de trilho
      para esticar de verdade. A 210px ele batia no teto da faixa. */
   block-size: clamp(110px, 19vw, 280px);
@@ -85,6 +90,13 @@
   display: block; block-size: 100%; background: var(--paper);
   transform: translateY(100%); will-change: transform;
 }
+/* DPR fracionário (notebook Windows a 125%): cada dente é camada própria
+   (`will-change: transform`) e as colunas são 1fr, então as bordas caem em
+   meio pixel e cada camada arredonda para um lado — abriam-se frestas
+   verticais onde o vermelho da capa e a sombra do `.post-hero` vazavam
+   como fios. Cada dente cobre 1px do vizinho: papel sobre papel, invisível
+   em qualquer densidade, e a fresta não tem onde existir. */
+.bite-t + .bite-t { margin-inline-start: -1px; }
 /* sem JS (ou com movimento reduzido) o papel fecha reto e nada quebra */
 @media (prefers-reduced-motion: reduce) {
   .bite { block-size: 0; }
@@ -152,30 +164,53 @@
   font-size: clamp(2.5rem, 6.4vw, 5.2rem); line-height: 1.0; margin: var(--ma-2) 0 0; color: var(--ink);
   display: flex; flex-direction: column; align-items: center; gap: .08em; }
 .splash-h .sh-line { display: inline-flex; align-items: center; gap: .3em; flex-wrap: wrap; justify-content: center; }
+/* A linha do carimbo é uma COLUNA travada: "que leva" em cima, a caixa
+   embaixo, sempre — em toda largura e em toda palavra. Antes a caixa
+   entrava na linha e a frase quebrava só nas palavras longas: o hero
+   pulava de duas para três linhas a cada troca, e tudo abaixo pulava
+   junto. Altura fixa em vez de reflow; só a largura da caixa respira. */
+.splash-h .sh-line-rot { flex-direction: column; gap: .16em; }
 .splash-h .sh-ghost { color: transparent; -webkit-text-stroke: 2px var(--ink); }
 .splash.lit .splash-h { animation: sh-in 560ms var(--curva) both; }
 @keyframes sh-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
 /* rotating word (vanilla TextRotate) */
 .rotw { display: inline-flex; overflow: hidden; vertical-align: bottom; }
-.rotw-box { display: inline-flex; background: var(--vermilion); color: var(--paper);
+/* A caixa é um grid de UMA célula: palavra que entra e palavra que sai
+   ocupam a mesma área, centradas, e a largura vem escrita pelo JS (medida
+   da palavra que entra) com transição — a caixa respira entre uma palavra
+   e outra em vez de estalar. Sem JS ela fica em `auto` e só abraça a
+   palavra, que era o comportamento antigo: nada quebra. */
+.rotw-box { display: inline-grid; justify-items: center; align-items: center;
+  /* `minmax(0, 1fr)`, não `auto`: com auto a trilha dimensiona por
+     max-content e vaza para a DIREITA quando a palavra é maior que a
+     caixa — no meio da transição de largura a palavra aparecia cortada só
+     de um lado. Travada na largura da caixa, o excesso reparte simétrico
+     e a palavra emerge do centro do carimbo enquanto ele cresce. */
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--vermilion); color: var(--paper);
   padding: .02em .34em .1em; overflow: hidden; box-shadow: 4px 4px 0 var(--ink);
+  white-space: nowrap;
+  /* mais rápida que a mola dos caracteres (.52s + escalonamento): a caixa
+     chega primeiro e a palavra nunca é lida contra uma caixa curta */
+  transition: inline-size .38s var(--curva);
   /* pincelada: cantos orgânicos assimétricos, tinta sumi (escolha do Gabriel) */
   border-radius: .85em .35em .9em .3em / .45em .95em .4em 1em; }
-.rotw-box { position: relative; }
 /* palavra que entra: em repouso já está NO lugar (primeiro frame com texto);
    só a troca é que anima */
-.rotw-word { display: inline-flex; }
+.rotw-word { display: inline-flex; grid-area: 1 / 1; }
 .rotw-ch { display: inline-block; white-space: pre; }
 .rotw-word.anim .rotw-ch { animation: rotw-in .52s cubic-bezier(.22,1.2,.32,1) both; }
 @keyframes rotw-in { from { transform: translateY(115%); } to { transform: translateY(0); } }
-/* palavra que sai: absoluta, então não alarga a caixa — só mantém ela cheia */
-.rotw-out { position: absolute; left: .34em; top: .02em; white-space: pre; pointer-events: none;
+/* palavra que sai: mesma célula do grid, então não alarga a caixa além da
+   largura escrita — só mantém ela cheia enquanto some */
+.rotw-out { grid-area: 1 / 1; white-space: pre; pointer-events: none;
   animation: rotw-out .42s cubic-bezier(.72,.02,.28,1) both; }
 @keyframes rotw-out { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-115%); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .rotw-word.anim .rotw-ch, .rotw-out { animation: none !important; }
   .rotw-out { display: none; }
+  .rotw-box { transition: none; }
 }
 
 .splash-sub { font-family: var(--font-body); font-size: var(--t-lead); line-height: 1.5; max-width: 46ch; margin: var(--ma-2) auto 0; color: var(--fg); }
@@ -2973,69 +3008,73 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 .ondeestou.on .oe-copy > *:nth-child(5) { transition-delay: 290ms; }
 
 /* =====================================================================
-   A TRAJETÓRIA
-   Eram duas caixas retangulares iguais, lado a lado, com seta para a
-   direita: forma de botão de próximo passo, não de histórico. E o cargo
-   estava em `display: none`, então sobrava ano e nome.
+   A TRAJETÓRIA — o registro de régua
+   A forma anterior era fio de nanquim hairline com nós quadrados, mas o
+   fio (`inset-inline: calc(100%/6)`) assumia nó centrado na coluna e o
+   conteúdo é alinhado à esquerda: a linha não passava no centro de nó
+   nenhum, sobrava rabo depois do último, e a peça flutuava solta abaixo
+   da chapa, presa por um hairline tímido — lia como apêndice.
 
-   Agora o tempo fica desenhado. Um fio de nanquim atravessa os três nós,
-   os anos correm da esquerda para a direita e o último nó vem marcado em
-   vermelho com a etiqueta "hoje". O fio é `::before` do <ol> e para nos
-   dois nós das pontas, senão sobra rabo de linha nas bordas.
+   Agora a régua é ESTRUTURA: o border-top das três casas, com gap zero
+   para o traço ser contínuo. O trecho sobre a casa atual é vermelho e
+   corre até a borda — o capítulo ainda sendo escrito. O tique desce da
+   régua exatamente onde o texto começa, então não existe fio para
+   calibrar: o alinhamento é a própria borda. A régua atravessa a shell
+   inteira e substitui o hairline que separava a trajetória da chapa.
    ===================================================================== */
-.oe-linha { margin-block-start: var(--ma-6); border-block-start: var(--ink-hair) solid var(--wash-2); padding-block-start: var(--ma-4); }
+.oe-linha { margin-block-start: var(--ma-5); }
 .oe-linha-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-4); }
+  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-3); }
 
 .oe-tl {
-  list-style: none; margin: 0; padding: 0; position: relative;
+  list-style: none; margin: 0; padding: 0;
   display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
-  gap: clamp(12px, 2.5vw, 32px);
 }
-/* o fio: começa no centro do primeiro nó e morre no centro do último */
-.oe-tl::before {
-  content: ""; position: absolute; z-index: 0;
-  inset-block-start: 5px; block-size: var(--ink-hair);
-  background: var(--wash-2);
-  inset-inline: calc(100% / 6) calc(100% / 6);
+.oe-no {
+  position: relative;
+  border-block-start: var(--ink-stroke) solid var(--ink);
+  padding-block-start: 18px;
+  padding-inline-end: clamp(18px, 3vw, 48px);
 }
-.oe-no { position: relative; z-index: 1; }
+.oe-no.is-hoje { border-block-start-color: var(--vermilion); }
+/* o tique: gota que desce da régua na entrada de cada casa. No hover ela
+   escorre um pouco mais — resposta no mesmo eixo do desenho. */
+.oe-no::before {
+  content: ""; position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  inline-size: var(--ink-stroke); block-size: 13px; background: var(--ink);
+  transition: block-size var(--cut);
+}
+.oe-no.is-hoje::before { background: var(--vermilion); }
+.oe-no:hover::before { block-size: 22px; }
+
 .oe-no-btn {
   -webkit-appearance: none; appearance: none; cursor: pointer; inline-size: 100%;
   background: transparent; border: 0; padding: 0; text-align: left; color: inherit;
-  display: grid; justify-items: start; gap: 5px;
+  display: grid; justify-items: start; gap: 7px;
 }
 .oe-no-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 
-/* o nó: quadrado de nanquim, porque o volume não tem canto redondo */
-.oe-no-ponto {
-  inline-size: 11px; block-size: 11px; background: var(--paper);
-  border: var(--ink-stroke) solid var(--ink); margin-block-end: 7px;
-  transition: transform var(--cut), background var(--cut);
-}
-.is-hoje .oe-no-ponto { background: var(--vermilion); border-color: var(--vermilion-ink); }
-.oe-no-btn:hover .oe-no-ponto { transform: scale(1.35); }
-
-.oe-no-ano { font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
+.oe-no-ano { display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
   font-size: 12px; color: var(--wash-3); }
+/* o nome cresceu de 1.5rem para 2rem: numa faixa que atravessa a página
+   inteira, nome pequeno era o que fazia a peça parecer jogada */
 .oe-no-nome { font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(1.05rem, 2vw, 1.5rem); line-height: 1; }
+  font-size: clamp(1.3rem, 2.3vw, 2rem); line-height: 1; }
 .oe-no-btn:hover .oe-no-nome { color: var(--vermilion-ink); }
 .oe-no-papel { font-size: var(--t-small); color: var(--fg-2); line-height: 1.35; }
 .oe-no-hoje {
+  font-style: normal;
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .16em; font-size: 10px; line-height: 1;
   color: #FFFFFF; background: var(--vermilion-ink); padding: 4px 7px;
-  margin-block-start: 2px;
 }
 
 @media (max-width: 760px) {
-  /* na vertical o fio vira coluna e os nós descem: o tempo continua
-     desenhado, só muda de eixo */
-  .oe-tl { grid-auto-flow: row; grid-auto-columns: auto; gap: var(--ma-3); padding-inline-start: 22px; }
-  .oe-tl::before { inset-block: 5px 5px; inset-inline: 5px auto; block-size: auto; inline-size: var(--ink-hair); }
-  .oe-no-btn { grid-template-columns: auto 1fr; column-gap: 12px; align-items: start; }
-  .oe-no-ponto { margin-inline-start: -22px; margin-block-end: 0; grid-row: 1 / span 3; align-self: start; margin-block-start: 4px; }
+  /* na vertical cada casa vira uma linha do registro: a régua repete em
+     cima de cada uma e o desenho continua o mesmo, só muda de eixo */
+  .oe-tl { grid-auto-flow: row; grid-auto-columns: auto; }
+  .oe-no { padding-inline-end: 0; padding-block: 14px 20px; }
 }
 
 @media (max-width: 760px) {

@@ -103,6 +103,8 @@ function RotateWord({ items, interval = 2300, loops = 3 }) {
   // all, so the very first frame already carries text.
   const [{ i, from }, setPos] = useState({ i: 0, from: null });
   const ticks = useRef(0);
+  const boxRef = useRef(null);
+  const wordRef = useRef(null);
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   useEffect(() => {
     if (reduced) return;
@@ -113,14 +115,36 @@ function RotateWord({ items, interval = 2300, loops = 3 }) {
     }, interval);
     return () => clearInterval(id);
   }, [items, interval, reduced, loops]);
+
+  /* A caixa nunca decide a própria largura: a palavra que entra é medida e
+     a largura vai escrita no estilo, e o CSS transiciona entre uma e outra.
+     Deixada em `auto`, a largura ESTALAVA a cada troca e, pior, mudava onde
+     a linha quebra — o hero pulava de duas para três linhas conforme a
+     palavra. A fonte é fluida (vw) e o carregamento da webfont troca a
+     métrica depois da primeira pintura, então remede no resize e no
+     `fonts.ready` — medida uma vez só, envelhece nos dois casos. */
+  useLayoutEffect(() => {
+    const box = boxRef.current, word = wordRef.current;
+    if (!box || !word) return;
+    const mede = () => {
+      const cs = getComputedStyle(box);
+      const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+      box.style.inlineSize = (word.getBoundingClientRect().width + pad).toFixed(1) + "px";
+    };
+    mede();
+    window.addEventListener("resize", mede);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(mede).catch(() => {});
+    return () => window.removeEventListener("resize", mede);
+  }, [i]);
+
   const chars = [...items[i]];
   const moving = from !== null && from !== i;
   return (
     <span className="rotw">
       <span className="sr-only">{items[i]}</span>
-      <span className="rotw-box" aria-hidden="true">
+      <span className="rotw-box" aria-hidden="true" ref={boxRef}>
         {moving ? <span className="rotw-out" key={`o${from}-${i}`}>{items[from]}</span> : null}
-        <span className={`rotw-word ${moving ? "anim" : ""}`} key={i}>
+        <span className={`rotw-word ${moving ? "anim" : ""}`} key={i} ref={wordRef}>
           {chars.map((c, idx) => (
             <span className="rotw-ch" key={idx} style={{ animationDelay: `${idx * 0.022}s` }}>{c === " " ? " " : c}</span>
           ))}
@@ -141,7 +165,7 @@ function Splash({ onRead, onContact, onRapido, lit }) {
         <div className="splash-id"><Seal size={20} alt="" /> {AUTOR} <i>·</i> UX / <b>Product Designer</b></div>
         <h1 className="splash-h">
           <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
-          <span className="sh-line">{t("que leva", "who takes")} <RotateWord items={t(
+          <span className="sh-line sh-line-rot">{t("que leva", "who takes")} <RotateWord items={t(
             ["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"],
             ["the idea live", "the prototype to product", "the screen to shipping", "design into code"])} /></span>
         </h1>
@@ -540,20 +564,25 @@ function OndeEstou({ onEmpresa }) {
 
         {/* A TRAJETÓRIA.
 
-            Era "Antes disso" com as duas empresas anteriores em duas
-            caixas retangulares iguais, lado a lado, cada uma com uma seta
-            para a direita. Isso lia como par de botões de próximo passo,
-            não como histórico: caixa idêntica com seta é a forma de "vá
-            para", e o cargo estava escondido em `display: none`, então
-            sobrava ano e nome.
+            Segunda forma. A primeira desta rodada era fio de nanquim com
+            nós quadrados — mas o fio era `calc(100%/6)` assumindo nó
+            centrado na coluna, e o conteúdo é alinhado à esquerda: a
+            linha não passava no centro de nó nenhum e sobrava rabo, e a
+            peça inteira flutuava solta abaixo da chapa, presa por um
+            hairline tímido.
 
-            Agora é linha do tempo, e o tempo fica desenhado: os anos
-            correm da esquerda para a direita sobre um fio de nanquim, a
-            empresa atual é o último nó e vem marcada. Ela aparece aqui
-            mesmo já tendo a chapa acima, porque é o nó final que faz a
-            linha ser lida como percurso em vez de lista solta. O cargo
-            voltou a aparecer: é ele que mostra a subida de estagiário a
-            designer de produto. */}
+            Agora é um REGISTRO de régua, e a régua é estrutura, não
+            desenho: o border-top das três casas, contínuo porque o gap é
+            zero. O trecho sobre a casa atual é vermelho e corre até a
+            borda direita — o capítulo que ainda está sendo escrito. Cada
+            casa pendura um tique da régua na entrada, onde o texto
+            realmente começa: alinhamento honesto, sem fio a calibrar. A
+            régua atravessa a largura toda da shell e é ela a costura com
+            o bloco da chapa acima — o hairline separado saiu.
+
+            A empresa atual aparece aqui mesmo já tendo a chapa acima,
+            porque é a casa final que faz o registro ler como percurso. O
+            cargo é quem mostra a subida de estagiário a designer. */}
         <div className="oe-linha">
           <div className="oe-linha-k">{t("Por onde passei", "Where I have been")}</div>
           <ol className="oe-tl">
@@ -561,11 +590,9 @@ function OndeEstou({ onEmpresa }) {
               <li key={c.id} className={"oe-no" + (c.atual ? " is-hoje" : "")}>
                 <button type="button" className="oe-no-btn" onClick={() => onEmpresa(c.id)}
                         aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
-                  <span className="oe-no-ponto" aria-hidden="true"></span>
-                  <span className="oe-no-ano">{c.anos}</span>
+                  <span className="oe-no-ano">{c.anos}{c.atual ? <i className="oe-no-hoje">{t("hoje", "today")}</i> : null}</span>
                   <span className="oe-no-nome">{c.name}</span>
                   <span className="oe-no-papel">{c.role}</span>
-                  {c.atual ? <span className="oe-no-hoje">{t("hoje", "today")}</span> : null}
                 </button>
               </li>
             ))}
