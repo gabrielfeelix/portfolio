@@ -514,18 +514,35 @@ function Funil({ dados }) {
             <div className="beat-k">{dados.k}</div>
             <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
           </div>
-          {dados.fonte ? <div className="pn-fonte">{dados.fonte}</div> : null}
+          {dados.fonte ? <div className="pn-fonte">
+            <SeloFonte nome={/Clarity/i.test(dados.fonte) ? "clarity" : "ga4"} />{dados.fonte}
+          </div> : null}
         </div>
 
         <ol className="fn-etapas">
           {etapas.map((e, i) => {
-            const pct = topo ? (e.v / topo) * 100 : 0;
+            /* O funil do GA4 cai tres ordens de grandeza (166.267 ate 223)
+               e em escala linear as tres ultimas etapas viram traco
+               invisivel: 808 e 0,49% de 166.267, meio pixel numa barra de
+               100. Escala logaritmica devolve a leitura das etapas do fim,
+               que sao justamente onde mora o argumento. O numero escrito
+               ao lado continua sendo o absoluto, e a porcentagem da
+               entrada vai ao lado dele, entao a barra ordena e o texto
+               mede: ninguem le proporcao errada a partir do desenho. */
+            const pct = topo ? (Math.log10(Math.max(e.v, 1)) / Math.log10(topo)) * 100 : 0;
+            const pctEntrada = topo ? (e.v / topo) * 100 : 0;
             return (
               <li key={i} className="fn-etapa">
                 <div className="fn-cab">
                   <span className="fn-l">{e.l}</span>
                   <span className="fn-v">
                     <ContaAte alvo={e.v} ligado={on} />
+                    {/* o separador decimal segue o idioma: virgula em PT,
+                        ponto em EN. `toFixed` sempre devolve ponto. */}
+                    {i > 0 ? <i className="fn-pct">{(() => {
+                      const txt = pctEntrada < 1 ? pctEntrada.toFixed(2) : pctEntrada.toFixed(1);
+                      return LANG === "en" ? txt : txt.replace(".", ",");
+                    })()}%</i> : null}
                   </span>
                 </div>
                 <div className="fn-trilho">
@@ -585,7 +602,9 @@ function Gesto({ dados }) {
             <div className="beat-k">{dados.k}</div>
             <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
           </div>
-          {dados.fonte ? <div className="pn-fonte">{dados.fonte}</div> : null}
+          {dados.fonte ? <div className="pn-fonte">
+            <SeloFonte nome={/Clarity/i.test(dados.fonte) ? "clarity" : "ga4"} />{dados.fonte}
+          </div> : null}
         </div>
         <ol className="ge-lista">
           {itens.map((it, i) => (
@@ -622,6 +641,7 @@ function Busca({ dados, chap, figN = {} }) {
           <div className="beat-k">{dados.k}</div>
           <Brush as="h2" className="beat-t">{renderPH(dados.t)}</Brush>
           {(dados.p || []).map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
+          {dados.dado ? <DadoBusca d={dados.dado} /> : null}
         </div>
       </div>
       <div className="c7">
@@ -630,6 +650,75 @@ function Busca({ dados, chap, figN = {} }) {
         </div>
       </div>
     </Beat>
+  );
+}
+
+/* ---- SELO DE FONTE ---------------------------------------------------
+   Uma marquinha ao lado da linha de fonte, para o credito da ferramenta
+   ler como carimbo e nao como rodape.
+
+   NAO sao as logos oficiais, e isso e deliberado. A politica da Microsoft
+   e explicita ("our logos, app and product icons... can never be used
+   without an express license") e a do Google so abre excecao para
+   materia jornalistica e material didatico, o que um portfolio nao e.
+   Citar o NOME em texto e uso nominativo e e permitido nas duas; a logo
+   nao. Entao o nome vai escrito, como ja ia, e o selo e desenho proprio
+   no traco do volume: o triangulo de analytics e o retangulo de heatmap,
+   que dizem a natureza do dado sem imitar marca de ninguem. */
+function SeloFonte({ nome }) {
+  if (nome === "ga4") {
+    return (
+      <span className="selo-fonte" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none">
+          {/* tres barras subindo: a forma universal de analytics */}
+          <rect x="2"  y="10" width="3" height="5"  fill="currentColor" />
+          <rect x="6.5" y="6" width="3" height="9"  fill="currentColor" />
+          <rect x="11" y="2"  width="3" height="13" fill="currentColor" />
+        </svg>
+      </span>
+    );
+  }
+  if (nome === "clarity") {
+    return (
+      <span className="selo-fonte" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none">
+          {/* malha de calor: quatro celulas de peso diferente */}
+          <rect x="2" y="2" width="5.5" height="5.5" fill="currentColor" opacity=".35" />
+          <rect x="8.5" y="2" width="5.5" height="5.5" fill="currentColor" />
+          <rect x="2" y="8.5" width="5.5" height="5.5" fill="currentColor" />
+          <rect x="8.5" y="8.5" width="5.5" height="5.5" fill="currentColor" opacity=".55" />
+        </svg>
+      </span>
+    );
+  }
+  return null;
+}
+
+/* o numero que tira a busca de "caso de borda que eu achei testando na
+   mao" e a poe como caminho principal da loja. Forma propria, diferente
+   da barra do painel e do funil: duas colunas que se comparam de pe, com
+   a maior sendo justamente a que ninguem esperava. */
+function DadoBusca({ d }) {
+  const [ref, on] = useReveal({ threshold: 0.4 });
+  const vivo = on || REDUCED;
+  return (
+    <div className="bq" ref={ref}>
+      <div className="bq-cols">
+        <div className="bq-col bq-alta">
+          <div className="bq-faixa"><div className="bq-barra" style={{ height: vivo ? "100%" : 0 }} /></div>
+          <div className="bq-v"><ContaAte alvo={d.v} ligado={vivo} /></div>
+          <div className="bq-l">{renderPH(d.l)}</div>
+        </div>
+        <div className="bq-col bq-baixa">
+          {/* 50.399 contra 71.416: a altura e a razao real entre os dois */}
+          <div className="bq-faixa"><div className="bq-barra" style={{ height: vivo ? "70.6%" : 0 }} /></div>
+          <div className="bq-v"><ContaAte alvo={50399} ligado={vivo} /></div>
+          <div className="bq-l">{t("viram uma página de produto", "saw a product page")}</div>
+        </div>
+      </div>
+      {d.n ? <p className="bq-n">{renderPH(d.n)}</p> : null}
+      {d.fonte ? <div className="bq-fonte"><SeloFonte nome="ga4" />{d.fonte}</div> : null}
+    </div>
   );
 }
 

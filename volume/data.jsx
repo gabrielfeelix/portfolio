@@ -88,10 +88,10 @@ const CHAPTERS = [
        números E a linha do ticket. */
     notaSuporte: {
       k: "Antes de começar",
-      p: "Este projeto foi desenhado mobile first, e você vai ver telas de celular ao longo do caminho. Mas 6 de cada 10 acessos da loja vêm do computador, então as provas grandes deste capítulo são prints de desktop: é onde a maior parte das pessoas de fato compra.",
-      p2: "E não é só volume. A conversão é praticamente igual nos dois (0,15% no computador contra 0,14% no celular), só que o ticket médio do celular é 44% menor. O computador não traz só mais gente: traz o pedido maior.",
-      fonte: "Google Analytics 4 · 12 meses · 331.593 sessões",
-      desktop: 60, mobile: 40,
+      p: "Este projeto foi desenhado mobile first, e você vai ver telas de celular ao longo do caminho. Mas 7 de cada 10 acessos da loja vinham do computador, então as provas grandes deste capítulo são prints de desktop: é onde estava o volume e é onde estava o dinheiro.",
+      p2: "São 116.530 sessões no computador contra 50.352 no celular, com ticket médio de R$ 663 contra R$ 420. Quem monta o próprio PC compara ficha técnica, abre várias abas e decide na tela grande, e o gasto acompanha: o pedido do computador é 58% maior. Desenhar primeiro para o celular foi decisão de disciplina, mas a tela que mais precisava melhorar era esta.",
+      fonte: "Google Analytics 4 · 2º trimestre de 2026 · 166.882 sessões",
+      desktop: 70, mobile: 30,
       lDesk: "computador", lMob: "celular",
     },
     /* ---- as figuras do capítulo -------------------------------------
@@ -203,7 +203,7 @@ const CHAPTERS = [
     painel: {
       k: "O tamanho do buraco",
       t: "Entrava gente. Comprar, quase ninguém",
-      fonte: "GA4 e notas fiscais · 2º trimestre de 2026 · Microsoft Clarity, amostra de 3 dias",
+      fonte: "GA4 e notas fiscais · 2º trimestre de 2026 · 166.267 sessões",
       acesos: 2,
       milLegenda: "Cada ponto é uma pessoa que entrou na loja. Os dois acesos são as que compraram: 0,16% de conversão em um trimestre inteiro.",
       numeros: [
@@ -211,12 +211,22 @@ const CHAPTERS = [
         { v: 273, l: "pedidos faturados" },
         { v: 0.16, d: 2, s: "%", l: "taxa de conversão" },
       ],
+      /* O erro de script saiu da amostra do Clarity e passou a vir de um
+         evento próprio do site (`performance_carregamento`, 23.935 de
+         166.267 sessões): é do trimestre inteiro, é medição da própria
+         loja e por isso é mais defensável que amostra de ferramenta.
+         O tráfego direto entra aqui porque é a segunda fonte independente
+         que aponta para o mesmo lugar que o Clarity apontava com "41% de
+         robô": metade do volume do site chegava como Direct, com 71,9%
+         de rejeição e 0,08% de conversão. Duas ferramentas que não se
+         falam dizendo a mesma coisa é o que transforma indício em
+         medida. */
       barras: [
         { l: "Rolagem média da página", v: 25.5, d: 1, n: "Três quartos da página nunca eram vistos." },
-        { l: "Sessões com erro de script", v: 23.5, d: 1, n: "Uma em cada quatro esbarrava em falha técnica." },
-        { l: "Sessões identificadas como robô", v: 41, n: "O que sobrava de gente real era ainda menor." },
+        { l: "Sessões com erro de carregamento", v: 14.4, d: 1, n: "Uma em cada sete esbarrava em falha técnica, medida por evento do próprio site." },
+        { l: "Tráfego direto, sem origem declarada", v: 50, n: "Metade do volume, com 71,9% de rejeição e 3% da receita: quase tudo o que entrava ali não era gente comprando." },
       ],
-      nota: "Os números de comportamento vêm de uma amostra curta do Clarity, e é assim que eles entram aqui, como indício que orientou onde olhar, não como medida definitiva. O que sustenta a decisão é a soma deles com as gravações e com a conversão do trimestre.",
+      nota: "Estes números são do trimestre inteiro e vêm de duas fontes que não se falam: o GA4 e as notas fiscais, com o Clarity entrando só onde ele mede bem, que é o comportamento (mapa de calor e gravação). O tráfego direto com 71,9% de rejeição confirma, por um segundo caminho, o mesmo que a marcação de robô do Clarity já dizia.",
     },
     /* ---- O FUNIL E O GESTO ----------------------------------------
        O painel acima dá o tamanho do buraco; estes dois dizem onde ele
@@ -224,20 +234,34 @@ const CHAPTERS = [
        e o gesto vem do mapa de calor da mesma amostra. Nenhum dos dois
        entra como print de dashboard: o dado é redesenhado, porque foto de
        ferramenta é foto de ferramenta, não argumento. */
+    /* O funil saiu da amostra de 3 dias do Clarity e passou a ser o funil
+       de eventos do GA4 do trimestre inteiro: 166.267 sessões em vez de
+       1.705. A troca muda o argumento, e para melhor. A amostra dizia "de
+       63 que entram, uma chega ao checkout", o que apontava o dedo para o
+       checkout. O trimestre mostra que o gargalo é um passo ANTES: de
+       cada 62 pessoas que abrem uma página de produto, 1 põe no carrinho,
+       e quem chega ao checkout converte a um quarto (223 de 896). O
+       checkout nunca foi o buraco principal; o buraco era o funil de
+       cima, que é exatamente o que a V2 ataca com o botão de comprar no
+       card da vitrine e na visualização rápida.
+       O Clarity não sai do capítulo: vira o qualitativo (mapa de calor e
+       gravação), que é o que ele mede bem, e o GA4 fica com o
+       quantitativo. */
     funil: {
       k: "Onde as pessoas paravam",
-      t: "De 63 que entram, uma chega ao checkout",
-      fonte: "Microsoft Clarity · páginas mais visitadas · amostra de 3 dias",
+      t: "De 62 que abrem um produto, uma põe no carrinho",
+      fonte: "Google Analytics 4 · eventos do 2º trimestre de 2026 · 166.267 sessões",
       etapas: [
-        { l: "Home", v: 1705, n: "A porta de entrada." },
-        { l: "Busca e vitrine", v: 1541, n: "Quase todo mundo procura alguma coisa." },
-        { l: "Carrinho", v: 267, n: "Aqui já sobrou uma em cada seis." },
-        { l: "Finalizar compra", v: 27, n: "E aqui, uma em cada 63 que entraram." },
+        { l: "Sessões", v: 166267, n: "Todo mundo que entrou na loja no trimestre." },
+        { l: "Viram um produto", v: 50399, n: "Três em cada dez chegam a abrir uma página de produto." },
+        { l: "Puseram no carrinho", v: 808, n: "E aqui o funil despenca: de 62 que viram, uma adiciona." },
+        { l: "Iniciaram o checkout", v: 896, n: "Mais do que o passo anterior, e não é erro: dá para iniciar o checkout sem passar pelo evento de carrinho, por compra rápida ou carrinho recuperado." },
+        { l: "Compraram", v: 223, n: "Quem chega ao checkout converte a um quarto: 25%." },
       ],
-      marca: { nosso: 0.16, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Taxa de conversão",
-        n: "Eletrônicos convertem 1,1% em média no Brasil, com faixa saudável entre 0,8% e 1,5%. A loja estava a um sétimo do piso da própria categoria.",
+      marca: { nosso: 0.13, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Taxa de conversão",
+        n: "Eletrônicos convertem 1,1% em média no Brasil, com faixa saudável entre 0,8% e 1,5%. A loja estava a um oitavo do piso da própria categoria.",
         fonte: "Benchmark Prax 2025, mais de mil e-commerces brasileiros" },
-      nota: "A amostra do Clarity é curta e serve para dizer onde olhar, não para medir. O que fecha a conta é a conversão do trimestre inteiro, que veio do GA4 e das notas fiscais.",
+      nota: "Este funil é do trimestre inteiro, evento a evento, não de amostra. Ele corrigiu a minha própria leitura: eu suspeitava do checkout, e o dado mostrou que quem chega lá converte a 25%. O gargalo estava antes, em transformar quem olha o produto em quem põe no carrinho, e foi para lá que a V2 foi desenhada.",
     },
     /* o mapa de calor respondeu o que o funil não responde: não onde as
        pessoas paravam, mas o que faziam enquanto estavam ali */
@@ -276,8 +300,15 @@ const CHAPTERS = [
       p: ["O mapa de calor dizia que buscar era o segundo gesto mais comum do site. Fui testar o que a busca respondia.",
           "Procurei por mouse. A vitrine devolveu mousepad na frente do mouse, e o mouse era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
           "Depois procurei por mause. Nenhum resultado, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
-          "Isso não é detalhe de motor de busca. É a loja decidindo que quem não escreve certo não compra. Numa loja de hardware, onde metade dos nomes é estrangeira e cheia de número, isso exclui gente que tem dinheiro e intenção de gastar."],
+          "Isso não é detalhe de motor de busca. É a loja decidindo que quem não escreve certo não compra. Numa loja de hardware, onde metade dos nomes é estrangeira e cheia de número, isso exclui gente que tem dinheiro e intenção de gastar.",
+          "Depois fui atrás do tamanho disso no GA4 do trimestre, e o número era maior do que eu supunha: 71.416 sessões usaram a busca, 43% de todas. Mais gente buscava do que via página de produto, que teve 50.399. A busca não era um caminho secundário da loja: era o principal, e era justamente ela que devolvia mousepad para quem procurava mouse e nada para quem escrevia mause."],
       figs: ["buscaMouse", "buscaMause"],
+      /* o dado que transforma o achado qualitativo em medida: sem ele a
+         busca parece caso de borda que eu encontrei testando na mão. Com
+         ele, é o caminho de 4 em cada 10 pessoas. */
+      dado: { v: 71416, p: 43, l: "sessões usaram a busca no trimestre",
+        n: "Mais gente buscava do que navegava. A busca era o caminho principal da loja, e era justamente ela que devolvia mousepad para quem procurava mouse.",
+        fonte: "Google Analytics 4 · evento view_search_results · 2º trimestre de 2026" },
     },
     /* a frase que virou a reunião, no tamanho de fala de painel */
     citacao: {

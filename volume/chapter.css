@@ -824,6 +824,54 @@ html.ink .cover-linhas { opacity: .06; }
   transition: width 820ms var(--curva); }
 /* a última etapa é a que importa: recebe tinta */
 .fn-etapa:last-child .fn-preenche { background: var(--vermilion); }
+/* a barra e logaritmica e ordena; quem MEDE e o numero. A porcentagem da
+   entrada anda colada nele para a proporcao real ficar legivel sem que o
+   leitor tenha que dividir de cabeca. */
+.fn-pct { font-style: normal; display: inline-block; margin-left: 8px; font-family: var(--font-condensed);
+  font-size: 12px; letter-spacing: .1em; color: var(--fg-2); }
+
+/* ---- selo de fonte: o carimbo da ferramenta ao lado do credito -------
+   Desenho proprio, nunca a logo oficial (ver o comentario do componente
+   em Capitulo.jsx: a politica da Microsoft proibe e a do Google nao abre
+   excecao para portfolio). Herda a cor do texto ao lado, entao funciona
+   em papel, em tinta e sobre a superficie vermelha sem regra extra. */
+.selo-fonte { display: inline-block; vertical-align: -2px; margin-right: 7px; }
+.selo-fonte svg { display: block; width: 13px; height: 13px; color: currentColor; opacity: .75; }
+
+/* ---- o dado da busca: duas colunas que se comparam de pe -------------
+   Prefixo `bq` (bloco de quantidade), NAO `db`: `.db-n` e `.db-v` ja
+   pertencem ao `.dec-beat` em app.css, com `font-size: clamp(3rem, 6vw,
+   5.2rem)`. A colisao punha a legenda deste bloco em 83px de Cinzel, com
+   build verde: os dois arquivos entram concatenados no mesmo CSS.
+   Forma diferente da barra do painel e da regua do funil, porque o
+   argumento aqui e uma COMPARACAO entre dois numeros, nao uma sequencia
+   nem uma proporcao contra um teto. */
+.bq { margin: var(--ma-4) 0 0; border-top: var(--ink-hair) solid var(--wash-3); padding-top: var(--ma-3); }
+/* a coluna e uma pilha de altura fixa e a barra cresce dentro da SUA
+   faixa: `height: %` na barra so resolve porque `.bq-faixa` tem altura
+   propria em px. Com a barra pendurada direto no flex-item, os dois `%`
+   resolviam contra `auto` e as duas barras saiam do mesmo tamanho. */
+.bq-cols { display: flex; gap: var(--ma-4); align-items: flex-start; }
+.bq-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.bq-faixa { height: 132px; display: flex; align-items: flex-end; }
+.bq-barra {
+  width: 100%; background: var(--wash-2); border: var(--ink-hair) solid var(--ink);
+  transition: height 900ms var(--curva) 120ms; min-height: 2px;
+}
+.bq-alta .bq-barra { background: var(--vermilion); }
+.bq-v {
+  margin-top: 8px; font-family: var(--font-condensed); font-weight: 700;
+  font-size: 20px; line-height: 1.1; color: var(--ink);
+}
+.bq-alta .bq-v { color: var(--vermilion-ink); }
+.bq-l { margin-top: 2px; font-size: 13px; line-height: 1.35; color: var(--fg-2); }
+.bq-n { margin: var(--ma-3) 0 0; font-size: 14.5px; line-height: 1.55; color: var(--fg); max-width: var(--med-legenda); }
+.bq-fonte {
+  margin-top: 10px; font-family: var(--font-condensed); text-transform: uppercase;
+  letter-spacing: .12em; font-size: 12px; color: var(--fg-2);
+}
+@media (max-width: 880px) { .bq-faixa { height: 104px; } .bq-cols { gap: var(--ma-3); } }
+@media (prefers-reduced-motion: reduce) { .bq-barra { transition: none; } }
 .fn-etapa:last-child .fn-v { color: var(--vermilion-ink); }
 .fn-n { margin: 6px 0 0; font-size: 13px; color: var(--fg-2); }
 

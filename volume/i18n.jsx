@@ -43,10 +43,10 @@ if (LANG === "en") {
          zerava em ingles, com build verde. */
       notaSuporte: {
         k: "Before we start",
-        p: "This project was designed mobile first, and you will see phone screens along the way. But 6 out of every 10 visits to the store come from a computer, so the large exhibits in this chapter are desktop screenshots: that is where most people actually buy.",
-        p2: "And it is not only volume. Conversion is practically the same on both (0.15% on desktop against 0.14% on mobile), but the average order value on mobile is 44% lower. Desktop does not just bring more people: it brings the bigger order.",
-        fonte: "Google Analytics 4 · 12 months · 331,593 sessions",
-        desktop: 60, mobile: 40,
+        p: "This project was designed mobile first, and you will see phone screens along the way. But 7 out of every 10 visits to the store came from a computer, so the large exhibits in this chapter are desktop screenshots: that is where the volume was, and where the money was.",
+        p2: "That is 116,530 desktop sessions against 50,352 on mobile, with an average order of R$ 663 against R$ 420. People who build their own PC compare spec sheets, keep several tabs open and decide on the big screen, and the spending follows: the desktop order is 58% larger. Designing for the phone first was a matter of discipline, but the screen that most needed fixing was this one.",
+        fonte: "Google Analytics 4 · Q2 2026 · 166,882 sessions",
+        desktop: 70, mobile: 30,
         lDesk: "computer", lMob: "phone",
       },
       figuras: {
@@ -119,7 +119,7 @@ if (LANG === "en") {
       painel: {
         k: "The size of the hole",
         t: "People came in. Almost nobody bought",
-        fonte: "GA4 and invoices · Q2 2026 · Microsoft Clarity, 3-day sample",
+        fonte: "GA4 and invoices · Q2 2026 · 166,267 sessions",
         acesos: 2,
         milLegenda: "Each dot is a person who entered the store. The two lit ones are the people who bought: 0.16% conversion across a whole quarter.",
         numeros: [
@@ -129,10 +129,28 @@ if (LANG === "en") {
         ],
         barras: [
           { l: "Average page scroll", v: 25.5, d: 1, n: "Three quarters of the page were never seen." },
-          { l: "Sessions with a script error", v: 23.5, d: 1, n: "One in four ran into a technical failure." },
-          { l: "Sessions flagged as bots", v: 41, n: "What was left of real people was smaller still." },
+          { l: "Sessions with a loading error", v: 14.4, d: 1, n: "One in seven ran into a technical failure, measured by the site's own event." },
+          { l: "Direct traffic, no declared source", v: 50, n: "Half the volume, with a 71.9% bounce rate and 3% of the revenue: almost none of it was people buying." },
         ],
-        nota: "The behavior numbers come from a short Clarity sample, and that is how they enter here, as a clue that pointed where to look, not as a definitive measure. What holds the decision up is those numbers together with the recordings and the quarter's conversion.",
+        nota: "These numbers are from the whole quarter and come from two sources that don't talk to each other: GA4 and the invoices, with Clarity entering only where it measures well, which is behavior (heat map and recordings). Direct traffic bouncing at 71.9% confirms, by a second route, the same thing Clarity's bot flag was already saying.",
+      },
+      /* o funil tambem substitui o ramo inteiro: `etapas` e `marca`
+         viajam junto, senao somem em ingles com build verde. */
+      funil: {
+        k: "Where people stopped",
+        t: "Of every 62 who open a product, one adds it to the cart",
+        fonte: "Google Analytics 4 · Q2 2026 events · 166,267 sessions",
+        etapas: [
+          { l: "Sessions", v: 166267, n: "Everyone who entered the store in the quarter." },
+          { l: "Saw a product", v: 50399, n: "Three in ten get as far as opening a product page." },
+          { l: "Added to cart", v: 808, n: "And here the funnel collapses: of 62 who looked, one adds." },
+          { l: "Started checkout", v: 896, n: "More than the previous step, and it isn't an error: you can start checkout without firing the cart event, through quick buy or a recovered cart." },
+          { l: "Bought", v: 223, n: "Whoever reaches checkout converts at a quarter: 25%." },
+        ],
+        marca: { nosso: 0.13, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Conversion rate",
+          n: "Electronics convert at 1.1% on average in Brazil, with a healthy band between 0.8% and 1.5%. The store sat at an eighth of its own category's floor.",
+          fonte: "Prax 2025 benchmark, over a thousand Brazilian e-commerces" },
+        nota: "This funnel covers the whole quarter, event by event, not a sample. It corrected my own reading: I suspected the checkout, and the data showed that whoever gets there converts at 25%. The bottleneck sat earlier, in turning someone who looks at a product into someone who adds it to the cart, and that is where the V2 was aimed.",
       },
       /* gesto e busca nunca tiveram tradução e renderizavam em
          português no modo EN: os dois melhores beats do volume, mudos
@@ -157,8 +175,12 @@ if (LANG === "en") {
         p: ["The heat map said searching was the site's second most common gesture. I went to test what search answered.",
             "I searched for mouse. The storefront returned a mousepad ahead of the mouse, and mice were exactly the line the company was investing in most at that moment. The engine ranked by text proximity, not by catalog relevance.",
             "Then I searched for mause. No results, and the suggestions that showed up were other spelling errors from the catalog itself, \u201cMause\u201d, \u201cVulcam\u201d. The same happened with mous, with teclao, with any variation that slipped from the exact spelling.",
-            "This is not a search engine detail. It is the store deciding that whoever can't spell doesn't buy. In a hardware store, where half the names are foreign and full of numbers, that excludes people with money and every intention of spending it."],
+            "This is not a search engine detail. It is the store deciding that whoever can't spell doesn't buy. In a hardware store, where half the names are foreign and full of numbers, that excludes people with money and every intention of spending it.",
+            "Then I went after the size of it in the quarter's GA4, and the number was bigger than I assumed: 71,416 sessions used search, 43% of all of them. More people searched than saw a product page, which had 50,399. Search wasn't a secondary path through the store: it was the main one, and it was the one returning a mousepad to anyone looking for a mouse, and nothing to anyone typing mause."],
         figs: ["buscaMouse", "buscaMause"],
+        dado: { v: 71416, p: 43, l: "sessions used search in the quarter",
+          n: "More people searched than browsed. Search was the store's main path, and it was the one returning a mousepad to anyone looking for a mouse.",
+          fonte: "Google Analytics 4 · view_search_results event · Q2 2026" },
       },
       investigacao: { t: "Session recordings instead of opinion",
         p: ["Recordings in Microsoft Clarity, navigation and dwell-time metrics, and direct conversations with users about where they got stuck.",
