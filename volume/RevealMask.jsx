@@ -154,10 +154,11 @@ const DECK_ATRASO = 0.42; /* quanto do percurso é gasto escalonando as cartas *
    peso. Os fatores caem de cima para baixo, então a última carta do
    baralho chega depois das outras e o leque fecha com atraso.
 
-   Mais baixos que os do `Bite` (0,068 a 0,115) de propósito: aqui a peça
-   é grande e o percurso é longo, e no fator dele o baralho parecia
-   nervoso. */
-const DECK_LERP = [0.080, 0.070, 0.061, 0.052, 0.045];
+   Mais baixos que os do `Bite` (0,068 a 0,115) porque aqui a peça é
+   grande e o percurso é longo: no fator dele o baralho ficava nervoso.
+   Já subiram uma vez, de 0,045 a 0,080 para estes: naqueles o movimento
+   passou de rápido demais a lento demais, e o ponto ficou no meio. */
+const DECK_LERP = [0.105, 0.094, 0.083, 0.072, 0.062];
 const DECK_PARADO = 0.0016;  /* diferença abaixo da qual a carta assenta */
 
 /* A pose de cada carta dentro do baralho, relativa ao lugar final dela.
@@ -225,10 +226,10 @@ function RevealChapters({ onOpen }) {
       const vh = window.innerHeight;
       const centro = faixa.centro - window.scrollY;
       /* p = 0 com o baralho entrando por baixo (90% da tela) e p = 1 com
-         ele no topo (4%). O alcance foi de 0,62 para 0,86 de tela: o mesmo
-         movimento espalhado por mais rolagem é o que o deixa mais lento
-         sem deixá-lo mole. */
-      return Math.max(0, Math.min(1, (vh * 0.9 - centro) / (vh * 0.86)));
+         ele no topo. O alcance foi de 0,62 para 0,86 e assentou em 0,74:
+         o mesmo movimento espalhado por mais rolagem fica mais lento sem
+         ficar mole, e 0,86 passou do ponto. */
+      return Math.max(0, Math.min(1, (vh * 0.9 - centro) / (vh * 0.74)));
     }
 
     /* o alvo de UMA carta: o progresso da rolagem, deslocado pelo atraso

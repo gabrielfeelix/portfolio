@@ -2380,8 +2380,48 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 .lv-stage {
   position: relative; display: grid; place-items: center;
   padding: clamp(16px, 2.4vw, 32px) var(--gutter);
-  perspective: 2400px;
+  /* 4200 e não 2400: a perspectiva do palco é a que projeta a capa
+     girando, e a 2400 a borda que vem para a frente crescia 26% em altura
+     acima da caixa, o que fazia a capa parecer muito maior que o livro.
+     Afastar o ponto de fuga enfraquece a projeção sem tirar o volume. A
+     virada de página não usa esta: ela tem a própria, no `.lv-book`. */
+  perspective: 4200px;
+  /* SEM `overflow` aqui, e isso é decisão, não esquecimento.
+
+     Havia `overflow: hidden` para conter o deslocamento do livro fechado.
+     Duas coisas quebraram: com perspectiva a borda próxima da capa girada
+     projeta MAIOR que a caixa e o recorte comia a capa em cima e embaixo;
+     e recortando o palco o livro nunca passa por cima da seção vizinha,
+     que é justamente o que dá o aspecto de objeto em 3D na página.
+
+     O deslocamento não precisa mais ser contido: quem limita a largura
+     agora é o `clip-path` da janela, que corta no espaço local do próprio
+     elemento e por isso nunca estoura a caixa. Medido: scrollWidth igual a
+     clientWidth nas seis larguras. */
+  z-index: 2;
 }
+/* o livro passa por cima do que vem antes e do que vem depois */
+.livro {
+  position: relative; z-index: 2;
+  /* `clip` e não `hidden`, e SÓ no eixo X. `clip-path` corta a pintura mas
+     não a área rolável, então o deslocamento do livro fechado abria 37px
+     de scroll horizontal. `overflow-x: clip` corta isso e é a única forma
+     de conter um eixo sem forçar o outro para `auto`: com `hidden` o eixo Y
+     viraria rolagem e o livro deixaria de vazar por cima das seções
+     vizinhas, que é o que dá o aspecto de objeto em 3D. */
+  overflow-x: clip;
+}
+/* a caixa existe para o livro e a capa serem IRMÃOS do mesmo tamanho: a
+   capa precisa continuar visível enquanto o corpo ainda está invisível, e
+   filha dele ela apagaria junto. É ela que carrega a medida agora. */
+.lv-caixa {
+  position: relative; transform-style: preserve-3d;
+  inline-size: min(100%, 1100px); block-size: clamp(430px, 42vw, 500px);
+}
+/* a janela carrega o recorte que faz o livro crescer de uma para duas
+   páginas. Separada do livro porque `clip-path` achataria o 3D dele. */
+.lv-janela { position: absolute; inset: 0; will-change: transform, clip-path; }
+
 .lv-book {
   /* ALTURA FIXA, e menor que antes. `block-size` e não `min-block-size`: com
      mínimo, a peça mais falante esticava o livro e a folha vizinha vinha
@@ -2390,12 +2430,37 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
   /* 430/500 sai de medição, não de gosto: a página mais alta pede 400px em
      1440, 395 em 1280 e 423 em 1024 (a do Quanto Cobro). Este intervalo cobre
      as três sem o texto precisar encolher. */
-  position: relative; inline-size: min(100%, 1100px); block-size: clamp(430px, 42vw, 500px);
+  position: relative; inline-size: 100%; block-size: 100%;
   display: grid; grid-template-columns: 1fr 1fr;
+  /* a perspectiva vem daqui e não mais do palco: com a janela recortada no
+     meio do caminho, a do palco não alcançaria a folha de virar página */
+  perspective: 2400px;
+  /* O TOMBO. Aberto, o livro era um retângulo frontal: lia como card, não
+     como objeto pousado. Dois graus e meio de rotação no eixo X afastam a
+     borda de cima e é o suficiente para o olho ler volume. Mais que isso
+     começa a atrapalhar a leitura do texto das páginas. */
+  transform: rotateX(2.5deg);
   background: var(--paper); border: var(--ink-stroke) solid var(--ink);
   box-shadow: 14px 14px 0 var(--ink);
   transform-style: preserve-3d;
 }
+/* A ESPESSURA. O corte das folhas aparecendo por baixo nas bordas
+   externas e no pé. É `::before` atrás do papel do livro, então só o que
+   escapa da caixa é que fica à mostra: uma tira fina de papel em cada
+   lado, com dois fios de sombra fazendo as folhas de baixo. Sem isto o
+   livro aberto é uma folha só e volta a ler como card. */
+.lv-book::before {
+  content: ""; position: absolute; z-index: -1;
+  /* SÓ pelo pé. Vazando também pelos lados, a tira de papel cobria a borda
+     de nanquim do livro com branco e as laterais ficavam sem traço. Com o
+     tombo em `rotateX` a borda de cima se afasta, então o corte das folhas
+     que o olho espera ver é justamente o de baixo. */
+  inset-block: 8px -9px; inset-inline: 6px 6px;
+  background: var(--paper);
+  border: var(--ink-hair) solid var(--ink);
+  box-shadow: 0 5px 0 -1px var(--paper), 0 9px 0 -2px var(--wash-2);
+}
+
 /* a lombada: o vinco no meio, com a sombra caindo dos dois lados */
 .lv-book::after {
   content: ""; position: absolute; inset-block: 0; inset-inline-start: 50%;
@@ -3104,4 +3169,169 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rvm { will-change: auto; transform: none; }
+}
+
+/* =====================================================================
+   O LIVRO · A CAPA FECHADA E A DIREÇÃO
+   ---------------------------------------------------------------------
+   O livro chegava escancarado: quem descia a página caía numa página
+   dupla aberta sem nunca ter visto que aquilo era um volume. Agora ele
+   chega fechado e a rolagem abre (o ângulo é escrito por BookSlider.jsx).
+
+   A chapa herda o vocabulário do hero: retícula de pontos, linhas de
+   concentração no canto e vinheta de tinta nas bordas. O vermelho, porém,
+   é o `--vermilion-ink` e não o `--vermilion` do hero: o vermelho puro
+   entrega 4,0:1 contra branco e a capa carrega textos pequenos, que no
+   hero não existem. Medido depois de escrito, não estimado.
+   ===================================================================== */
+.lv-capa {
+  /* METADE da caixa, na esquerda. Um volume fechado tem a largura de UMA
+     página, não da página dupla: a primeira versão fez a capa do tamanho
+     do livro aberto, o que lia como uma chapa vermelha sumindo, não como
+     um livro sendo aberto.
+
+     A dobradiça é a borda direita, que é onde cai o vinco do livro aberto
+     e onde fica a lombada de um volume encadernado à direita. Fechada, o
+     JS a empurra para o meio da caixa; aberta, o empurrão zera e a
+     dobradiça encosta no vinco. */
+  position: absolute; z-index: 6;
+  inset-block: 0; inset-inline-start: 0; inline-size: 50%;
+  transform-origin: right center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  /* só `transform`. `will-change: opacity` é grouping property e forçaria
+     `transform-style: flat` aqui, colapsando as duas faces num plano só. */
+  will-change: transform;
+}
+/* O BLOCO DE PÁGINAS.
+   As referências de livro em CSS 3D resolvem a espessura com uma face em
+   `rotateY(90deg)` na lombada e uma contracapa em `translateZ(-espessura)`.
+   Aqui a espessura não precisa girar: o que gira é só a capa, e o bloco
+   fica parado embaixo dela. Então ele é uma chapa de papel com o CORTE das
+   folhas desenhado na borda solta e a lombada na dobradiça, que é o que a
+   capa descobre ao levantar. Sem ele o objeto é um plano girando. */
+.lv-bloco {
+  position: absolute; z-index: 5; pointer-events: none;
+  inset-block: 5px; inset-inline-start: 0; inline-size: 50%;
+  background: var(--paper);
+  border: var(--ink-stroke) solid var(--ink);
+  /* o corte das folhas: três fios de sombra na borda ESQUERDA, que é a
+     borda solta de um volume encadernado à direita */
+  box-shadow:
+    inset 5px 0 0 -3px var(--wash-1),
+    inset 10px 0 0 -8px var(--wash-2),
+    inset 15px 0 0 -13px var(--wash-1);
+  will-change: transform, opacity;
+}
+/* a lombada, na dobradiça */
+.lv-bloco::after {
+  content: ""; position: absolute; inset-block: 0; inset-inline-end: 0; inline-size: 15px;
+  background: linear-gradient(270deg, var(--vermilion-ink) 40%, rgba(10,10,10,.5));
+}
+
+/* os DOIS lados da folha. Sem o verso ela evapora aos 90 graus e o giro
+   lê como corte para outro frame, que foi o defeito da primeira versão. */
+.lv-capa-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  /* a opacidade mora nas FACES, nunca na folha: na folha ela achataria o
+     3D e o verso nunca apareceria */
+  opacity: var(--lv-capa-op, 1);
+  border: var(--ink-stroke) solid var(--ink);
+  overflow: hidden;
+  display: grid; place-items: center; text-align: center;
+}
+.lv-capa-frente { background: var(--vermilion-ink); color: #FFFFFF; }
+/* o lado de dentro da capa: papel com a mesma trama do verso da folha de
+   virar página, e o vinco escurecendo na dobradiça */
+.lv-capa-verso {
+  transform: rotateY(180deg);
+  background: var(--paper);
+  background-image: radial-gradient(var(--wash-1) 1px, transparent 1.1px);
+  background-size: 7px 7px;
+}
+.lv-capa-verso::after {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: 30px;
+  background: linear-gradient(90deg, rgba(10,10,10,.22), transparent);
+}
+/* a retícula, no vermelho vivo por cima do vermelho fundo: mesma estrutura
+   do `.splash::before`, invertida, e aberta no meio para não brigar com o
+   título */
+.lv-capa-tone {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .55;
+  background-image: radial-gradient(var(--vermilion) 1.2px, transparent 1.3px);
+  background-size: 9px 9px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 66% at 50% 48%, transparent 38%, #000 92%);
+          mask-image: radial-gradient(ellipse 70% 66% at 50% 48%, transparent 38%, #000 92%);
+}
+/* 集中線: as linhas de concentração do hero, no canto de cima à esquerda,
+   que é o canto oposto à lombada */
+.lv-capa-linhas {
+  position: absolute; z-index: 0; pointer-events: none;
+  inline-size: 380px; block-size: 380px; inset-block-start: -190px; inset-inline-start: -190px;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.5) 0 .3deg, transparent .3deg 3deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 54%);
+          mask-image: radial-gradient(circle, #000 0%, transparent 54%);
+  opacity: .2;
+}
+/* a vinheta de tinta que tira o chapado da chapa, igual à do hero */
+.lv-capa-frente::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 44%, transparent 42%, rgba(60,4,2,.5) 100%);
+}
+/* a lombada: um fio de tinta na borda direita, que é onde o volume é
+   costurado. Sem ela a capa lê como retângulo vermelho solto. */
+/* a lombada: fio de tinta na borda da dobradiça, que é onde o volume é
+   costurado. Sem ela a capa lê como retângulo vermelho solto. */
+.lv-capa-frente::before {
+  content: ""; position: absolute; z-index: 2; pointer-events: none;
+  inset-block: 0; inset-inline-end: 0; inline-size: 26px;
+  background: linear-gradient(270deg, rgba(10,10,10,.42), transparent);
+}
+
+.lv-capa-in {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; gap: var(--ma-2);
+  padding: var(--ma-4) var(--gutter);
+}
+.lv-capa-vol {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: var(--tr-kicker); font-size: var(--t-kicker);
+}
+.lv-capa-t {
+  font-family: var(--font-display); text-transform: uppercase;
+  /* menor que o título de seção: a capa tem metade da largura do livro */
+  font-size: clamp(2rem, 4vw, 3.2rem); line-height: .9; letter-spacing: .01em;
+}
+.lv-capa-n {
+  font-family: var(--font-editorial); font-weight: 700;
+  font-size: 1.05rem; letter-spacing: .08em;
+}
+.lv-capa-rtl {
+  font-family: var(--font-condensed); font-weight: 500;
+  letter-spacing: .14em; font-size: 12px;
+  margin-block-start: var(--ma-2);
+  padding-block-start: var(--ma-2);
+  border-block-start: var(--ink-hair) solid rgba(255,255,255,.45);
+}
+
+/* --- a direção do volume, acima do livro ---------------------------- */
+.lv-dir {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-block-end: var(--ma-2);
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .18em; font-size: 11px; color: var(--wash-3);
+}
+.lv-dir-s {
+  font-size: 17px; line-height: 1; letter-spacing: 0; color: var(--vermilion-ink);
+  animation: lv-dir-puxa 2.6s var(--curva) infinite;
+}
+/* a seta anda o tanto de um caractere e volta: indica o sentido sem virar
+   um elemento piscando, que é o que a 2.2.2 proíbe */
+@keyframes lv-dir-puxa {
+  0%, 62%, 100% { transform: translateX(0); }
+  76%           { transform: translateX(-6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lv-dir-s { animation: none; }
 }
