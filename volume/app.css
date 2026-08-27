@@ -2931,3 +2931,97 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
   .quemsou .qs-left > *, .quemsou .qs-nums > div, .ondeestou .oe-copy > * { opacity: 1; transform: none; transition: none; }
   .quemsou .qs-foto img { clip-path: none; transition: none; }
 }
+
+/* =====================================================================
+   SUMÁRIO · O FUNDO DA SEÇÃO
+   ---------------------------------------------------------------------
+   A home lia como bloco branco encostado em bloco branco. Estas camadas
+   costuram a zona do sumário sem desenhar nada por cima do conteúdo.
+
+   Quatro variantes vivem juntas e a escolha é o atributo `data-sumbg` no
+   <html>, escrito pelo seletor `?lab=1` (LabBg, em Capa.jsx). SEM o
+   atributo nenhuma pinta: o site público continua exatamente como está
+   até a variante ser decidida.
+
+   Todas: camada única, `pointer-events: none`, `--wash-*` neutro, e
+   nenhuma encosta em texto. Contraste não muda.
+   ===================================================================== */
+.sum-zone { position: relative; isolation: isolate; }
+/* o conteúdo sobe uma camada; o fundo fica no zero. `:not(.sum-bg)` é o
+   que impede a própria camada de fundo de subir junto e cobrir tudo. */
+.sum-zone > *:not(.sum-bg) { position: relative; z-index: 1; }
+
+.sum-bg {
+  display: none; position: absolute; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+[data-sumbg] .sum-bg { display: block; }
+
+/* --- v1 · kanji fantasma. 目次 é "sumário" mesmo, não enfeite. Vertical
+       e cortado pela borda direita, como a lombada de um volume. -------- */
+.sum-kanji { display: none; }
+[data-sumbg="v1"] .sum-kanji {
+  display: block; position: absolute; top: 50%; right: -.12em;
+  transform: translateY(-50%);
+  font-family: 'Yuji Mai', var(--font-condensed), sans-serif;
+  font-size: clamp(13rem, 32vw, 28rem); line-height: .78;
+  writing-mode: vertical-rl;
+  color: var(--wash-1); opacity: .46;
+  user-select: none;
+}
+
+/* --- v2 · retícula que respira. Mesma trama do rodapé, invertida para o
+       papel: densa no alto, some antes de chegar nos cards de baixo. --- */
+[data-sumbg="v2"] .sum-bg {
+  opacity: .5;
+  background-image: radial-gradient(var(--wash-2) 1px, transparent 1.15px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(130% 62% at 50% 2%, #000 4%, transparent 74%);
+          mask-image: radial-gradient(130% 62% at 50% 2%, #000 4%, transparent 74%);
+}
+
+/* --- v3 · speedlines. Diagonais de mangá bem fracas, apagadas no miolo
+       para não passar por trás do texto: só as margens carregam. ------- */
+[data-sumbg="v3"] .sum-bg {
+  opacity: .55;
+  background-image: repeating-linear-gradient(101deg,
+    transparent 0 44px, var(--wash-1) 44px 46px, transparent 46px 92px);
+  -webkit-mask-image: linear-gradient(90deg, #000, transparent 27%, transparent 73%, #000);
+          mask-image: linear-gradient(90deg, #000, transparent 27%, transparent 73%, #000);
+}
+
+/* --- v4 · grão de papel e vinheta. Não desenha nada: só tira o chapado
+       do branco puro e escurece os cantos de leve. O grão é SVG inline,
+       então não pede rede nem arquivo. ------------------------------- */
+[data-sumbg="v4"] .sum-bg {
+  background-image:
+    radial-gradient(122% 78% at 50% 50%, transparent 50%, rgba(10, 10, 10, .06)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='168'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='168' height='168' filter='url(%23g)' opacity='.3'/%3E%3C/svg%3E");
+}
+
+/* --- o seletor. Ferramenta de decisão, não peça do site: só renderiza
+       com ?lab=1 e não deve sobreviver à escolha. ---------------------- */
+.labbg {
+  position: fixed; z-index: 90; right: 16px; bottom: 16px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px; background: var(--ink); border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--vermilion);
+}
+.labbg-k {
+  font-family: var(--font-condensed); text-transform: uppercase;
+  letter-spacing: .18em; font-size: 10px; color: var(--sobre-ink-2);
+  padding-inline: 6px 4px;
+}
+.labbg-b {
+  -webkit-appearance: none; appearance: none; cursor: pointer;
+  font-family: var(--font-condensed); font-weight: 600; font-size: 12px;
+  letter-spacing: .08em; padding: 5px 9px; border: 0;
+  background: transparent; color: var(--sobre-ink-2);
+}
+.labbg-b:hover { color: var(--paper); }
+.labbg-b.on { background: var(--vermilion); color: #FFFFFF; }
+.labbg-b:focus-visible { outline: 2px solid var(--vermilion-sobre-ink); outline-offset: 2px; }
+
+@media (max-width: 860px) {
+  [data-sumbg="v1"] .sum-kanji { font-size: 46vw; right: -.2em; opacity: .34; }
+}

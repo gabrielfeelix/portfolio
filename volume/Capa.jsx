@@ -381,10 +381,67 @@ function OutrasPecas() {
   );
 }
 
+/* ---------- O FUNDO DO SUMÁRIO, em quatro variantes ----------------
+   A página lia como bloco empilhado sobre bloco: cada seção um retângulo
+   branco encostado no seguinte. O fundo é o que costura isso. São quatro
+   candidatos vivos ao mesmo tempo, trocados pelo atributo `data-sumbg` no
+   <html>; quem escreve o atributo é o seletor abaixo.
+
+   Sem o atributo NÃO EXISTE fundo nenhum: quem visita o site vê o papel
+   limpo de hoje. Isso é de propósito enquanto a variante não está
+   escolhida. Quando estiver, o vencedor vira o padrão e este bloco some. */
+const SUM_BGS = [
+  ["v1", "kanji fantasma"],
+  ["v2", "retícula"],
+  ["v3", "speedlines"],
+  ["v4", "grão e vinheta"],
+];
+
+/* Seletor flutuante. Só aparece com `?lab=1` na URL, então funciona no
+   domínio oficial sem ficar visível para ninguém que não saiba dele.
+   A escolha vai para o localStorage e sobrevive ao reload. */
+function LabBg() {
+  const on = (() => {
+    try { return new URLSearchParams(window.location.search).get("lab") === "1"; }
+    catch (e) { return false; }
+  })();
+  const [bg, setBg] = useState(() => {
+    try { return window.localStorage.getItem("sumbg") || "off"; } catch (e) { return "off"; }
+  });
+
+  useEffect(() => {
+    if (!on) return;
+    const raiz = document.documentElement;
+    if (bg === "off") delete raiz.dataset.sumbg;
+    else raiz.dataset.sumbg = bg;
+    try { window.localStorage.setItem("sumbg", bg); } catch (e) { /* modo privado */ }
+  }, [on, bg]);
+
+  if (!on) return null;
+  return (
+    <div className="labbg" role="group" aria-label="Fundo do sumário">
+      <span className="labbg-k">fundo</span>
+      {SUM_BGS.map(([v, nome]) => (
+        <button type="button" key={v} title={nome}
+                className={`labbg-b ${bg === v ? "on" : ""}`}
+                onClick={() => setBg(v)}>{v}</button>
+      ))}
+      <button type="button" className={`labbg-b ${bg === "off" ? "on" : ""}`}
+              title="sem fundo, como está hoje"
+              onClick={() => setBg("off")}>off</button>
+    </div>
+  );
+}
+
 function Sumario({ onOpen }) {
   const n = caseProjects().length;
   return (
-    <>
+    <div className="sum-zone">
+      <span className="sum-bg" aria-hidden="true">
+        <span className="sum-kanji" lang="ja" translate="no">目次</span>
+      </span>
+      <LabBg />
+
       {/* a cabeça continua na medida do texto (.shell, 1240px) */}
       <section className="shell sumario-sec" style={{ paddingTop: "var(--ma-6)" }}>
         <div className="sec-head" id="sumario">
@@ -402,7 +459,7 @@ function Sumario({ onOpen }) {
       <section className="shell">
         <OutrasPecas />
       </section>
-    </>
+    </div>
   );
 }
 
@@ -576,4 +633,4 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, onNav, onRap
   );
 }
 
-Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, OndeEstou, Colofao, Capa });
+Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, LabBg, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, OndeEstou, Colofao, Capa });
