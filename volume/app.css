@@ -1352,11 +1352,29 @@ html.ink .bookmark { filter: drop-shadow(4px 6px 0 rgba(0,0,0,.5)); }
 .bs-chip:hover .bs-logo { filter: none; opacity: 1; }
 
 /* ---- SPLASH: atalho da leitura rápida ---- */
+/* O tracejado do `.hero-field` corre atrás deste link, na mesma família de
+   creme (.5 contra .75) e ANIMADO (hf-drift + hf-march): sem separação, a
+   curva cortava as letras na altura da cintura, medido em 1440. O z-index
+   já estava certo, então o que faltava era o texto se destacar do fundo.
+   A sombra é do vermelho da superfície, não um bloco opaco, para o campo
+   continuar passando ao redor e o hero não ganhar uma placa. Cor literal
+   porque superfície vermelha não usa --paper/--ink: o modo tinta inverte
+   esses tokens e poria tipo quase preto sobre o vermelho. */
 .splash-rapido { display: inline-flex; align-items: center; gap: 8px; margin-top: var(--ma-3);
   font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
   letter-spacing: .16em; font-size: 12px; color: rgba(246,243,236,.75);
   border-bottom: 1.5px solid rgba(246,243,236,.4); padding-bottom: 3px;
+  position: relative; z-index: 1; isolation: isolate;
   transition: color var(--cut), border-color var(--cut); }
+/* O véu que abre o corredor: o mesmo vermelho da superfície, difuso nas
+   bordas, para a curva sumir sob as letras sem o hero ganhar uma placa
+   opaca. Sai da caixa do link (-14px/-10px) porque o tracejado tem 2px e
+   cortava a cintura da tipografia, não só o miolo. Fica atrás do texto e
+   não recebe clique. */
+.splash-rapido::before { content: ""; position: absolute; z-index: -1;
+  inset: -10px -14px; border-radius: 999px; pointer-events: none;
+  background: radial-gradient(ellipse at center,
+    #E4231B 0%, #E4231B 58%, rgba(228,35,27,.85) 78%, rgba(228,35,27,0) 100%); }
 .splash-rapido:hover { color: #F6F3EC; border-color: #F6F3EC; }
 .splash-rapido .arr { transition: transform var(--cut); }
 .splash-rapido:hover .arr { transform: translateX(4px); }
