@@ -123,6 +123,32 @@ if (LANG === "en") {
         ],
         nota: "The behavior numbers come from a short Clarity sample, and that is how they enter here, as a clue that pointed where to look, not as a definitive measure. What holds the decision up is those numbers together with the recordings and the quarter's conversion.",
       },
+      /* gesto e busca nunca tiveram tradução e renderizavam em
+         português no modo EN: os dois melhores beats do volume, mudos
+         para recrutador de fora. O objeto substitui o PT inteiro, então
+         `itens` e `figs` viajam junto, senão somem em inglês. */
+      gesto: {
+        k: "What people clicked",
+        t: "The site's most common click was closing the pop-up",
+        fonte: "Microsoft Clarity · heat map · 497 views, 798 clicks",
+        itens: [
+          { el: "Close the pop-up", sel: "I._close-icon", v: 124, p: 15.54, tipo: "ruido" },
+          { el: "Search field", sel: "#search", v: 76, p: 9.52, tipo: "busca" },
+          { el: "Close the pop-up (area)", sel: "DIV._close", v: 58, p: 7.27, tipo: "ruido" },
+          { el: "Carousel next", sel: "Next", v: 22, p: 2.76, tipo: "neutro" },
+          { el: "Buy", sel: "BUTTON.action.primary", v: 5, p: 0.63, tipo: "compra" },
+        ],
+        leitura: "Added up, the two close buttons take 182 clicks, 22.8% of everything clicked on the page. Buy had 5. The site demanded attention before offering anything, and people spent their first gesture getting rid of it. That is what pulled the pop-up away from the arrival in the V2, and what sent me looking at search. If the second most common gesture is searching and the purchase never happens, the problem lives in what search returns.",
+      },
+      busca: {
+        k: "The finding that widened the scope",
+        t: "The store demanded spelling before letting you buy",
+        p: ["The heat map said searching was the site's second most common gesture. I went to test what search answered.",
+            "I searched for mouse. The storefront returned a mousepad ahead of the mouse, and mice were exactly the line the company was investing in most at that moment. The engine ranked by text proximity, not by catalog relevance.",
+            "Then I searched for mause. No results, and the suggestions that showed up were other spelling errors from the catalog itself, \u201cMause\u201d, \u201cVulcam\u201d. The same happened with mous, with teclao, with any variation that slipped from the exact spelling.",
+            "This is not a search engine detail. It is the store deciding that whoever can't spell doesn't buy. In a hardware store, where half the names are foreign and full of numbers, that excludes people with money and every intention of spending it."],
+        figs: ["buscaMouse", "buscaMause"],
+      },
       investigacao: { t: "Session recordings instead of opinion",
         p: ["Recordings in Microsoft Clarity, navigation and dwell-time metrics, and direct conversations with users about where they got stuck.",
             "I watched the recordings end to end, no skipping, noting the exact point where the person stopped moving forward. It's slow work and it's what holds up everything else. Without it, the next meeting would be my opinion against the board's opinion, and mine loses.",
@@ -287,16 +313,19 @@ if (LANG === "en") {
           p: ["Two things came into the V2. The side cart, which opens over the page instead of taking people away, with the gift bar showing how much is missing to earn something, and PCYES Points, with balance, tiers and expiry open on screen.",
               "Both solve the same problem by different routes, and both give a reason to keep buying without charging another click to someone who already decided."],
           figs: ["sidecart", "points"] },
-        { k: "The finishing", t: "The nine fixes that shortened the path",
+        { k: "The finishing", t: "The eight fixes that shortened the path",
           buraco: "The path to purchase ran long because every fold added a small friction, and small frictions add up to a long path.",
-          p: ["The four anchors say what the project came to stand for. These nine are what had to change so that stance held up on screen, one fold at a time."],
+          p: ["The four anchors say what the project came to stand for. These eight are what had to change so that stance held up on screen, one fold at a time."],
           passos: [
             { k: "The entrance", t: "Search stopped demanding spelling",
               p: "The V2 opens with the most searched terms and products before anyone types, and what they mistype still finds its match. The field began serving both the person who knows the part number and the person who only knows what it is for.",
               fig: "buscaV2" },
+            /* PENDENTE: o passo do pop-up dorme junto com o PT até o
+               print existir. Ver a nota no data.jsx.
             { k: "The arrival", t: "The offer began waiting for interest",
               p: "The pop-up moved off the doorway to after 15% of scroll. Whoever just arrived sees the store; whoever is already looking is the one who gets the proposal.",
               fig: "popup" },
+            */
             { k: "The home", t: "The institutional content moved down one fold",
               p: "Product carousels instead of brand blocks, promotions up front and a promo filter right at the category entrance. The brand didn't leave: it stopped taking the product's place.",
               fig: "home" },

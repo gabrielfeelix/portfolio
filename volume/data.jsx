@@ -140,13 +140,13 @@ const CHAPTERS = [
       popup: { grau: "apoio",  /* o pop-up e um comportamento de entrada, nao uma dobra da loja */ ar: "16/9",
         alt: "Pop-up de captação da V2 aparecendo depois da pessoa rolar parte da página",
         legenda: "V2: o pop-up só aparece depois de 15% de rolagem. Quem acabou de chegar vê a loja primeiro; quem já demonstrou interesse é que recebe a oferta." },
-      buscaMouse: { ar: "16/9",
+      buscaMouse: { src: "volume/assets/projetos/pcyes/busca-mouse.webp", ar: "1600/796",
         alt: "Busca da V1 por mouse devolvendo mousepad nos primeiros resultados",
         legenda: "V1, busca por \u201cmouse\u201d: o primeiro resultado é mousepad. O motor rankeava por texto parecido, não pelo que a loja precisava vender." },
-      buscaMause: { ar: "16/9",
+      buscaMause: { src: "volume/assets/projetos/pcyes/busca-mause.webp", ar: "1600/786",
         alt: "Busca da V1 por mause devolvendo tela sem nenhum resultado",
         legenda: "V1, busca por \u201cmause\u201d: nenhum resultado. Uma letra trocada e a loja inteira desaparece." },
-      buscaV2: { ar: "16/9",
+      buscaV2: { src: "volume/assets/projetos/pcyes/busca-v2.webp", ar: "1600/613",
         alt: "Busca da V2 sugerindo produtos e termos mais buscados antes de digitar",
         legenda: "V2: a busca abre com os produtos e os termos mais procurados. Quem não lembra o nome escolhe sem digitar." },
       ckMobile: { src: "volume/assets/projetos/pcyes/ck-mobile.webp", ar: "25/61",
@@ -255,7 +255,7 @@ const CHAPTERS = [
       t: "A loja cobrava ortografia para deixar comprar",
       p: ["O mapa de calor dizia que buscar era o segundo gesto mais comum do site. Fui testar o que a busca respondia.",
           "Procurei por mouse. A vitrine devolveu mousepad na frente do mouse, e o mouse era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
-          "Depois procurei por mause. A loja devolveu uma tela vazia. Nada de aproximação, nada de sugestão útil, nada de \u201cvocê quis dizer\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
+          "Depois procurei por mause. Nenhum resultado, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
           "Isso não é detalhe de motor de busca. É a loja decidindo que quem não escreve certo não compra. Numa loja de hardware, onde metade dos nomes é estrangeira e cheia de número, isso exclui gente que tem dinheiro e intenção de gastar."],
       figs: ["buscaMouse", "buscaMause"],
     },
@@ -497,16 +497,26 @@ const CHAPTERS = [
          leitura \u00e9 uma sequ\u00eancia: cada corre\u00e7\u00e3o encurta um trecho
          diferente do mesmo caminho. `buscaV2` e `popup` ainda s\u00e3o
          molduras pendentes: caem em MangaPlate at\u00e9 o print subir. */
-      { k: "O acabamento", t: "As nove corre\u00e7\u00f5es que encurtaram o caminho",
+      { k: "O acabamento", t: "As oito corre\u00e7\u00f5es que encurtaram o caminho",
         buraco: "O caminho at\u00e9 a compra era longo porque cada dobra somava um atrito pequeno, e atrito somado \u00e9 caminho longo.",
-        p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas nove s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
+        p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas oito s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
         passos: [
           { k: "A entrada", t: "A busca deixou de exigir ortografia",
             p: "A V2 abre com os termos e produtos mais procurados antes de a pessoa digitar, e o que ela digita errado ainda encontra. O campo passou a servir quem sabe o nome da pe\u00e7a e quem s\u00f3 sabe para que ela serve.",
             fig: "buscaV2" },
+          /* PENDENTE (2026-08-26, decisão do Gabriel): o passo do pop-up
+             está OCULTO porque o print ainda não existe e uma moldura
+             vazia abrindo o módulo custava mais que a ausência. Quando o
+             print chegar: salvar como busca-popup.webp (ou similar) em
+             volume/assets/projetos/pcyes/, apontar o `src` na figura
+             `popup` acima, descomentar este passo AQUI e no i18n.jsx, e
+             voltar o título e o corpo deste módulo de "oito" para
+             "nove" nos dois idiomas. A âncora de `decisoes` sobre o
+             pop-up continua no ar: é argumento, não prova.
           { k: "A chegada", t: "A oferta passou a esperar o interesse",
             p: "O pop-up saiu da porta e foi para depois dos 15% de rolagem. Quem acabou de chegar v\u00ea a loja; quem j\u00e1 est\u00e1 olhando \u00e9 que recebe a proposta.",
             fig: "popup" },
+          */
           { k: "A home", t: "O institucional desceu uma dobra",
             p: "Carross\u00e9is de produto no lugar dos blocos de marca, promo\u00e7\u00f5es em destaque e filtro de promo\u00e7\u00e3o logo na entrada das categorias. A marca n\u00e3o saiu: ela deixou de ocupar o lugar do produto.",
             fig: "home" },

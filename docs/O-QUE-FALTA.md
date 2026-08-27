@@ -29,33 +29,28 @@ está abaixo, em ordem de impacto.
 
 ---
 
-## 1 · Os quatro prints que só o Gabriel tem · **TRAVADO, e é o maior**
+## 1 · O print do pop-up · **o passo dorme até ele chegar**
 
-Medido hoje: o PCYES tem **4 molduras vazias**, e é o buraco mais visível
-do capítulo. Duas delas abrem um módulo de nove passos, então o leitor
-entra em "O acabamento" olhando duas molduras vazias empilhadas.
+**Três dos quatro prints chegaram em 2026-08-26** e já estão no ar:
+`buscaMouse` e `buscaMause` no beat da busca, `buscaV2` como passo 1 de
+"O acabamento". Convertidos a webp q92, 1600px de largura, proporção
+real declarada no `ar`.
 
-| Chave | O que é | Onde | Legenda que já existe |
-|---|---|---|---|
-| `buscaV2` | V2 sugerindo produtos e termos antes de digitar | **passo 1** de "O acabamento" (`05/05`) | "V2: a busca abre com os produtos e os termos mais procurados" |
-| `popup` | Pop-up da V2 depois de 15% de rolagem | **passo 2** de "O acabamento" | "V2: o pop-up só aparece depois de 15% de rolagem" |
-| `buscaMouse` | V1 buscando "mouse" e devolvendo mousepad | beat `busca`, Ato II | "V1, busca por 'mouse': o primeiro resultado é mousepad" |
-| `buscaMause` | V1 buscando "mause" e devolvendo tela vazia | beat `busca`, Ato II | "V1, busca por 'mause': nenhum resultado" |
+**Falta só o `popup`** (a V2 mostrando o pop-up depois de 15% de
+rolagem). O passo "A chegada" do módulo "O acabamento" está **oculto**
+(comentado em `data.jsx` e `i18n.jsx`, com a nota `PENDENTE` no lugar), e
+o módulo diz "oito correções" enquanto isso. Quando o print chegar:
 
-`buscaMouse` e `buscaMause` sustentam o melhor momento do melhor case (a
-busca como letramento, que é o achado que ampliou o escopo do projeto).
+1. Salvar como `volume/assets/projetos/pcyes/busca-popup.webp` (ou
+   similar), boa qualidade, e apontar o `src` na figura `popup` de
+   `data.jsx` com o `ar` real do arquivo.
+2. Descomentar o passo "A chegada" em `data.jsx` E em `i18n.jsx`.
+3. Voltar "oito" para "nove" no título e no corpo do módulo, nos dois
+   idiomas.
+4. `npm run build`, conferir a régua com 9 traços, commit.
 
-**Como entregar:** precisa de **arquivo em disco**; imagem colada em chat
-não serve. Salvar em `volume/assets/projetos/pcyes/`, preferir `.webp`, e
-apontar o `src` na entrada de `chap.figuras` (`data.jsx`, capítulo
-`pcyes`), no formato das vizinhas:
-`src: "volume/assets/projetos/pcyes/<arquivo>.webp"`. **Alt e legenda já
-estão escritos em PT e EN: não há código a mexer.** Depois `npm run build`.
-
-**Atenção ao efeito colateral:** o beat `busca` vai crescer, e ele está
-num ato que hoje desce de 1,1 para 0,9 tela. Duas figuras ali corrigem o
-ritmo do Ato II de graça, porque colocam peso exatamente na virada. Não
-é problema, é o conserto chegando junto.
+A âncora de `decisoes` sobre o pop-up continua no ar: é argumento, não
+prova. E o achado do mapa de calor (182 cliques fechando) idem.
 
 ## 2 · Os outros quatro capítulos · **o desequilíbrio que sobrou**
 
