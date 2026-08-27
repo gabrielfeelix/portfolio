@@ -2011,7 +2011,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             grandes sao desktop num projeto desenhado mobile first. So
             aparece em capitulo que declara `notaSuporte`. */}
         <NotaSuporte dados={chap.notaSuporte} />
-        <div style={{ height: "var(--ma-6)" }}></div>
+        <div className="vao-ato"></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
             não desenha nada, só dá endereço e alvo de foco.
 
@@ -2057,17 +2057,17 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
         <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <Sec id="decisoes"><Decisoes chap={chap} figN={figN} /></Sec>
-        <div style={{ height: "var(--ma-6)" }}></div>
+        <div className="vao-ato"></div>
         <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
 
         <Respiro ato={ato(3)} />
 
         {/* ATO IV · o que mudou */}
         <Sec id="solucao"><Solucao chap={chap} /></Sec>
-        <div style={{ height: "var(--ma-6)" }}></div>
-        {chap.vocabulario ? <><div style={{ height: "var(--ma-6)" }}></div><Vocabulario dados={chap.vocabulario} /></> : null}
-        {chap.antesDepois ? <><div style={{ height: "var(--ma-6)" }}></div><Sec id="antesdepois"><AntesDepois dados={chap.antesDepois} /></Sec></> : null}
-        <div style={{ height: "var(--ma-6)" }}></div>
+        <div className="vao-ato"></div>
+        {chap.vocabulario ? <><div className="vao-ato"></div><Vocabulario dados={chap.vocabulario} /></> : null}
+        {chap.antesDepois ? <><div className="vao-ato"></div><Sec id="antesdepois"><AntesDepois dados={chap.antesDepois} /></Sec></> : null}
+        <div className="vao-ato"></div>
         <Sec id="resultado"><Resultado chap={chap} /></Sec>
         <Sec id="aprendi"><Aprendi chap={chap} /></Sec>
         {chap.id === "portfolio" && <SistemaVolume />}

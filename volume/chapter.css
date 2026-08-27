@@ -1418,3 +1418,11 @@ html.ink .cover-linhas { opacity: .06; }
 @media (prefers-reduced-motion: reduce) {
   .respiro-traco { transition: none; width: 56px; }
 }
+
+/* O ar depois do clímax, no Ato IV. Eram seis <div style={{height}}> soltos
+   dentro do JSX do Capitulo: espaço escolhido na mão, a mesma classe de
+   problema que o `gap: 26vh` era antes de virar escala. Fica aqui porque
+   espaçamento é decisão de folha de estilo, e assim ele acompanha a escala
+   `--ma-*`, que encolhe sozinha sob 880px. Grep feito nos cinco CSS antes
+   de escolher o nome: `.vao-ato` não colidia com nada. */
+.vao-ato { height: var(--ma-6); }
