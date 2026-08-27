@@ -1873,8 +1873,12 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <div className="chapter-col">
         <Tldr tldr={chap.tldr} links={chap.links} />
         {/* o atalho vem antes do primeiro beat: a escolha tem que existir
-            antes do custo, não depois de dez telas dele */}
-        <Atalho minutos={chap.minutos || 20} />
+            antes do custo, não depois de dez telas dele.
+            Só aparece em capítulo que de fato cobra caro: `minutos` é
+            declarado no `data.jsx`, e capítulo de três minutos não ganha
+            um atalho de três minutos, porque aí o atalho estaria mentindo.
+            Também exige `solucao`, que é para onde ele leva. */}
+        {chap.minutos && chap.solucao ? <Atalho minutos={chap.minutos} /> : null}
         <div style={{ height: "var(--ma-6)" }}></div>
         {/* âncora por seção: é o que o índice da esquerda persegue. `Sec`
             não desenha nada, só dá endereço e alvo de foco.

@@ -62,6 +62,13 @@ const CHAPTERS = [
     periodo: "6 meses · publicação prevista para outubro/2026",
     year: "2026",
     fact: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
+    /* Quanto o capítulo cobra, em minutos, e é medido, não estimado: 3.593
+       palavras no caminho padrão a 200 palavras por minuto. É o que o
+       `Atalho` declara ao leitor antes de ele escolher o caminho, e é a
+       chave que faz o atalho existir: capítulo sem `minutos` não ganha
+       atalho, porque um atalho de 3 minutos num capítulo de 3 minutos
+       seria mentira. Se o capítulo crescer, meça de novo e atualize. */
+    minutos: 18,
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
