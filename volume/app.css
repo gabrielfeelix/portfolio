@@ -2907,27 +2907,71 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 .ondeestou.on .oe-copy > *:nth-child(4) { transition-delay: 210ms; }
 .ondeestou.on .oe-copy > *:nth-child(5) { transition-delay: 290ms; }
 
-.oe-antes { margin-block-start: var(--ma-6); border-block-start: var(--ink-hair) solid var(--wash-2); padding-block-start: var(--ma-3); }
-.oe-antes-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-2); }
-.oe-lista { list-style: none; margin: 0; padding: 0; display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-.oe-item {
-  -webkit-appearance: none; appearance: none; cursor: pointer; inline-size: 100%;
-  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
-  background: var(--paper); border: var(--ink-hair) solid var(--ink);
-  padding: 14px 16px; text-align: left; color: inherit;
-  transition: background var(--cut), color var(--cut), transform var(--cut);
+/* =====================================================================
+   A TRAJETÓRIA
+   Eram duas caixas retangulares iguais, lado a lado, com seta para a
+   direita: forma de botão de próximo passo, não de histórico. E o cargo
+   estava em `display: none`, então sobrava ano e nome.
+
+   Agora o tempo fica desenhado. Um fio de nanquim atravessa os três nós,
+   os anos correm da esquerda para a direita e o último nó vem marcado em
+   vermelho com a etiqueta "hoje". O fio é `::before` do <ol> e para nos
+   dois nós das pontas, senão sobra rabo de linha nas bordas.
+   ===================================================================== */
+.oe-linha { margin-block-start: var(--ma-6); border-block-start: var(--ink-hair) solid var(--wash-2); padding-block-start: var(--ma-4); }
+.oe-linha-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-4); }
+
+.oe-tl {
+  list-style: none; margin: 0; padding: 0; position: relative;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: clamp(12px, 2.5vw, 32px);
 }
-.oe-item:hover { transform: translateY(-2px); background: var(--ink); color: var(--paper); }
-.oe-item:hover .oe-ano, .oe-item:hover .oe-item-papel { color: var(--paper); opacity: .75; }
-.oe-item:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.oe-ano { font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
+/* o fio: começa no centro do primeiro nó e morre no centro do último */
+.oe-tl::before {
+  content: ""; position: absolute; z-index: 0;
+  inset-block-start: 5px; block-size: var(--ink-hair);
+  background: var(--wash-2);
+  inset-inline: calc(100% / 6) calc(100% / 6);
+}
+.oe-no { position: relative; z-index: 1; }
+.oe-no-btn {
+  -webkit-appearance: none; appearance: none; cursor: pointer; inline-size: 100%;
+  background: transparent; border: 0; padding: 0; text-align: left; color: inherit;
+  display: grid; justify-items: start; gap: 5px;
+}
+.oe-no-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+/* o nó: quadrado de nanquim, porque o volume não tem canto redondo */
+.oe-no-ponto {
+  inline-size: 11px; block-size: 11px; background: var(--paper);
+  border: var(--ink-stroke) solid var(--ink); margin-block-end: 7px;
+  transition: transform var(--cut), background var(--cut);
+}
+.is-hoje .oe-no-ponto { background: var(--vermilion); border-color: var(--vermilion-ink); }
+.oe-no-btn:hover .oe-no-ponto { transform: scale(1.35); }
+
+.oe-no-ano { font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
   font-size: 12px; color: var(--wash-3); }
-.oe-item-nome { font-family: var(--font-display); text-transform: uppercase; font-size: 1.25rem; line-height: 1; }
-.oe-item-papel { display: none; }
-.oe-item .arr { transition: transform var(--cut); }
-.oe-item:hover .arr { transform: translateX(4px); }
+.oe-no-nome { font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.05rem, 2vw, 1.5rem); line-height: 1; }
+.oe-no-btn:hover .oe-no-nome { color: var(--vermilion-ink); }
+.oe-no-papel { font-size: var(--t-small); color: var(--fg-2); line-height: 1.35; }
+.oe-no-hoje {
+  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .16em; font-size: 10px; line-height: 1;
+  color: #FFFFFF; background: var(--vermilion-ink); padding: 4px 7px;
+  margin-block-start: 2px;
+}
+
+@media (max-width: 760px) {
+  /* na vertical o fio vira coluna e os nós descem: o tempo continua
+     desenhado, só muda de eixo */
+  .oe-tl { grid-auto-flow: row; grid-auto-columns: auto; gap: var(--ma-3); padding-inline-start: 22px; }
+  .oe-tl::before { inset-block: 5px 5px; inset-inline: 5px auto; block-size: auto; inline-size: var(--ink-hair); }
+  .oe-no-btn { grid-template-columns: auto 1fr; column-gap: 12px; align-items: start; }
+  .oe-no-ponto { margin-inline-start: -22px; margin-block-end: 0; grid-row: 1 / span 3; align-self: start; margin-block-start: 4px; }
+}
 
 @media (max-width: 760px) {
   .oe-grid { grid-template-columns: 1fr; }
@@ -2939,100 +2983,51 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 }
 
 /* =====================================================================
-   SUMÁRIO · O FUNDO DA SEÇÃO
+   O FUNDO DO VOLUME
    ---------------------------------------------------------------------
-   A home lia como bloco branco encostado em bloco branco. Estas camadas
-   costuram a zona do sumário sem desenhar nada por cima do conteúdo.
+   Quatro fundos foram construídos vivos lado a lado, com um seletor, para
+   a escolha ser de olho e não de argumento: kanji fantasma, retícula,
+   speedlines e grão de papel. Venceu o kanji. Os outros três e o seletor
+   saíram do arquivo.
 
-   Quatro variantes vivem juntas e a escolha é o atributo `data-sumbg` no
-   <html>, escrito pelo seletor `?lab=1` (LabBg, em Capa.jsx). SEM o
-   atributo nenhuma pinta: o site público continua exatamente como está
-   até a variante ser decidida.
+   Cada seção da home carrega uma palavra japonesa gigante atrás do
+   conteúdo, cortada pela borda, alternando de lado. O rodapé fica de
+   fora: já tem a retícula dele.
 
-   Todas: camada única, `pointer-events: none`, `--wash-*` neutro, e
-   nenhuma encosta em texto. Contraste não muda.
+   Camada única, `pointer-events: none`, `--wash-1` sobre papel. Não
+   encosta em contraste de texto.
    ===================================================================== */
-.sum-zone { position: relative; isolation: isolate; }
-/* o conteúdo sobe uma camada; o fundo fica no zero. `:not(.sum-bg)` é o
-   que impede a própria camada de fundo de subir junto e cobrir tudo. */
-.sum-zone > *:not(.sum-bg) { position: relative; z-index: 1; }
+.tem-fundo { position: relative; isolation: isolate; }
+/* o conteúdo sobe uma camada e o fundo fica no zero. O `:not(.fundo)` é o
+   que impede a própria camada de subir junto e cobrir a seção. */
+.tem-fundo > *:not(.fundo) { position: relative; z-index: 1; }
 
-.sum-bg {
-  display: none; position: absolute; inset: 0; z-index: 0;
+.fundo {
+  position: absolute; inset: 0; z-index: 0;
   pointer-events: none; overflow: hidden;
 }
-[data-sumbg] .sum-bg { display: block; }
-
-/* --- v1 · kanji fantasma. 目次 é "sumário" mesmo, não enfeite. Vertical
-       e cortado pela borda direita, como a lombada de um volume. -------- */
-.sum-kanji { display: none; }
-[data-sumbg="v1"] .sum-kanji {
-  display: block; position: absolute; top: 50%; right: -.12em;
-  transform: translateY(-50%);
-  font-family: 'Yuji Mai', var(--font-condensed), sans-serif;
-  font-size: clamp(13rem, 32vw, 28rem); line-height: .78;
+.fundo-k {
+  position: absolute; top: 50%; transform: translateY(-50%);
   writing-mode: vertical-rl;
+  font-family: 'Yuji Mai', var(--font-condensed), sans-serif;
+  font-size: clamp(13rem, 30vw, 27rem); line-height: .78;
   color: var(--wash-1); opacity: .46;
   user-select: none;
+  /* sem isto a palavra quebra numa SEGUNDA coluna nas seções mais baixas,
+     onde os dois ideogramas não cabem empilhados: medido 674px de largura
+     contra 337px da seção alta, e a mancha dupla lê como erro. */
+  white-space: nowrap;
 }
-
-/* --- v2 · retícula que respira. Mesma trama do rodapé, invertida para o
-       papel: densa no alto, some antes de chegar nos cards de baixo. --- */
-[data-sumbg="v2"] .sum-bg {
-  opacity: .5;
-  background-image: radial-gradient(var(--wash-2) 1px, transparent 1.15px);
-  background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(130% 62% at 50% 2%, #000 4%, transparent 74%);
-          mask-image: radial-gradient(130% 62% at 50% 2%, #000 4%, transparent 74%);
-}
-
-/* --- v3 · speedlines. Diagonais de mangá bem fracas, apagadas no miolo
-       para não passar por trás do texto: só as margens carregam. ------- */
-[data-sumbg="v3"] .sum-bg {
-  opacity: .55;
-  background-image: repeating-linear-gradient(101deg,
-    transparent 0 44px, var(--wash-1) 44px 46px, transparent 46px 92px);
-  -webkit-mask-image: linear-gradient(90deg, #000, transparent 27%, transparent 73%, #000);
-          mask-image: linear-gradient(90deg, #000, transparent 27%, transparent 73%, #000);
-}
-
-/* --- v4 · grão de papel e vinheta. Não desenha nada: só tira o chapado
-       do branco puro e escurece os cantos de leve. O grão é SVG inline,
-       então não pede rede nem arquivo. ------------------------------- */
-[data-sumbg="v4"] .sum-bg {
-  background-image:
-    radial-gradient(122% 78% at 50% 50%, transparent 50%, rgba(10, 10, 10, .06)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='168'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='168' height='168' filter='url(%23g)' opacity='.3'/%3E%3C/svg%3E");
-}
-
-/* --- o seletor. Ferramenta de decisão, não peça do site: só renderiza
-       com ?lab=1 e não deve sobreviver à escolha. ---------------------- */
-.labbg {
-  position: fixed; z-index: 90; right: 12px; top: 50%;
-  transform: translateY(-50%);
-  display: flex; flex-direction: column; align-items: stretch; gap: 3px;
-  padding: 7px 6px; background: var(--ink); border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--vermilion);
-}
-.labbg-k {
-  font-family: var(--font-condensed); text-transform: uppercase;
-  letter-spacing: .16em; font-size: 9px; color: var(--sobre-ink-2);
-  text-align: center; padding-block-end: 3px;
-}
-.labbg-b {
-  -webkit-appearance: none; appearance: none; cursor: pointer;
-  font-family: var(--font-condensed); font-weight: 600; font-size: 12px;
-  letter-spacing: .08em; padding: 5px 9px; border: 0;
-  background: transparent; color: var(--sobre-ink-2);
-}
-.labbg-b:hover { color: var(--paper); }
-.labbg-b.on { background: var(--vermilion); color: #FFFFFF; }
-.labbg-b:focus-visible { outline: 2px solid var(--vermilion-sobre-ink); outline-offset: 2px; }
+/* cortado pela borda: a palavra continua fora da página, como no miolo de
+   um volume impresso. Sem o corte ela lê como marca-d'água centralizada. */
+.fundo-dir .fundo-k { right: -.12em; }
+.fundo-esq .fundo-k { left: -.12em; }
 
 @media (max-width: 860px) {
-  [data-sumbg="v1"] .sum-kanji { font-size: 46vw; right: -.2em; opacity: .34; }
+  .fundo-k { font-size: 44vw; opacity: .3; }
+  .fundo-dir .fundo-k { right: -.2em; }
+  .fundo-esq .fundo-k { left: -.2em; }
 }
-
 
 /* =====================================================================
    SUMÁRIO · A CABEÇA

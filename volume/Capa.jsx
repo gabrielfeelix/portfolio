@@ -302,7 +302,8 @@ function MarkStrip() {
 
 function Diferencial() {
   return (
-    <section className="dif">
+    <section className="dif tem-fundo">
+      <Fundo kanji="実績" lado="dir" />
       <div className="shell">
         <div className="dif-left">
           <p className="dif-statement">
@@ -381,51 +382,26 @@ function OutrasPecas() {
   );
 }
 
-/* ---------- O FUNDO DO SUMÁRIO, em quatro variantes ----------------
-   A página lia como bloco empilhado sobre bloco: cada seção um retângulo
-   branco encostado no seguinte. O fundo é o que costura isso. São quatro
-   candidatos vivos ao mesmo tempo, trocados pelo atributo `data-sumbg` no
-   <html>; quem escreve o atributo é o seletor abaixo.
+/* ---------- O FUNDO DO VOLUME --------------------------------------
+   A home lia como bloco branco encostado em bloco branco: cada seção um
+   retângulo, empilhado no anterior, sem nada costurando um no outro.
 
-   Sem o atributo NÃO EXISTE fundo nenhum: quem visita o site vê o papel
-   limpo de hoje. Isso é de propósito enquanto a variante não está
-   escolhida. Quando estiver, o vencedor vira o padrão e este bloco some. */
-const SUM_BGS = [
-  ["v1", "kanji fantasma"],
-  ["v2", "retícula"],
-  ["v3", "speedlines"],
-  ["v4", "grão e vinheta"],
-];
+   Quatro fundos foram construídos e postos lado a lado num seletor para
+   decidir no olho (kanji, retícula, speedlines, grão). Venceu o kanji, e
+   os outros três saíram junto com o seletor.
 
-/* Seletor flutuante, na lateral direita da home. Fica visível enquanto a
-   variante não está decidida; quando estiver, o vencedor vira o padrão no
-   CSS e este componente sai do arquivo junto com as outras três.
-   A escolha vai para o localStorage e sobrevive ao reload. */
-function LabBg() {
-  const [bg, setBg] = useState(() => {
-    try { return window.localStorage.getItem("sumbg") || "off"; } catch (e) { return "off"; }
-  });
+   Cada seção carrega uma palavra japonesa gigante, cortada pela borda,
+   alternando de lado para a página não virar padrão. A palavra é sempre
+   a da seção, não enfeite: 実績 é histórico, 目次 é sumário, 自己 é o
+   próprio, 現在 é o agora. O rodapé fica de fora porque já tem retícula.
 
-  useEffect(() => {
-    const raiz = document.documentElement;
-    if (bg === "off") delete raiz.dataset.sumbg;
-    else raiz.dataset.sumbg = bg;
-    try { window.localStorage.setItem("sumbg", bg); } catch (e) { /* modo privado */ }
-    return () => { delete document.documentElement.dataset.sumbg; };
-  }, [bg]);
-
+   É `--wash-1` sobre papel, sem interação e sem foco: `aria-hidden` e
+   `pointer-events: none`. Não encosta em contraste de texto. */
+function Fundo({ kanji, lado = "dir" }) {
   return (
-    <div className="labbg" role="group" aria-label={t("Fundo do sumário", "Contents background")}>
-      <span className="labbg-k">{t("fundo", "bg")}</span>
-      {SUM_BGS.map(([v, nome]) => (
-        <button type="button" key={v} title={nome}
-                className={`labbg-b ${bg === v ? "on" : ""}`}
-                onClick={() => setBg(v)}>{v}</button>
-      ))}
-      <button type="button" className={`labbg-b ${bg === "off" ? "on" : ""}`}
-              title={t("sem fundo", "no background")}
-              onClick={() => setBg("off")}>off</button>
-    </div>
+    <span className={"fundo fundo-" + lado} aria-hidden="true">
+      <span className="fundo-k" lang="ja" translate="no">{kanji}</span>
+    </span>
   );
 }
 
@@ -435,11 +411,8 @@ function Sumario({ onOpen }) {
   const noAr = casos.filter((p) => p.links && (p.links.vercel || p.links.play)).length;
   const outras = pieceProjects().length;
   return (
-    <div className="sum-zone">
-      <span className="sum-bg" aria-hidden="true">
-        <span className="sum-kanji" lang="ja" translate="no">目次</span>
-      </span>
-      <LabBg />
+    <div className="sum-zone tem-fundo">
+      <Fundo kanji="目次" lado="esq" />
 
       {/* A cabeça era um par: título à esquerda, kicker à direita, na
           régua da página. Virou bloco centrado, que é o que segura o
@@ -502,7 +475,8 @@ function QuemSou({ onSobre }) {
     { n: String(noAr), l: t("No ar", "Live") },
   ];
   return (
-    <section className={"quemsou" + (visto ? " on" : "")} ref={ref} style={{ marginTop: "var(--ma-6)" }}>
+    <section className={"quemsou tem-fundo" + (visto ? " on" : "")} ref={ref} style={{ marginTop: "var(--ma-6)" }}>
+      <Fundo kanji="自己" lado="dir" />
       <div className="shell qs-grid">
         <div className="qs-left">
           <div className="qk">{t("Quem sou", "Who I am")}</div>
@@ -544,9 +518,9 @@ function QuemSou({ onSobre }) {
 function OndeEstou({ onEmpresa }) {
   const [ref, visto] = useReveal({ threshold: 0.2 });
   const atual = COMPANIES.find((c) => c.atual) || COMPANIES[COMPANIES.length - 1];
-  const antes = COMPANIES.filter((c) => c.id !== atual.id);
   return (
-    <section className={"ondeestou" + (visto ? " on" : "")} ref={ref}>
+    <section className={"ondeestou tem-fundo" + (visto ? " on" : "")} ref={ref}>
+      <Fundo kanji="現在" lado="esq" />
       <div className="shell">
         <div className="oe-grid">
           <button type="button" className="oe-chapa" onClick={() => onEmpresa(atual.id)}
@@ -564,22 +538,38 @@ function OndeEstou({ onEmpresa }) {
           </div>
         </div>
 
-        {/* a trajetória inteira, sem carrossel: as duas anteriores ficam à
-            vista em vez de esperar alguém achar a seta */}
-        <div className="oe-antes">
-          <div className="oe-antes-k">{t("Antes disso", "Before that")}</div>
-          <ul className="oe-lista">
-            {antes.map((c) => (
-              <li key={c.id}>
-                <button type="button" className="oe-item" onClick={() => onEmpresa(c.id)}>
-                  <span className="oe-ano">{c.anos}</span>
-                  <span className="oe-item-nome">{c.name}</span>
-                  <span className="oe-item-papel">{c.role}</span>
-                  <span className="arr" aria-hidden="true">→</span>
+        {/* A TRAJETÓRIA.
+
+            Era "Antes disso" com as duas empresas anteriores em duas
+            caixas retangulares iguais, lado a lado, cada uma com uma seta
+            para a direita. Isso lia como par de botões de próximo passo,
+            não como histórico: caixa idêntica com seta é a forma de "vá
+            para", e o cargo estava escondido em `display: none`, então
+            sobrava ano e nome.
+
+            Agora é linha do tempo, e o tempo fica desenhado: os anos
+            correm da esquerda para a direita sobre um fio de nanquim, a
+            empresa atual é o último nó e vem marcada. Ela aparece aqui
+            mesmo já tendo a chapa acima, porque é o nó final que faz a
+            linha ser lida como percurso em vez de lista solta. O cargo
+            voltou a aparecer: é ele que mostra a subida de estagiário a
+            designer de produto. */}
+        <div className="oe-linha">
+          <div className="oe-linha-k">{t("Por onde passei", "Where I have been")}</div>
+          <ol className="oe-tl">
+            {COMPANIES.map((c) => (
+              <li key={c.id} className={"oe-no" + (c.atual ? " is-hoje" : "")}>
+                <button type="button" className="oe-no-btn" onClick={() => onEmpresa(c.id)}
+                        aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
+                  <span className="oe-no-ponto" aria-hidden="true"></span>
+                  <span className="oe-no-ano">{c.anos}</span>
+                  <span className="oe-no-nome">{c.name}</span>
+                  <span className="oe-no-papel">{c.role}</span>
+                  {c.atual ? <span className="oe-no-hoje">{t("hoje", "today")}</span> : null}
                 </button>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       </div>
     </section>
@@ -648,4 +638,4 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, onNav, onRap
   );
 }
 
-Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, LabBg, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, OndeEstou, Colofao, Capa });
+Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, Fundo, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, OndeEstou, Colofao, Capa });
