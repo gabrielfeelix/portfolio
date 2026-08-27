@@ -8,18 +8,18 @@ O conteúdo é servido por JavaScript no cliente. Para ler o texto de um capítu
 
 ## Capítulos
 
-- [PCYES V2 · Redesign de e-commerce](https://portfolio-volume.vercel.app/#/cap/pcyes): loja de hardware que ficou bonita e ficou lenta de comprar. Funil de 1.705 visitas na home para 27 no checkout, busca que exigia ortografia exata, e a V2 com design system, pré-venda e busca tolerante a erro.
-- [Locarmais · Conciliação](https://portfolio-volume.vercel.app/#/cap/locarmais-conciliacao): SaaS de locação, o fluxo de conciliação financeira.
-- [Odex · Desktop e web](https://portfolio-volume.vercel.app/#/cap/odex): produto de desktop e web do Grupo Oderço.
-- [Oderço Revenda · Web](https://portfolio-volume.vercel.app/#/cap/oderco-revenda): canal de revenda.
-- [O próprio portfólio · Manifesto](https://portfolio-volume.vercel.app/#/cap/portfolio): por que um portfólio em forma de mangá, e como ele foi construído.
+- [PCYES V2 · Redesign de e-commerce](https://gabrielfelix-ux.4yu.com.br/#/cap/pcyes): loja de hardware que ficou bonita e ficou lenta de comprar. Funil de 1.705 visitas na home para 27 no checkout, busca que exigia ortografia exata, e a V2 com design system, pré-venda e busca tolerante a erro.
+- [Locarmais · Conciliação](https://gabrielfelix-ux.4yu.com.br/#/cap/locarmais-conciliacao): SaaS de locação, o fluxo de conciliação financeira.
+- [Odex · Desktop e web](https://gabrielfelix-ux.4yu.com.br/#/cap/odex): produto de desktop e web do Grupo Oderço.
+- [Oderço Revenda · Web](https://gabrielfelix-ux.4yu.com.br/#/cap/oderco-revenda): canal de revenda.
+- [O próprio portfólio · Manifesto](https://gabrielfelix-ux.4yu.com.br/#/cap/portfolio): por que um portfólio em forma de mangá, e como ele foi construído.
 
 ## Páginas
 
-- [Início](https://portfolio-volume.vercel.app/): capa do volume e índice dos capítulos.
-- [Posfácio](https://portfolio-volume.vercel.app/#/sobre): quem é Gabriel, trajetória e filosofia de trabalho.
-- [Processo](https://portfolio-volume.vercel.app/#/processo): como ele conduz um projeto, da investigação à entrega.
-- [Leitura rápida](https://portfolio-volume.vercel.app/#/rapido): versão curta, para quem tem cinco minutos.
+- [Início](https://gabrielfelix-ux.4yu.com.br/): capa do volume e índice dos capítulos.
+- [Posfácio](https://gabrielfelix-ux.4yu.com.br/#/sobre): quem é Gabriel, trajetória e filosofia de trabalho.
+- [Processo](https://gabrielfelix-ux.4yu.com.br/#/processo): como ele conduz um projeto, da investigação à entrega.
+- [Leitura rápida](https://gabrielfelix-ux.4yu.com.br/#/rapido): versão curta, para quem tem cinco minutos.
 
 ## Contato
 

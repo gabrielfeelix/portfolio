@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://portfolio-volume.vercel.app/sitemap.xml
+Sitemap: https://gabrielfelix-ux.4yu.com.br/sitemap.xml
