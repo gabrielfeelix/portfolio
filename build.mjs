@@ -15,6 +15,7 @@ const SCRIPTS = [
   "organic.jsx",
   "cursor.jsx",
   "RevealMask.jsx",
+  "BookSlider.jsx",
   "Capa.jsx",
   "Capitulo.jsx",
   "Processo.jsx",

@@ -164,6 +164,20 @@ function Splash({ onRead, onContact, onRapido, lit }) {
   );
 }
 
+/* ---------- A DENTADURA — os quadros que mordem a capa -------------
+   A capa e' fixa e o papel sobe por cima. Estes quadrados ficam no topo do
+   papel com margem negativa: invadem o vermelho e recortam a hero de baixo
+   pra cima, com alturas desiguais (o do meio sobe mais). Puro papel sobre
+   tinta, o mesmo gesto do RevealMask, sem imagem nenhuma. */
+function Bite() {
+  const [ref, inView] = useReenter({ threshold: 0.05, rootMargin: "0px 0px -4% 0px" });
+  return (
+    <div className={`bite ${inView ? "in" : ""}`} ref={ref} aria-hidden="true">
+      {[0, 1, 2, 3, 4, 5, 6].map((n) => <span className="bite-t" key={n}></span>)}
+    </div>
+  );
+}
+
 /* ---------- [C] DIFERENCIAL — a frase + a faixa de marcas ----------
    A lista "Minhas frentes" saiu daqui: navegação por categoria pertence
    a Outras peças, junto do que ela filtra. O lado direito agora carrega
@@ -260,98 +274,30 @@ function ChapterList({ onOpen }) {
   );
 }
 
-/* the category nav that used to sit in "Minhas frentes". It filters the
-   Outras peças index only — the chapters are the spine and never move. */
-function CatNav({ filter, setFilter, items }) {
-  const byCat = (k) => (k === "todos" ? items : items.filter((p) => p.cat === k));
-  return (
-    <div className="catnav" role="group" aria-label={t("Filtrar as outras peças por categoria", "Filter the other pieces by category")}>
-      {CATS.map((c) => {
-        const list = byCat(c.key);
-        const a = list[0], b = list[1] || list[0];
-        const on = filter === c.key;
-        return (
-          <button type="button" key={c.key} className={`cat-tag ${on ? "on" : ""}`} aria-pressed={on}
-                  disabled={!list.length}
-                  onClick={() => setFilter(on && c.key !== "todos" ? "todos" : c.key)}>
-            <span className="ct-label">{c.label}</span>
-            <span className="ct-count" aria-hidden="true">{String(list.length).padStart(2, "0")}</span>
-            <span className="ct-dot" aria-hidden="true"></span>
-            {a ? (
-              <span className="cat-reveal" aria-hidden="true">
-                <span className="pic back"><span className="pic-tone"></span><span className="pic-name">{b.title}</span></span>
-                <span className="pic front"><span className="pic-tone"></span><span className="pic-name">{a.title}</span></span>
-              </span>
-            ) : null}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 /* ---------- 目次 · Outras peças ----------
-   The manga index page: dotted leaders and page numbers. These don't open
-   a case — they link out to the thing itself when it's on the air. */
-function catLabel(key) {
-  const c = CATS.find((x) => x.key === key);
-  return c ? c.label : key;
-}
+   O índice virou livro: uma peça por página, com o índice inteiro a um
+   clique. Nenhuma delas abre caso — todas levam ao trabalho publicado. */
+/* catLabel mudou pra data.jsx: o livro das peças (BookSlider) carrega
+   antes de Capa e precisa dele, e CATS ja' mora la. */
 
-function OutrasPecas({ filter, setFilter }) {
+function OutrasPecas() {
   const all = pieceProjects();
-  const items = filter === "todos" ? all : all.filter((p) => p.cat === filter);
-  // A pagina e a identidade da peca no volume, entao ela sai da posicao na
-  // lista COMPLETA. Numerar pelo indice da lista filtrada reiniciava em 008
-  // a cada categoria e dava a mesma pagina para pecas diferentes.
-  const pagina = new Map(all.map((p, i) => [p.id, String(8 + i * 14).padStart(3, "0")]));
   return (
     <section className="outras" id="outras">
       <div className="sec-head">
         <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("Outras peças", "Other pieces")}</Brush>
-        <span className="kicker">{String(items.length).padStart(2, "0")} {items.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
+        <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
       </div>
-      <CatNav filter={filter} setFilter={setFilter} items={all} />
-      <nav className="mokuji" aria-label={t("Índice de outras peças", "Index of other pieces")}>
-        <div className="mo-head">
-          <span className="mo-kanji" lang="ja" translate="no" aria-hidden="true">目次</span>
-          <span className="kicker">{t("Cada item leva direto ao trabalho publicado", "Each item goes straight to the published work")}</span>
-        </div>
-        <ol className="mo-list">
-          {items.map((p) => {
-            const live = pieceLink(p);
-            const dest = p.destino || "ar";
-            return (
-              <li className="mo-item" key={p.id}>
-                <a className="mo-row" href={live} target="_blank" rel="noreferrer">
-                  <span className="mo-top">
-                    <span className="mo-cap">{catLabel(p.cat)}</span>
-                    <span className="mo-title">{p.title}</span>
-                    <span className="mo-dots" aria-hidden="true"></span>
-                    <span className={`mo-destino is-${dest}`}>
-                      {dest === "proto" ? t("Protótipo", "Prototype")
-                        : dest === "figma" ? "Figma"
-                        : dest === "loja" ? "Play Store"
-                        : t("No ar", "Live")}
-                      <span className="ext" aria-hidden="true">↗</span>
-                    </span>
-                    <span className="mo-page">p. {pagina.get(p.id)}</span>
-                  </span>
-                  {p.desc ? <span className="mo-desc">{p.desc}</span> : null}
-                </a>
-              </li>
-            );
-          })}
-        </ol>
-        {items.length === 0
-          ? <p className="mo-empty">{t("Nada nessa categoria ainda.", "Nothing in this category yet.")}</p>
-          : null}
-      </nav>
+      <p className="mo-desc" style={{ maxWidth: "52ch", marginBottom: "var(--ma-3)" }}>
+        {t("Uma peça por página. Vire com as setas, o teclado ou arrastando — ou abra o índice inteiro de uma vez.",
+           "One piece per page. Turn with the arrows, the keyboard or a swipe — or open the whole index at once.")}
+      </p>
+      <BookSlider items={all} />
     </section>
   );
 }
 
-function Sumario({ onOpen, filter, setFilter }) {
+function Sumario({ onOpen }) {
   const n = caseProjects().length;
   return (
     <>
@@ -370,7 +316,7 @@ function Sumario({ onOpen, filter, setFilter }) {
       <RevealChapters onOpen={onOpen} />
 
       <section className="shell">
-        <OutrasPecas filter={filter} setFilter={setFilter} />
+        <OutrasPecas />
       </section>
     </>
   );
@@ -387,7 +333,34 @@ function QuemSou({ onSobre, onEmpresa }) {
         <div className="qs-left">
           <div className="qk">{t("Quem sou", "Who I am")}</div>
           <p className="qs-bio">{t("UX/Product Designer. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade. Leio mangá desde criança, e levo cada projeto do protótipo ao ar.", "UX/Product Designer. I left law behind when I found out I could design and build real product. I've read manga since I was a kid, and I take every project from prototype to live.")}</p>
-          <a className="btn btn-ghost gl" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>{t("Ver posfácio", "Read the afterword")} <span className="arr">→</span></a>
+          {/* Os numeros saem de PROJECTS, contados na hora: 23 projetos, e
+              os que tem link publicado (vercel ou Play Store) sao os que
+              estao no ar. Numero escrito na mao envelhece e mente sozinho
+              quando um projeto entra; contado, ele se corrige. */}
+          <div className="qs-nums">
+            <div>
+              <b className="qs-n">+2</b>
+              <span className="qs-nl">{t("Anos na área", "Years in the field")}</span>
+            </div>
+            <div>
+              <b className="qs-n">{PROJECTS.length}</b>
+              <span className="qs-nl">{t("Projetos", "Projects")}</span>
+            </div>
+            <div>
+              <b className="qs-n">{PROJECTS.filter((p) => p.links && (p.links.vercel || p.links.play)).length}</b>
+              <span className="qs-nl">{t("No ar", "Live")}</span>
+            </div>
+          </div>
+          {/* "Saiba mais" no lugar de "Ver posfacio": o rotulo antigo pedia
+              que o visitante ja' soubesse o que e' um posfacio pra querer
+              clicar. Mesmo destino, porta mais larga. */}
+          <a className="btn btn-seta" href="#" onClick={(e) => { e.preventDefault(); onSobre(); }}>
+            <span className="arr" aria-hidden="true">→</span> {t("Saiba mais sobre mim", "More about me")}
+          </a>
+        </div>
+
+        <div className="qs-foto">
+          <img src="uploads/gabrielfelix-foto.png" alt={t("Retrato de Gabriel Felix Barbosa", "Portrait of Gabriel Felix Barbosa")} loading="lazy" draggable="false" />
         </div>
 
         <div className="qs-company">
@@ -459,13 +432,14 @@ function Colofao({ onContact, onNav }) {
 }
 
 /* ---------- the assembled cover ---------- */
-function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setFilter, onNav, onRapido }) {
+function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, onNav, onRapido }) {
   return (
     <main className="home-main" key="home">
       <Splash onRead={onRead} onContact={onContact} onRapido={onRapido} lit={lit} />
       <div className="post-hero">
+        <Bite />
         <Diferencial />
-        <Sumario onOpen={onOpen} filter={filter} setFilter={setFilter} />
+        <Sumario onOpen={onOpen} />
         <QuemSou onSobre={onSobre} onEmpresa={onEmpresa} />
         <Colofao onContact={onContact} onNav={onNav} />
       </div>
@@ -473,4 +447,4 @@ function Capa({ onOpen, onContact, onSobre, onEmpresa, onRead, lit, filter, setF
   );
 }
 
-Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, CatNav, OutrasPecas, QuemSou, Colofao, Capa });
+Object.assign(window, { Nav, Splash, Diferencial, Mark, MarkStrip, Sumario, ChapterList, ChapterBlock, Bite, OutrasPecas, QuemSou, Colofao, Capa });

@@ -227,7 +227,6 @@ function App() {
   const [view, setView] = useState(initialView);  // "home" | chapterId | "processo" | "sobre" | "empresa:<id>" | "404"
   const [turn, setTurn] = useState(null);          // {key, sfx}
   const [lit, setLit] = useState(false);
-  const [filter, setFilter] = useState("todos");   // sumário category (lifted so quick-links can set it)
   const [ink, setInk] = useState(() => {             // modo tinta: o volume lido de noite
     try { return localStorage.getItem("vol-ink") === "1"; } catch (e) { return false; }
   });
@@ -465,7 +464,7 @@ function App() {
     body = <Posfacio onContact={goContact} t={t} onEmpresa={openEmpresa} onProject={openProject} onNav={handleNav} />;
   } else {
     body = <Capa onOpen={openChapter} onContact={goContact} onSobre={() => goView("sobre")}
-                 onEmpresa={openEmpresa} filter={filter} setFilter={setFilter}
+                 onEmpresa={openEmpresa}
                  onRead={() => scrollTo("sumario", true)} lit={lit} onNav={handleNav}
                  onRapido={() => goView("rapido")} />;
   }

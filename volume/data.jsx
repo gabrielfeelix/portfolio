@@ -1027,6 +1027,12 @@ const CATS = [
   { key: "ecommerce", label: "E-commerce" },
 ];
 
+/* rotulo legivel de uma categoria */
+function catLabel(key) {
+  const c = CATS.find((x) => x.key === key);
+  return c ? c.label : key;
+}
+
 /* ---- THE FULL VOLUME · every project, grouped by category ----------
    The 4 with a `chapterId` open a full chapter (deep case). The rest are
    itens do índice, que linkam direto pro trabalho publicado. */
@@ -1043,22 +1049,28 @@ function isCase(p) { return CASE_IDS.indexOf(typeof p === "string" ? p : p.id) >
    não entra no índice — nome sem destino frustra quem clica. */
 const PROJECTS = [
   /* ---- os 5 capítulos, na ordem de leitura ------------------------- */
-  { id: "pcyes", title: "PCYES V2", cat: "ecommerce", domain: "E-commerce · Magento", fav: true, chapterId: "pcyes",
+  { id: "pcyes", shots: ["volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp", "volume/assets/projetos/pcyes/s3.webp", "volume/assets/projetos/pcyes/s4.webp", "volume/assets/projetos/pcyes/s5.webp"],
+    title: "PCYES V2", cat: "ecommerce", domain: "E-commerce · Magento", fav: true, chapterId: "pcyes",
     desc: "Redesign do e-commerce", cover: "volume/assets/projetos/pcyes/cover.webp",
     links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" } },
-  { id: "locarmais-conciliacao", title: "Locar Mais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
+  { id: "locarmais-conciliacao", shots: ["volume/assets/projetos/locarmais/s1-conciliacao.webp", "volume/assets/projetos/locarmais/s2-origem-dos-dados.webp", "volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", "volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp"],
+    title: "Locar Mais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
     desc: "Módulo de conciliação financeira", links: { vercel: null, figma: null } },
-  { id: "odex", title: "ODEX", cat: "desktop", domain: "Desktop e Web", fav: true, chapterId: "odex",
+  { id: "odex", shots: ["volume/assets/projetos/odex/s1.webp", "volume/assets/projetos/odex/s2.webp"],
+    title: "ODEX", cat: "desktop", domain: "Desktop e Web", fav: true, chapterId: "odex",
     desc: "Redesign de interface", cover: "volume/assets/projetos/odex/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: "https://www.figma.com/design/0nApyM8W4IgRwr64pSOfWg/DS--ODEX-?node-id=0-1&t=vAP1IrCmMOrbbiEy-1" } },
-  { id: "oderco-revenda", title: "Oderço", cat: "web", domain: "Web · Landing page", fav: true, chapterId: "oderco-revenda",
+  { id: "oderco-revenda", shots: ["volume/assets/projetos/oderco-revenda/s1.webp", "volume/assets/projetos/oderco-revenda/s2.webp", "volume/assets/projetos/oderco-revenda/s3.webp"],
+    title: "Oderço", cat: "web", domain: "Web · Landing page", fav: true, chapterId: "oderco-revenda",
     desc: "Página de cadastro de revenda", cover: "volume/assets/projetos/oderco-revenda/cover.webp", links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null } },
-  { id: "portfolio", title: "Portfólio", cat: "web", domain: "Website · Manifesto", fav: false, chapterId: "portfolio",
+  { id: "portfolio", shots: ["volume/assets/projetos/portfolio/01-home-splash.webp", "volume/assets/projetos/portfolio/02-home-capitulos.webp", "volume/assets/projetos/portfolio/03-cap-capa.webp", "volume/assets/projetos/portfolio/04-cap-solucao.webp", "volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
+    title: "Portfólio", cat: "web", domain: "Website · Manifesto", fav: false, chapterId: "portfolio",
     desc: "Este volume que você está lendo", cover: "volume/assets/projetos/portfolio/cover.webp",
     links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null } },
 
   /* ---- outras peças: entram no índice e linkam pro próprio trabalho -- */
-  { id: "oderco-checkout", title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,
+  { id: "oderco-checkout", shots: ["volume/assets/projetos/checkout/s1.webp"],
+    title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,
     desc: "Checkout B2B por nota fiscal, em etapas com revisão", destino: "proto",
     cover: "volume/assets/projetos/checkout/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
@@ -1066,11 +1078,13 @@ const PROJECTS = [
     desc: "Hub que gera material e descrição de produto para 7 marcas", destino: "ar",
     cover: "volume/assets/projetos/hub/cover.webp",
     links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null } },
-  { id: "ponto-admin", title: "Worklife", cat: "saas", domain: "SaaS + App · Ponto", fav: false, chapterId: null,
+  { id: "ponto-admin", shots: ["volume/assets/projetos/ponto/s1.webp"],
+    title: "Worklife", cat: "saas", domain: "SaaS + App · Ponto", fav: false, chapterId: null,
     desc: "Gestão de ponto: painel do gestor e app do diarista", destino: "proto",
     cover: "volume/assets/projetos/ponto/cover.webp",
     links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
-  { id: "kitamo-app", title: "Kitamo", cat: "mobile", domain: "SaaS · Finanças", fav: false, chapterId: null,
+  { id: "kitamo-app", shots: ["volume/assets/projetos/kitamo/s1.webp"],
+    title: "Kitamo", cat: "mobile", domain: "SaaS · Finanças", fav: false, chapterId: null,
     desc: "Visibilidade de dívida e projeção de contas do mês", destino: "ar",
     cover: "volume/assets/projetos/kitamo/cover.webp",
     links: { vercel: "https://kitamo.com.br/", figma: null } },
@@ -1429,4 +1443,4 @@ function CompanyLogo({ company, kind = "qsc", dark = false }) {
   return <span className={`${kind}-logo-mark`}>{company.name}</span>;
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });

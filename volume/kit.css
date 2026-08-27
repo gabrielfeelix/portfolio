@@ -115,6 +115,44 @@ button { color: inherit; }
 .btn:hover .arr { transform: translateX(5px); }
 .btn:focus-visible { outline: var(--ink-stroke) solid var(--btn-acento); outline-offset: 3px; }
 
+/* variante seta: o disco puxa o olho e o preenchimento varre o botão
+   inteiro no hover. A referência era laranja de landing page; aqui o disco
+   é vermilion e o que varre é tinta, então o gesto entra sem trocar de
+   identidade. O disco fica ANTES do rótulo: ele é o sujeito, não enfeite. */
+.btn-seta {
+  --btn-px: 8px; --seta-d: 32px;
+  position: relative; isolation: isolate; overflow: hidden;
+  gap: 12px; padding-inline-end: 22px; border-radius: 999px;
+  border-color: var(--wash-2);
+}
+.btn-seta .arr {
+  display: inline-grid; place-items: center; flex: 0 0 auto;
+  inline-size: var(--seta-d); block-size: var(--seta-d); border-radius: 50%;
+  background: var(--btn-acento); color: #fff;
+  /* a seta e' um glifo de texto dentro de um disco: sem font-family propria
+     ela herda a condensada do botao e some no meio do circulo. */
+  font-family: var(--font-body); font-size: calc(var(--seta-d) * .46);
+  font-weight: 700; line-height: 1; padding-block-end: 1px;
+  transition: transform var(--cut), background var(--cut), color var(--cut);
+}
+/* a varredura: um disco de tinta que cresce do canto do rótulo e toma tudo */
+.btn-seta::before {
+  content: ""; position: absolute; z-index: -1; inset: 0;
+  background: var(--ink);
+  transform: translateX(-101%); transition: transform .42s var(--curva);
+}
+.btn-seta:hover { border-color: var(--ink); color: var(--paper); }
+.btn-seta:hover::before { transform: translateX(0); }
+/* varrido por tinta, o disco vira papel: o contraste se inverte junto */
+.btn-seta:hover .arr { background: var(--paper); color: var(--ink); transform: translateX(3px); }
+/* o .btn base desloca .arr no hover; aqui quem anda e' o disco inteiro */
+.btn-seta:hover .arr { transform: translateX(3px); }
+.btn-seta:focus-visible { outline-offset: 4px; }
+.btn-seta.btn-lg { --seta-d: 38px; padding-inline-end: 28px; }
+@media (prefers-reduced-motion: reduce) {
+  .btn-seta::before { transition: none; }
+}
+
 /* tamanhos: a altura é do token, nunca do padding solto */
 .btn-sm { --btn-h: 38px; --btn-px: 15px; --btn-fs: 13px; }
 .btn-lg { --btn-h: 54px; --btn-px: 30px; --btn-fs: 16px; }

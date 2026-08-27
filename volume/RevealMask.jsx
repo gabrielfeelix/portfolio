@@ -56,8 +56,11 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
   // fecha a história em 4:5 (fica um recorte estranho), então a capa é a
   // marca sobre a cor dela. O trabalho real aparece ao abrir o capítulo.
   const capa = chap && chap.capa;
-  // coverTall (1000×1250) é a proporção do painel; cover (16:9) é o plano B
-  const art = (chap && (chap.coverTall || chap.cover)) || proj.cover || null;
+  // A grade e' 16:10 e a arte agora e' TELA do trabalho: `shots` (data.jsx)
+  // aponta pros prints reais em assets/projetos/<slug>/s*.webp. Capa de
+  // marca e coverTall (1000x1250, proporcao do painel antigo) ficam de
+  // plano B — quem chega quer ver o produto, nao a logo.
+  const art = (proj.shots && proj.shots[0]) || (chap && chap.cover) || proj.cover || null;
   const contexto = (chap && chap.descriptor) || proj.domain;
   const resultado = chap && chap.tldr ? chap.tldr.resultado : "";
   const num = (chap && chap.num) || String(index + 1).padStart(2, "0");
@@ -73,10 +76,13 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
         <span className="rvm-art">
           <span className="rvm-frame">
             <span className="rvm-mask">
-              {capa
-                ? <BrandPlate capa={capa} className="bp-rvm" />
-                : art
-                  ? <img className="rvm-img" src={art} alt="" loading="lazy" draggable="false" />
+              {/* TELA primeiro, chapa de marca so' como ultimo recurso: a
+                  grade vende o produto, e logo em quadro de vitrine nao
+                  mostra trabalho nenhum. */}
+              {art
+                ? <img className="rvm-img" src={art} alt="" loading="lazy" draggable="false" />
+                : capa
+                  ? <BrandPlate capa={capa} className="bp-rvm" />
                   : <MangaPlate className="rvm-plate" />}
             </span>
             <span className="rvm-cap">{projTag(proj)}</span>
@@ -96,12 +102,32 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
               : null}
           </span>
           <span className="rvm-t">{proj.title}</span>
+          <span className="rvm-tags">
+            <span className="rvm-tag">{catLabel(proj.cat)}</span>
+            {proj.links && (proj.links.vercel || proj.links.play)
+              ? <span className="rvm-tag is-live">{t("No ar", "Live")}</span>
+              : null}
+            {proj.links && proj.links.figma ? <span className="rvm-tag">Figma</span> : null}
+          </span>
           <span className="rvm-ctx">{renderPH(contexto)}</span>
-          {resultado
-            ? <span className="rvm-res"><i>{t("Resultado", "Result")}</i> {renderPH(resultado)}</span>
-            : null}
-          <span className="rvm-go">
-            {t("Ler o capítulo", "Read the chapter")} <span className="arr" aria-hidden="true">→</span>
+          {/* Os marcadores saem do TL;DR do capitulo, que tem `papel`, `oque`
+              e `resultado` — nunca copia nova inventada aqui. (`problema`
+              existe no capitulo, mas fora do tldr e como objeto com .t, que
+              nao serve de marcador de uma linha.) `oque` diz o que e' a
+              peca e `resultado` diz no que deu: as duas batidas que o card
+              precisa pra vender sem abrir o caso. */}
+          {chap && chap.tldr
+            ? (
+              <ul className="rvm-bul">
+                {chap.tldr.oque ? <li>{renderPH(chap.tldr.oque)}</li> : null}
+                {chap.tldr.resultado ? <li>{renderPH(chap.tldr.resultado)}</li> : null}
+              </ul>
+            )
+            : resultado
+              ? <span className="rvm-res"><i>{t("Resultado", "Result")}</i> {renderPH(resultado)}</span>
+              : null}
+          <span className="btn btn-seta rvm-go">
+            <span className="arr" aria-hidden="true">→</span> {t("Ler o capítulo", "Read the chapter")}
           </span>
         </span>
       </button>
