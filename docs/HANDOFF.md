@@ -331,9 +331,34 @@ com um `Respiro` entre eles:
 ```
 ATO I  · a cena e o buraco   abertura → problema → painel → funil
 ATO II · o que o dado disse  gesto → busca → investigação → citação
-ATO III· como eu resolvi     recusei → design system → decisões → módulos
+ATO III· como eu resolvi     V1.2 (a ponte) → recusei → design system
+                             → decisões → módulos
 ATO IV · o que mudou         solução → antes/depois → resultado → aprendi
 ```
+
+**Desde `b3b131a`, a estrutura é visível na página e tem gramática:**
+
+- **Cada ato abre numa banda de tinta** (`Respiro ato={...}`): fundo
+  `--ink`, kanji vazado do ato (現場 数字 設計 変化), "Ato N · n/4" e o
+  título. O Ato I também é anunciado. Vermelho em banda é
+  `--vermilion-sobre-ink`, nunca `--vermilion-ink`.
+- **A V1.2 é `chap.ponte`**, não um item de `modulos`. É o elo
+  cronológico (problema → o que não podia esperar → o redesenho) e abre
+  o Ato III via `ModuloPassos`. O `figOrder` a lê entre `investigacao` e
+  `decisoes`. Não devolver o checkout para dentro de `modulos`.
+- **Todo módulo abre com `buraco`**: uma linha "O buraco" antes do
+  título, com o traço vermelho do passo vivo. O título do módulo é a
+  resposta a essa linha. Módulo novo sem `buraco` renderiza, mas volta a
+  ler como catálogo: escreva o buraco.
+- **As telas da `solucao` seguem a ordem do caminho** (vitrine →
+  checkout → bolso), numeradas 01/02/03 na legenda. Mostrar o fim
+  primeiro quebra a cronologia que o título promete.
+- **O Derivado mora DENTRO da dobra do vocabulário**, como fecho dela. A
+  dobra declara o preço ("três telas") e ele é medido: se crescer o
+  conteúdo, atualize o número.
+- **Nota de painel largo corre em duas colunas** (`column-width: 40ch`):
+  o mínimo por coluna deixa painel estreito com uma coluna sozinho. Não
+  voltar nota de card largo para meia largura.
 
 São 15 seções, e é o que o índice da esquerda lista (a `citacao` não tem
 `Sec`, então não entra no índice).
