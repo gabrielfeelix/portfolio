@@ -164,15 +164,57 @@ function Splash({ onRead, onContact, onRapido, lit }) {
   );
 }
 
-/* ---------- A DENTADURA — os quadros que mordem a capa -------------
-   A capa e' fixa e o papel sobe por cima. Estes quadrados ficam no topo do
-   papel com margem negativa: invadem o vermelho e recortam a hero de baixo
-   pra cima, com alturas desiguais (o do meio sobe mais). Puro papel sobre
-   tinta, o mesmo gesto do RevealMask, sem imagem nenhuma. */
+/* ---------- A DENTADURA — a capa sendo engolida --------------------
+   A versao anterior era um bloco de quadrados desenhados, parados, com
+   borda: lia como grafico de barras. Isto aqui e' o efeito de verdade —
+   colunas de PAPEL, sem borda, que sobem coladas no scroll e comem a capa
+   vermelha de baixo pra cima.
+
+   Cada coluna tem um fator proprio, entao elas nao sobem juntas: o perfil
+   irregular nasce do movimento, nao de alturas fixas no CSS. Uma sobe bem
+   mais que as vizinhas (1.5), outra fica pra tras (.64), e o recorte muda
+   o tempo todo enquanto se rola.
+
+   rAF + listener passivo: o scroll nunca faz layout, so' escreve transform. */
+const BITE_FATORES = [1.28, 0.82, 1.5, 0.64, 1.12, 0.92, 1.38];
+
 function Bite() {
-  const [ref, inView] = useReenter({ threshold: 0.05, rootMargin: "0px 0px -4% 0px" });
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const cols = Array.prototype.slice.call(host.children);
+    const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduz) return;
+
+    let raf = 0;
+    const pinta = () => {
+      raf = 0;
+      const vh = window.innerHeight || 1;
+      /* a mordida acontece na segunda metade da primeira tela: antes disso
+         a capa esta' inteira, no fim dela o papel ja' fechou */
+      const p = Math.min(1, Math.max(0, (window.scrollY - vh * 0.45) / (vh * 0.55)));
+      for (let i = 0; i < cols.length; i++) {
+        const f = BITE_FATORES[i % BITE_FATORES.length];
+        const y = Math.max(0, 100 - p * f * 100);
+        cols[i].style.transform = "translateY(" + y + "%)";
+      }
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(pinta); };
+
+    pinta();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <div className={`bite ${inView ? "in" : ""}`} ref={ref} aria-hidden="true">
+    <div className="bite" ref={ref} aria-hidden="true">
       {[0, 1, 2, 3, 4, 5, 6].map((n) => <span className="bite-t" key={n}></span>)}
     </div>
   );
@@ -289,8 +331,8 @@ function OutrasPecas() {
         <span className="kicker">{String(all.length).padStart(2, "0")} {all.length === 1 ? t("peça", "piece") : t("peças", "pieces")}</span>
       </div>
       <p className="mo-desc" style={{ maxWidth: "52ch", marginBottom: "var(--ma-3)" }}>
-        {t("Uma peça por página. Vire com as setas, o teclado ou arrastando — ou abra o índice inteiro de uma vez.",
-           "One piece per page. Turn with the arrows, the keyboard or a swipe — or open the whole index at once.")}
+        {t("Duas peças por vez, uma em cada página. A folha vira da direita para a esquerda, como se lê mangá — ou abra o índice inteiro de uma vez.",
+           "Two pieces at a time, one per page. The leaf turns right to left, the way manga reads — or open the whole index at once.")}
       </p>
       <BookSlider items={all} />
     </section>

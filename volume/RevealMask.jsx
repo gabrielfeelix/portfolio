@@ -1,19 +1,21 @@
 /* =====================================================================
    VOLUME, RevealMask.jsx
-   O quadro que se entinta. Cada capítulo toma a tela inteira e a arte
-   entra por uma máscara que abre de baixo pra cima — tinta assentando
-   num quadro de mangá, não um fade de landing page.
+   Os capítulos na home, em grade.
 
-   Mesma gramática do <Brush> (data.jsx): máscara em gradiente + transition
-   no mask-size. Lá o eixo é X e o alvo é o título; aqui é Y e o alvo é a
-   arte. Um só idioma de reveal no volume inteiro.
+   A versão de tela cheia (uma viewport por capítulo, arte alternando de
+   lado) cobrava cinco rolagens inteiras só pra saber o que existe no
+   volume. A versão seguinte errou pro outro lado: empilhou número gigante,
+   descritor, dois marcadores de texto e um botão dentro do card, e cada
+   quadro virou uma torre.
 
-   Os quadros ALTERNAM de lado (par à esquerda, ímpar à direita): a página
-   dupla de mangá vira a leitura a cada virada, e cinco quadros do mesmo
-   lado viram parede.
+   Este é o formato da referência: a arte manda, e embaixo dela UMA barra
+   fina com o essencial — posição, título, domínio e as tags. Quem quer o
+   caso clica no quadro inteiro; quem está passando o olho lê a barra e
+   segue. O card fica na altura da imagem mais a barra, e nada além disso.
 
-   Nada de cópia nova: título, domínio, contexto e resultado saem de
-   PROJECTS/CHAPTERS, exatamente as mesmas fontes que o ChapterBlock lia.
+   A onomatopeia gigante saiu junto: em tela cheia ela escapava por trás da
+   quina e funcionava, mas na grade cruzava o meio da seção como uma mancha
+   cinza sem função.
    ===================================================================== */
 
 /* useReveal() (data.jsx) desconecta no primeiro disparo — serve pra revelar
@@ -45,28 +47,33 @@ function useReenter({ threshold = 0.3, rootMargin = "0px 0px -12% 0px" } = {}) {
   return [ref, inView];
 }
 
-/* Um capítulo, tela cheia. `chap` pode não ter arte (Locar Mais até os
-   prints entrarem): nesse caso a chapa do MangaPlate assume o quadro. O
-   vazio fica editorial e declarado, em vez de ler como imagem quebrada. */
-function RevealImageMask({ proj, chap, index, onOpen }) {
-  const [ref, inView] = useReenter();
-  const flip = index % 2 === 1;
+/* Os pontos são a posição do capítulo na espinha — cheios até onde ele
+   está, vazios no resto. Mesmo marcador da referência: diz "este é o
+   terceiro de cinco" de relance, sem gastar uma linha de texto. */
+function Dots({ index, total }) {
+  const list = [];
+  for (let i = 0; i < total; i++) {
+    list.push(<span className={`rvd ${i <= index ? "on" : ""}`} key={i}></span>);
+  }
+  return <span className="rvm-dots" aria-hidden="true">{list}</span>;
+}
 
-  // capa de marca tem prioridade: em Locar Mais, ODEX e Oderço a tela não
-  // fecha a história em 4:5 (fica um recorte estranho), então a capa é a
-  // marca sobre a cor dela. O trabalho real aparece ao abrir o capítulo.
-  const capa = chap && chap.capa;
-  // A grade e' 16:10 e a arte agora e' TELA do trabalho: `shots` (data.jsx)
-  // aponta pros prints reais em assets/projetos/<slug>/s*.webp. Capa de
-  // marca e coverTall (1000x1250, proporcao do painel antigo) ficam de
-  // plano B — quem chega quer ver o produto, nao a logo.
+/* Um capítulo: a arte, e a barra por baixo dela.
+   `chap` pode não ter arte (Locar Mais até os prints entrarem): nesse caso
+   a chapa do MangaPlate assume o quadro, e o vazio fica editorial em vez
+   de ler como imagem quebrada. */
+function RevealImageMask({ proj, chap, index, total, onOpen }) {
+  const [ref, inView] = useReenter({ threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+
+  // TELA do trabalho primeiro: `shots` são os prints reais em
+  // assets/projetos/<slug>/. Capa de marca e cover ficam de plano B —
+  // quem chega quer ver o produto, não a logo.
   const art = (proj.shots && proj.shots[0]) || (chap && chap.cover) || proj.cover || null;
-  const contexto = (chap && chap.descriptor) || proj.domain;
-  const resultado = chap && chap.tldr ? chap.tldr.resultado : "";
-  const num = (chap && chap.num) || String(index + 1).padStart(2, "0");
+  const capa = chap && chap.capa;
+  const live = proj.links && (proj.links.vercel || proj.links.play);
 
   return (
-    <li ref={ref} className={`rvm ${flip ? "flip" : ""} ${inView ? "in" : ""}`}>
+    <li ref={ref} className={`rvm ${inView ? "in" : ""}`}>
       <button
         type="button"
         className="rvm-btn"
@@ -74,60 +81,29 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
         aria-label={t(`Ler o capítulo ${proj.title}`, `Read the ${proj.title} chapter`)}
       >
         <span className="rvm-art">
-          <span className="rvm-frame">
-            <span className="rvm-mask">
-              {/* TELA primeiro, chapa de marca so' como ultimo recurso: a
-                  grade vende o produto, e logo em quadro de vitrine nao
-                  mostra trabalho nenhum. */}
-              {art
-                ? <img className="rvm-img" src={art} alt="" loading="lazy" draggable="false" />
-                : capa
-                  ? <BrandPlate capa={capa} className="bp-rvm" />
-                  : <MangaPlate className="rvm-plate" />}
-            </span>
-            <span className="rvm-cap">{projTag(proj)}</span>
+          <span className="rvm-mask">
+            {art
+              ? <img className="rvm-img" src={art} alt="" loading="lazy" draggable="false" />
+              : capa
+                ? <BrandPlate capa={capa} className="bp-rvm" />
+                : <MangaPlate className="rvm-plate" />}
           </span>
-          {/* a onomatopeia do capítulo, escapando por trás da quina */}
-          {chap && chap.sfx ? <span className="rvm-sfx" aria-hidden="true">{chap.sfx}</span> : null}
+          <span className="rvm-cap">{projTag(proj)}</span>
+          {/* o disco com a seta diagonal, só no hover — como na referência */}
+          <span className="rvm-hov" aria-hidden="true">↗</span>
         </span>
 
-        <span className="rvm-copy">
-          <span className="rvm-head">
-            <span className="rvm-num" aria-hidden="true">{num}</span>
+        <span className="rvm-bar">
+          <span className="rvm-info">
+            <span className="rvm-line">
+              <Dots index={index} total={total} />
+              <span className="rvm-t">{proj.title}</span>
+            </span>
             <span className="rvm-dom">{proj.domain}</span>
-            {/* o volume tem um arco central e o sumário diz qual é: sem
-                isso o leitor gasta 16 beats para descobrir sozinho */}
-            {chap && chap.principal
-              ? <span className="rvm-main">{t("Capítulo principal", "Main chapter")}</span>
-              : null}
           </span>
-          <span className="rvm-t">{proj.title}</span>
           <span className="rvm-tags">
             <span className="rvm-tag">{catLabel(proj.cat)}</span>
-            {proj.links && (proj.links.vercel || proj.links.play)
-              ? <span className="rvm-tag is-live">{t("No ar", "Live")}</span>
-              : null}
-            {proj.links && proj.links.figma ? <span className="rvm-tag">Figma</span> : null}
-          </span>
-          <span className="rvm-ctx">{renderPH(contexto)}</span>
-          {/* Os marcadores saem do TL;DR do capitulo, que tem `papel`, `oque`
-              e `resultado` — nunca copia nova inventada aqui. (`problema`
-              existe no capitulo, mas fora do tldr e como objeto com .t, que
-              nao serve de marcador de uma linha.) `oque` diz o que e' a
-              peca e `resultado` diz no que deu: as duas batidas que o card
-              precisa pra vender sem abrir o caso. */}
-          {chap && chap.tldr
-            ? (
-              <ul className="rvm-bul">
-                {chap.tldr.oque ? <li>{renderPH(chap.tldr.oque)}</li> : null}
-                {chap.tldr.resultado ? <li>{renderPH(chap.tldr.resultado)}</li> : null}
-              </ul>
-            )
-            : resultado
-              ? <span className="rvm-res"><i>{t("Resultado", "Result")}</i> {renderPH(resultado)}</span>
-              : null}
-          <span className="btn btn-seta rvm-go">
-            <span className="arr" aria-hidden="true">→</span> {t("Ler o capítulo", "Read the chapter")}
+            {live ? <span className="rvm-tag is-live">{t("No ar", "Live")}</span> : null}
           </span>
         </span>
       </button>
@@ -135,17 +111,17 @@ function RevealImageMask({ proj, chap, index, onOpen }) {
   );
 }
 
-/* A espinha do volume: os capítulos de caseProjects(), na ordem de leitura.
-   Substitui o <ChapterList> compacto na home. "Outras peças" não é tocado. */
+/* A espinha do volume: os capítulos de caseProjects(), na ordem de leitura. */
 function RevealChapters({ onOpen }) {
   const items = caseProjects();
   return (
     <ol className="rvm-list">
       {items.map((p, i) => (
-        <RevealImageMask key={p.id} proj={p} chap={chapterFor(p.id)} index={i} onOpen={onOpen} />
+        <RevealImageMask key={p.id} proj={p} chap={chapterFor(p.id)}
+                         index={i} total={items.length} onOpen={onOpen} />
       ))}
     </ol>
   );
 }
 
-Object.assign(window, { RevealImageMask, RevealChapters, useReenter });
+Object.assign(window, { RevealImageMask, RevealChapters, useReenter, Dots });
