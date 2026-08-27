@@ -662,6 +662,7 @@ if (LANG === "en") {
     pcyes: "E-commerce redesign", "locarmais-conciliacao": "Financial reconciliation module",
     odex: "Interface redesign", "oderco-revenda": "Reseller signup page",
     portfolio: "This volume you are reading",
+    rodape: "Book club app, designed in Figma",
   };
   PROJECTS.forEach((p) => { if (PJ_DESC_EN[p.id]) p.desc = PJ_DESC_EN[p.id]; });
   PROJECTS.forEach((p) => { if (PJ_DOMAIN_EN[p.id]) p.domain = PJ_DOMAIN_EN[p.id]; });

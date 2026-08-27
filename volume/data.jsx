@@ -1091,7 +1091,14 @@ const PROJECTS = [
      Regra do briefing: nome sem destino frustra quem clica. Basta
      preencher `links.vercel` e o item volta a aparecer sozinho. */
   { id: "rodape", title: "Rodapé", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
-    desc: "App de clube de leitura, publicado na Play Store", destino: "figma",
+    /* A descrição dizia "publicado na Play Store" e o link entrega um
+       arquivo do Figma. O app não está publicado: existe só uma fase de
+       teste fechado, e teste fechado não é publicação. Num volume cuja
+       tese é "entrego produto no ar", prometer loja e cumprir protótipo
+       contradiz o argumento na própria vitrine, então a descrição passa
+       a dizer o que o link realmente abre. Quando sair da fase de teste,
+       trocar `links.figma` pelo link da loja e pôr `destino: "loja"`. */
+    desc: "App de clube de leitura, desenhado no Figma", destino: "figma",
     links: { vercel: null, figma: "https://www.figma.com/design/1ruVWABUF6B5VibTVF430q/Untitled?node-id=0-1&t=OK5Z4v9Mv4likK9K-1" } },
   { id: "remoctrl", title: "Remoctrl", cat: "desktop", domain: "Web app · Controle de TV", fav: false, chapterId: null,
     desc: "Controle de Smart TV Roku pelo navegador, sem instalar nada", destino: "ar",
