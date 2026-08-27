@@ -445,12 +445,12 @@ function Colofao({ onContact, onNav }) {
           </div>
         </div>
         <div className="foot-bottom">
-          {/* Metadado de praça, não anúncio de disponibilidade: quem procura
-              filtra por localização antes de ler, e "aberto a remoto" diz
-              onde o trabalho pode acontecer sem dizer nada sobre o emprego
-              atual. Anunciar disponibilidade num portfólio público que
-              estampa o empregador atual seria risco sem ganho. */}
-          <span>{AUTOR} · {VOL} · {t("Maringá, PR · Aberto a remoto", "Maringá, Brazil · Open to remote")}</span>
+          {/* Só a praça. Quem procura filtra por localização antes de ler,
+              então a cidade tem uso; "aberto a remoto" saiu a pedido do
+              Gabriel, porque lê como sinal de disponibilidade num
+              portfólio público que estampa o empregador atual. Não
+              reintroduzir. */}
+          <span>{AUTOR} · {VOL} · {t("Maringá, PR", "Maringá, Brazil")}</span>
           <Seal size={34} alt="Selo de Gabriel" />
         </div>
       </div>
