@@ -54,3 +54,12 @@ export const MANIFESTO = {
     "Depois disso é ajuste, e mais ajuste. A parte demorada do meu trabalho é essa, e é a parte que eu não abro mão.",
   ],
 };
+
+/* As tres frases do processo na home. Condensam as seis etapas de PROCESSO em
+   volume/data.jsx sem inventar processo novo: seis linhas numeradas eram um
+   indice disfarcado de conteudo. As seis continuam la, para /processo. */
+export const PROCESSO_CURTO = [
+  "Começo pelo objetivo, não pela lista de telas, e caço o que já funciona antes de desenhar.",
+  "Do objetivo ao protótipo clicável em dias, para a mesa tocar em vez de imaginar.",
+  "Mostro cedo, corto o que não serve, e o protótipo vira produto no ar.",
+];

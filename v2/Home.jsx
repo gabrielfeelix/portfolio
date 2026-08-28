@@ -7,10 +7,10 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky, usePilha, usePilhaTrilho, usePalavra } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import {
-  ALL_MARKS, VOL, PROCESSO, COMPANIES,
+  ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -152,38 +152,21 @@ function Marquee() {
 
 /* --------------------------------------------------------------- 5. processo */
 
-/* Seis caixas iguais é grade de preenchimento, não hierarquia, e num fundo
-   branco os cards sumiam. Vira lista: régua entre linhas, numeral grande no
-   trilho da esquerda, nenhuma borda de caixa. */
-function ProcessoLinha({ etapa, i }) {
-  const rise = useRise();
-  // "01" → o zero fica em muted e o dígito em ink, então o trilho de numerais
-  // lê como escala e não como seis manchas do mesmo peso.
-  const zero = etapa.n.slice(0, -1);
-  const digito = etapa.n.slice(-1);
-  return (
-    <motion.li className="v2-proc-linha" {...rise(Math.min(i, 3))}>
-      <p className="v2-proc-n">
-        <span className="v2-proc-n-zero">{zero}</span>{digito}
-      </p>
-      {/* h2: a home só tem o h1 do hero antes daqui, e h3 pulava um nível */}
-      <h2 className="v2-proc-t">{etapa.t}</h2>
-      <p className="v2-corpo v2-proc-p">{etapa.p}</p>
-    </motion.li>
-  );
-}
-
+/* Seis etapas numeradas eram um índice disfarçado de conteúdo. Três frases
+   grandes dizem a mesma coisa em um terço da altura. Sem numeral e sem régua
+   entre elas: a quebra de linha já separa. */
 function Processo() {
+  const rise = useRise();
   return (
     <section className="v2-wrap" id="processo">
       <Regua />
       <div className="v2-duas">
         <Label>Como eu trabalho</Label>
-        <ol className="v2-proc">
-          {PROCESSO().map((etapa, i) => (
-            <ProcessoLinha key={etapa.n} etapa={etapa} i={i} />
+        <div className="v2-frases">
+          {PROCESSO_CURTO.map((f, i) => (
+            <motion.p key={i} className="v2-frase" {...rise(i)}>{f}</motion.p>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
   );
