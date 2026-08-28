@@ -34,7 +34,7 @@ async function medidas() {
   const p = await abrir(b, VIEWPORTS[0]);
   const r = await p.evaluate(() => ({
     alturaPagina: Math.round(document.documentElement.scrollHeight),
-    paineis: document.querySelectorAll(".v2-painel").length,
+    paineis: document.querySelectorAll(".v2-linha-casos").length,
     fonteH1: getComputedStyle(document.querySelector("h1")).fontFamily,
     secoes: [...document.querySelectorAll("main > * > section, main > section")].map(
       (s) => s.id || s.className.split(" ")[0]

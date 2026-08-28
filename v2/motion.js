@@ -259,7 +259,9 @@ export function useCobertura() {
    esse progresso e le a fatia dele: enquanto a fatia i corre, o painel i esta
    sendo coberto pelo i+1, e e nesse intervalo que ele encolhe e escurece.
 
-   O ultimo painel nao tem quem o cubra, entao fica parado. */
+   A ultima linha nao tem quem a cubra, entao fica parada. A escala vai so ate
+   0.97: o card e claro e opaco, entao quem separa as camadas e a lombada de
+   40px, nao o encolhimento. */
 export function usePilhaTrilho() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -274,7 +276,7 @@ export function usePilha(progresso, i, total) {
   const fatia = 1 / Math.max(total - 1, 1);
   const inicio = i * fatia;
   const fim = inicio + fatia;
-  const escala = useTransform(progresso, [inicio, fim], [1, 0.94], { clamp: true });
+  const escala = useTransform(progresso, [inicio, fim], [1, 0.97], { clamp: true });
   const veu = useTransform(progresso, [inicio, fim], [0, 0.38], { clamp: true });
   const um = useMotionValue(1);
   const zero = useMotionValue(0);
@@ -284,8 +286,12 @@ export function usePilha(progresso, i, total) {
 
 /* 10. palavra
    Revelação por palavra da declaração. A frase inteira é legível desde o
-   início (opacidade mínima 0.16, não 0): texto invisível que só aparece no
-   scroll quebra leitor de tela e busca. O que o scroll faz é acender.
+   início: texto invisível que só aparece no scroll quebra leitor de tela e
+   busca. O que o scroll faz é acender.
+
+   O piso é 0.45 e não 0.16 porque o axe reprovou o 0.16 em contraste. Sobre
+   papel branco, #0B0B0C a 45% dá canal ~145, que passa os 3:1 exigidos de
+   texto grande. Abaixo disso a palavra apagada vira decoração ilegível.
 
    Devolve um array de MotionValue, não uma função: `useTransform` é hook, e
    chamar hook dentro do `map` do JSX amarraria a ordem à renderização. */
@@ -299,7 +305,7 @@ export function usePalavra(total) {
   const opacidades = [];
   for (let i = 0; i < total; i++) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    opacidades.push(useTransform(scrollYProgress, [i / total, (i + 1) / total], [0.16, 1]));
+    opacidades.push(useTransform(scrollYProgress, [i / total, (i + 1) / total], [0.45, 1]));
   }
   return { ref, opacidades, quieto };
 }

@@ -178,77 +178,90 @@ function Processo() {
 
 /* ------------------------------------------------------------------ 3. casos */
 
-/* Pilha grudada, no padrão medido no viper-template: cada painel gruda num
-   `top` maior que o anterior, então o topo do painel coberto continua à mostra
-   como uma lombada. O invólucro é quem rola; o painel é quem gruda.
+/* Pilha grudada, no formato medido no viper-template: os casos andam em
+   LINHAS de dois, e a linha inteira é que gruda, num `top` 40px maior que a
+   anterior (a ref usa 70 e 110). A linha seguinte sobe e cobre a de cima,
+   sobrando a lombada de 40px, que é o que dá a leitura de baralho.
 
-   Dois tratamentos de fundo, porque o material é desigual: quem tem foto de
-   capa recebe a foto em largura cheia com parallax; a Locar Mais, cujo print
-   não fecha em enquadramento de capa, recebe a capa de marca (cor da marca e
-   logo), que é a mesma solução que a V1 já usava. */
-const PILHA_TOPO = 84;    /* a nav flutuante tem 72px, mais 12 de respiro */
-const PILHA_PASSO = 22;   /* a lombada visível de cada painel coberto */
+   O card não é foto sangrando: é moldura clara com a imagem embutida e a
+   legenda embaixo, que é o que faz a ref parecer catálogo e não banner.
+   Medida da ref: 658x526 com 10px de respiro em volta da mídia.
 
-function Painel({ caso, i, total, progresso, ir }) {
-  const { escala, veu } = usePilha(progresso, i, total);
-  const { ref: refFoto, style: estiloFoto } = useParallax(8);
+   Locar Mais não tem foto de capa (o print não fecha no enquadramento), então
+   a mídia dela recebe a capa de marca, mesma solução da V1. */
+const PILHA_TOPO = 96;    /* nav de 72px, mais respiro */
+const PILHA_PASSO = 40;   /* a lombada de cada linha coberta, medida na ref */
+
+function Cartao({ caso, i, ir }) {
+  const { ref: refFoto, style: estiloFoto } = useParallax(6);
   const cap = caso.chap;
   const foto = cap.cover || (caso.proj && caso.proj.cover);
   const marca = !foto && cap.capa ? cap.capa : null;
   const href = `/v2/case/${caso.id}`;
   return (
-    <motion.article
-        className="v2-painel"
-        data-escuro-corpo="1"
-        style={{ top: PILHA_TOPO + i * PILHA_PASSO, zIndex: i + 1, scale: escala }}
+    <article className="v2-cartao">
+      <a
+        className="v2-cartao-link"
+        href={href}
+        onClick={(e) => { e.preventDefault(); ir(href); }}
       >
-        <a
-          className="v2-painel-link"
-          href={href}
-          onClick={(e) => { e.preventDefault(); ir(href); }}
-          aria-label={`${cap.title}, ${cap.descriptor}`}
-        >
-          <span className="v2-painel-media" ref={refFoto}>
-            {foto ? (
-              <motion.img
-                className="v2-painel-foto"
-                style={estiloFoto}
-                src={foto}
-                alt=""
-                loading={i === 0 ? "eager" : "lazy"}
-                decoding="async"
-              />
-            ) : null}
-            {marca ? (
-              <span className="v2-painel-marca" style={{ background: marca.bg }} aria-hidden="true">
-                <img src={marca.logo} alt="" loading="lazy" decoding="async" />
-              </span>
-            ) : null}
-            <motion.span className="v2-painel-veu" style={{ opacity: veu }} aria-hidden="true" />
-          </span>
+        <span className="v2-cartao-media" ref={refFoto}>
+          {foto ? (
+            <motion.img
+              className="v2-cartao-foto"
+              style={estiloFoto}
+              src={foto}
+              alt=""
+              loading={i < 2 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          ) : null}
+          {marca ? (
+            <span className="v2-cartao-marca" style={{ background: marca.bg }} aria-hidden="true">
+              <img src={marca.logo} alt="" loading="lazy" decoding="async" />
+            </span>
+          ) : null}
+        </span>
 
-          <span className="v2-painel-texto">
-            <span className="v2-painel-n">{cap.num}</span>
-            <h2 className="v2-painel-t">{cap.title}</h2>
-            <span className="v2-painel-d">{cap.descriptor}</span>
-            <span className="v2-painel-dom">{cap.domain}</span>
+        <span className="v2-cartao-pe">
+          <span className="v2-cartao-texto">
+            <h2 className="v2-cartao-t">{cap.title}</h2>
+            <span className="v2-cartao-d">{cap.descriptor}</span>
           </span>
-        </a>
-    </motion.article>
+          <span className="v2-cartao-dom">{cap.domain}</span>
+        </span>
+      </a>
+    </article>
+  );
+}
+
+function Linha({ itens, i, total, progresso, ir }) {
+  const { escala } = usePilha(progresso, i, total);
+  return (
+    <motion.div
+      className="v2-linha-casos"
+      style={{ top: PILHA_TOPO + i * PILHA_PASSO, zIndex: i + 1, scale: escala }}
+    >
+      {itens.map((c, k) => (
+        <Cartao key={c.id} caso={c} i={i * 2 + k} ir={ir} />
+      ))}
+    </motion.div>
   );
 }
 
 function Pilha({ ir }) {
   const lista = casos();
+  const linhas = [];
+  for (let k = 0; k < lista.length; k += 2) linhas.push(lista.slice(k, k + 2));
   const { ref, progresso } = usePilhaTrilho();
   return (
     <section className="v2-pilha" id="casos" aria-label="Casos" ref={ref}>
-      {lista.map((c, i) => (
-        <Painel
-          key={c.id}
-          caso={c}
+      {linhas.map((itens, i) => (
+        <Linha
+          key={i}
+          itens={itens}
           i={i}
-          total={lista.length}
+          total={linhas.length}
           progresso={progresso}
           ir={ir}
         />

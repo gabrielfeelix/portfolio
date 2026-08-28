@@ -269,113 +269,124 @@
 
 /* ---------------- 3. casos, em pilha grudada ---------------- */
 
-/* Os paineis sao filhos DIRETOS da secao, e nao de um involucro cada um: o
-   bloco que contem o sticky e quem define ate onde ele gruda. Com involucro
-   individual o painel colava e descolava dentro dos proprios 90vh, que e o
-   mesmo que nao colar. Aqui o bloco e a secao inteira, entao o painel 1 fica
-   presa ate o fim da pilha e os seguintes sobem por cima dele.
+/* As LINHAS sao filhas diretas da secao, e nao de um involucro cada uma: o
+   bloco que contem um sticky e quem define ate onde ele gruda. Com involucro
+   individual a linha colava e descolava dentro da propria altura, que e o
+   mesmo que nao colar. Nenhum ancestral pode ter overflow diferente de
+   visible nem transform, senao o sticky para. */
+/* O curso de scroll da pilha e o que sobra de secao depois que a ultima linha
+   grudou. Sem ele a linha 2 alcanca a linha 1 em 500px e a travessia acaba
+   antes de ser vista: medido, os tops iam de 96 para -354 em 1000px. */
+.v2-pilha {
+  padding: var(--v2-s5) 0 48vh;
+}
 
-   Nenhum ancestral pode ter overflow diferente de visible nem transform,
-   senao o sticky para de grudar. */
-.v2-pilha { padding: 0 0 var(--v2-s7); }
-
-.v2-painel {
+.v2-linha-casos {
   position: sticky;
-  height: 88vh;
-  margin-bottom: 10vh;
-  margin: 0 var(--v2-gutter);
-  border-radius: var(--v2-r-media);
-  overflow: hidden;
-  background: var(--v2-card);
-  transform-origin: center 18%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s3);
+  max-width: var(--v2-caso-larga);
+  margin: 0 auto 44vh;
+  padding-inline: var(--v2-gutter);
   will-change: transform;
 }
 
-.v2-painel-link {
-  position: absolute;
-  inset: 0;
-  display: block;
-  color: #fff;
+/* Moldura clara com a midia embutida, medida na ref: 658x526 com 10px de
+   respiro em volta da foto e 20px embaixo, para a legenda. Card opaco de
+   proposito: e a opacidade dele que cobre a linha anterior. */
+.v2-cartao {
+  background: var(--v2-superficie);
+  border: 1px solid var(--v2-rule);
+  border-radius: var(--v2-r-media);
+  padding: 10px 10px 16px;
+  overflow: hidden;
+}
+
+.v2-cartao-link {
+  display: grid;
+  gap: var(--v2-s2);
+  color: inherit;
   text-decoration: none;
 }
 
-.v2-painel-media { position: absolute; inset: 0; overflow: hidden; }
+.v2-cartao-media {
+  position: relative;
+  display: block;
+  /* 16/10 e nao 4/3: print de produto e largo, e num box de 4/3 o `cover`
+     comia as laterais e cortava o texto da tela no meio da palavra. */
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--v2-card);
+}
 
-/* 112% de altura porque o parallax move a foto dentro da janela: em 100% a
+/* 110% de altura porque o parallax move a foto dentro da janela: em 100% a
    borda de baixo apareceria no fim do curso. */
-.v2-painel-foto { width: 100%; height: 112%; object-fit: cover; display: block; }
-
-/* Fundo de quem nao tem foto de capa. Cor da marca e logo centrado, no mesmo
-   tratamento que a V1 usa na capa de capitulo. */
-.v2-painel-marca {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-}
-.v2-painel-marca img { width: min(38%, 320px); height: auto; opacity: .92; }
-
-.v2-painel-veu { position: absolute; inset: 0; background: #000; }
-
-/* O texto senta no rodape, sobre um degrade que garante contraste sem
-   escurecer a imagem inteira. */
-.v2-painel-texto {
-  position: absolute;
-  inset: auto 0 0 0;
-  display: grid;
-  gap: var(--v2-s1);
-  padding: var(--v2-s6) var(--v2-s5) var(--v2-s5);
-  background: linear-gradient(to top, rgba(0, 0, 0, .74), rgba(0, 0, 0, 0));
+.v2-cartao-foto {
+  width: 100%;
+  height: 108%;
+  object-fit: cover;
+  /* topo da tela e onde mora a marca e o cabecalho do produto: se algo tem
+     que sair do enquadramento, que seja o rodape. */
+  object-position: center top;
+  display: block;
 }
 
-.v2-painel-n {
-  font-size: var(--v2-t-label);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  opacity: .82;
+.v2-cartao-marca { position: absolute; inset: 0; display: grid; place-items: center; }
+.v2-cartao-marca img { width: min(46%, 260px); height: auto; opacity: .94; }
+
+.v2-cartao-pe {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v2-s3);
+  padding-inline: 6px;
 }
 
-.v2-painel-t {
+.v2-cartao-texto { display: grid; gap: 2px; min-width: 0; }
+
+.v2-cartao-t {
   margin: 0;
-  font-size: var(--v2-t-painel);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: var(--v2-track-display);
+  font-size: var(--v2-t-bloco);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: var(--v2-track-titulo);
 }
 
-.v2-painel-d { font-size: var(--v2-t-corpo); opacity: .88; max-width: 46ch; }
+.v2-cartao-d {
+  font-size: var(--v2-t-corpo);
+  color: var(--v2-muted);
+  line-height: 1.3;
+}
 
-.v2-painel-dom {
+.v2-cartao-dom {
+  flex: none;
   font-size: var(--v2-t-label);
   letter-spacing: .12em;
   text-transform: uppercase;
-  opacity: .72;
+  color: var(--v2-muted);
 }
 
-.v2-painel-link:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
+.v2-cartao-link:hover .v2-cartao-media,
+.v2-cartao-link:focus-visible .v2-cartao-media { background: var(--v2-rule); }
 
-/* Tela baixa e celular: a pilha desliga. Abaixo de 700px de altura o texto do
-   painel colide com a imagem e a lombada some. Vira lista vertical. */
-@media (max-height: 700px), (max-width: 720px) {
-  .v2-painel-inv { height: auto; }
-  .v2-painel {
+.v2-cartao-link:focus-visible { outline: 2px solid var(--v2-ink); outline-offset: 4px; }
+
+/* Celular: uma coluna, e a pilha desliga. Duas colunas em 390px daria card de
+   170px, que nao mostra tela de produto nenhuma. */
+@media (max-width: 860px) {
+  .v2-linha-casos {
     position: relative;
-    height: 62vh;
-    min-height: 420px;
+    top: auto !important;
+    grid-template-columns: 1fr;
+    gap: var(--v2-s4);
     margin-bottom: var(--v2-s4);
-    transform: none;
   }
-  .v2-painel-texto { padding: var(--v2-s5) var(--v2-s4) var(--v2-s4); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v2-painel-inv { height: auto; }
-  .v2-painel {
-    position: relative;
-    height: 62vh;
-    min-height: 420px;
-    margin-bottom: var(--v2-s4);
-  }
+  .v2-linha-casos { position: relative; top: auto !important; }
 }
 
 /* ---------------- 7. peças, em fita ---------------- */
