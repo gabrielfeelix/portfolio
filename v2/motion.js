@@ -1,4 +1,4 @@
-/* As seis primitivas de movimento da V2.
+/* As primitivas de movimento da V2.
  *
  * Todo movimento se monta com elas. Se um componente precisa de um valor de
  * mola ou de um easing novo, ele vira primitiva aqui antes de ser usado: o
@@ -10,7 +10,7 @@
  *   - reveal dispara uma vez, não volta ao rolar de volta.
  */
 
-import { useReducedMotion, useScroll, useTransform, useSpring } from "motion/react";
+import { useReducedMotion, useScroll, useTransform, useSpring, useMotionValue } from "motion/react";
 import { useEffect, useRef } from "react";
 
 /* 1. spring
@@ -248,4 +248,45 @@ export function useCobertura() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
   return { ref, style: quieto ? undefined : { opacity, scale, y } };
+}
+
+/* 9. pilha
+   A pilha grudada dos casos. O painel é `position: sticky`, então o retângulo
+   dele não se move e não serve para medir progresso. Quem mede é o INVÓLUCRO,
+   que rola normalmente: enquanto ele sai da tela, o painel seguinte está
+   subindo por cima. É esse mesmo intervalo que encolhe e escurece o coberto. */
+export function usePilha() {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const escala = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
+  const veu = useTransform(scrollYProgress, [0, 1], [0, 0.38]);
+  const um = useMotionValue(1);
+  const zero = useMotionValue(0);
+  return quieto ? { ref, escala: um, veu: zero } : { ref, escala, veu };
+}
+
+/* 10. palavra
+   Revelação por palavra da declaração. A frase inteira é legível desde o
+   início (opacidade mínima 0.16, não 0): texto invisível que só aparece no
+   scroll quebra leitor de tela e busca. O que o scroll faz é acender.
+
+   Devolve um array de MotionValue, não uma função: `useTransform` é hook, e
+   chamar hook dentro do `map` do JSX amarraria a ordem à renderização. */
+export function usePalavra(total) {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.85", "start 0.3"],
+  });
+  const opacidades = [];
+  for (let i = 0; i < total; i++) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    opacidades.push(useTransform(scrollYProgress, [i / total, (i + 1) / total], [0.16, 1]));
+  }
+  return { ref, opacidades, quieto };
 }
