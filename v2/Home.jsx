@@ -99,14 +99,18 @@ function Declaracao() {
   return (
     <section className="v2-declaracao-secao" id="sobre">
       <p className="v2-declaracao" ref={ref}>
+        {/* o espaço fica FORA do span: espaço no fim de um inline-block é
+            descartado na hora de renderizar, e a frase saía sem separação */}
         {palavras.map((w, i) => (
-          <motion.span
-            key={i}
-            className="v2-declaracao-w"
-            style={quieto ? undefined : { opacity: opacidades[i] }}
-          >
-            {w}{" "}
-          </motion.span>
+          <React.Fragment key={i}>
+            <motion.span
+              className="v2-declaracao-w"
+              style={quieto ? undefined : { opacity: opacidades[i] }}
+            >
+              {w}
+            </motion.span>
+            {i < palavras.length - 1 ? " " : null}
+          </React.Fragment>
         ))}
       </p>
     </section>
@@ -255,112 +259,60 @@ function Pilha({ ir }) {
 
 /* ------------------------------------------------------------------ 7. peças */
 
-/* Fase 7. Eram catorze peças na grade, sete delas sem imagem nenhuma,
-   viradas em chapa tipográfica escura. Chapa é uma saída honesta para uma
-   peça sem foto, mas sete delas em grade de três colunas fazem a dobra
-   competir com os casos, e era para ela ficar mais discreta.
-   Agora a grade só recebe o que tem foto de verdade. O resto vira lista de
-   texto, fechada, atrás de um botão. */
-function PecaComFoto({ p, i }) {
-  const rise = useRise();
-  const { ref, style } = useParallax(8);
-  const href = pieceLink(p);
-  const capa = p.cover || (p.shots && p.shots[0]);
-  const Tag = href ? "a" : "div";
-  return (
-    <motion.article className="v2-peca" {...rise(i % 3)}>
-      <Tag
-        className="v2-peca-link"
-        href={href || undefined}
-        target={href ? "_blank" : undefined}
-        rel={href ? "noopener noreferrer" : undefined}
-      >
-        <span className="v2-peca-media" ref={ref}>
-          <motion.span className="v2-peca-foto" style={style}>
-            <img src={capa} alt="" loading="lazy" decoding="async" />
-          </motion.span>
-          {/* O painel de vidro do maxfolio: borda de 1px e blur de 9px
-              sobre a mídia. Ele diz o que a etiqueta "PEÇA" não dizia: a
-              etiqueta era igual nos sete cards, então não informava nada.
-              Aqui o painel só aparece no hover, e só onde há link. */}
-          {href ? (
-            <span className="v2-peca-abrir" aria-hidden="true">
-              Abrir
-              <svg viewBox="0 0 16 16" width="11" height="11" fill="none">
-                <path d="M4 12 12 4M6 4h6v6" stroke="currentColor" strokeWidth="1.6"
-                      strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-          ) : null}
-        </span>
-        <span className="v2-peca-pe">
-          <span className="v2-peca-t">{p.title}</span>
-          <span className="v2-peca-d">{p.domain || p.desc}</span>
-        </span>
-      </Tag>
-    </motion.article>
-  );
-}
+/* Peça extra num portfólio de UX não pode ter tratamento de caso. Saiu a grade
+   de sete cards e saiu a lista atrás de botão: entra uma fita que corre
+   sozinha, altura baixa, sem título e sem etiqueta.
 
-function Pecas() {
-  const rise = useRise();
-  const [aberta, setAberta] = useState(false);
+   Uma fita e não duas: só sete peças têm foto, e três por fita não enchem
+   1440px, então o loop mostraria o vão da costura. As outras sete não têm
+   imagem nenhuma e viram uma linha de texto abaixo, que é o tratamento mais
+   discreto que ainda deixa o nome delas na página. */
+function Fita() {
   const lista = pieceProjects();
-  if (!lista.length) return null;
+  const capa = (p) => p.cover || (p.shots && p.shots[0]);
+  const comFoto = lista.filter(capa);
+  const semFoto = lista.filter((p) => !capa(p));
+  if (!comFoto.length) return null;
 
-  const temFoto = (p) => Boolean(p.cover || (p.shots && p.shots[0]));
-  const comFoto = lista.filter(temFoto);
-  const semFoto = lista.filter((p) => !temFoto(p));
+  const item = (p, dobra) => {
+    const href = pieceLink(p);
+    const Tag = href && !dobra ? "a" : "span";
+    return (
+      <Tag
+        key={(dobra ? "b" : "") + p.id}
+        className="v2-fita-item"
+        href={!dobra && href ? href : undefined}
+        target={!dobra && href ? "_blank" : undefined}
+        rel={!dobra && href ? "noopener noreferrer" : undefined}
+        aria-hidden={dobra ? "true" : undefined}
+        tabIndex={dobra ? -1 : undefined}
+      >
+        <img src={capa(p)} alt={dobra ? "" : p.title} loading="lazy" decoding="async" />
+      </Tag>
+    );
+  };
 
   return (
-    <section className="v2-wrap" id="pecas">
-      <Regua />
-      <div className="v2-duas">
-        <Label>Outras peças</Label>
-        <div>
-          <div className="v2-pecas">
-            {comFoto.map((p, i) => <PecaComFoto p={p} i={i} key={p.id} />)}
-          </div>
-
-          {semFoto.length ? (
-            <div className="v2-pecas-resto">
-              <button
-                type="button"
-                className="v2-pecas-botao"
-                aria-expanded={aberta}
-                aria-controls="v2-pecas-lista"
-                onClick={() => setAberta((v) => !v)}
-              >
-                <span className="v2-pecas-botao-n">{String(semFoto.length).padStart(2, "0")}</span>
-                <span>{aberta ? "Esconder as outras" : "Ver todas as peças"}</span>
-                <span className={"v2-pecas-seta" + (aberta ? " is-aberta" : "")} aria-hidden="true" />
-              </button>
-
-              {aberta ? (
-                <ul className="v2-pecas-lista" id="v2-pecas-lista">
-                  {semFoto.map((p, i) => {
-                    const href = pieceLink(p);
-                    const Tag = href ? "a" : "span";
-                    return (
-                      <motion.li key={p.id} {...rise(Math.min(i, 4))}>
-                        <Tag
-                          className="v2-pecas-linha"
-                          href={href || undefined}
-                          target={href ? "_blank" : undefined}
-                          rel={href ? "noopener noreferrer" : undefined}
-                        >
-                          <span className="v2-pecas-linha-t">{p.title}</span>
-                          <span className="v2-pecas-linha-d">{p.domain || p.desc}</span>
-                        </Tag>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              ) : null}
-            </div>
-          ) : null}
+    <section className="v2-fita-secao" id="pecas" aria-label="Outras peças">
+      <div className="v2-fita">
+        <div className="v2-fita-trilho">
+          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, false))}</div>
+          {/* a segunda cópia existe só para o loop não ter costura */}
+          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, true))}</div>
         </div>
       </div>
+
+      {semFoto.length ? (
+        <p className="v2-fita-resto">
+          <span className="v2-fita-resto-r">Também passaram por aqui</span>
+          {semFoto.map((p, i) => (
+            <span key={p.id}>
+              {i ? <span aria-hidden="true"> · </span> : " "}
+              {p.title}
+            </span>
+          ))}
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -418,7 +370,7 @@ export default function Home({ ir }) {
         <Marquee />
         <Processo />
         <Pilha ir={ir} />
-        <Pecas />
+        <Fita />
         <OndeEstive />
       </div>
     </>

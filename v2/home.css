@@ -378,154 +378,67 @@
   }
 }
 
-/* ---------------- 7. peças ---------------- */
+/* ---------------- 7. peças, em fita ---------------- */
 
-.v2-pecas {
+/* Faixa baixa que corre sozinha. Sem titulo, sem card, sem etiqueta: a
+   hierarquia e que precisa dizer que isto e material extra. */
+.v2-fita-secao {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--v2-s3);
-}
-
-.v2-peca { margin: 0; }
-
-.v2-peca-link { display: block; color: inherit; text-decoration: none; }
-
-.v2-peca-media {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 11;
-  border-radius: var(--v2-r-card);
-  background: var(--v2-card);
+  gap: var(--v2-s4);
+  padding: var(--v2-s6) 0;
   overflow: hidden;
 }
 
-/* O filho é maior que a janela para o parallax não abrir buraco na borda.
-   O `parallax` era da tríade de vitrine, que saiu; ele veio para cá em vez
-   de deixar de existir na home. */
-.v2-peca-foto {
-  position: absolute;
-  inset: -8% 0;
-  display: block;
-}
+.v2-fita { overflow: hidden; }
 
-.v2-peca-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 520ms var(--v2-ease);
-}
-
-.v2-peca-link:hover img,
-.v2-peca-link:focus-visible img { transform: scale(1.03); }
-
-/* O painel de vidro do maxfolio: borda de 1px e `backdrop-filter: blur(9px)`
-   sobre a mídia. É a única superfície translúcida da V2, e existe só aqui,
-   onde há imagem embaixo para o vidro ter o que embaçar. */
-.v2-peca-abrir {
-  position: absolute;
-  left: var(--v2-s2);
-  bottom: var(--v2-s2);
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px var(--v2-s2);
-  border-radius: var(--v2-r-pill);
-  border: 1px solid rgba(255, 255, 255, .55);
-  background: rgba(255, 255, 255, .34);
-  backdrop-filter: blur(9px);
-  color: var(--v2-ink);
-  font-size: .8125rem;
-  font-weight: 600;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 420ms var(--v2-ease), transform 420ms var(--v2-ease);
-  pointer-events: none;
-}
-
-.v2-peca-link:hover .v2-peca-abrir,
-.v2-peca-link:focus-visible .v2-peca-abrir {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ---- as peças sem foto, fechadas ---- */
-
-.v2-pecas-resto { margin-top: var(--v2-s4); }
-
-.v2-pecas-botao {
-  display: inline-flex;
-  align-items: center;
+.v2-fita-trilho {
+  display: flex;
+  width: max-content;
   gap: var(--v2-s2);
-  padding: var(--v2-s2) 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: var(--v2-t-label);
-  font-weight: 500;
-  cursor: pointer;
+  animation: v2-fita-anda 52s linear infinite;
 }
 
-.v2-pecas-botao-n {
-  color: var(--v2-muted);
-  font-variant-numeric: tabular-nums;
+.v2-fita:hover .v2-fita-trilho { animation-play-state: paused; }
+
+.v2-fita-grupo { display: flex; gap: var(--v2-s2); }
+
+.v2-fita-item {
+  display: block;
+  width: 280px;
+  height: 176px;
+  border-radius: var(--v2-r-card);
+  overflow: hidden;
+  background: var(--v2-card);
 }
 
-.v2-pecas-seta {
-  width: 8px;
-  height: 8px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg) translate(-2px, -2px);
-  transition: transform 420ms var(--v2-ease);
+.v2-fita-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* -50% e exatamente uma copia do grupo: o loop fecha sem costura. */
+@keyframes v2-fita-anda {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
-.v2-pecas-seta.is-aberta { transform: rotate(-135deg) translate(-2px, -2px); }
-
-.v2-pecas-lista {
-  list-style: none;
-  margin: var(--v2-s2) 0 0;
-  padding: 0;
-  border-top: 1px solid var(--v2-rule);
+/* As pecas sem imagem nenhuma. Uma linha de texto, no tom do label: some da
+   hierarquia e ainda deixa o nome na pagina. */
+.v2-fita-resto {
+  margin: 0 auto;
   max-width: var(--v2-medida);
-}
-
-.v2-pecas-linha {
-  display: grid;
-  grid-template-columns: minmax(0, 22ch) minmax(0, 1fr);
-  align-items: baseline;
-  gap: var(--v2-s3);
-  padding-block: var(--v2-s3);
-  border-bottom: 1px solid var(--v2-rule);
-  color: inherit;
-  text-decoration: none;
-  transition: padding-inline-start 420ms var(--v2-ease);
-}
-
-a.v2-pecas-linha:hover,
-a.v2-pecas-linha:focus-visible { padding-inline-start: var(--v2-s2); }
-
-.v2-pecas-linha-t { font-weight: 600; }
-.v2-pecas-linha-d { color: var(--v2-muted); font-size: var(--v2-t-label); }
-
-
-.v2-peca-pe {
-  display: block;
-  margin-top: var(--v2-s2);
-  padding-top: var(--v2-s2);
-  border-top: 1px solid var(--v2-rule);
-}
-
-/* Título e descritor empilhados: alinhado à direita, o descritor longo
-   quebrava em escada e brigava com o título. */
-.v2-peca-t { display: block; font-weight: 600; }
-.v2-peca-d {
-  display: block;
-  margin-top: 2px;
-  color: var(--v2-muted);
+  padding-inline: var(--v2-gutter);
   font-size: var(--v2-t-label);
+  line-height: 1.6;
+  color: var(--v2-muted);
+}
+
+.v2-fita-resto-r {
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--v2-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-fita-trilho { animation: none; }
+  .v2-fita { overflow-x: auto; }
 }
 
 /* ---------------- 8. onde estive ---------------- */
@@ -597,14 +510,10 @@ a.v2-pecas-linha:focus-visible { padding-inline-start: var(--v2-s2); }
 /* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
 
 @media (max-width: 1100px) {
-  .v2-pecas { grid-template-columns: repeat(2, 1fr); }
-  /* A terceira coluna do processo (texto de apoio) desce para baixo do
-     titulo: mantida, ela some para 30ch e quebra em palavra por linha. */
+  .v2-fita-item { width: 240px; height: 152px; }
 }
 
 @media (max-width: 860px) {
-  .v2-pecas { grid-template-columns: 1fr; }
-  .v2-pecas-linha { grid-template-columns: 1fr; gap: 2px; }
   .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
   .v2-lt-ano { position: static; }
   .v2-linha-tempo { padding-left: var(--v2-s4); }
