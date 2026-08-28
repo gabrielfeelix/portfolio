@@ -518,3 +518,59 @@
   .v2-lt-ano { position: static; }
   .v2-linha-tempo { padding-left: var(--v2-s4); }
 }
+
+/* ---------------- 9. fecho ---------------- */
+
+/* Bloco escuro em largura cheia. data-escuro-corpo faz a nav inverter
+   enquanto a faixa dela estiver dentro dele (ver app.jsx). */
+.v2-fecho {
+  background: var(--v2-ink);
+  color: #fff;
+  padding: var(--v2-s7) 0;
+}
+
+.v2-fecho-h {
+  margin: 0;
+  max-width: 16ch;
+  font-size: var(--v2-t-manifesto);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: var(--v2-track-titulo);
+}
+
+.v2-fecho-canais {
+  list-style: none;
+  margin: var(--v2-s6) 0 0;
+  padding: 0;
+}
+
+.v2-fecho-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--v2-s3);
+  padding: var(--v2-s3) 0;
+  border-top: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+  text-decoration: none;
+  transition: opacity .2s var(--v2-ease);
+}
+
+.v2-fecho-canais li:last-child .v2-fecho-link {
+  border-bottom: 1px solid rgba(255, 255, 255, .18);
+}
+
+.v2-fecho-rot {
+  font-size: var(--v2-t-label);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .64;
+}
+
+.v2-fecho-val { font-size: var(--v2-t-bloco); }
+
+.v2-fecho-link:hover { opacity: .72; }
+
+@media (max-width: 860px) {
+  .v2-fecho-link { flex-direction: column; align-items: flex-start; gap: 2px; }
+}

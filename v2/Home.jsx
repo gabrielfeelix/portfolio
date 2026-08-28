@@ -7,7 +7,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky, usePilha, usePilhaTrilho, usePalavra } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import {
-  ALL_MARKS, VOL, COMPANIES,
+  ALL_MARKS, VOL, COMPANIES, CONTATO,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
@@ -352,6 +352,35 @@ function OndeEstive() {
   );
 }
 
+/* ------------------------------------------------------------------ 9. fecho */
+
+/* A home terminava na timeline, que é um fim por acidente. O fecho escuro
+   fecha o par com o hero e é onde o contato mora. */
+function Fecho() {
+  const linha = useMaskLine();
+  const c = CONTATO();
+  const canais = [c.whatsapp, c.email, c.linkedin].filter(Boolean);
+  return (
+    <section className="v2-fecho" data-escuro-corpo="1" id="contato">
+      <div className="v2-wrap">
+        <h2 className="v2-fecho-h">
+          <motion.span {...linha(0)}>Tem um produto travado no slide?</motion.span>
+        </h2>
+        <ul className="v2-fecho-canais">
+          {canais.map((x) => (
+            <li key={x.href}>
+              <a className="v2-fecho-link" href={x.href} target="_blank" rel="noopener noreferrer">
+                <span className="v2-fecho-rot">{x.label}</span>
+                <span className="v2-fecho-val">{x.display}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 /* -------------------------------------------------------------------- home */
 
 export default function Home({ ir }) {
@@ -367,11 +396,12 @@ export default function Home({ ir }) {
           fundo, o hero preso aparece por baixo das dobras claras. */}
       <div className="v2-corpo-claro" data-clara="1">
         <Declaracao />
+        <Pilha ir={ir} />
         <Marquee />
         <Processo />
-        <Pilha ir={ir} />
-        <Fita />
         <OndeEstive />
+        <Fita />
+        <Fecho />
       </div>
     </>
   );
