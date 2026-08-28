@@ -187,7 +187,7 @@ const CHAPTERS = [
       k: "A cena",
       t: "Um site que a empresa gostava e o cliente não usava",
       p: ["A PCYES vende hardware e periférico para quem monta o próprio PC. É um público que chega sabendo o modelo que quer, compara ficha técnica com a concorrência e decide em minutos. O site que existia não era feito para esse comportamento: abria em campanha de marca, com vídeo e animação ocupando a primeira dobra inteira, e o produto começava abaixo da linha da tela.",
-          "O pedido que chegou até mim era estético, alguma coisa entre deixar mais minimalista, mais limpo e mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita vendia menos do que podia, então passei a primeira semana inteira assistindo gente tentar comprar."],
+          "O pedido que chegou até mim era estético, alguma coisa entre deixar mais minimalista, mais limpo e mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita vendia menos do que podia, então passei a primeira semana inteira assistindo usuário tentar comprar."],
       fig: "abertura",
       tinta: "cluster",
     },
@@ -223,7 +223,7 @@ const CHAPTERS = [
       barras: [
         { l: "Rolagem média da página", v: 25.5, d: 1, n: "Três quartos da página nunca eram vistos." },
         { l: "Sessões com erro de carregamento", v: 14.4, d: 1, n: "Uma em cada sete esbarrava em falha técnica, medida por evento do próprio site." },
-        { l: "Tráfego direto, sem origem declarada", v: 50, n: "Metade do volume, com 71,9% de rejeição e 3% da receita: quase tudo o que entrava ali não era gente comprando." },
+        { l: "Tráfego direto, sem origem declarada", v: 50, n: "Metade do volume, com 71,9% de rejeição e 3% da receita: quase nada ali era usuário comprando." },
       ],
       nota: "Trimestre inteiro, cruzando GA4 com notas fiscais, duas fontes que não se falam. O Clarity entra só onde mede bem, que é comportamento.",
     },
@@ -283,7 +283,7 @@ const CHAPTERS = [
           "Assisti as sessões inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É trabalho lento, e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
           "A diretoria queria uma direção minimalista, com foco em valor de marca, e o comportamento no site apontava para o outro lado. Levei as gravações para a reunião e propus um terceiro caminho, com a marca presente em momentos escolhidos e o caminho de compra como eixo do site. O modelo final foi aprovado."],
       achados: [
-        "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muita gente saía antes disso.",
+        "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muitos saíam antes disso.",
         "Havia bug no módulo de pagamento do Magento, e ele quebrava a compra na etapa mais cara do funil.",
         "O caminho até a compra era longo demais para o tipo de produto vendido.",
         "Fora das gravações, o catálogo tinha buracos próprios. Lançamento sem reserva, configurador que só servia quem já sabia a peça, carrinho que levava a pessoa para fora da página.",
@@ -305,7 +305,7 @@ const CHAPTERS = [
          busca parece caso de borda que eu encontrei testando na mão. Com
          ele, é o caminho de 4 em cada 10 pessoas. */
       dado: { v: 71416, p: 43, l: "sessões usaram a busca no trimestre",
-        n: "Mais gente buscava do que navegava. A busca era o caminho principal da loja, e era justamente ela que devolvia mousepad para quem procurava mouse.",
+        n: "Mais usuário buscava do que navegava. A busca era o caminho principal da loja, e era justamente ela que devolvia mousepad para quem procurava mouse.",
         fonte: "Google Analytics 4 · evento view_search_results · 2º trimestre de 2026" },
     },
     /* a frase que virou a reunião, no tamanho de fala de painel */
@@ -326,7 +326,7 @@ const CHAPTERS = [
       { d: "Pop-up depois de 15% de rolagem, nunca na chegada",
         r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas \u00e1reas de fechar, contra 5 no bot\u00e3o de comprar. A capta\u00e7\u00e3o de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele s\u00f3 aparece depois de a pessoa rolar 15% da p\u00e1gina, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem j\u00e1 est\u00e1 olhando." },
       { d: "Formas de pagamento na primeira dobra do checkout",
-        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho achei um bug no m\u00f3dulo de pagamento do Magento, que aparecia na sess\u00e3o gravada e em relat\u00f3rio nenhum, ent\u00e3o fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
+        r: "porque a grava\u00e7\u00e3o mostrou usu\u00e1rio saindo antes de descobrir como podia pagar. No caminho achei um bug no m\u00f3dulo de pagamento do Magento, que aparecia na sess\u00e3o gravada e em relat\u00f3rio nenhum, ent\u00e3o fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
       { d: "Adicionar ao carrinho direto da home e da vitrine",
         r: "porque exigir a p\u00e1gina do produto cobrava cliques que n\u00e3o precisavam existir. Quem j\u00e1 sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda est\u00e1 decidindo continua com a p\u00e1gina completa \u00e0 disposi\u00e7\u00e3o." },
     ],
@@ -659,7 +659,7 @@ const CHAPTERS = [
       p: ["Trabalhei junto da equipe financeira, que era quem operava o processo todo dia, e acompanhei a rotina real de conferência para entender onde estava o esforço e onde apareciam os erros.",
           "Também fiz benchmarking de plataformas de conciliação já consolidadas no mercado, para usar o vocabulário que profissionais da área já dominam e não inventar termo novo onde já existe um."],
       achados: [
-        "O trabalho não era conciliar, era encontrar o que não bate. A maior parte dos lançamentos fecha sozinha; o tempo do time ia embora procurando a minoria divergente no meio da maioria correta.",
+        "A maior parte dos lançamentos fecha sozinha, e o tempo do time ia embora procurando a minoria divergente no meio da maioria correta. Conciliar, na prática, é achar o que não bate.",
         "Quando o time forçava uma conciliação manual, o motivo se perdia. Ninguém depois sabia por que aquele lançamento tinha sido fechado com diferença.",
       ],
     },
@@ -674,7 +674,7 @@ const CHAPTERS = [
     ],
     solucao: {
       t: "Conciliar é achar o que não bate",
-      p: ["O módulo abre no que exige atenção, não no que deu certo.",
+      p: ["O módulo abre na fila de divergentes, com a diferença acumulada em destaque logo acima dela.",
           "No mesmo sistema desenhei os painéis de monitoramento usados pela operação e pela diretoria: carteira classificada por comportamento, aproveitamento de contratos aprovados contra pagos, metas por representante e churn do período. A mesma lógica se aplica: o painel abre no estado crítico, com filtro rápido, e a tabela detalhada fica logo abaixo para quem precisa investigar."],
       slots: 2,
       /* Telas reais do módulo. Cada uma declara a PRÓPRIA proporção: o
@@ -692,10 +692,10 @@ const CHAPTERS = [
       kicker: "o léxico que acabou com a ambiguidade",
       termos: [
         { n: "Conciliado", d: "O que o sistema registrou bate com o que o adquirente informou. Fecha sozinho, não pede ninguém." },
-        { n: "Não conciliado", d: "Ainda não encontrou par. Não é erro: é fila de trabalho." },
+        { n: "Não conciliado", d: "Ainda não encontrou par, e entra na fila de trabalho." },
         { n: "Divergente", d: "Encontrou par, mas o valor não bate. É aqui que o tempo do time vai embora, e é aqui que a tela abre." },
         { n: "Em disputa", d: "A diferença virou contestação com o adquirente. Sai do fluxo normal sem sumir do controle." },
-        { n: "Ignorado", d: "Alguém decidiu que aquele lançamento não entra na conciliação. Decisão registrada, não lançamento esquecido." },
+        { n: "Ignorado", d: "Alguém decidiu que aquele lançamento não entra na conciliação, e a decisão fica registrada com autor e horário." },
       ],
       nota: "Cinco palavras que o time passou a usar do mesmo jeito na tela e na conversa.",
     },
@@ -708,8 +708,8 @@ const CHAPTERS = [
               "A conciliação saiu de uma ferramenta externa para dentro de casa, unindo o registro da operação e o extrato do adquirente no mesmo lugar."],
     },
     aprendi: {
-      p: ["Em produto financeiro, a tela mais importante não é a que mostra o que deu certo. É a que mostra o que não bate, e por quê.",
-          "Também aprendi o valor de desenhar para o erro previsto. Um sistema que só aceita o caminho perfeito empurra o usuário para fora dele, normalmente para uma planilha paralela que ninguém audita."],
+      p: ["A decisão que mais rendeu foi a menor delas, que foi exigir motivo para fechar um lançamento com diferença. A exceção era o buraco do processo, e virar campo obrigatório em lista fechada fez dela a informação que diz quais divergências mais se repetem e com qual adquirente.",
+          "Aprendi também o valor de desenhar para o erro previsto. Um sistema que só aceita o caminho perfeito empurra o usuário para fora dele, normalmente para uma planilha paralela que ninguém audita."],
     },
   },
   {
@@ -732,16 +732,15 @@ const CHAPTERS = [
     },
     problema: {
       t: "A interface envelheceu junto com o produto",
-      p: ["A plataforma funcionava, e funcionava há anos. O problema não era o fluxo, era a interface: um layout antigo, que envelheceu junto com o produto e passou a comunicar menos do que o negócio já entrega hoje.",
-          "Redesign de legado é exercício de contenção, não de criação. A superfície inteira mudou; a lógica do sistema, de propósito, não. Quem opera isso todo dia sabe onde tudo está de cor, e obrigar essa pessoa a reaprender o caminho seria cobrar caro por uma melhoria que ela não pediu."],
+      p: ["A plataforma funcionava, e funcionava havia anos. O que tinha envelhecido era a interface, um layout antigo que passou a prometer menos do que o negócio já entrega hoje.",
+          "Num sistema com esse tempo de uso, mexer no percurso custa caro. Quem opera isso todo dia sabe onde tudo está de cor, e obrigar essa pessoa a reaprender o caminho seria cobrar por uma melhoria que ela não pediu, então a superfície inteira mudou e a lógica ficou exatamente onde estava."],
     },
     investigacao: {
       t: "Validado com quem opera o sistema",
       p: ["O sistema é operado por gestores e diretoria, então a avaliação aconteceu com eles, que são os usuários reais. Cada versão foi entregue como protótipo navegável, com comentários registrados em cima das telas, e ajustada antes da versão seguinte."],
       achados: [
-        "Não era um problema de fluxo. Os caminhos funcionavam havia anos e ninguém pedia para mudá-los.",
-        "A interface prometia menos do que o negócio já entrega hoje.",
-        "Qualquer mudança de percurso custaria caro: quem usa o sistema todo dia sabe onde tudo está de cor.",
+        "Os caminhos funcionavam havia anos e ninguém pedia para mudá-los.",
+        "O sistema é operado por gestores e diretoria, um grupo pequeno e nominal, então dava para validar cada versão com o usuário real em vez de com uma amostra.",
       ],
     },
     decisoes: [
@@ -768,8 +767,8 @@ const CHAPTERS = [
       p: ["O site entrou em produção dentro da data do evento. A plataforma segue em andamento e o app está em protótipo."],
     },
     aprendi: {
-      p: ["A tentação, num sistema assim, é reorganizar tudo de uma vez. O trabalho certo é atualizar a interface sem obrigar quem usa o produto todo dia a reaprender onde as coisas estão.",
-          "Saber mexer no código muda o que você consegue entregar. Nesse projeto foi a diferença entre chegar na feira com o site novo ou não chegar."],
+      p: ["A tentação num sistema com anos de uso é reorganizar tudo de uma vez, e segurar isso foi metade do trabalho.",
+          "A outra metade foi a entrega do site, que estava presa a uma data de feira sem janela do time de desenvolvimento. Mexer no Magento eu mesmo foi a diferença entre chegar lá com o site novo ou não chegar."],
     },
   },
   {
@@ -792,9 +791,8 @@ const CHAPTERS = [
     },
     problema: {
       t: "Por que eu deveria responder tudo isso?",
-      p: ["O tráfego chegava de anúncio direto na página de cadastro. E a página só tinha o formulário.",
-          "Isso funciona quando a pessoa já conhece a empresa. Fora da região, quase ninguém conhece. Então o visitante caía num formulário longo, de uma marca que ele nunca tinha ouvido falar, e a pergunta que ele fazia era razoável.",
-          "Dois problemas somados: falta de contexto e formulário pesado demais para o nível de confiança que existia naquele momento."],
+      p: ["O tráfego chegava de anúncio direto na página de cadastro, e a página só tinha o formulário. Isso funciona quando a pessoa já conhece a empresa, mas fora da região quase ninguém conhece.",
+          "Então o visitante caía num formulário longo de uma marca que ele nunca tinha ouvido falar, e a pergunta que ele fazia era razoável. Eram dois problemas somados, um alimentando o outro: faltava contexto, e o formulário era pesado demais para o nível de confiança que existia naquele momento."],
     },
     decisoes: [
       { d: "Contexto e formulário na mesma tela", r: "porque quem já está decidido preenche direto, e quem precisa entender antes rola a página e encontra o portfólio de produtos, as marcas distribuídas, o aplicativo de revenda e as empresas atendidas. A página inteira é argumento, sem nunca tirar o cadastro do campo de visão." },
@@ -805,15 +803,14 @@ const CHAPTERS = [
     ],
     solucao: {
       t: "A página responde antes do formulário",
-      p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso.",
-          "Quem preenche já sabe o que está aceitando."],
+      p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso, de modo que quem chega ao cadastro já sabe o que está aceitando."],
       slots: 3,
       shots: ["volume/assets/projetos/oderco-revenda/s1.webp", "volume/assets/projetos/oderco-revenda/s2.webp", "volume/assets/projetos/oderco-revenda/s3.webp"],
     },
     resultado: {
       t: "Um sistema a menos no comercial",
       p: ["A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
-          "Não era o resultado previsto. Para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava. Isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, e eles começaram a conectar o RD ao CRM interno. Um sistema saiu de cena, e o caminho agora é consolidar tudo dentro do CRM próprio, agora que o fluxo foi validado na prática com os vendedores.",
+          "Esse não era o resultado previsto. Para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava, e isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, então eles começaram a conectar o RD ao CRM interno. Um sistema saiu de cena, e o caminho agora é consolidar tudo no CRM próprio, com o fluxo já validado na prática com os vendedores.",
           "O lançamento é em etapas. Primeiro ela recebe só o tráfego de anúncio, que é onde o problema aparecia com mais força, e só depois substitui a página de cadastro do site oficial. Até aqui foi testada com usuários internos e com um grupo pequeno de externos."],
       listaK: "O que será acompanhado nessa primeira fase",
       lista: ["Conclusão de cada etapa",
@@ -821,8 +818,8 @@ const CHAPTERS = [
               "Qualidade dos leads que chegam ao comercial"],
     },
     aprendi: {
-      p: ["Formulário curto não é um objetivo em si. O que importa é onde você corta: no ponto certo, um abandono vira um contato recuperável.",
-          "A maior parte do trabalho nem estava no formulário. Estava em responder, antes dele, a pergunta que o visitante fazia em silêncio: quem é essa empresa e por que eu deveria confiar nela."],
+      p: ["O que importa num formulário é onde você corta. No ponto certo, um abandono ainda deixa um contato que o comercial consegue retomar depois.",
+          "E a maior parte do trabalho nem estava no formulário: estava em responder, antes dele, a pergunta que o visitante fazia em silêncio, que é quem é essa empresa e por que eu deveria confiar nela."],
     },
   },
   {
@@ -846,7 +843,7 @@ const CHAPTERS = [
     problema: {
       t: "Provar UX sem dizer que faço UX",
       p: ["Portfólio comum lista telas e cargos. Eu queria que a própria navegação fosse a prova: se eu te guio bem por aqui, já respondi se sei guiar um usuário.",
-          "A restrição que escolhi: nada de template genérico. Tinha que ter a minha cara."],
+          "A restrição que eu mesmo botei foi não usar template genérico, porque um portfólio que podia ser de qualquer pessoa não prova nada sobre quem fez."],
     },
     decisoes: [
       { d: "Formato de volume de mangá", r: "porque guiar bem a leitura é a competência de UX que eu quero provar. A metáfora serve à leitura, nunca atrapalha." },
@@ -855,8 +852,7 @@ const CHAPTERS = [
     ],
     solucao: {
       t: "Capa, capítulos, processo e posfácio",
-      p: ["Uma lista de capítulos, virada de página estilo mangá, motion de tinta e screentone. Caminho rápido para quem tem pressa, caminho profundo para quem quer o case inteiro.",
-          "Do protótipo navegável ao site publicado."],
+      p: ["O volume abre numa capa, lista os capítulos, vira a página como mangá e usa tinta e screentone para separar as seções. Quem tem pressa tem um caminho curto e quem quer o case inteiro tem o longo, e os dois ficam declarados logo na entrada do capítulo, com o tempo de leitura medido."],
       /* Prints tirados do próprio site rodando, em 1600x1000 — o capítulo do
          portfólio mostra o portfólio de verdade, não uma maquete dele. */
       shots: ["volume/assets/projetos/portfolio/01-home-splash.webp",
@@ -868,7 +864,7 @@ const CHAPTERS = [
     resultado: {
       t: "Zero violação, medida e não prometida",
       p: ["O volume passa em WCAG 2.1 AA sem violação: zero em papel, zero no modo tinta, zero em inglês e zero em 390px, varrido com axe-core na página servida, view a view. Em seis larguras, de 1920 a 390, nenhuma rola na horizontal, e as oito rotas carregam sem um erro de JavaScript sequer.",
-          "É pouco glamouroso e é de propósito. Um portfólio que argumenta cuidado com detalhe e reprova numa varredura automática está se contradizendo na própria vitrine. Este é o número que eu tinha como cobrar de mim mesmo, então é o que está aqui, com a ferramenta e o método na frente."],
+          "É pouco glamouroso, mas um portfólio que argumenta cuidado com detalhe e reprova numa varredura automática está se contradizendo na própria vitrine. Era o número que eu tinha como cobrar de mim mesmo, então é o que está aqui, com a ferramenta e o método na frente."],
     },
     aprendi: {
       p: ["Escolher uma metáfora forte é fácil; o difícil é não deixar ela cobrar pedágio. A cada decisão a pergunta foi a mesma: isso ajuda a ler ou só reforça que é um mangá? Quando a resposta era a segunda, saiu.",
