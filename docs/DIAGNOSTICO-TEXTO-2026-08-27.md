@@ -277,7 +277,7 @@ E uma quarta causa, que não é de escrita e sim de ordem: **as três melhores p
 
 ## O que isso implica para a Etapa 2
 
-Se a leitura acima estiver certa, o `docs/VOZ.md` precisa destilar uma voz que **já funciona** e adicionar duas regras que hoje não existem:
+Se a leitura acima estiver certa, o guia de voz precisa destilar uma voz que **já funciona** e adicionar duas regras que hoje não existem:
 
 1. **Onde o ponto pode cair** — e a proibição de ele cair sempre no mesmo lugar.
 2. **Como um bloco se liga ao próximo** — subordinação, conectivo, retomada. O que o layout vem fazendo de graça e a prosa nunca aprendeu.
@@ -388,7 +388,7 @@ Este relatório é registro do dia 27 e fica como está. O que segue é só o pl
 | 5 | Premissa repetida em `problema.p[0]` | **fechado.** O beat abre na cena e o título virou "Três pedágios até o mouse" |
 | 6 | 71.416 no 5º parágrafo | fechado em 9fbbbe8. O 5º parágrafo, que virou redundante, **foi cortado** em 56cb02e |
 | 7 | `notaSuporte` gasta o melhor minuto | **encolhida** (as duas frases que só concluíam saíram). Continua antes do Ato I: mover é `Capitulo.jsx:2016` e não foi feito |
-| 8 | Quebrar o molde retórico | **fechado.** Zero "não é X, é Y" restantes. Ver correção de medida na Regra A do `VOZ.md`: a contagem de 41 somava comentário de código |
+| 8 | Quebrar o molde retórico | **fechado.** Zero "não é X, é Y" restantes. A contagem original de 41 somava comentário de código: só na prosa visível eram 24 em 4.465 palavras |
 | 9 | Ligação entre beats | **fechado no `pcyes`**, aberto nos outros quatro |
 | 10 | Reposicionar `sistema` | **fechado.** Desceu para depois de `decisoes`, que é onde o comentário do `data.jsx` sempre disse que era o lugar |
 
@@ -398,10 +398,19 @@ O relatório dizia que o arco "ele estava errado e o dado o corrigiu" estava des
 
 Ela morava no Ato III, cinco beats depois do funil. Subiu para o fim do Ato I, na ordem em que aconteceu, e o funil passou a desmentir uma ação que o leitor **acabou de ver ser tomada**. Nenhuma frase de ligação faz esse trabalho: é posição.
 
-Isso virou a Regra C do `VOZ.md`, e é a primeira coisa a rodar nos outros quatro capítulos.
+Foi a primeira coisa a rodar nos outros quatro capítulos, em c0f12c6.
 
 ## O que este adendo não fechou
 
 - Item 7 pela metade: a `notaSuporte` encolheu, mas continua antes do Ato I.
 - Os quatro finais sem resultado medido (`PENDENCIAS-TEXTO.md`, item 1). A recomendação continua: esperar outubro.
 - `locarmais`, `odex`, `oderco` e `portfolio` não foram tocados.
+
+---
+
+**Nota (28/08):** o `docs/VOZ.md` foi apagado a pedido do Gabriel. O guia
+tinha regras que o próprio trabalho contradisse (mandava evitar "o
+usuário", que é o termo certo em UX, e tratava "design e código" como a
+frase modelo da home). O que sobreviveu dele está no código, e o critério
+daqui em diante é ler em voz alta e ver se soa como pessoa explicando o
+próprio trabalho.
