@@ -138,8 +138,7 @@ export function Rodape() {
   const c = CONTATO();
   const canais = ["email", "linkedin", "whatsapp", "instagram"].filter((k) => c[k]);
   return (
-    <footer className="v2-rodape" id="contato">
-      <Regua />
+    <footer className="v2-rodape" id="contato" data-escuro-corpo="1">
       <div className="v2-rodape-topo">
         <Label>Contato</Label>
         <p className="v2-rodape-chamada">

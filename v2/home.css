@@ -278,7 +278,7 @@
    grudou. Sem ele a linha 2 alcanca a linha 1 em 500px e a travessia acaba
    antes de ser vista: medido, os tops iam de 96 para -354 em 1000px. */
 .v2-pilha {
-  padding: var(--v2-s5) 0 48vh;
+  padding: var(--v2-s5) 0 var(--v2-s6);
 }
 
 .v2-linha-casos {
@@ -287,7 +287,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--v2-s3);
   max-width: var(--v2-caso-larga);
-  margin: 0 auto 44vh;
+  margin: 0 auto 44vh;   /* o curso de scroll da travessia, ver abaixo */
   padding-inline: var(--v2-gutter);
   will-change: transform;
 }
@@ -295,6 +295,10 @@
 /* Moldura clara com a midia embutida, medida na ref: 658x526 com 10px de
    respiro em volta da foto e 20px embaixo, para a legenda. Card opaco de
    proposito: e a opacidade dele que cobre a linha anterior. */
+/* A ultima linha nao e coberta por ninguem: a margem dela seria so um vao de
+   44vh entre os casos e as marcas. */
+.v2-linha-casos:last-child { margin-bottom: var(--v2-s6); }
+
 .v2-cartao {
   background: var(--v2-superficie);
   border: 1px solid var(--v2-rule);
@@ -528,60 +532,4 @@
   .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
   .v2-lt-ano { position: static; }
   .v2-linha-tempo { padding-left: var(--v2-s4); }
-}
-
-/* ---------------- 9. fecho ---------------- */
-
-/* Bloco escuro em largura cheia. data-escuro-corpo faz a nav inverter
-   enquanto a faixa dela estiver dentro dele (ver app.jsx). */
-.v2-fecho {
-  background: var(--v2-ink);
-  color: #fff;
-  padding: var(--v2-s7) 0;
-}
-
-.v2-fecho-h {
-  margin: 0;
-  max-width: 16ch;
-  font-size: var(--v2-t-manifesto);
-  font-weight: 500;
-  line-height: 1.06;
-  letter-spacing: var(--v2-track-titulo);
-}
-
-.v2-fecho-canais {
-  list-style: none;
-  margin: var(--v2-s6) 0 0;
-  padding: 0;
-}
-
-.v2-fecho-link {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--v2-s3);
-  padding: var(--v2-s3) 0;
-  border-top: 1px solid rgba(255, 255, 255, .18);
-  color: #fff;
-  text-decoration: none;
-  transition: opacity .2s var(--v2-ease);
-}
-
-.v2-fecho-canais li:last-child .v2-fecho-link {
-  border-bottom: 1px solid rgba(255, 255, 255, .18);
-}
-
-.v2-fecho-rot {
-  font-size: var(--v2-t-label);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  opacity: .64;
-}
-
-.v2-fecho-val { font-size: var(--v2-t-bloco); }
-
-.v2-fecho-link:hover { opacity: .72; }
-
-@media (max-width: 860px) {
-  .v2-fecho-link { flex-direction: column; align-items: flex-start; gap: 2px; }
 }
