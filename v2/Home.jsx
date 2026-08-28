@@ -28,6 +28,7 @@ import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } fr
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita,
+  useTrilha,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador } from "./Kit.jsx";
@@ -35,7 +36,7 @@ import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO, PROTOTIPO } from "./copy.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -393,11 +394,145 @@ function Numeros() {
 
 /* --------------------------------------------------------------- 7. processo */
 
-/* Três frases, e agora numeradas na mono como os serviços do bungee
-   (`( 001 )` + título + descrição). O numeral entra porque a lista precisa de
-   uma âncora que não seja um tamanho de tipo novo: a escala tem cinco degraus
-   e nenhum deles é "um pouco maior que o corpo". */
+/* A trilha do porto: a linha se desenha da esquerda para a direita e o nó
+   acende quando a ponta chega nele. Os nós são quadrados, não círculos: a
+   regra do raio 0 vale, e o marcador quadrado é o mesmo sinal que o cromo já
+   usa antes do nome da dobra.
+
+   A linha é scaleX com origem à esquerda, então continua sendo só transform,
+   que é a regra de motion.js. */
+function Trilha({ total, avanco, acesos, quieto }) {
+  return (
+    <div className="v2-trilha" aria-hidden="true">
+      <span className="v2-trilha-tr" />
+      <motion.span
+        className="v2-trilha-ln"
+        style={quieto ? { scaleX: 1 } : { scaleX: avanco }}
+      />
+      {Array.from({ length: total }, (_, i) => (
+        <span key={i} className={`v2-trilha-no${i < acesos ? " is-aceso" : ""}`}>
+          {`0${i + 1}`}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/* O grupo de três quadradinhos que o viper e o porto repetem em toda fase.
+   Custa nada e responde sozinho "estou no segundo de três". */
+function Pontos({ i, total }) {
+  return (
+    <span className="v2-pontos" aria-hidden="true">
+      {Array.from({ length: total }, (_, k) => (
+        <span key={k} className={`v2-ponto${k <= i ? " is-cheio" : ""}`} />
+      ))}
+    </span>
+  );
+}
+
+/* O protótipo de brinquedo do passo 02.
+
+   A dobra 01 afirma que opinião sobre uma coisa que a pessoa tentou usar é
+   informação. Esta dobra executa a frase: para responder, é preciso clicar.
+   O rodapé só troca de "Você está olhando" para "Agora você tentou" depois do
+   primeiro toque, e é o toque que muda o texto, não o scroll.
+
+   Acessibilidade: é fieldset com radio de verdade e um submit de verdade, não
+   div com onClick. Funciona no teclado e o leitor de tela anuncia o grupo, a
+   pergunta e a resposta (aria-live no resultado). */
+function Prototipo() {
+  const [escolha, setEscolha] = useState(null);
+  const [enviado, setEnviado] = useState(false);
+  const [toques, setToques] = useState(0);
+  const quieto = useReducedMotion();
+  const tocar = () => setToques((n) => n + 1);
+  /* Não usa o `spring` global de propósito. Ele tem damping 60, feito para
+     hover e drag, e leva ~1,5s para assentar: com AnimatePresence em
+     mode="wait" a troca de estado passava de 3 segundos. Num painel que existe
+     para provar que protótipo responde na hora, 3 segundos derruba o próprio
+     argumento. Saída em 140ms, entrada em 240ms. */
+  const entra = quieto ? { duration: 0 } : { duration: 0.24, ease };
+  const sai = quieto ? { duration: 0 } : { duration: 0.14, ease };
+
+  return (
+    <div className="v2-proto">
+      <div className="v2-proto-topo">
+        <span className="v2-proto-etq">protótipo</span>
+        <span className="v2-proto-cont">
+          {`toques ${String(toques).padStart(2, "0")}`}
+        </span>
+      </div>
+
+      <div className="v2-proto-corpo">
+        <AnimatePresence mode="wait" initial={false}>
+          {enviado ? (
+            <motion.div
+              key="fim"
+              className="v2-proto-fim"
+              initial={quieto ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={quieto ? undefined : { opacity: 0, y: -8, transition: sai }}
+              transition={entra}
+            >
+              <span className="v2-proto-marca" aria-hidden="true" />
+              <p className="v2-proto-resp" role="status">
+                {PROTOTIPO.respostas[escolha]}
+              </p>
+              <p className="v2-proto-fecho">{PROTOTIPO.fecho}</p>
+              <button
+                type="button"
+                className="v2-proto-voltar"
+                onClick={() => { tocar(); setEnviado(false); setEscolha(null); }}
+              >
+                {PROTOTIPO.reiniciar}
+              </button>
+            </motion.div>
+          ) : (
+            <motion.form
+              key="form"
+              initial={quieto ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={quieto ? undefined : { opacity: 0, y: -8, transition: sai }}
+              transition={entra}
+              onSubmit={(e) => { e.preventDefault(); tocar(); setEnviado(true); }}
+            >
+              <fieldset className="v2-proto-set">
+                <legend className="v2-proto-pgt">{PROTOTIPO.pergunta}</legend>
+                {PROTOTIPO.opcoes.map((o) => (
+                  <label
+                    key={o.id}
+                    className={`v2-proto-op${escolha === o.id ? " is-on" : ""}`}
+                  >
+                    <input
+                      type="radio"
+                      name="v2-proto"
+                      value={o.id}
+                      checked={escolha === o.id}
+                      onChange={() => { tocar(); setEscolha(o.id); }}
+                    />
+                    <span className="v2-proto-cx" aria-hidden="true" />
+                    <span>{o.rotulo}</span>
+                  </label>
+                ))}
+              </fieldset>
+              <button type="submit" className="v2-proto-ok" disabled={!escolha}>
+                {PROTOTIPO.acao}
+              </button>
+            </motion.form>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <p className="v2-proto-pe">
+        {toques ? PROTOTIPO.depois : PROTOTIPO.antes}
+      </p>
+    </div>
+  );
+}
+
 function Processo() {
+  const total = PROCESSO_CURTO.length;
+  const { ref, avanco, acesos, quieto } = useTrilha(total);
   const revelar = useRevelar();
   return (
     <Dobra id="processo" n="04" nome="Método" carimbo="©26">
@@ -406,19 +541,28 @@ function Processo() {
         titulo="Do objetivo ao ar"
         lead="Três movimentos, e o do meio é o que a maioria pula."
       />
-      <ol className="v2-passos">
-        {PROCESSO_CURTO.map((f, i) => (
-          <motion.li key={i} className="v2-passo" {...revelar(i)}>
-            <span className="v2-passo-n">{`( 00${i + 1} )`}</span>
-            <p className="v2-passo-p">{f}</p>
-          </motion.li>
-        ))}
-      </ol>
+      <div className="v2-metodo" ref={ref}>
+        <Trilha total={total} avanco={avanco} acesos={acesos} quieto={quieto} />
+        <ol className="v2-fases">
+          {PROCESSO_CURTO.map((f, i) => (
+            <motion.li key={f.titulo} className="v2-fase" {...revelar(i)}>
+              <Pontos i={i} total={total} />
+              <h3 className="v2-fase-t">
+                <span className="v2-fase-n" aria-hidden="true">{`0${i + 1}`}</span>
+                {f.titulo}
+              </h3>
+              <p className="v2-fase-p">{f.frase}</p>
+              {/* o passo do meio é o que a maioria pula, então é o único que
+                  ganha peso: ele não conta que o protótipo existe, ele entrega
+                  um para a pessoa mexer */}
+              {i === 1 ? <Prototipo /> : null}
+            </motion.li>
+          ))}
+        </ol>
+      </div>
     </Dobra>
   );
 }
-
-/* ------------------------------------------------------------ 8. onde estive */
 
 function OndeEstive() {
   const rise = useRise();

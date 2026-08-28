@@ -65,8 +65,48 @@ export const MANIFESTO = {
 /* As tres frases do processo na home. Condensam as seis etapas de PROCESSO em
    volume/data.jsx sem inventar processo novo: seis linhas numeradas eram um
    indice disfarcado de conteudo. As seis continuam la, para /processo. */
+/* Os titulos saem do proprio titulo da dobra, "Do objetivo ao ar": objetivo,
+   protótipo, no ar. Nao e nome novo, e a frase da dobra desmontada em tres.
+   As sentencas sao as mesmas de antes, palavra por palavra. */
 export const PROCESSO_CURTO = [
-  "Começo pelo objetivo, não pela lista de telas, e caço o que já funciona antes de desenhar.",
-  "Do objetivo ao protótipo clicável em dias, para a mesa tocar em vez de imaginar.",
-  "Mostro cedo, corto o que não serve, e o protótipo vira produto no ar.",
+  {
+    titulo: "Objetivo",
+    frase: "Começo pelo objetivo, não pela lista de telas, e caço o que já funciona antes de desenhar.",
+  },
+  {
+    titulo: "Protótipo",
+    frase: "Do objetivo ao protótipo clicável em dias, para a mesa tocar em vez de imaginar.",
+  },
+  {
+    titulo: "No ar",
+    frase: "Mostro cedo, corto o que não serve, e o protótipo vira produto no ar.",
+  },
 ];
+
+/* O protótipo de brinquedo que mora dentro do passo 02.
+
+   A dobra 01 afirma que opinião sobre imagem estática é gosto e opinião sobre
+   uma coisa que a pessoa tentou usar é informação. Aqui a dobra 04 executa
+   essa frase em vez de repetir ela: para responder a pergunta, o visitante
+   precisa clicar, e as tres respostas desembocam no mesmo lugar.
+
+   Nao ha dado de cliente nenhum aqui, e nao pode haver: e um brinquedo, e o
+   texto assume isso. */
+export const PROTOTIPO = {
+  pergunta: "O que te dá opinião melhor sobre uma tela?",
+  opcoes: [
+    { id: "estatica", rotulo: "Uma imagem estática" },
+    { id: "clicavel", rotulo: "Uma tela que eu posso clicar" },
+    { id: "prazo",    rotulo: "Depende do prazo" },
+  ],
+  acao: "Responder",
+  respostas: {
+    estatica: "Anotado. Mesmo assim, você clicou para me dizer isso.",
+    clicavel: "Foi exatamente o que você acabou de fazer aqui.",
+    prazo: "Justo. E ainda assim você clicou para responder.",
+  },
+  fecho: "Isso é o passo 02 inteiro, em oito segundos.",
+  antes: "Você está olhando.",
+  depois: "Agora você tentou.",
+  reiniciar: "De novo",
+};
