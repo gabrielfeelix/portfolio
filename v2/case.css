@@ -362,7 +362,9 @@
 .v2-dados.is-funil .v2-dado-v { font-size: clamp(1.5rem, 2.6vw, 2.5rem); }
 
 .v2-dados.is-apertada {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  /* 140px é o menor degrau em que os seis raios cabem numa fileira só a
+     980: sete valores em duas fileiras deixa de ser escala e vira lista. */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--v2-s4) var(--v2-s3);
   margin-top: var(--v2-s4);
 }
@@ -723,10 +725,12 @@
   white-space: nowrap;
 }
 
-/* A amostra de raio: contorno, não preenchimento cinza. */
+/* A amostra de raio: contorno, não preenchimento cinza, e quadrada. Esticada
+   na largura da coluna, ela vira uma pílula e o raio deixa de ser lido. */
 .v2-raio-am {
   display: block;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border: 1px solid var(--v2-rule);
   margin-bottom: var(--v2-s2);
 }
