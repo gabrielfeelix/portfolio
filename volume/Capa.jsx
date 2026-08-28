@@ -538,10 +538,18 @@ function QuemSou({ onSobre }) {
   );
 }
 
-/* ---------- [E2] ONDE ESTOU HOJE ---------- */
+/* ---------- [E2] ONDE ESTOU HOJE ----------
+   Um bloco só, simples de propósito: chapa da empresa à esquerda, texto
+   à direita. Três formas de desenhar a trajetória embaixo foram
+   construídas e rejeitadas (linha do tempo com nós, registro de régua,
+   página de quadros de mangá) — todas viravam uma segunda peça
+   disputando a seção. A trajetória agora é UMA linha de texto dentro do
+   próprio bloco: "Antes daqui: TT&T · Locarmais", com links para as
+   páginas das empresas. Informação de apoio com peso de apoio. */
 function OndeEstou({ onEmpresa }) {
   const [ref, visto] = useReveal({ threshold: 0.2 });
   const atual = COMPANIES.find((c) => c.atual) || COMPANIES[COMPANIES.length - 1];
+  const passadas = COMPANIES.filter((c) => c !== atual);
   return (
     <section className={"ondeestou tem-fundo" + (visto ? " on" : "")} ref={ref}>
       <Fundo kanji="現在" lado="esq" />
@@ -559,44 +567,16 @@ function OndeEstou({ onEmpresa }) {
             <a className="btn btn-seta" href="#" onClick={(e) => { e.preventDefault(); onEmpresa(atual.id); }}>
               <span className="arr" aria-hidden="true">→</span> {t("Ver minha história aqui", "Read my story here")}
             </a>
+            <p className="oe-antes">
+              <span className="oe-antes-k">{t("Antes daqui", "Before this")}</span>
+              {passadas.map((c) => (
+                <a key={c.id} href="#" className="oe-antes-l"
+                   onClick={(e) => { e.preventDefault(); onEmpresa(c.id); }}>
+                  {c.name} <i>{c.anos}</i>
+                </a>
+              ))}
+            </p>
           </div>
-        </div>
-
-        {/* A TRAJETÓRIA.
-
-            Segunda forma. A primeira desta rodada era fio de nanquim com
-            nós quadrados — mas o fio era `calc(100%/6)` assumindo nó
-            centrado na coluna, e o conteúdo é alinhado à esquerda: a
-            linha não passava no centro de nó nenhum e sobrava rabo, e a
-            peça inteira flutuava solta abaixo da chapa, presa por um
-            hairline tímido.
-
-            Agora é um REGISTRO de régua, e a régua é estrutura, não
-            desenho: o border-top das três casas, contínuo porque o gap é
-            zero. O trecho sobre a casa atual é vermelho e corre até a
-            borda direita — o capítulo que ainda está sendo escrito. Cada
-            casa pendura um tique da régua na entrada, onde o texto
-            realmente começa: alinhamento honesto, sem fio a calibrar. A
-            régua atravessa a largura toda da shell e é ela a costura com
-            o bloco da chapa acima — o hairline separado saiu.
-
-            A empresa atual aparece aqui mesmo já tendo a chapa acima,
-            porque é a casa final que faz o registro ler como percurso. O
-            cargo é quem mostra a subida de estagiário a designer. */}
-        <div className="oe-linha">
-          <div className="oe-linha-k">{t("Por onde passei", "Where I have been")}</div>
-          <ol className="oe-tl">
-            {COMPANIES.map((c) => (
-              <li key={c.id} className={"oe-no" + (c.atual ? " is-hoje" : "")}>
-                <button type="button" className="oe-no-btn" onClick={() => onEmpresa(c.id)}
-                        aria-label={t(`Ver minha história na ${c.name}`, `See my story at ${c.name}`)}>
-                  <span className="oe-no-ano">{c.anos}{c.atual ? <i className="oe-no-hoje">{t("hoje", "today")}</i> : null}</span>
-                  <span className="oe-no-nome">{c.name}</span>
-                  <span className="oe-no-papel">{c.role}</span>
-                </button>
-              </li>
-            ))}
-          </ol>
         </div>
       </div>
     </section>

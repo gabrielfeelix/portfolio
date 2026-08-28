@@ -2973,7 +2973,12 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
   letter-spacing: .16em; font-size: 12px; color: var(--wash-3);
 }
 
-/* ---- ONDE ESTOU HOJE ---------------------------------------------- */
+/* ---- ONDE ESTOU HOJE ----------------------------------------------
+   Um bloco só: chapa à esquerda, texto à direita. Três desenhos de
+   trajetória embaixo foram construídos e rejeitados (linha do tempo,
+   registro de régua, página de quadros) — todos viravam uma segunda
+   peça disputando a seção. O passado é uma linha de texto no fim da
+   coluna de texto, com peso de apoio. */
 .ondeestou { border-block-start: var(--ink-stroke) solid var(--ink); padding-block: var(--ma-6); }
 .oe-grid {
   display: grid; grid-template-columns: clamp(180px, 22vw, 300px) 1fr;
@@ -3006,76 +3011,26 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 .ondeestou.on .oe-copy > *:nth-child(3) { transition-delay: 150ms; }
 .ondeestou.on .oe-copy > *:nth-child(4) { transition-delay: 210ms; }
 .ondeestou.on .oe-copy > *:nth-child(5) { transition-delay: 290ms; }
+.ondeestou.on .oe-copy > *:nth-child(6) { transition-delay: 370ms; }
 
-/* =====================================================================
-   A TRAJETÓRIA — o registro de régua
-   A forma anterior era fio de nanquim hairline com nós quadrados, mas o
-   fio (`inset-inline: calc(100%/6)`) assumia nó centrado na coluna e o
-   conteúdo é alinhado à esquerda: a linha não passava no centro de nó
-   nenhum, sobrava rabo depois do último, e a peça flutuava solta abaixo
-   da chapa, presa por um hairline tímido — lia como apêndice.
-
-   Agora a régua é ESTRUTURA: o border-top das três casas, com gap zero
-   para o traço ser contínuo. O trecho sobre a casa atual é vermelho e
-   corre até a borda — o capítulo ainda sendo escrito. O tique desce da
-   régua exatamente onde o texto começa, então não existe fio para
-   calibrar: o alinhamento é a própria borda. A régua atravessa a shell
-   inteira e substitui o hairline que separava a trajetória da chapa.
-   ===================================================================== */
-.oe-linha { margin-block-start: var(--ma-5); }
-.oe-linha-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .22em; font-size: 12px; color: var(--wash-3); margin-block-end: var(--ma-3); }
-
-.oe-tl {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+/* o passado numa linha: rótulo + duas empresas com ano, dentro da
+   própria coluna de texto — informação de apoio com peso de apoio */
+.oe-antes {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px;
+  margin: var(--ma-4) 0 0; padding-block-start: var(--ma-3);
+  border-block-start: var(--ink-hair) solid var(--wash-2);
+  max-width: 44ch;
 }
-.oe-no {
-  position: relative;
-  border-block-start: var(--ink-stroke) solid var(--ink);
-  padding-block-start: 18px;
-  padding-inline-end: clamp(18px, 3vw, 48px);
+.oe-antes-k { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .18em; font-size: 11px; color: var(--wash-3); }
+.oe-antes-l { font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .08em; font-size: 13.5px; color: var(--ink); text-decoration: none;
+  border-block-end: var(--ink-hair) solid var(--wash-2);
+  transition: color var(--cut), border-color var(--cut);
 }
-.oe-no.is-hoje { border-block-start-color: var(--vermilion); }
-/* o tique: gota que desce da régua na entrada de cada casa. No hover ela
-   escorre um pouco mais — resposta no mesmo eixo do desenho. */
-.oe-no::before {
-  content: ""; position: absolute; inset-block-start: 0; inset-inline-start: 0;
-  inline-size: var(--ink-stroke); block-size: 13px; background: var(--ink);
-  transition: block-size var(--cut);
-}
-.oe-no.is-hoje::before { background: var(--vermilion); }
-.oe-no:hover::before { block-size: 22px; }
-
-.oe-no-btn {
-  -webkit-appearance: none; appearance: none; cursor: pointer; inline-size: 100%;
-  background: transparent; border: 0; padding: 0; text-align: left; color: inherit;
-  display: grid; justify-items: start; gap: 7px;
-}
-.oe-no-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
-
-.oe-no-ano { display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-condensed); font-weight: 600; letter-spacing: .12em;
-  font-size: 12px; color: var(--wash-3); }
-/* o nome cresceu de 1.5rem para 2rem: numa faixa que atravessa a página
-   inteira, nome pequeno era o que fazia a peça parecer jogada */
-.oe-no-nome { font-family: var(--font-display); text-transform: uppercase;
-  font-size: clamp(1.3rem, 2.3vw, 2rem); line-height: 1; }
-.oe-no-btn:hover .oe-no-nome { color: var(--vermilion-ink); }
-.oe-no-papel { font-size: var(--t-small); color: var(--fg-2); line-height: 1.35; }
-.oe-no-hoje {
-  font-style: normal;
-  font-family: var(--font-condensed); font-weight: 600; text-transform: uppercase;
-  letter-spacing: .16em; font-size: 10px; line-height: 1;
-  color: #FFFFFF; background: var(--vermilion-ink); padding: 4px 7px;
-}
-
-@media (max-width: 760px) {
-  /* na vertical cada casa vira uma linha do registro: a régua repete em
-     cima de cada uma e o desenho continua o mesmo, só muda de eixo */
-  .oe-tl { grid-auto-flow: row; grid-auto-columns: auto; }
-  .oe-no { padding-inline-end: 0; padding-block: 14px 20px; }
-}
+.oe-antes-l:hover { color: var(--vermilion-ink); border-block-end-color: var(--vermilion); }
+.oe-antes-l:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.oe-antes-l i { font-style: normal; color: var(--wash-3); font-size: 11px; letter-spacing: .12em; }
 
 @media (max-width: 760px) {
   .oe-grid { grid-template-columns: 1fr; }
