@@ -119,10 +119,89 @@ sem erro no console:
 
 Se uma dobra nova sair invisível, comece por aqui.
 
-## O que provavelmente está errado, e ninguém conferiu
+## Caçada de erro visual, 28/08 (segunda máquina)
 
-Lista honesta do que ficou fora de verificação nesta sessão. Confira com print,
-não com leitura de código:
+Esta lista foi percorrida com Playwright em 1440x900, 1280x620 e 390x844, e o
+que segue é o placar. **O que a sessão anterior suspeitava e o que estava
+errado de verdade não são o mesmo conjunto.**
+
+Fechado:
+
+1. **A rotativa do hero passava por cima da linha branca a cada 2,8s.** Em
+   repouso o H1 estava certo, só a troca quebrava, e por isso leitura de código
+   não pegava. Causa: `mode="popLayout"` mantém as duas frases vivas, e a de
+   saída sobe 0.9em dentro de uma janela com 26px de folga. Agora é
+   `mode="wait"`, curso de 0.3em e saída de 160ms. Medido: 0 quadros com duas
+   linhas, 0 quadros invadindo a linha de cima.
+2. **O cabeçalho de casos vinha de trás para frente no desktop.** `align-items:
+   end` no `.v2-cabecalho` afundava a coluna esquerda quando a direita era alta,
+   e o título chegava 340px DEPOIS do lead, do CTA e das logos. No celular, que
+   empilha, a ordem sempre esteve certa. Agora é `start`, com `padding-top` no
+   lado direito.
+3. **A foto do `.v2-sobre` era um retângulo creme opaco** apagando GA[BRI]EL no
+   desktop e quase tudo no celular, e reintroduzia o creme que saiu do volume
+   (A1 de `O-QUE-FALTA.md`). Agora é `volume/assets/gabriel-recorte.webp`, alfa
+   de verdade, gerado de `gabriel.png` por chave de cor: flood fill a partir das
+   bordas mais uma segunda passada que remove bolsões fechados acima de 4000px
+   (o vão entre as pernas). 115KB.
+4. **A faixa de marcas misturava nome preto e logo colorido**, um deles roxo,
+   contra a regra do projeto de faixa monocromática. Agora `filter: grayscale(1)
+   brightness(0)` no logo.
+5. **A prova social herdava a célula da marquee** (112px de altura, filete à
+   direita) e virava grade com borda solta e célula vazia. Zerada.
+6. **`.v2-cartao-idx` reprovava AA**: accent a 12px sobre `--v2-superficie` mede
+   4.2:1. Virou tinta, que é o que `.v2-cromo-n` já fazia.
+7. **O cromo do hero quebrava em seis linhas no 390.** O `VOL. 2026` sai abaixo
+   de 620px: é decorativo e já aparece como ©26 em toda dobra.
+8. **`.v2-dobra { margin-top }` do `case.css` vazava para a home.** As duas
+   páginas usam a classe. Escopado em `.v2-dobra.v2-wrap`, que só as dobras de
+   caso têm. Isso, mais o padding de dobra caindo de `s7` para `s6`, tirou 2,5
+   mil pixels de branco: a home foi de 13.405 para 10.936 a 1440.
+9. **Os casos eram cards de 420px com moldura** dentro de um container de 1800.
+   A linha agora mede `--v2-max` e o cartão perdeu chapa e filete: a mídia é o
+   card. Era o "quase full width, QUASE eu disse".
+10. **Locar Mais caía na chapa de marca roxa** porque `locarmais-conciliacao`
+    não tem `cover` nem no capítulo nem no projeto. Agora cai para `shots[0]`,
+    que é tela real do caso.
+11. **A quebra era fumaça de banco**, 666px de vídeo que não dizia nada. Virou
+    `busca-v2.webp` em largura total. A fita caiu de cinco vídeos de tinta para
+    dois, e ganhou três telas do PCYES: sete das nove colunas são trabalho dele.
+12. **A declaração argumentava "eu também codo"**, que é o item 0 do adendo da
+    home em `DIAGNOSTICO-TEXTO-2026-08-27.md`. A primeira frase saiu. A menção
+    ao build sobrevive uma vez, na assinatura da dobra 06.
+
+Verificado e **limpo**, não precisa reabrir:
+
+- **axe: 0 violações** a 1440 e a 390, WCAG 2.1 A e AA. **Espere 3s depois de
+  rolar antes de auditar**: com 600ms o `useRise` da linha do tempo ainda está
+  correndo e o axe acusa 4 falhas de contraste no 4º item que não existem.
+- **`prefers-reduced-motion`**: nenhuma dobra invisível, contadores param no
+  valor final, rotativa congela na primeira frase.
+- **0 erro de JS e 0 overflow horizontal** nos três viewports.
+- **A página de caso não regrediu**: 17 dobras com os 104px intactos, altura de
+  29.831px, sem overflow.
+- **Os 7 links da fita de peças não estavam sem nome**: o `alt` da imagem já
+  dava o nome acessível. Ganharam `aria-label` só para anunciar a aba nova.
+- **`tools/home-v2.mjs`** tinha o caminho do Playwright cravado na outra
+  máquina. Agora descobre sozinho, como `tools/medir.mjs`.
+
+Aberto, e é decisão do Gabriel, não bug:
+
+- A declaração ainda roda 6 linhas de 104px numa medida de 809px. Encolheu de
+  1896 para 1305px, mas continua sendo a dobra mais alta em proporção ao que
+  diz. Alargar a medida ou baixar um degrau são as duas saídas, e as duas
+  mudam a gramática.
+- O vazio do meio do hero no celular são ~280px. É o `space-between` que as
+  referências usam e está anotado como intencional em `home.css`.
+- "2+ Anos em produto" segue a 128px no bloco de números, e o item 2 de
+  `PENDENCIAS-TEXTO.md` diz que esse número argumenta contra ele.
+- A assinatura continua sendo o nome em itálico. Vira SVG quando ele mandar.
+- Os dois `.mp4` de tinta que sobraram somam 2,4MB e continuam versionados. Os
+  outros quatro foram apagados nesta rodada: 11MB viraram 2,4MB.
+
+## Lista original de suspeitas, para histórico
+
+Escrita antes de qualquer print. Metade não procedia:
 
 1. **`axe` não rodou** nesta versão da home. O cromo em `--v2-muted` sobre
    branco, a nota de contador e o olho em `--v2-accent` a 11px são os

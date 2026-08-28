@@ -139,7 +139,11 @@
 /* O espaço entre dobras. Era uma régua a cada dobra, vinte e três delas,
    todas do mesmo peso: é isso que faz vinte e nove mil pixels de leitura
    parecerem catálogo. Agora quem separa é o vão. */
-.v2-dobra { margin-top: var(--v2-s6); }
+/* Escopado em `.v2-wrap` porque a HOME tambem usa `.v2-dobra` (o componente
+   Dobra do kit) e herdava estes 104px sem pedir, somando 440px de vao entre
+   dobras claras. As duas secoes de caso que usam a classe sempre trazem
+   `v2-wrap` junto; a Dobra do kit nunca traz. */
+.v2-dobra.v2-wrap { margin-top: var(--v2-s6); }
 
 /* Primeira dobra depois do hero: régua ali em cima colaria no escuro, então
    quem abre o espaço é o padding. */

@@ -76,11 +76,15 @@
 
 .v2-rot { display: block; }
 
+/* A janela da rotativa. 1.14em contra uma entrelinha de .88 deixava 26px de
+   folga acima e abaixo da linha, e era nessa folga que a frase de saida
+   aparecia pela metade encostando no "que leva". 1.02em hospeda acento e
+   cedilha e nao sobra. */
 .v2-rot-caixa {
   position: relative;
   display: block;
-  height: 1.14em;
-  margin-bottom: -.18em;   /* devolve o respiro extra que a caixa criou */
+  height: 1.02em;
+  margin-bottom: -.1em;   /* devolve o respiro extra que a caixa criou */
   overflow: hidden;
 }
 
@@ -166,7 +170,7 @@
 .v2-declaracao-par {
   display: flex;
   flex-direction: column;
-  gap: var(--v2-s5);
+  gap: var(--v2-s3);
 }
 
 .v2-declaracao {
@@ -216,15 +220,20 @@
   border-right: 1px solid var(--v2-rule);
 }
 
+/* Monocromatico por filtro, nao por arquivo. A faixa de marcas do volume ja
+   segue esta regra: cor de produto tem um lugar so, e a faixa nao e ele. Sem
+   o filtro metade das celulas vinha em nome preto e a outra metade em logo
+   colorido (um deles roxo), e a fileira lia como duas coisas coladas. */
 .v2-marca-logo {
-  height: 26px;
+  height: 22px;
   width: auto;
-  opacity: .72;
+  opacity: .62;
+  filter: grayscale(1) brightness(0);
   display: block;
 }
 
 .v2-marca-nome {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   letter-spacing: -.01em;
   color: var(--v2-ink);
@@ -235,11 +244,21 @@
 /* ---------------- respiro mobile ---------------- */
 
 @media (max-width: 860px) {
-  .v2-hero { padding-block: var(--v2-s6) var(--v2-s5); }
+  .v2-hero { padding-block: var(--v2-s5) var(--v2-s4); }
   .v2-hero-pe { flex-direction: column; align-items: flex-start; gap: var(--v2-s3); }
   .v2-hero-seta { display: none; }
   .v2-declaracao-secao { padding-block: var(--v2-s6); }
-  .v2-marca { height: 88px; padding-inline: var(--v2-s4); }
+  .v2-marca { height: 80px; padding-inline: var(--v2-s4); }
+}
+
+/* O cromo do hero e uma linha de tres em 1440 e nao cabe em 390: "UX /
+   Product Designer" quebrava em duas linhas, "VOL. 2026" em outras duas, e
+   o relogio ficava espremido no meio de uma pilha de seis linhas. O volume
+   e decorativo e ja aparece como ©26 no cromo de toda dobra: sai. */
+@media (max-width: 620px) {
+  .v2-hero-topo { gap: var(--v2-s2); }
+  .v2-hero-papel { font-size: var(--v2-t-cromo); }
+  .v2-hero-papel:last-child { display: none; }
 }
 
 /* ---------------- passagem hero → corpo ---------------- */
@@ -284,13 +303,16 @@
   padding: var(--v2-s5) 0 var(--v2-s6);
 }
 
+/* Largura da dobra, nao 1240px: em 1800 de container a linha media 1240 e o
+   caso saia com 420px de foto, que e miniatura. O Gabriel pediu "quase full
+   width, QUASE eu disse" e e isso que a ref entrega. */
 .v2-linha-casos {
   position: sticky;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--v2-s3);
-  max-width: var(--v2-caso-larga);
-  margin: 0 auto 44vh;   /* o curso de scroll da travessia, ver abaixo */
+  max-width: var(--v2-max);
+  margin: 0 auto 30vh;   /* o curso de scroll da travessia, ver abaixo */
   padding-inline: var(--v2-gutter);
   will-change: transform;
 }
@@ -302,11 +324,12 @@
    44vh entre os casos e as marcas. */
 .v2-linha-casos:last-child { margin-bottom: var(--v2-s6); }
 
+/* Sem moldura. O raio ja tinha ido para 0 (M3), mas a chapa cinza e o filete
+   continuavam desenhando um card em volta da foto, que e exatamente o
+   "componente pronto jogado ali". A midia e o card: o fundo dela e quem
+   cobre a linha de tras na pilha. */
 .v2-cartao {
-  background: var(--v2-superficie);
-  border: 1px solid var(--v2-rule);
-  border-radius: var(--v2-r-media);
-  padding: 10px 10px 16px;
+  background: var(--v2-paper);
   overflow: hidden;
 }
 
@@ -348,7 +371,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--v2-s3);
-  padding-inline: 6px;
+  padding-inline: 0;
 }
 
 .v2-cartao-texto { display: grid; gap: 2px; min-width: 0; }
@@ -377,6 +400,7 @@
 
 .v2-cartao-link:hover .v2-cartao-media,
 .v2-cartao-link:focus-visible .v2-cartao-media { background: var(--v2-rule); }
+.v2-cartao-link:hover .v2-cartao-foto { opacity: .92; }
 
 .v2-cartao-link:focus-visible { outline: 2px solid var(--v2-ink); outline-offset: 4px; }
 
@@ -549,14 +573,26 @@
   flex-wrap: wrap;
   opacity: .55;
 }
-.v2-prova-logos .v2-marca-logo { height: 18px; }
-.v2-prova-logos .v2-marca-nome { font-size: var(--v2-t-cromo); }
+/* A prova reusa <Marca>, que nasce como celula de marquee: 112px de altura,
+   64px de padding lateral e um filete a direita. Fora do trilho isso vira
+   grade com borda solta e celula vazia. Aqui a celula deixa de existir e
+   sobra so o logo. */
+.v2-prova-logos .v2-marca {
+  height: auto;
+  padding: 0;
+  border-right: 0;
+}
+.v2-prova-logos .v2-marca-logo { height: 16px; opacity: .8; }
+.v2-prova-logos .v2-marca-nome { font-size: var(--v2-t-cromo); opacity: .8; }
 
 /* O indice do caso em cima do dominio, como o `THINGS® _ 07.25` do bungee. */
+/* Tinta, nao accent: a 12px sobre --v2-superficie o accent mede 4.2:1 e
+   reprova AA (precisa de 4.5). E a regra do proprio kit ja dizia que o
+   indice e o pedaco do cromo em cor de texto, ver .v2-cromo-n. */
 .v2-cartao-idx {
   font-family: var(--v2-mono);
   letter-spacing: var(--v2-track-cromo);
-  color: var(--v2-accent);
+  color: var(--v2-ink);
   margin-right: var(--v2-s2);
 }
 
@@ -635,15 +671,20 @@
   color: var(--v2-ink);
   user-select: none;
 }
+/* Recorte com alfa, nao retangulo. Com o retrato em chapa creme a "foto que
+   cruza por cima do nome" virava uma caixa bege apagando GA[BRI]EL, e ainda
+   reintroduzia o creme que saiu do volume inteiro (A1 de O-QUE-FALTA). Com
+   fundo transparente o nome aparece em volta da silhueta, que e o efeito do
+   porto. O arquivo e gabriel-recorte.webp, gerado do gabriel.png por chave
+   de cor a partir das bordas. */
 .v2-sobre-foto {
   position: absolute;
   z-index: 1;
-  width: min(46vw, 620px);
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
+  width: min(34vw, 460px);
+  aspect-ratio: 1086 / 1448;
   will-change: transform;
 }
-.v2-sobre-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.v2-sobre-foto img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .v2-sobre-texto {
   max-width: var(--v2-medida);
@@ -669,6 +710,7 @@
 
 @media (max-width: 900px) {
   .v2-sobre { height: 60vh; }
-  .v2-sobre-foto { width: 62vw; }
-  .v2-declaracao-par { gap: var(--v2-s4); }
+  /* 62vw cobria o nome inteiro e sobrava G...L */
+  .v2-sobre-foto { width: 44vw; }
+  .v2-declaracao-par { gap: var(--v2-s3); }
 }

@@ -38,9 +38,16 @@ export const HERO = {
    palavra foi trocada, só houve corte. */
 /* A declaração da home. É o MANIFESTO condensado numa frase só, na voz que
    ele já tinha: nada aqui foi inventado, só cortado. O MANIFESTO inteiro
-   continua abaixo porque migra para /sobre numa fase futura. */
+   continua abaixo porque migra para /sobre numa fase futura.
+
+   Corte de 28/08: a primeira frase era "Nunca consegui pensar design e
+   código como duas coisas separadas". Ela saiu porque
+   docs/DIAGNOSTICO-TEXTO-2026-08-27.md, no adendo da home, mede que a home
+   argumenta "eu também codo" nove vezes e conclui que ela precisa argumentar
+   julgamento de design. A menção ao build sobrevive uma vez só, na frase de
+   assinatura da dobra 06. O que sobrou É um argumento de julgamento, e ainda
+   encolhe a dobra de 1896px para o tamanho de uma frase. */
 export const DECLARACAO =
-  "Nunca consegui pensar design e código como duas coisas separadas. " +
   "Coloco uma tela clicável na mão das pessoas cedo, porque opinião sobre " +
   "imagem estática é gosto, e opinião sobre uma coisa que a pessoa tentou " +
   "usar é informação.";

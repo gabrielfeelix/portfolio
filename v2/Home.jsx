@@ -26,7 +26,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
-  spring, useTardio, useRise, useMaskLine, useParallax, useCobertura,
+  spring, ease, useTardio, useRise, useMaskLine, useParallax, useCobertura,
   useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
@@ -37,19 +37,36 @@ import {
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
 
-/* Mídia de banco, temporária. Tinta preta e vermelha em fundo branco: não é
-   stock genérico, é a mesma linguagem que o portfólio já tem em
-   volume/assets/ink-splash.png e splatter.svg, e o vermelho bate com
-   --v2-accent. Sai quando as gravações de tela do Gabriel entrarem.
-   Licença Mixkit, uso comercial liberado, sem atribuição. */
+/* Mídia de banco, temporária, e agora em dose menor. Tinta preta e vermelha
+   em fundo branco: não é stock genérico, é a mesma linguagem que o portfólio
+   já tem em volume/assets/ink-splash.png e splatter.svg, e o vermelho bate
+   com --v2-accent. Licença Mixkit, uso comercial liberado, sem atribuição.
+
+   Por que caiu de cinco para dois na fita: em nove colunas, cinco borrões de
+   tinta preta contra quatro telas de produto liam como mancha, não como
+   mídia, e a fita passava a falar de tinta em vez de falar do trabalho. A
+   ANÁLISE pede o contrário: a mídia É o conteúdo. A tinta fica como pontuação
+   entre telas, e sai de vez quando as gravações do Gabriel entrarem.
+
+   `ink-152` (fumaça) saiu inteiro: era a quebra de 666px entre casos e
+   números, e virou tela real. */
 const TINTA = "/volume/assets/stock/ink-";
 const INK = {
-  difusa:  TINTA + "44818.mp4",
-  bloom:   TINTA + "470.mp4",
-  espalha: TINTA + "505.mp4",
-  despeja: TINTA + "3989.mp4",
-  fumaca:  TINTA + "152.mp4",
+  difusa:   TINTA + "44818.mp4",
   vermelha: TINTA + "41999.mp4",
+};
+
+/* A quebra entre casos e números. Print de sistema em largura total, sem
+   moldura de device: é a busca da V2 do PCYES, que é a tela onde o dado do
+   capítulo desemboca. 1600x613 aguenta 100vw sem esticar. */
+const QUEBRA = "/volume/assets/projetos/pcyes/busca-v2.webp";
+
+/* Telas do PCYES que entram na fita para ela deixar de ser cinco borrões de
+   tinta com quatro capas no meio. */
+const EXTRA = {
+  busca:   "/volume/assets/projetos/pcyes/quickview.webp",
+  builder: "/volume/assets/projetos/pcyes/msp-builder.webp",
+  sku:     "/volume/assets/projetos/pcyes/sku-editor.webp",
 };
 
 /* ------------------------------------------------------------------ 1. hero */
@@ -69,14 +86,21 @@ function Rotativa({ itens, intervalo = 2800 }) {
   return (
     <span className="v2-rot">
       <span className="v2-rot-caixa">
-        <AnimatePresence mode="popLayout" initial={false}>
+        {/* Dois cuidados, e os dois vieram de bug visto em print.
+            1. mode="wait", nao "popLayout": com popLayout as duas frases
+               existem ao mesmo tempo, a que sai sobe e atravessa a linha
+               branca de cima. Em repouso o H1 estava certo e so a troca
+               quebrava, o que fazia a home piscar quebrada a cada 2,8s.
+            2. a saida e curta e o curso e de 0.3em, nao 0.9em: com `wait` a
+               linha fica vazia enquanto a saida roda, entao saida longa vira
+               buraco na headline. 160ms le como troca, nao como falha. */}
+        <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={i}
             className="v2-rot-item"
-            initial={{ y: "0.9em", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "-0.9em", opacity: 0 }}
-            transition={spring}
+            initial={{ y: "0.3em", opacity: 0 }}
+            animate={{ y: 0, opacity: 1, transition: spring }}
+            exit={{ y: "-0.3em", opacity: 0, transition: { duration: 0.16, ease } }}
           >
             {itens[i]}
           </motion.span>
@@ -145,16 +169,19 @@ function Passagem() {
   const capas = casos()
     .map((c) => c.chap.cover || (c.proj && c.proj.cover))
     .filter(Boolean);
+  /* Sete de nove colunas são trabalho dele; a tinta entra duas vezes, como
+     pontuação. As três telas extras saem do PCYES, que é o caso com material
+     de sobra, e não repetem a capa que já está na coluna 2. */
   const itens = [
-    { src: INK.difusa,  video: true,  alto: 0.82 },
-    capas[0] ? { src: capas[0], alto: 1 } : null,
-    { src: INK.bloom,   video: true,  alto: 0.7 },
-    { src: INK.vermelha, video: true, alto: 0.94 },
-    capas[1] ? { src: capas[1], alto: 0.78 } : null,
-    { src: INK.espalha, video: true,  alto: 1 },
-    capas[2] ? { src: capas[2], alto: 0.66 } : null,
-    { src: INK.despeja, video: true,  alto: 0.88 },
-    capas[3] ? { src: capas[3], alto: 0.74 } : null,
+    capas[0] ? { src: capas[0], alto: 0.86 } : null,
+    { src: EXTRA.busca,   alto: 1 },
+    { src: INK.difusa, video: true, alto: 0.68 },
+    capas[1] ? { src: capas[1], alto: 0.94 } : null,
+    { src: EXTRA.builder, alto: 0.78 },
+    capas[2] ? { src: capas[2], alto: 1 } : null,
+    { src: INK.vermelha, video: true, alto: 0.66 },
+    capas[3] ? { src: capas[3], alto: 0.88 } : null,
+    { src: EXTRA.sku,     alto: 0.74 },
   ].filter(Boolean);
   return <FitaMidia itens={itens} />;
 }
@@ -245,7 +272,12 @@ const PILHA_PASSO = 40;   /* a lombada de cada linha coberta, medida na ref */
 function Cartao({ caso, i, ir }) {
   const { ref: refFoto, style: estiloFoto } = useParallax(6);
   const cap = caso.chap;
-  const foto = cap.cover || (caso.proj && caso.proj.cover);
+  /* terceiro degrau: locarmais-conciliacao nao tem `cover` nem no capitulo
+     nem no projeto, so `shots`. Sem ele o card caia na chapa de marca roxa,
+     que ao lado do print do PCYES lia como card faltando imagem. O primeiro
+     shot e tela real do proprio caso. */
+  const proj = caso.proj;
+  const foto = cap.cover || (proj && (proj.cover || (proj.shots && proj.shots[0])));
   const marca = !foto && cap.capa ? cap.capa : null;
   const href = `/v2/case/${caso.id}`;
   return (
@@ -445,7 +477,7 @@ function Sobre() {
           className="v2-sobre-foto"
           style={quieto ? undefined : { scale: escala, y: sobe }}
         >
-          <img src="/volume/assets/gabriel.webp" alt="Gabriel Felix Barbosa" loading="lazy" />
+          <img src="/volume/assets/gabriel-recorte.webp" alt="Gabriel Felix Barbosa" loading="lazy" />
         </motion.div>
         <h2 className="v2-sobre-nome" aria-hidden="true">GABRIEL</h2>
       </div>
@@ -483,6 +515,9 @@ function Fita() {
         rel={!dobra && href ? "noopener noreferrer" : undefined}
         aria-hidden={dobra ? "true" : undefined}
         tabIndex={dobra ? -1 : undefined}
+        /* o nome acessível já vinha do alt da imagem, mas o link abre em aba
+           nova e isso não era anunciado em lugar nenhum */
+        aria-label={dobra || !href ? undefined : `${p.title}, abre em nova aba`}
       >
         <img src={capa(p)} alt={dobra ? "" : p.title} loading="lazy" decoding="async" />
       </Tag>
@@ -533,7 +568,11 @@ export default function Home({ ir }) {
         <Declaracao />
         <Marquee />
         <Trabalho ir={ir} />
-        <Quebra src={INK.fumaca} video alt="" />
+        {/* Era fumaca de banco: 666px de video que nao dizia nada sobre o
+            trabalho, no meio de um portfolio de UX. Agora e tela real em
+            largura total, sem moldura de device, que e o tratamento que
+            docs/ANALISE-REFS.md prescreve para print de sistema. */}
+        <Quebra src={QUEBRA} alt="Busca da V2 do PCYES, com o resultado corrigido" />
         <Numeros />
         <Processo />
         <OndeEstive />

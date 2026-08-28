@@ -9,8 +9,34 @@
    Print aqui é para o Gabriel comparar, não para o agente concluir sozinho:
    a pilha é scroll-linked e um print pega um quadro do meio da transição. */
 
-import { chromium } from "/home/gabrielbarbosa/.claude/node_modules/playwright/index.mjs";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
+import { createRequire } from "node:module";
+
+/* o hash do cache do npx muda por máquina: acha a versão que abre de verdade */
+const require = createRequire(import.meta.url);
+async function achaChromium() {
+  const base = join(homedir(), ".npm", "_npx");
+  const cands = [];
+  if (existsSync(base)) {
+    for (const d of readdirSync(base)) {
+      const c = join(base, d, "node_modules", "playwright");
+      if (existsSync(c)) cands.push(c);
+    }
+  }
+  if (existsSync("node_modules/playwright")) cands.unshift("node_modules/playwright");
+  for (const c of cands) {
+    try {
+      const { chromium } = require(c);
+      const b = await chromium.launch();
+      await b.close();
+      return chromium;
+    } catch (_) { /* essa versão não abre, tenta a próxima */ }
+  }
+  throw new Error("nenhum playwright com chromium utilizável. `npx playwright install chromium`");
+}
+const chromium = await achaChromium();
 
 const [, , CMD = "medidas", PORTA = "8793"] = process.argv;
 const URL = `http://127.0.0.1:${PORTA}/v2/`;

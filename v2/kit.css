@@ -6,12 +6,14 @@
 
 /* A segunda voz. Mono, 11px, caixa alta, tracking aberto. Ela nunca compete
    com o conteúdo porque nunca cresce: é a mesma linha em toda dobra, e é a
-   repetição que costura a página. */
+   repetição que costura a página.
+   A margem embaixo era s5: 64px entre a régua e o título dela faziam a linha
+   de cromo parecer rodapé da dobra anterior em vez de cabeça da seguinte. */
 .v2-cromo {
   display: flex;
   align-items: baseline;
   gap: var(--v2-s3);
-  margin: 0 0 var(--v2-s5);
+  margin: 0 0 var(--v2-s4);
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   font-weight: 400;
@@ -44,10 +46,13 @@
 /* --------------------------------------------------------------- estrutura */
 
 .v2-dobra { position: relative; }
+/* 168px em cima e embaixo somavam 336px entre duas dobras, mais os 104 que
+   vazavam do case.css: 440px de branco entre conteudo e conteudo. A ref
+   respira, nao vaza. */
 .v2-dobra-in {
   max-width: var(--v2-max);
   margin: 0 auto;
-  padding: var(--v2-s7) var(--v2-gutter);
+  padding: var(--v2-s6) var(--v2-gutter);
 }
 /* Dobra larga: a mídia encosta na borda da tela e só o texto respeita a
    goteira. É como o bungee trata a fita do hero. */
@@ -91,18 +96,25 @@
 /* As cinco partes. Título à esquerda, apoio à direita: é a divisão do viper, e
    ela existe para o lead nunca ficar embaixo de um título de 104px, onde ele
    sumiria. */
+/* `align-items: start`, nunca `end`. Com `end` a coluna da esquerda cola no
+   rodape da linha, entao numa dobra cuja coluna direita e alta (casos: lead,
+   CTA, nota e prova) o titulo descia 340px e chegava DEPOIS de tudo que ele
+   deveria apresentar. No celular, que empilha, a ordem sempre esteve certa:
+   era so o desktop. */
 .v2-cabecalho {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: var(--v2-s5) var(--v2-s6);
-  align-items: end;
-  margin-bottom: var(--v2-s6);
+  gap: var(--v2-s4) var(--v2-s6);
+  align-items: start;
+  margin-bottom: var(--v2-s5);
 }
 .v2-cabecalho-dir {
   display: flex;
   flex-direction: column;
   gap: var(--v2-s3);
-  padding-bottom: .4em;
+  /* desce o lead ate a altura da segunda linha do titulo, senao ele fica
+     boiando ao lado do topo de um display de 104px */
+  padding-top: .5em;
 }
 
 /* O olho. Mesma voz do cromo, mas em cor de texto: ele nomeia a dobra, o cromo
