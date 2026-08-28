@@ -641,7 +641,17 @@
 
 .v2-par.is-escuro { border-color: rgba(255, 255, 255, .12); }
 
-.v2-par-tema { margin: 0 0 var(--v2-s1); font-size: var(--v2-t-label); opacity: .7; }
+/* O rótulo do par herdava a cor do token demonstrado e ainda levava
+   opacity .7: #15803d a 70% sobre branco dá 2,93:1, que reprova AA. Quem
+   demonstra a cor é o número da razão logo abaixo, que é texto grande. O
+   rótulo é legenda, então ele fica em tinta de legenda. */
+.v2-par-tema {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-par.is-escuro .v2-par-tema { color: rgba(255, 255, 255, .72); }
 
 .v2-par-r { margin: 0; font-size: var(--v2-t-bloco); font-weight: 800; }
 

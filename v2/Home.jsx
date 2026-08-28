@@ -165,7 +165,8 @@ function ProcessoLinha({ etapa, i }) {
       <p className="v2-proc-n">
         <span className="v2-proc-n-zero">{zero}</span>{digito}
       </p>
-      <h3 className="v2-proc-t">{etapa.t}</h3>
+      {/* h2: a home só tem o h1 do hero antes daqui, e h3 pulava um nível */}
+      <h2 className="v2-proc-t">{etapa.t}</h2>
       <p className="v2-corpo v2-proc-p">{etapa.p}</p>
     </motion.li>
   );

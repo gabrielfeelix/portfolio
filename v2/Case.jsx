@@ -849,7 +849,8 @@ function PresoEsquerda({ passos, figuras }) {
             {...rise(Math.min(i, 2))}
           >
             {p.k ? <p className="v2-preso-k">{p.k}</p> : null}
-            <h4 className="v2-preso-t">{p.t}</h4>
+            {/* h3: o título de ato da dobra é h2, então h4 pulava um nível */}
+            <h3 className="v2-preso-t">{p.t}</h3>
             <p className="v2-corpo">{p.p}</p>
             {/* No celular a coluna presa não existe: a figura anda junto do
                 texto, que é a única leitura possível em uma coluna só. */}
