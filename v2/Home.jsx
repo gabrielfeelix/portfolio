@@ -31,6 +31,7 @@ import {
   useTrilha,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
+import { ILUSTRACOES } from "./Ilustracoes.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES,
@@ -544,9 +545,12 @@ function Processo() {
       <div className="v2-metodo" ref={ref}>
         <Trilha total={total} avanco={avanco} acesos={acesos} quieto={quieto} />
         <ol className="v2-fases">
-          {PROCESSO_CURTO.map((f, i) => (
+          {PROCESSO_CURTO.map((f, i) => {
+            const Ilustra = ILUSTRACOES[i];
+            return (
             <motion.li key={f.titulo} className="v2-fase" {...revelar(i)}>
               <Pontos i={i} total={total} />
+              <Ilustra />
               <h3 className="v2-fase-t">
                 <span className="v2-fase-n" aria-hidden="true">{`0${i + 1}`}</span>
                 {f.titulo}
@@ -557,7 +561,8 @@ function Processo() {
                   um para a pessoa mexer */}
               {i === 1 ? <Prototipo /> : null}
             </motion.li>
-          ))}
+            );
+          })}
         </ol>
       </div>
     </Dobra>
