@@ -296,83 +296,115 @@
 
 .v2-proc-p { max-width: 46ch; }
 
-/* ---------------- 6. casos ---------------- */
+/* ---------------- 3. casos, em pilha grudada ---------------- */
 
-.v2-casos {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--v2-rule);
+/* Os paineis sao filhos DIRETOS da secao, e nao de um involucro cada um: o
+   bloco que contem o sticky e quem define ate onde ele gruda. Com involucro
+   individual o painel colava e descolava dentro dos proprios 90vh, que e o
+   mesmo que nao colar. Aqui o bloco e a secao inteira, entao o painel 1 fica
+   presa ate o fim da pilha e os seguintes sobem por cima dele.
+
+   Nenhum ancestral pode ter overflow diferente de visible nem transform,
+   senao o sticky para de grudar. */
+.v2-pilha { padding: 0 0 var(--v2-s7); }
+
+.v2-painel {
+  position: sticky;
+  height: 88vh;
+  margin-bottom: 10vh;
+  margin: 0 var(--v2-gutter);
+  border-radius: var(--v2-r-media);
+  overflow: hidden;
+  background: var(--v2-card);
+  transform-origin: center 18%;
+  will-change: transform;
 }
 
-.v2-caso { border-bottom: 1px solid var(--v2-rule); }
-
-.v2-caso-link {
-  position: relative;
-  display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 20ch) 12ch;
-  align-items: baseline;
-  gap: var(--v2-s4);
-  padding: var(--v2-s4) 0;
-  color: inherit;
+.v2-painel-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: #fff;
   text-decoration: none;
-  transition: padding-inline-start 420ms var(--v2-ease);
 }
 
-.v2-caso-link:hover,
-.v2-caso-link:focus-visible { padding-inline-start: var(--v2-s3); }
+.v2-painel-media { position: absolute; inset: 0; overflow: hidden; }
 
-.v2-caso-n {
+/* 112% de altura porque o parallax move a foto dentro da janela: em 100% a
+   borda de baixo apareceria no fim do curso. */
+.v2-painel-foto { width: 100%; height: 112%; object-fit: cover; display: block; }
+
+/* Fundo de quem nao tem foto de capa. Cor da marca e logo centrado, no mesmo
+   tratamento que a V1 usa na capa de capitulo. */
+.v2-painel-marca {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.v2-painel-marca img { width: min(38%, 320px); height: auto; opacity: .92; }
+
+.v2-painel-veu { position: absolute; inset: 0; background: #000; }
+
+/* O texto senta no rodape, sobre um degrade que garante contraste sem
+   escurecer a imagem inteira. */
+.v2-painel-texto {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: grid;
+  gap: var(--v2-s1);
+  padding: var(--v2-s6) var(--v2-s5) var(--v2-s5);
+  background: linear-gradient(to top, rgba(0, 0, 0, .74), rgba(0, 0, 0, 0));
+}
+
+.v2-painel-n {
   font-size: var(--v2-t-label);
-  color: var(--v2-muted);
-  font-variant-numeric: tabular-nums;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .82;
 }
 
-.v2-caso-t {
-  font-size: var(--v2-t-manifesto);
+.v2-painel-t {
+  margin: 0;
+  font-size: var(--v2-t-painel);
   font-weight: 700;
   line-height: 1.02;
-  letter-spacing: -.025em;
+  letter-spacing: var(--v2-track-display);
 }
 
-/* O cover ocupa a faixa do descritor: em vez de cobrir texto legível, o
-   descritor sai enquanto a imagem entra. */
-.v2-caso-d {
-  color: var(--v2-muted);
-  transition: opacity 260ms var(--v2-ease);
-}
+.v2-painel-d { font-size: var(--v2-t-corpo); opacity: .88; max-width: 46ch; }
 
-.v2-caso-link:hover .v2-caso-d,
-.v2-caso-link:focus-visible .v2-caso-d { opacity: 0; }
-.v2-caso-dom {
+.v2-painel-dom {
   font-size: var(--v2-t-label);
-  color: var(--v2-muted);
-  text-align: right;
-  white-space: nowrap;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .72;
 }
 
-/* O cover só existe no hover: parado na página ele viraria mais um card. */
-.v2-caso-cover {
-  position: absolute;
-  right: 12ch;
-  top: 50%;
-  width: 280px;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--v2-r-card);
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(0, -46%) scale(.96);
-  transition: opacity 320ms var(--v2-ease), transform 420ms var(--v2-ease);
-  box-shadow: 0 18px 48px rgba(11, 11, 12, .18);
+.v2-painel-link:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
+
+/* Tela baixa e celular: a pilha desliga. Abaixo de 700px de altura o texto do
+   painel colide com a imagem e a lombada some. Vira lista vertical. */
+@media (max-height: 700px), (max-width: 720px) {
+  .v2-painel-inv { height: auto; }
+  .v2-painel {
+    position: relative;
+    height: 62vh;
+    min-height: 420px;
+    margin-bottom: var(--v2-s4);
+    transform: none;
+  }
+  .v2-painel-texto { padding: var(--v2-s5) var(--v2-s4) var(--v2-s4); }
 }
 
-.v2-caso-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.v2-caso-link:hover .v2-caso-cover,
-.v2-caso-link:focus-visible .v2-caso-cover {
-  opacity: 1;
-  transform: translate(0, -50%) scale(1);
+@media (prefers-reduced-motion: reduce) {
+  .v2-painel-inv { height: auto; }
+  .v2-painel {
+    position: relative;
+    height: 62vh;
+    min-height: 420px;
+    margin-bottom: var(--v2-s4);
+  }
 }
 
 /* ---------------- 7. peças ---------------- */
@@ -599,17 +631,12 @@ a.v2-pecas-linha:focus-visible { padding-inline-start: var(--v2-s2); }
      titulo: mantida, ela some para 30ch e quebra em palavra por linha. */
   .v2-proc-linha { grid-template-columns: minmax(0, 6ch) minmax(0, 1fr); }
   .v2-proc-p { grid-column: 2; max-width: 62ch; }
-  .v2-caso-link { grid-template-columns: 3rem minmax(0, 1fr) 12ch; }
-  .v2-caso-d { display: none; }
-  .v2-caso-cover { display: none; }
 }
 
 @media (max-width: 860px) {
   .v2-pecas { grid-template-columns: 1fr; }
   .v2-pecas-linha { grid-template-columns: 1fr; gap: 2px; }
   .v2-proc-linha { gap: var(--v2-s2) var(--v2-s3); padding-block: var(--v2-s3); }
-  .v2-caso-link { grid-template-columns: 3rem minmax(0, 1fr); gap: var(--v2-s3); }
-  .v2-caso-dom { display: none; }
   .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
   .v2-lt-ano { position: static; }
   .v2-linha-tempo { padding-left: var(--v2-s4); }

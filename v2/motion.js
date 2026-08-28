@@ -251,22 +251,35 @@ export function useCobertura() {
 }
 
 /* 9. pilha
-   A pilha grudada dos casos. O painel é `position: sticky`, então o retângulo
-   dele não se move e não serve para medir progresso. Quem mede é o INVÓLUCRO,
-   que rola normalmente: enquanto ele sai da tela, o painel seguinte está
-   subindo por cima. É esse mesmo intervalo que encolhe e escurece o coberto. */
-export function usePilha() {
+   A pilha grudada dos casos. Duas funcoes, porque a medida e uma so para a
+   secao inteira: o painel e `position: sticky` e o retangulo dele congela,
+   entao medir nele daria progresso zero a pagina inteira.
+
+   `usePilhaTrilho` mede a SECAO, que rola normalmente. Cada painel recebe
+   esse progresso e le a fatia dele: enquanto a fatia i corre, o painel i esta
+   sendo coberto pelo i+1, e e nesse intervalo que ele encolhe e escurece.
+
+   O ultimo painel nao tem quem o cubra, entao fica parado. */
+export function usePilhaTrilho() {
   const ref = useRef(null);
-  const quieto = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
-  const escala = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
-  const veu = useTransform(scrollYProgress, [0, 1], [0, 0.38]);
+  return { ref, progresso: scrollYProgress };
+}
+
+export function usePilha(progresso, i, total) {
+  const quieto = useReducedMotion();
+  const fatia = 1 / Math.max(total - 1, 1);
+  const inicio = i * fatia;
+  const fim = inicio + fatia;
+  const escala = useTransform(progresso, [inicio, fim], [1, 0.94], { clamp: true });
+  const veu = useTransform(progresso, [inicio, fim], [0, 0.38], { clamp: true });
   const um = useMotionValue(1);
   const zero = useMotionValue(0);
-  return quieto ? { ref, escala: um, veu: zero } : { ref, escala, veu };
+  const ultimo = i === total - 1;
+  return quieto || ultimo ? { escala: um, veu: zero } : { escala, veu };
 }
 
 /* 10. palavra
