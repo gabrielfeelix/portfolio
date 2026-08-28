@@ -187,15 +187,15 @@ const CHAPTERS = [
       k: "A cena",
       t: "Um site que a empresa gostava e o cliente não usava",
       p: ["A PCYES vende hardware e periférico para quem monta o próprio PC. É um público que chega sabendo o modelo que quer, compara ficha técnica com a concorrência e decide em minutos. O site que existia não era feito para esse comportamento: abria em campanha de marca, com vídeo e animação ocupando a primeira dobra inteira, e o produto começava abaixo da linha da tela.",
-          "O pedido que chegou até mim era estético. Deixar mais minimalista, mais limpo, mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita estava vendendo menos do que podia. A primeira semana foi assistindo gente tentar comprar."],
+          "O pedido que chegou até mim era estético, alguma coisa entre deixar mais minimalista, mais limpo e mais parecido com marca grande. Topei olhar, mas não topei desenhar antes de entender por que uma loja bonita vendia menos do que podia, então passei a primeira semana inteira assistindo gente tentar comprar."],
       fig: "abertura",
       tinta: "cluster",
     },
     problema: {
       t: "Três pedágios até o mouse",
       p: ["Nas gravações a cena se repetia. A pessoa achava o produto no meio da campanha, clicava, esperava a página abrir, e só ali existia um botão de comprar. Nem a vitrine, nem a home, nem a categoria deixavam adicionar ao carrinho direto, então cada compra custava cliques que não precisavam existir.",
-          "Quem atravessava isso ainda parava no fim. O checkout concentrava o abandono e nenhum relatório dizia por quê, e foi ali que eu apostei minhas fichas: se as pessoas somem na última tela, o problema mora na última tela.",
-          "Somando, o site cobrava três pedágios de quem só queria comprar um mouse. Achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho, e descobrir no escuro se dava para pagar do jeito que a pessoa queria."],
+          "Quem atravessava isso ainda parava no fim, porque o checkout concentrava o abandono e nenhum relatório dizia por quê. Foi ali que eu apostei minhas fichas: se as pessoas somem na última tela, o problema mora na última tela.",
+          "No fim das contas, quem só queria comprar um mouse pagava três pedágios: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho, e descobrir no escuro se dava para pagar do jeito que queria."],
     },
     /* o tamanho do problema, em número. Print de dashboard vira foto de
        ferramenta; aqui o dado é desenhado e carrega a fonte junto. */
@@ -260,7 +260,7 @@ const CHAPTERS = [
       marca: { nosso: 0.13, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Taxa de conversão",
         n: "Eletrônicos convertem 1,1% em média no Brasil, com faixa saudável entre 0,8% e 1,5%. A loja estava a um oitavo do piso da própria categoria.",
         fonte: "Benchmark Prax 2025, mais de mil e-commerces brasileiros" },
-      nota: "Perdi a aposta aqui. Quem chega ao checkout compra a 25%, um em cada quatro, então a última tela nunca foi o buraco principal, nem antes nem depois do conserto que eu tinha acabado de fazer nela. O buraco estava um passo antes, entre olhar o produto e pôr no carrinho, que era justamente o passo que eu não estava olhando. A V2 foi redesenhada a partir dessa correção. Trimestre inteiro, evento a evento, não amostra.",
+      nota: "Perdi a aposta aqui. Quem chega ao checkout compra a 25%, um em cada quatro, então a última tela nunca foi o buraco principal, nem antes nem depois do conserto que eu tinha acabado de fazer nela. O buraco estava um passo antes, entre olhar o produto e pôr no carrinho, que era justamente o passo que eu não estava olhando, e foi a partir dessa correção que a V2 inteira acabou sendo redesenhada. Isso aqui é o trimestre inteiro, evento a evento, não amostra de três dias.",
     },
     /* o mapa de calor respondeu o que o funil não responde: não onde as
        pessoas paravam, mas o que faziam enquanto estavam ali */
@@ -297,8 +297,8 @@ const CHAPTERS = [
       k: "O achado que ampliou o escopo",
       t: "A loja cobrava ortografia para deixar comprar",
       p: ["Fui testar o que a busca respondia. Era o caminho principal da loja: 71.416 sessões usaram a busca no trimestre, 43% do total, mais do que as 50.399 que abriram uma página de produto.",
-          "Procurei por mouse. A vitrine devolveu mousepad na frente do mouse, e o mouse era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
-          "Depois procurei por mause. Nenhum resultado, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
+          "Procurei por mouse e a vitrine devolveu mousepad na frente do mouse, que era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
+          "Depois procurei por mause e aí não veio nada, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
           "Metade dos nomes numa loja de hardware é estrangeira e cheia de número, então errar a grafia é o caso comum e não a exceção. Quem escrevia mause tinha o mesmo dinheiro de quem escrevia mouse, e saía sem ver um único produto."],
       figs: ["buscaMouse", "buscaMause"],
       /* o dado que transforma o achado qualitativo em medida: sem ele a
@@ -326,7 +326,7 @@ const CHAPTERS = [
       { d: "Pop-up depois de 15% de rolagem, nunca na chegada",
         r: "porque o clique mais comum do site inteiro era fechar o pop-up: 182 cliques somando as duas \u00e1reas de fechar, contra 5 no bot\u00e3o de comprar. A capta\u00e7\u00e3o de e-mail estava cobrando o primeiro gesto de quem acabou de entrar. Na V2 ele s\u00f3 aparece depois de a pessoa rolar 15% da p\u00e1gina, ou seja, depois de ela demonstrar algum interesse. A mesma oferta, feita para quem j\u00e1 est\u00e1 olhando." },
       { d: "Formas de pagamento na primeira dobra do checkout",
-        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho, achei bug no m\u00f3dulo de pagamento do Magento. O erro aparecia na sess\u00e3o gravada e n\u00e3o aparecia em relat\u00f3rio nenhum. Fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
+        r: "porque a grava\u00e7\u00e3o mostrou gente saindo antes de descobrir como podia pagar. No caminho achei um bug no m\u00f3dulo de pagamento do Magento, que aparecia na sess\u00e3o gravada e em relat\u00f3rio nenhum, ent\u00e3o fui atr\u00e1s da origem num projeto p\u00fablico da extens\u00e3o e entreguei o ponto exato para o time de tecnologia corrigir." },
       { d: "Adicionar ao carrinho direto da home e da vitrine",
         r: "porque exigir a p\u00e1gina do produto cobrava cliques que n\u00e3o precisavam existir. Quem j\u00e1 sabe o que quer compra do card, e do carrinho vai direto ao checkout. Quem ainda est\u00e1 decidindo continua com a p\u00e1gina completa \u00e0 disposi\u00e7\u00e3o." },
     ],
@@ -378,7 +378,7 @@ const CHAPTERS = [
       k: "Antes das telas",
       t: "A V1 tinha cores. A V2 tem um sistema que sabe o que cada cor faz",
       p: ["Quarenta telas desenhadas na mão viram quarenta decisões repetidas sobre espaçamento, estado e cor. Antes de desenhar, construí o vocabulário: 239 tokens no arquivo de tema, 69 componentes montados em cima deles.",
-          "O que muda é o endereço da cor. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela. Na V2 ele tem nome e função: ink-muted é o papel \u201ctexto secundário\u201d, e quando o tema vira ele vira sozinho."],
+          "O que muda é o endereço da cor. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela, e na V2 ele tem nome e função: ink-muted é o papel \u201ctexto secundário\u201d, e quando o tema vira ele vira sozinho."],
       /* o par que prova o argumento: o mesmo token, os dois temas.
          Escala aqui é papel, não valor: surface é fundo, ink é texto,
          edge é borda. */
@@ -408,7 +408,7 @@ const CHAPTERS = [
         k: "Por que o valor muda",
         t: "O verde de economia é dois verdes",
         p: ["O verde de comprar (#22c55e) sobre branco dá 2,28:1. Para texto, a WCAG pede 4,5:1, então o mesmo verde que funciona como botão reprova como texto pequeno.",
-            "Então o token de economia guarda dois valores: #15803d no claro (5,02:1) e #4ade80 no escuro (11,08:1). Quem desenha a tela escreve economia e recebe o verde que passa no tema em que está. A acessibilidade deixou de depender de alguém lembrar."],
+            "Então o token de economia guarda dois valores, #15803d no claro (5,02:1) e #4ade80 no escuro (11,08:1). Quem desenha a tela escreve economia e recebe o verde que passa no tema em que está, sem depender de alguém lembrar de conferir contraste."],
         pares: [{ tema: "Claro", c: "#15803d", bg: "#ffffff", r: "5,02:1" },
                 { tema: "Escuro", c: "#4ade80", bg: "#0e0e0e", r: "11,08:1", escuro: true }],
       },
@@ -426,14 +426,14 @@ const CHAPTERS = [
         curva: [0.16, 1, 0.3, 1],
         rotulo: "cubic-bezier(0.16, 1, 0.3, 1)",
         dur: "300ms",
-        p: "Sai rápido e chega devagar, que é como coisa com peso para. A alternativa é cada componente escolher a sua, e aí o site inteiro parece feito por pessoas diferentes. Uma curva e uma duração padrão para tudo que se move.",
+        p: "Sai rápido e chega devagar, que é como coisa com peso para. A alternativa é cada componente escolher a sua, e aí o site inteiro parece feito por pessoas diferentes, então ficou uma curva só e uma duração padrão para tudo que se move.",
         marcos: [{ l: "200ms", n: "estado de botão" }, { l: "300ms", n: "padrão" }, { l: "500ms", n: "entrada de painel" }],
       },
       /* a escala tipográfica, desenhada no tamanho que ela tem */
       tipografia: {
         k: "Tipografia",
         t: "Duas famílias, uma escala",
-        p: "Figtree carrega título e Inter carrega texto e interface. A escala não é contínua de propósito. São cinco degraus com distância suficiente para a hierarquia ser óbvia sem ninguém precisar comparar dois textos lado a lado.",
+        p: "Figtree carrega título e Inter carrega texto e interface, e a escala não é contínua: são cinco degraus com distância suficiente para a hierarquia ser óbvia sem ninguém precisar comparar dois textos lado a lado.",
         familias: [{ n: "Figtree", f: "Display, títulos" }, { n: "Inter", f: "Texto e interface" }],
         escala: [
           { n: "h1", px: 80, fam: "Figtree", peso: 400, pn: "regular" },
@@ -449,7 +449,7 @@ const CHAPTERS = [
       espaco: {
         k: "Espaço e raio",
         t: "O ritmo entre as seções tem quatro valores, não quarenta",
-        p: "Distância entre seções costuma ser o lugar onde o sistema vaza. Alguém escreve 72, outro escreve 80, e a página perde o compasso. Aqui são quatro degraus, e eles encolhem juntos no mobile, onde o vão de desktop vira tela vazia.",
+        p: "Distância entre seções costuma ser o lugar onde o sistema vaza, porque alguém escreve 72, outro escreve 80, e a página perde o compasso. Aqui são quatro degraus, e eles encolhem juntos no mobile, onde o vão de desktop vira tela vazia.",
         ritmo: [
           { l: "sm", d: 56, m: 40 },
           { l: "md", d: 88, m: 56 },
@@ -626,7 +626,7 @@ const CHAPTERS = [
               "Ocorrência de erro no pagamento"],
     },
     aprendi: {
-      p: ["Valor de marca e conversão entraram no projeto como escolhas opostas, e não são. A marca podia aparecer à vontade. O que atrapalhava era ela ocupar o lugar do produto na hierarquia da página.",
+      p: ["Valor de marca e conversão entraram no projeto como escolhas opostas, e não são: a marca podia aparecer à vontade, e o que atrapalhava era ela estar ocupando o lugar do produto na hierarquia da página.",
           "A lição mais cara foi a do funil. Eu tinha uma suspeita bem formada sobre o checkout, plausível o bastante para eu já ter mexido nele, e ela estava errada. O que me corrigiu foi trocar a amostra de três dias pelo trimestre inteiro, evento a evento.",
           "Chegar numa conversa difícil com gravação em vez de opinião também muda quem precisa provar o quê. E perseguir o bug do módulo de pagamento até a origem comprou mais confiança com o time de tecnologia do que qualquer apresentação que eu tivesse feito."],
     },
