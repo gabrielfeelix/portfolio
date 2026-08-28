@@ -1,9 +1,10 @@
 import * as esbuild from "esbuild";
 import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
 import http from "node:http";
-import { existsSync } from "node:fs";
+import { existsSync, watch } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
@@ -33,10 +34,17 @@ const SCRIPTS = [
 // Capitulo usa RevealMask no escopo global.
 const SCRIPTS_SOB_DEMANDA = ["Capitulo.jsx", "EmpresaPage.jsx"];
 
+// A V2 (v2/) e um app separado, com import/export de verdade e bundle proprio.
+// Ela so e emitida em desenvolvimento ou sob BUILD_V2=1: enquanto Gabriel nao
+// aprovar, o build de producao da Vercel nao gera dist/v2/, entao nao existe
+// URL publica possivel. Ver docs/superpowers/specs/2026-08-28-portfolio-v2-design.md (D6).
+const V2_LIGADO = process.argv.includes("--serve") || process.env.BUILD_V2 === "1";
+
 async function clean() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(path.join(DIST, "volume"), { recursive: true });
   await mkdir(path.join(DIST, "vendor"), { recursive: true });
+  if (V2_LIGADO) await mkdir(path.join(DIST, "v2"), { recursive: true });
 }
 
 async function transpileScripts() {
@@ -151,6 +159,93 @@ async function generateHtml() {
   await writeFile(path.join(DIST, "index.html"), html);
 }
 
+/* ------------------------------ V2 ------------------------------ */
+
+// A V2 usa o MESMO React que a V1 ja vendoriza como UMD. Sem isto, o bundle
+// da V2 traria uma segunda copia do React (~45 KB gz) e, pior, `data.js` roda
+// contra window.React enquanto os componentes da V2 rodariam contra outra
+// instancia. Aqui `react` e `react-dom` resolvem para os globais.
+// A lista de exports NAO e escrita a mao: uma lista curta quebra assim que uma
+// dependencia importa algo fora dela (motion importa Component e
+// useInsertionEffect, por exemplo). Aqui os nomes vem do proprio pacote
+// instalado, entao o shim acompanha a versao do React sem manutencao.
+const exigir = createRequire(import.meta.url);
+const nomesExportados = (mod) =>
+  Object.keys(exigir(mod)).filter((k) => /^[A-Za-z_$][\w$]*$/.test(k) && k !== "default");
+
+const reactGlobais = {
+  name: "react-globais",
+  setup(b) {
+    b.onResolve({ filter: /^(react|react-dom|react-dom\/client)$/ }, (a) => ({
+      path: a.path,
+      namespace: "react-global",
+    }));
+    b.onLoad({ filter: /.*/, namespace: "react-global" }, (a) => {
+      const ehReact = a.path === "react";
+      const glob = ehReact ? "React" : "ReactDOM";
+      const nomes = nomesExportados(ehReact ? "react" : "react-dom/client");
+      const linhas = nomes.map((n) => `export const ${n} = G.${n};`).join("\n");
+      return {
+        contents:
+          `const G = window.${glob};\n` +
+          `if (!G) throw new Error('V2: window.${glob} ausente. O vendor UMD carregou depois do app?');\n` +
+          `export default G;\n` +
+          linhas + "\n",
+      };
+    });
+  },
+};
+
+const v2Opcoes = (dev) => ({
+  entryPoints: [path.join(ROOT, "v2", "app.jsx")],
+  outfile: path.join(DIST, "v2", "app.js"),
+  bundle: true,
+  format: "iife",
+  plugins: [reactGlobais],
+  jsx: "transform",
+  jsxFactory: "React.createElement",
+  jsxFragment: "React.Fragment",
+  loader: { ".jsx": "jsx" },
+  target: ["es2018"],
+  minify: !dev,
+  sourcemap: dev,
+  logLevel: "info",
+});
+
+async function buildV2Css() {
+  // Um arquivo so, na ordem em que os tokens precisam existir antes do resto.
+  const ordem = ["tokens.css", "shell.css", "home.css", "case.css"];
+  const partes = [];
+  for (const css of ordem) {
+    const src = path.join(ROOT, "v2", css);
+    if (existsSync(src)) partes.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
+  }
+  const out = await esbuild.transform(partes.join("\n"), { loader: "css", minify: true });
+  await writeFile(path.join(DIST, "v2", "v2.css"), out.code);
+}
+
+async function buildV2Html() {
+  const tpl = await readFile(path.join(ROOT, "v2", "index.template.html"), "utf8");
+  // A ordem e o contrato: React global, depois i18n e data da V1 (que publicam
+  // em window), so entao o app da V2, que le window.CHAPTERS. `defer` preserva
+  // a ordem entre eles e nao trava o parser.
+  const tags = [
+    `<script defer src="/vendor/react.production.min.js"></script>`,
+    `<script defer src="/vendor/react-dom.production.min.js"></script>`,
+    `<script defer src="/volume/i18n.js"></script>`,
+    `<script defer src="/volume/data.js"></script>`,
+    `<script defer src="/v2/app.js"></script>`,
+  ].join("\n");
+  await writeFile(path.join(DIST, "v2", "index.html"), tpl.replace("<!--V2_SCRIPTS-->", tags));
+}
+
+async function buildV2() {
+  await esbuild.build(v2Opcoes(false));
+  await buildV2Css();
+  await buildV2Html();
+  console.log("✓ v2 → dist/v2/  (local apenas; producao nao emite)");
+}
+
 async function buildOnce() {
   await clean();
   await transpileScripts();
@@ -158,6 +253,7 @@ async function buildOnce() {
   await copyVendor();
   await copyAssets();
   await generateHtml();
+  if (V2_LIGADO) await buildV2();
   console.log("✓ build → dist/");
 }
 
@@ -171,6 +267,23 @@ if (process.argv.includes("--serve")) {
     loader: { ".jsx": "jsx" }, target: ["es2018"],
   });
   await ctx.watch();
+  // A V2 tem bundle proprio, entao ganha o seu proprio contexto de watch.
+  const ctxV2 = await esbuild.context(v2Opcoes(true));
+  await ctxV2.watch();
+  // O esbuild so' vigia o grafo do bundle, e o CSS da V2 e' concatenado a mao.
+  // Sem este watch, editar tokens/shell/home.css nao muda nada no dev e' um
+  // engano caro de depurar: o JS recarrega, o CSS fica velho.
+  {
+    const dir = path.join(ROOT, "v2");
+    let pendente = null;
+    watch(dir, (_ev, arquivo) => {
+      if (!arquivo || !arquivo.endsWith(".css")) return;
+      clearTimeout(pendente);
+      pendente = setTimeout(() => {
+        buildV2Css().then(() => console.log("[watch] v2.css atualizado")).catch((e) => console.error(e));
+      }, 60);
+    });
+  }
   // esbuild serve numa porta interna; o proxy na frente devolve index.html
   // para path que nao e arquivo, que e o mesmo fallback do vercel.json. Sem
   // isso /cap/pcyes da 404 no dev e so funciona em producao.
@@ -181,8 +294,12 @@ if (process.argv.includes("--serve")) {
       { hostname: iHost, port: iPort, path: p, method: req.method, headers: req.headers },
       (up) => {
         if (up.statusCode === 404 && !path.extname(req.url.split("?")[0])) {
-          // rota do SPA: serve o index e deixa o app.jsx decidir a view
-          return enc("/index.html").end();
+          // rota do SPA: serve o index e deixa o app decidir a view.
+          // /v2 e /v2/case/<id> pertencem ao app da V2, que tem index proprio;
+          // sem esta bifurcacao a V2 cairia na home da V1.
+          const alvo = req.url.split("?")[0].replace(/\/+$/, "");
+          const daV2 = alvo === "/v2" || alvo.startsWith("/v2/");
+          return enc(daV2 ? "/v2/index.html" : "/index.html").end();
         }
         res.writeHead(up.statusCode, up.headers);
         up.pipe(res, { end: true });
