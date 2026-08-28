@@ -31,14 +31,24 @@
      grafismo, ou texto >=24px peso 800 (mínimo 3:1). Nunca corpo. */
 
   /* --- tipo --- */
-  --v2-font: "Hanken Grotesk", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --v2-font: "Switzer", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* Switzer tem altura de x maior e avanco menor que a Hanken: no mesmo
+     font-size ela le maior e ocupa menos linha. A escala desce um degrau e o
+     tracking aperta, senao o hero passa a bater na margem a 1440. */
+  --v2-track-display: -0.032em;   /* hero, titulo de painel */
+  --v2-track-titulo:  -0.02em;    /* declaracao, frase de processo */
 
   /* Escala medida na referencia a 1440: headline de secao 110px com
      line-height 90 (0.82) e medida travada em ~1000px. A V2 escreve frase
      inteira onde a referencia escreve duas palavras, entao fica um degrau
      abaixo: hero 124px e manifesto 72px a 1440. */
-  --v2-t-hero:      clamp(2.75rem, 8.6vw, 8.5rem);
-  --v2-t-manifesto: clamp(1.875rem, 5vw, 4.5rem);
+  --v2-t-hero:      clamp(2.5rem, 8.2vw, 8rem);
+  --v2-t-manifesto: clamp(1.75rem, 4.6vw, 4rem);
+  /* titulo do painel de caso, que divide a dobra com a foto */
+  --v2-t-painel:    clamp(2rem, 5vw, 4.5rem);
+  /* as tres frases do processo */
+  --v2-t-frase:     clamp(1.5rem, 3.4vw, 2.75rem);
   --v2-t-num:       clamp(2rem, 4vw, 3.5rem);
 
   /* O contador da viper: 128px, line-height 148 (1.16), letter-spacing -10px

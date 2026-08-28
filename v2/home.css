@@ -60,9 +60,9 @@
 .v2-hero-h {
   margin: 0;
   font-size: var(--v2-t-hero);
-  font-weight: 800;
+  font-weight: 700;
   line-height: .88;          /* a referência anda em .82; .88 aguenta acento */
-  letter-spacing: -.035em;
+  letter-spacing: var(--v2-track-display);
 }
 
 /* Cada linha é a janela do clip-path do maskLine. O filho é quem anima. */
@@ -164,9 +164,9 @@
   margin: 0;
   max-width: min(22ch, var(--v2-medida));
   font-size: var(--v2-t-manifesto);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.08;
-  letter-spacing: -.02em;
+  letter-spacing: var(--v2-track-titulo);
 }
 
 .v2-manifesto-cols {
@@ -274,7 +274,7 @@
 .v2-proc-n {
   margin: 0;
   font-size: var(--v2-t-num);
-  font-weight: 800;
+  font-weight: 700;
   line-height: .9;
   letter-spacing: -.04em;
   color: var(--v2-ink);
@@ -286,7 +286,7 @@
 .v2-proc-t {
   margin: 0;
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.01em;
 }
@@ -327,7 +327,7 @@
 
 .v2-caso-t {
   font-size: var(--v2-t-manifesto);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.02;
   letter-spacing: -.025em;
 }
@@ -575,7 +575,7 @@ a.v2-pecas-linha:focus-visible { padding-inline-start: var(--v2-s2); }
 .v2-lt-nome {
   margin: 0;
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -.01em;
   line-height: 1.2;
 }

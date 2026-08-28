@@ -107,7 +107,7 @@
 .v2-dado-v {
   margin: 0;
   font-size: var(--v2-t-dado);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.16;
   letter-spacing: -.06em;
   font-variant-numeric: tabular-nums;
@@ -404,7 +404,7 @@
 .v2-rodape-chamada {
   margin: 0;
   font-size: var(--v2-t-manifesto);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.08;
   letter-spacing: -.02em;
   max-width: 20ch;

@@ -149,7 +149,7 @@
   margin: 0 0 var(--v2-s3);
   max-width: 24ch;
   font-size: var(--v2-t-caso-ato);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.06;
   letter-spacing: -.025em;
 }
@@ -193,7 +193,7 @@
 .v2-mov-t {
   margin: 0;
   font-size: var(--v2-t-movimento);
-  font-weight: 800;
+  font-weight: 700;
   line-height: .98;
   letter-spacing: -.03em;
 }
@@ -288,7 +288,7 @@
 .v2-bloco-t {
   margin: 0 0 var(--v2-s2);
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -.01em;
   line-height: 1.2;
 }
@@ -501,7 +501,7 @@
 .v2-dec-n {
   margin: 0;
   font-size: var(--v2-t-num);
-  font-weight: 800;
+  font-weight: 700;
   line-height: .9;
   letter-spacing: -.04em;
   font-variant-numeric: tabular-nums;
@@ -512,7 +512,7 @@
 .v2-dec-t {
   margin: 0;
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.01em;
 }
@@ -655,7 +655,7 @@
 
 .v2-par.is-escuro .v2-par-tema { color: rgba(255, 255, 255, .72); }
 
-.v2-par-r { margin: 0; font-size: var(--v2-t-bloco); font-weight: 800; }
+.v2-par-r { margin: 0; font-size: var(--v2-t-bloco); font-weight: 700; }
 
 .v2-deriv {
   position: relative;
@@ -796,7 +796,7 @@
 .v2-preso-t {
   margin: 0 0 var(--v2-s2);
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.01em;
 }
@@ -834,7 +834,7 @@
 .v2-cam-t {
   margin: 0 0 var(--v2-s1);
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
 
@@ -863,7 +863,7 @@
 .v2-passo-t {
   margin: 0 0 var(--v2-s2);
   font-size: var(--v2-t-bloco);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.01em;
 }
@@ -981,7 +981,7 @@
 .v2-result-t {
   margin: 0 0 var(--v2-s3);
   font-size: var(--v2-t-caso-ato);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.06;
   letter-spacing: -.025em;
   max-width: 22ch;
@@ -1054,7 +1054,7 @@
 .v2-proximo-t {
   display: block;
   font-size: var(--v2-t-manifesto);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.02;
   letter-spacing: -.025em;
 }
