@@ -78,9 +78,11 @@ de botão. Entram duas fitas de imagem correndo em direções opostas, altura em
 de 180px, sem título, sem card, sem etiqueta, com um link de uma linha abaixo. São
 projetos extras num portfólio de UX e a hierarquia tem que dizer isso.
 
-**H7. A página ganha um fecho.** Seção final em largura cheia, fundo escuro, tipo
-grande, contatos de `CONTATO`. Hoje a home termina na timeline, que é um fim por
-acidente. O fecho escuro fecha o par com o hero.
+**H7. O fecho é o rodapé, escurecido.** Corrigido em 2026-08-28: a primeira
+versão criou uma seção `Fecho` só da home, e o resultado foram dois fechos, os
+dois com `id="contato"`, porque `Rodape` já existia em `Shell.jsx` e serve todas
+as rotas. O `Fecho` foi removido. Quem ganha fundo `--v2-ink`, texto branco e
+`data-escuro-corpo` é o `Rodape`, que passa a fechar também a página de caso.
 
 **H8. O que fica como está.** Hero e sua saída por cobertura (`useCobertura`), o
 marquee de marcas (que muda de posição, não de forma) e a timeline de `OndeEstive`,
@@ -95,7 +97,7 @@ marquee de marcas (que muda de posição, não de forma) e a timeline de `OndeEs
 5. Processo, três frases, coluna larga
 6. Onde estive, timeline com logo
 7. Peças, duas fitas de imagem
-8. Fecho, largura cheia, escuro
+8. Rodapé, largura cheia, escuro (vem do Shell, não da home)
 
 ## Motion
 
