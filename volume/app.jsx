@@ -508,7 +508,7 @@ function App() {
       <CursorDot />
       <Nav view={view} go={handleNav} onContact={goContact} ink={ink} onInk={onInkToggle} />
       {view === "home" && marker ? <Bookmark marker={marker} onGo={resumeMarker} onDismiss={dismissMarker} /> : null}
-      {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
+      {stamp ? <div className="seal-stamp" key={stamp} aria-hidden="true"><img src="/volume/assets/seal.svg" alt="" width="130" height="130" /></div> : null}
       {view !== "home" && <PageNum view={view} />}
       {turn && <PageTurn key={turn.key} sfx={turn.sfx} />}
       <div id="conteudo" tabIndex={-1}>{body}</div>

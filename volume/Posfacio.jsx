@@ -54,7 +54,7 @@ function Posfacio({ onContact, t: tweaks = {}, onEmpresa, onProject, onNav }) {
           </div>
           <div className="pt-photo">
             <div className="about-photo has-photo" tabIndex={0}>
-              <img className="ap-img" src="volume/assets/gabriel.webp" alt="Gabriel Felix Barbosa" loading="lazy" draggable="false" />
+              <img className="ap-img" src="/volume/assets/gabriel.webp" alt="Gabriel Felix Barbosa" loading="lazy" draggable="false" />
               <span className="ap-wash" aria-hidden="true"></span>
             </div>
           </div>

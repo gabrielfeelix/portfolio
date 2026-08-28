@@ -52,9 +52,9 @@ const CHAPTERS = [
     principal: true,
     project: "PCYES V2", descriptor: "Redesign do e-commerce", title: "PCYES V2",
     sfx: "バーン",                      // baan: boom (e-commerce)
-    capa: { logo: "volume/assets/marcas/branco/pcyes.png", bg: "#B00000", accent: "#FF0000" },   /* capa de marca */
-    cover: "volume/assets/projetos/pcyes/cover.webp",
-    coverTall: "volume/assets/projetos/pcyes/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
+    capa: { logo: "/volume/assets/marcas/branco/pcyes.png", bg: "#B00000", accent: "#FF0000" },   /* capa de marca */
+    cover: "/volume/assets/projetos/pcyes/cover.webp",
+    coverTall: "/volume/assets/projetos/pcyes/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
     links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" },
     premise: "Uma vitrine que ficou bonita e ficou lenta de comprar.",
     role: "UX/UI Designer, responsável pelo projeto",
@@ -100,82 +100,82 @@ const CHAPTERS = [
        `src`, a moldura entra marcada como print pendente: é honesto e não
        abre buraco no layout. */
     figuras: {
-      abertura: { src: "volume/assets/projetos/pcyes/v1-home.webp", ar: "45/19",
+      abertura: { src: "/volume/assets/projetos/pcyes/v1-home.webp", ar: "45/19",
         alt: "Home da V1 abrindo em campanha de marca, com o primeiro produto abaixo da dobra",
         legenda: "A V1 na primeira dobra: a campanha ocupa a tela inteira e o primeiro produto só aparece depois de rolar." },
-      checkout: { src: "volume/assets/projetos/pcyes/s4.webp",
+      checkout: { src: "/volume/assets/projetos/pcyes/s4.webp",
         alt: "Checkout da V2 com Pix, cartão, boleto e carteiras visíveis antes de qualquer rolagem",
         legenda: "O checkout da V2 abre no método de pagamento. A pessoa sabe como pode pagar antes de decidir se continua." },
-      vitrine: { src: "volume/assets/projetos/pcyes/s2.webp",
+      vitrine: { src: "/volume/assets/projetos/pcyes/s2.webp",
         alt: "Vitrine da V2 com filtros à esquerda e botão de comprar no card do produto",
         legenda: "Na vitrine, comprar deixou de exigir a página do produto: o botão vive no card, junto do preço e da avaliação." },
-      preco: { src: "volume/assets/projetos/pcyes/s3.webp",
+      preco: { src: "/volume/assets/projetos/pcyes/s3.webp",
         alt: "Página de produto da V2 com a coluna de preço fixa à direita",
         legenda: "Na página do produto, o preço e a compra ficam fixos à direita. A decisão não depende de voltar ao topo." },
-      home: { src: "volume/assets/projetos/pcyes/s1.webp",
+      home: { src: "/volume/assets/projetos/pcyes/s1.webp",
         alt: "Home da V2 com carrossel de produtos e blocos de promoção",
         legenda: "A home passou a abrir em produto. Os blocos institucionais continuam, depois do primeiro carrossel de compra." },
-      quickview: { src: "volume/assets/projetos/pcyes/quickview.webp",
+      quickview: { src: "/volume/assets/projetos/pcyes/quickview.webp",
         alt: "Visualização rápida aberta sobre a listagem, com galeria, ficha resumida e botão de comprar",
         legenda: "Visualização rápida na listagem: avaliar o produto, ampliar a foto e comprar sem trocar de página." },
-      sku: { grau: "apoio",  /* o gerador de HTML e ferramenta interna, do mesmo ramo da esteira */ src: "volume/assets/projetos/pcyes/sku-editor.webp",
+      sku: { grau: "apoio",  /* o gerador de HTML e ferramenta interna, do mesmo ramo da esteira */ src: "/volume/assets/projetos/pcyes/sku-editor.webp",
         alt: "Ferramenta interna com o formulário do produto à esquerda e o HTML gerado à direita",
         legenda: "A ferramenta interna: o formulário do SKU de um lado, o HTML pronto e formatado do outro, na hora." },
-      skuFila: { grau: "apoio",  /* a esteira e ferramenta de bastidor, nao a loja que o cliente ve */ src: "volume/assets/projetos/pcyes/sku-fila.webp",
+      skuFila: { grau: "apoio",  /* a esteira e ferramenta de bastidor, nao a loja que o cliente ve */ src: "/volume/assets/projetos/pcyes/sku-fila.webp",
         alt: "Esteira de produção com a fila de SKUs e as cinco etapas de cada produto",
         legenda: "A esteira: cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publicação, e o time enxerga em que etapa cada produto está." },
-      contraste: { src: "volume/assets/projetos/pcyes/contraste.webp",
+      contraste: { src: "/volume/assets/projetos/pcyes/contraste.webp",
         alt: "Home da V1 passando de uma seção escura para uma dobra branca no meio da rolagem",
         legenda: "A V1 alternava dobras escuras e uma dobra branca inteira no meio do caminho. De madrugada, esse salto de brilho é a parte que cansa a leitura." },
-      libras: { grau: "apoio",  /* o VLibras e um widget no canto, nao uma dobra */ src: "volume/assets/projetos/pcyes/libras.webp", ar: "8/5",
+      libras: { grau: "apoio",  /* o VLibras e um widget no canto, nao uma dobra */ src: "/volume/assets/projetos/pcyes/libras.webp", ar: "8/5",
         alt: "Tradutor VLibras aberto sobre a home da V2, com o avatar em Libras ao lado do banner",
         legenda: "O tradutor de Libras entra pelo ícone de acessibilidade do header e traduz a página em uso. A V1 não tinha: quem tem Libras como primeira língua lia um site em segunda língua." },
-      prevenda: { /* unica prova do modulo, mora na coluna ao lado do texto; o print do contador saiu (era componente, nao tela, e a pagina inteira ja mostra a contagem) */ src: "volume/assets/projetos/pcyes/prevenda.webp",
+      prevenda: { /* unica prova do modulo, mora na coluna ao lado do texto; o print do contador saiu (era componente, nao tela, e a pagina inteira ja mostra a contagem) */ src: "/volume/assets/projetos/pcyes/prevenda.webp",
         alt: "Página de produto em pré-venda com barra de reservas, prazo de entrega e preço de reserva",
         legenda: "A pré-venda mostra quantas reservas já foram feitas, quantas restam e quando o produto chega." },
-      sidecart: { grau: "plena",  /* o carrinho lateral E o argumento do modulo */ src: "volume/assets/projetos/pcyes/sidecart.webp",
+      sidecart: { grau: "plena",  /* o carrinho lateral E o argumento do modulo */ src: "/volume/assets/projetos/pcyes/sidecart.webp",
         alt: "Carrinho lateral aberto sobre a página do produto, com barra de brinde e pontos do pedido",
         legenda: "O carrinho lateral abre sobre a página. Adicionar um item deixou de tirar a pessoa de onde ela estava." },
-      points: { src: "volume/assets/projetos/pcyes/points.webp",
+      points: { src: "/volume/assets/projetos/pcyes/points.webp",
         alt: "Área do PCYES Points com escada de raridade e saldo de pontos",
         legenda: "PCYES Points: saldo, escada de níveis e o quanto falta para o próximo, sem letra miúda escondida." },
-      mspCaminhos: { src: "volume/assets/projetos/pcyes/msp-caminhos.webp",
+      mspCaminhos: { src: "/volume/assets/projetos/pcyes/msp-caminhos.webp",
         alt: "Tela inicial do Monte seu PC com os três caminhos disponíveis",
         legenda: "A entrada do módulo pergunta uma coisa só: você já sabe o que quer, quer ajuda ou quer pronto." },
-      mspJogos: { src: "volume/assets/projetos/pcyes/msp-jogos.webp",
+      mspJogos: { src: "/volume/assets/projetos/pcyes/msp-jogos.webp",
         alt: "Etapa do quiz com a grade de jogos para selecionar",
         legenda: "Quem não conhece peça escolhe pelo que joga. A recomendação sai de Valorant e Fortnite, não de soquete e TDP." },
-      mspProntas: { src: "volume/assets/projetos/pcyes/msp-prontas.webp",
+      mspProntas: { src: "/volume/assets/projetos/pcyes/msp-prontas.webp",
         alt: "Grade de builds prontas separadas por uso, com preço e desconto",
         legenda: "As builds prontas viram produto de vitrine: nome, uso, preço fechado e compra em um clique." },
-      ckCarregado: { src: "volume/assets/projetos/pcyes/ck-carregado.webp", ar: "120/89",
+      ckCarregado: { src: "/volume/assets/projetos/pcyes/ck-carregado.webp", ar: "120/89",
         alt: "Checkout da V1 com os quatro meios de pagamento empilhados em lista vertical",
         legenda: "V1, tudo carregado: cada meio de pagamento ocupa uma linha inteira e o bloco desce por metade da tela." },
-      ckLento: { src: "volume/assets/projetos/pcyes/ck-lento.webp", ar: "120/89",
+      ckLento: { src: "/volume/assets/projetos/pcyes/ck-lento.webp", ar: "120/89",
         alt: "A mesma tela com apenas Boleto e Pix carregados, e um vão vazio no lugar dos outros meios",
         legenda: "A mesma tela quando os meios de pagamento não chegam: sobram dois, e o vão que fica é maior que o conteúdo. Quem paga com cartão não vê como pagar." },
-      ckV12: { src: "volume/assets/projetos/pcyes/ck-v12.webp", ar: "1800/913",
+      ckV12: { src: "/volume/assets/projetos/pcyes/ck-v12.webp", ar: "1800/913",
         alt: "Checkout da V1.2 com os quatro meios de pagamento lado a lado em uma única linha",
         legenda: "V1.2: os quatro meios cabem em uma linha e o frete condensa em três opções. O mesmo checkout ficou 60% mais curto." },
       popup: { grau: "apoio",  /* o pop-up e um comportamento de entrada, nao uma dobra da loja */ ar: "16/9",
         alt: "Pop-up de captação da V2 aparecendo depois da pessoa rolar parte da página",
         legenda: "V2: o pop-up só aparece depois de 15% de rolagem. Quem acabou de chegar vê a loja primeiro; quem já demonstrou interesse é que recebe a oferta." },
-      buscaMouse: { src: "volume/assets/projetos/pcyes/busca-mouse.webp", ar: "1600/796",
+      buscaMouse: { src: "/volume/assets/projetos/pcyes/busca-mouse.webp", ar: "1600/796",
         alt: "Busca da V1 por mouse devolvendo mousepad nos primeiros resultados",
         legenda: "V1, busca por \u201cmouse\u201d: o primeiro resultado é mousepad." },
-      buscaMause: { src: "volume/assets/projetos/pcyes/busca-mause.webp", ar: "1600/786",
+      buscaMause: { src: "/volume/assets/projetos/pcyes/busca-mause.webp", ar: "1600/786",
         alt: "Busca da V1 por mause devolvendo tela sem nenhum resultado",
         legenda: "V1, busca por \u201cmause\u201d: nenhum resultado. Uma letra trocada e a loja inteira desaparece." },
-      buscaV2: { src: "volume/assets/projetos/pcyes/busca-v2.webp", ar: "1600/613",
+      buscaV2: { src: "/volume/assets/projetos/pcyes/busca-v2.webp", ar: "1600/613",
         alt: "Busca da V2 sugerindo produtos e termos mais buscados antes de digitar",
         legenda: "V2: a busca abre com os produtos e os termos mais procurados. Quem não lembra o nome escolhe sem digitar." },
-      ckMobile: { src: "volume/assets/projetos/pcyes/ck-mobile.webp", ar: "25/61",
+      ckMobile: { src: "/volume/assets/projetos/pcyes/ck-mobile.webp", ar: "25/61",
         alt: "Checkout mobile da V1 e da V1.2 lado a lado, com uma linha marcando onde a V1.2 termina",
         legenda: "As duas na mesma escala: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente." },
-      ckV12Pix: { src: "volume/assets/projetos/pcyes/ck-v12-pix.webp", ar: "225/137",
+      ckV12Pix: { src: "/volume/assets/projetos/pcyes/ck-v12-pix.webp", ar: "225/137",
         alt: "Checkout da V1.2 com Pix selecionado, abrindo o passo a passo de aprovação imediata",
         legenda: "Escolher Pix abre o que acontece depois de finalizar. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela." },
-      mspBuilder: { src: "volume/assets/projetos/pcyes/msp-builder.webp",
+      mspBuilder: { src: "/volume/assets/projetos/pcyes/msp-builder.webp",
         alt: "Montagem passo a passo com as oito etapas de componentes e o resumo da configuração",
         legenda: "Quem monta do zero anda em oito etapas com compatibilidade checada e o total sempre à vista." },
     },
@@ -360,7 +360,7 @@ const CHAPTERS = [
          Mostrar o fim primeiro quebrava a cronologia que o título promete. */
       shots: [{ fig: "vitrine" },
               { fig: "checkout" },
-              "volume/assets/projetos/pcyes/s5.webp"],
+              "/volume/assets/projetos/pcyes/s5.webp"],
       legendas: ["Onde o caminho come\u00e7a. Quem j\u00e1 sabe o que quer compra sem sair da vitrine.",
                  "Onde ele termina. O checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
                  "E onde ele cabe no bolso. A mesma regra na tela pequena, com o pre\u00e7o fixo na base."],
@@ -597,20 +597,20 @@ const CHAPTERS = [
     },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
-      antes: "volume/assets/projetos/pcyes/antes.webp",
-      depois: "volume/assets/projetos/pcyes/depois.webp",
+      antes: "/volume/assets/projetos/pcyes/antes.webp",
+      depois: "/volume/assets/projetos/pcyes/depois.webp",
       rotuloAntes: "V1", rotuloDepois: "V2",
       legenda: "A mesma primeira dobra: a V1 abre em campanha de marca, a V2 abre no caminho de compra.",
       /* as outras dobras que valem comparar. Sem o print da V1, o par entra
          como moldura tracejada: fica claro o que falta subir e o beat não
          some da página. */
       pares: [
-        { antes: "volume/assets/projetos/pcyes/v1-vitrine.webp",
-          depois: "volume/assets/projetos/pcyes/s2.webp",
+        { antes: "/volume/assets/projetos/pcyes/v1-vitrine.webp",
+          depois: "/volume/assets/projetos/pcyes/s2.webp",
           rotuloAntes: "V1", rotuloDepois: "V2",
           legenda: "A mesma vitrine de periféricos: na V1 o card só leva para a página do produto, na V2 ele compra." },
-        { antes: "volume/assets/projetos/pcyes/v1-carrinho.webp",
-          depois: "volume/assets/projetos/pcyes/sidecart.webp",
+        { antes: "/volume/assets/projetos/pcyes/v1-carrinho.webp",
+          depois: "/volume/assets/projetos/pcyes/sidecart.webp",
           rotuloAntes: "V1", rotuloDepois: "V2",
           legenda: "O carrinho: na V1 é uma página que tira a pessoa da loja, na V2 abre por cima e deixa ela onde estava." },
       ],
@@ -635,7 +635,7 @@ const CHAPTERS = [
     id: "locarmais-conciliacao", num: "02", cap: "CAP. 02", domain: "SAAS", cat: "saas",
     project: "Locar Mais", descriptor: "Módulo de conciliação financeira", title: "Locar Mais",
     sfx: "チャリン",                    // charin: moeda (financeiro)
-    capa: { logo: "volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },   /* capa de marca: o print não fecha em 4:5 */
+    capa: { logo: "/volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },   /* capa de marca: o print não fecha em 4:5 */
     links: { vercel: null, figma: null },
     premise: "O valor que chegou é o valor certo? O financeiro não conseguia responder.",
     role: "UX Designer, responsável pelo módulo",
@@ -681,10 +681,10 @@ const CHAPTERS = [
          painel nasce no formato do arquivo, então print em retrato cabe
          inteiro sem tarja e sem corte. `meia` põe dois lado a lado. */
       shots: [
-        { src: "volume/assets/projetos/locarmais/s1-conciliacao.webp",        ar: "1610/1257" },
-        { src: "volume/assets/projetos/locarmais/s2-origem-dos-dados.webp",   ar: "717/987",  meia: true },
-        { src: "volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", ar: "717/805",  meia: true },
-        { src: "volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp", ar: "925/1112" },
+        { src: "/volume/assets/projetos/locarmais/s1-conciliacao.webp",        ar: "1610/1257" },
+        { src: "/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp",   ar: "717/987",  meia: true },
+        { src: "/volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", ar: "717/805",  meia: true },
+        { src: "/volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp", ar: "925/1112" },
       ],
     },
     vocabulario: {
@@ -715,9 +715,9 @@ const CHAPTERS = [
   {
     id: "odex", num: "03", cap: "CAP. 03", domain: "DESKTOP E WEB", cat: "desktop",
     project: "ODEX", descriptor: "Redesign de interface", title: "ODEX",
-    sfx: "キラッ", cover: "volume/assets/projetos/odex/cover.webp",   /* kira: brilho — redesign visual */
-    capa: { logo: "volume/assets/marcas/branco/odex.png", bg: "#0D1D52", accent: "#005AFF" },   /* capa de marca: o print não fecha em 4:5 */
-    coverTall: "volume/assets/projetos/odex/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
+    sfx: "キラッ", cover: "/volume/assets/projetos/odex/cover.webp",   /* kira: brilho — redesign visual */
+    capa: { logo: "/volume/assets/marcas/branco/odex.png", bg: "#0D1D52", accent: "#005AFF" },   /* capa de marca: o print não fecha em 4:5 */
+    coverTall: "/volume/assets/projetos/odex/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
     links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: "https://www.figma.com/design/0nApyM8W4IgRwr64pSOfWg/DS--ODEX-?node-id=0-1&t=vAP1IrCmMOrbbiEy-1" },
     premise: "A plataforma funcionava há anos. Era a interface que tinha envelhecido.",
     role: "UX/UI Designer",
@@ -754,11 +754,11 @@ const CHAPTERS = [
       t: "A superfície inteira, sem reaprender nada",
       p: ["Plataforma redesenhada com protótipo navegável, telas principais do app em protótipo, e a página de armazenamento de energia criada para a nova linha de baterias, explicando o funcionamento do produto para um público que ainda não conhece a tecnologia."],
       slots: 3,
-      shots: ["volume/assets/projetos/odex/s1.webp", "volume/assets/projetos/odex/s2.webp"],
+      shots: ["/volume/assets/projetos/odex/s1.webp", "/volume/assets/projetos/odex/s2.webp"],
     },
     antesDepois: {
-      antes: "volume/assets/projetos/odex/antes.webp",
-      depois: "volume/assets/projetos/odex/depois.webp",
+      antes: "/volume/assets/projetos/odex/antes.webp",
+      depois: "/volume/assets/projetos/odex/depois.webp",
       rotuloAntes: "V1", rotuloDepois: "V3",
       legenda: "Duas iterações do redesign na mesma dobra: a V1 abre em painel de metas, a V3 abre no catálogo. O percurso de quem já usava não mudou.",
     },
@@ -774,9 +774,9 @@ const CHAPTERS = [
   {
     id: "oderco-revenda", num: "04", cap: "CAP. 04", domain: "WEB", cat: "web",
     project: "Oderço", descriptor: "Página de cadastro de revenda", title: "Oderço",
-    sfx: "ガチャ", cover: "volume/assets/projetos/oderco-revenda/cover.webp",
-    capa: { logo: "volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" },   /* capa de marca: o print não fecha em 4:5 */
-    coverTall: "volume/assets/projetos/oderco-revenda/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
+    sfx: "ガチャ", cover: "/volume/assets/projetos/oderco-revenda/cover.webp",
+    capa: { logo: "/volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" },   /* capa de marca: o print não fecha em 4:5 */
+    coverTall: "/volume/assets/projetos/oderco-revenda/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
     links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null },
     premise: "Um formulário longo, de uma marca que o visitante nunca tinha ouvido falar.",
     role: "UX/UI Designer, do fluxo à automação",
@@ -805,7 +805,7 @@ const CHAPTERS = [
       t: "A página responde antes do formulário",
       p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso, de modo que quem chega ao cadastro já sabe o que está aceitando."],
       slots: 3,
-      shots: ["volume/assets/projetos/oderco-revenda/s1.webp", "volume/assets/projetos/oderco-revenda/s2.webp", "volume/assets/projetos/oderco-revenda/s3.webp"],
+      shots: ["/volume/assets/projetos/oderco-revenda/s1.webp", "/volume/assets/projetos/oderco-revenda/s2.webp", "/volume/assets/projetos/oderco-revenda/s3.webp"],
     },
     resultado: {
       t: "Um sistema a menos no comercial",
@@ -826,8 +826,8 @@ const CHAPTERS = [
     id: "portfolio", num: "05", cap: "CAP. 05", domain: "WEB · MANIFESTO", cat: "web",
     project: "Portfólio", descriptor: "Este volume que você está lendo", title: "Portfólio",
     sfx: "シャキーン",                  // shakiin: corte seco (este volume)
-    cover: "volume/assets/projetos/portfolio/cover.webp",
-    coverTall: "volume/assets/projetos/portfolio/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
+    cover: "/volume/assets/projetos/portfolio/cover.webp",
+    coverTall: "/volume/assets/projetos/portfolio/cover-tall.webp",   /* 4:5, a proporção do painel do hero */
     links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null },
     premise: "Um portfólio que se lê como um volume de mangá.",
     role: "Concepção, design e construção",
@@ -855,11 +855,11 @@ const CHAPTERS = [
       p: ["O volume abre numa capa, lista os capítulos, vira a página como mangá e usa tinta e screentone para separar as seções. Quem tem pressa tem um caminho curto e quem quer o case inteiro tem o longo, e os dois ficam declarados logo na entrada do capítulo, com o tempo de leitura medido."],
       /* Prints tirados do próprio site rodando, em 1600x1000 — o capítulo do
          portfólio mostra o portfólio de verdade, não uma maquete dele. */
-      shots: ["volume/assets/projetos/portfolio/01-home-splash.webp",
-              "volume/assets/projetos/portfolio/03-cap-capa.webp",
-              "volume/assets/projetos/portfolio/02-home-capitulos.webp",
-              "volume/assets/projetos/portfolio/04-cap-solucao.webp",
-              "volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
+      shots: ["/volume/assets/projetos/portfolio/01-home-splash.webp",
+              "/volume/assets/projetos/portfolio/03-cap-capa.webp",
+              "/volume/assets/projetos/portfolio/02-home-capitulos.webp",
+              "/volume/assets/projetos/portfolio/04-cap-solucao.webp",
+              "/volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
     },
     resultado: {
       t: "Zero violação, medida e não prometida",
@@ -946,11 +946,11 @@ const COMPANIES = [
     related: [],
   },
   {
-    id: "locar", name: "Locarmais", capa: { logo: "volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },
+    id: "locar", name: "Locarmais", capa: { logo: "/volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },
     role: "UX Designer", period: "2025 a 2026 · 13 meses · Maringá",
     anos: "2025 · 26", atual: false,
     note: "IMMO, Signa Mais e o financeiro",
-    logo: "volume/assets/logos/mono/locarmais.png", logoInv: "volume/assets/logos/mono-inv/locarmais.png",
+    logo: "/volume/assets/logos/mono/locarmais.png", logoInv: "/volume/assets/logos/mono-inv/locarmais.png",
     blurb: "Onde desenhei produto, testei com usuário e enfrentei a primeira regra de negócio pesada.",
     abre: "Treze meses num grupo com cinco produtos do mercado imobiliário, uma base visual herdada e uma regra clara vinda de cima: resolver sem pesquisa formal. Foi ali que eu desenhei a coisa mais complexa da minha carreira até hoje.",
     falaApos: 1,
@@ -992,11 +992,11 @@ const COMPANIES = [
     related: ["locarmais", "signamais", "immo"],
   },
   {
-    id: "oderco", name: "Grupo Oderço", capa: { logo: "volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" },
+    id: "oderco", name: "Grupo Oderço", capa: { logo: "/volume/assets/marcas/branco/oderco.png", bg: "#00308F", accent: "#005AFF" },
     role: "UX/UI Designer", period: "2026 · atual · Maringá",
     anos: "2026 →", atual: true,
     note: "PCYES, Odex, Tonante, Vinik, Skul",
-    logo: "volume/assets/logos/mono/oderco.png", logoInv: "volume/assets/logos/mono-inv/oderco.png",
+    logo: "/volume/assets/logos/mono/oderco.png", logoInv: "/volume/assets/logos/mono-inv/oderco.png",
     blurb: "Hoje. Designer único de uma distribuidora nacional, tocando cinco marcas em três frentes ao mesmo tempo.",
     abre: "Sou o único designer de uma distribuidora nacional com cinco marcas próprias. E-commerce, plataforma e sistema interno rodando ao mesmo tempo, sem ninguém acima para revisar. A fila é minha, e a prioridade também.",
     falaApos: 2,
@@ -1040,22 +1040,22 @@ const COMPANIES = [
 const CERTS = [
   /* ux-balas: derivado do slide de abertura do curso — lockup recortado e
      repintado em tinta sobre papel, na mesma convenção dos outros quatro. */
-  { id: "ux-balas",  title: "UX à prova de balas",  issuer: "Certificação",  href: null, logo: "volume/assets/certs/ux-balas.png" },
-  { id: "circuit",   title: "Design Circuit",       issuer: "Formação UX",   href: null, logo: "volume/assets/certs/circuit.png" },
-  { id: "coderhouse",title: "Coderhouse · UX/UI",   issuer: "Certificação",  href: null, logo: "volume/assets/certs/coderhouse.png" },
-  { id: "scrum",     title: "Certificação Scrum",   issuer: "Ágil",          href: null, logo: "volume/assets/certs/scrum.png" },
-  { id: "design-g",  title: "Design Gráfico",       issuer: "Graduação",     href: null, logo: "volume/assets/certs/uninter.png" },
+  { id: "ux-balas",  title: "UX à prova de balas",  issuer: "Certificação",  href: null, logo: "/volume/assets/certs/ux-balas.png" },
+  { id: "circuit",   title: "Design Circuit",       issuer: "Formação UX",   href: null, logo: "/volume/assets/certs/circuit.png" },
+  { id: "coderhouse",title: "Coderhouse · UX/UI",   issuer: "Certificação",  href: null, logo: "/volume/assets/certs/coderhouse.png" },
+  { id: "scrum",     title: "Certificação Scrum",   issuer: "Ágil",          href: null, logo: "/volume/assets/certs/scrum.png" },
+  { id: "design-g",  title: "Design Gráfico",       issuer: "Graduação",     href: null, logo: "/volume/assets/certs/uninter.png" },
 ];
 
 /* ---- logos de marca (buscados dos sites oficiais, chip fundo papel) ----
    Só marcas reais de cliente/grupo — projetos pessoais não têm logo. */
 const BRAND_LOGOS = {
-  pcyes:     "volume/assets/marcas/pcyes.png",
-  odex:      "volume/assets/marcas/odex.png",
-  tonante:   "volume/assets/marcas/tonante.png",
-  locarmais: "volume/assets/marcas/locarmais.png",
-  vinik:     "volume/assets/marcas/vinik.png",
-  isabella:  "volume/assets/marcas/isabella.png",
+  pcyes:     "/volume/assets/marcas/pcyes.png",
+  odex:      "/volume/assets/marcas/odex.png",
+  tonante:   "/volume/assets/marcas/tonante.png",
+  locarmais: "/volume/assets/marcas/locarmais.png",
+  vinik:     "/volume/assets/marcas/vinik.png",
+  isabella:  "/volume/assets/marcas/isabella.png",
 };
 function brandLogo(id) { return BRAND_LOGOS[id] || null; }
 
@@ -1069,23 +1069,23 @@ function brandLogo(id) { return BRAND_LOGOS[id] || null; }
    de novo a conversão mono (luminância -> alpha, normalizada, em tinta).
    Fundo opaco no arquivo vira retângulo visível dentro do chip. --------- */
 const ALL_MARKS = [
-  { id: "oderco",    name: "Grupo Oderço",  logo: "volume/assets/marcas/mono/oderco.png" },
-  { id: "pcyes",     name: "PCYES",         logo: "volume/assets/marcas/mono/pcyes.png" },
-  { id: "odex",      name: "Odex",          logo: "volume/assets/marcas/mono/odex.png" },
-  { id: "tonante",   name: "Tonante",       logo: "volume/assets/marcas/mono/tonante.png" },
-  { id: "vinik",     name: "Vinik",         logo: "volume/assets/marcas/mono/vinik.png" },
+  { id: "oderco",    name: "Grupo Oderço",  logo: "/volume/assets/marcas/mono/oderco.png" },
+  { id: "pcyes",     name: "PCYES",         logo: "/volume/assets/marcas/mono/pcyes.png" },
+  { id: "odex",      name: "Odex",          logo: "/volume/assets/marcas/mono/odex.png" },
+  { id: "tonante",   name: "Tonante",       logo: "/volume/assets/marcas/mono/tonante.png" },
+  { id: "vinik",     name: "Vinik",         logo: "/volume/assets/marcas/mono/vinik.png" },
   { id: "skul",      name: "Skul",          logo: null },
   { id: "azux",      name: "Azux",          logo: null },
   { id: "quati",     name: "Quati",         logo: null },
-  { id: "locarmais", name: "Locarmais",     logo: "volume/assets/marcas/mono/locarmais.png" },
+  { id: "locarmais", name: "Locarmais",     logo: "/volume/assets/marcas/mono/locarmais.png" },
   { id: "immo",      name: "IMMO",          logo: null },
-  { id: "signamais", name: "Signamais",   logo: "volume/assets/marcas/mono/signamais.svg" },
+  { id: "signamais", name: "Signamais",   logo: "/volume/assets/marcas/mono/signamais.svg" },
   { id: "ttt",       name: "TT&T",          logo: null },
-  { id: "isabella",  name: "Isabella Pires",logo: "volume/assets/marcas/mono/isabella.png" },
+  { id: "isabella",  name: "Isabella Pires",logo: "/volume/assets/marcas/mono/isabella.png" },
   { id: "kitamo",    name: "Kitamo",        logo: null },
   { id: "4yu",       name: "4YU MKT",       logo: null },
   { id: "argel",     name: "CT Argel Riboli", logo: null },
-  { id: "traxium",   name: "Traxium",       logo: "volume/assets/marcas/mono/traxium.svg" },
+  { id: "traxium",   name: "Traxium",       logo: "/volume/assets/marcas/mono/traxium.svg" },
 ];
 
 /* category filter, narrows the Sumário rail */
@@ -1120,69 +1120,69 @@ function isCase(p) { return CASE_IDS.indexOf(typeof p === "string" ? p : p.id) >
    não entra no índice — nome sem destino frustra quem clica. */
 const PROJECTS = [
   /* ---- os 5 capítulos, na ordem de leitura ------------------------- */
-  { id: "pcyes", shots: ["volume/assets/projetos/pcyes/s1.webp", "volume/assets/projetos/pcyes/s2.webp", "volume/assets/projetos/pcyes/s3.webp", "volume/assets/projetos/pcyes/s4.webp", "volume/assets/projetos/pcyes/s5.webp"],
+  { id: "pcyes", shots: ["/volume/assets/projetos/pcyes/s1.webp", "/volume/assets/projetos/pcyes/s2.webp", "/volume/assets/projetos/pcyes/s3.webp", "/volume/assets/projetos/pcyes/s4.webp", "/volume/assets/projetos/pcyes/s5.webp"],
     title: "PCYES V2", cat: "ecommerce", domain: "E-commerce · Magento", fav: true, chapterId: "pcyes",
-    desc: "Redesign do e-commerce", cover: "volume/assets/projetos/pcyes/cover.webp",
+    desc: "Redesign do e-commerce", cover: "/volume/assets/projetos/pcyes/cover.webp",
     links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" } },
-  { id: "locarmais-conciliacao", shots: ["volume/assets/projetos/locarmais/s1-conciliacao.webp", "volume/assets/projetos/locarmais/s2-origem-dos-dados.webp", "volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", "volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp"],
+  { id: "locarmais-conciliacao", shots: ["/volume/assets/projetos/locarmais/s1-conciliacao.webp", "/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp", "/volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", "/volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp"],
     title: "Locar Mais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
     desc: "Módulo de conciliação financeira", links: { vercel: null, figma: null } },
-  { id: "odex", shots: ["volume/assets/projetos/odex/s1.webp", "volume/assets/projetos/odex/s2.webp"],
+  { id: "odex", shots: ["/volume/assets/projetos/odex/s1.webp", "/volume/assets/projetos/odex/s2.webp"],
     title: "ODEX", cat: "desktop", domain: "Desktop e Web", fav: true, chapterId: "odex",
-    desc: "Redesign de interface", cover: "volume/assets/projetos/odex/cover.webp",
+    desc: "Redesign de interface", cover: "/volume/assets/projetos/odex/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/odex/plataforma/v3", figma: "https://www.figma.com/design/0nApyM8W4IgRwr64pSOfWg/DS--ODEX-?node-id=0-1&t=vAP1IrCmMOrbbiEy-1" } },
-  { id: "oderco-revenda", shots: ["volume/assets/projetos/oderco-revenda/s1.webp", "volume/assets/projetos/oderco-revenda/s2.webp", "volume/assets/projetos/oderco-revenda/s3.webp"],
+  { id: "oderco-revenda", shots: ["/volume/assets/projetos/oderco-revenda/s1.webp", "/volume/assets/projetos/oderco-revenda/s2.webp", "/volume/assets/projetos/oderco-revenda/s3.webp"],
     title: "Oderço", cat: "web", domain: "Web · Landing page", fav: true, chapterId: "oderco-revenda",
-    desc: "Página de cadastro de revenda", cover: "volume/assets/projetos/oderco-revenda/cover.webp", links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null } },
-  { id: "portfolio", shots: ["volume/assets/projetos/portfolio/01-home-splash.webp", "volume/assets/projetos/portfolio/02-home-capitulos.webp", "volume/assets/projetos/portfolio/03-cap-capa.webp", "volume/assets/projetos/portfolio/04-cap-solucao.webp", "volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
+    desc: "Página de cadastro de revenda", cover: "/volume/assets/projetos/oderco-revenda/cover.webp", links: { vercel: "https://oderco-lp-revenda.vercel.app/", figma: null } },
+  { id: "portfolio", shots: ["/volume/assets/projetos/portfolio/01-home-splash.webp", "/volume/assets/projetos/portfolio/02-home-capitulos.webp", "/volume/assets/projetos/portfolio/03-cap-capa.webp", "/volume/assets/projetos/portfolio/04-cap-solucao.webp", "/volume/assets/projetos/portfolio/05-cap-antesdepois.webp"],
     title: "Portfólio", cat: "web", domain: "Website · Manifesto", fav: false, chapterId: "portfolio",
-    desc: "Este volume que você está lendo", cover: "volume/assets/projetos/portfolio/cover.webp",
+    desc: "Este volume que você está lendo", cover: "/volume/assets/projetos/portfolio/cover.webp",
     links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null } },
 
   /* ---- outras peças: entram no índice e linkam pro próprio trabalho -- */
-  { id: "oderco-checkout", shots: ["volume/assets/projetos/checkout/s1.webp"],
+  { id: "oderco-checkout", shots: ["/volume/assets/projetos/checkout/s1.webp"],
     title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,
     desc: "Checkout B2B por nota fiscal, em etapas com revisão",
-    marca: "volume/assets/marcas/mono/oderco.png",
+    marca: "/volume/assets/marcas/mono/oderco.png",
     sobre: "Compra B2B não termina no cartão: termina numa nota fiscal com prazo, e quem aperta o botão vai ter que justificar o pedido para o financeiro depois. Por isso o checkout é lento de propósito nos lugares certos: etapas curtas, uma decisão por vez e uma revisão inteira antes de fechar. Ninguém assina milhares de reais no escuro.", destino: "proto",
-    cover: "volume/assets/projetos/checkout/cover.webp",
+    cover: "/volume/assets/projetos/checkout/cover.webp",
     links: { vercel: "https://ux-oderco.vercel.app/oderco/checkout/v1/checkout?nf=PR", figma: null } },
   { id: "hub-oderco", title: "Hub Oderço", cat: "saas", domain: "SaaS · Ferramenta", fav: false, chapterId: null,
     desc: "Hub que gera material e descrição de produto para 7 marcas",
-    marca: "volume/assets/marcas/mono/oderco.png",
+    marca: "/volume/assets/marcas/mono/oderco.png",
     sobre: "Sete marcas debaixo do mesmo grupo são sete vezes o mesmo trabalho: descrever, montar material, publicar, repetir. Antes do hub, a resposta para em que pé está o produto vinha por mensagem, e cada resposta custava a atenção de duas pessoas. Agora a esteira inteira mora num lugar e a etapa de cada item está na tela, para quem quiser olhar.", destino: "ar",
-    cover: "volume/assets/projetos/hub/cover.webp",
+    cover: "/volume/assets/projetos/hub/cover.webp",
     links: { vercel: "https://powderblue-elephant-709864.hostingersite.com/", figma: null } },
-  { id: "ponto-admin", shots: ["volume/assets/projetos/ponto/s1.webp"],
+  { id: "ponto-admin", shots: ["/volume/assets/projetos/ponto/s1.webp"],
     title: "Worklife", cat: "saas", domain: "SaaS + App · Ponto", fav: false, chapterId: null,
     desc: "Gestão de ponto: painel do gestor e app do diarista",
-    marca: "volume/assets/marcas/produto/worklife.png",
+    marca: "/volume/assets/marcas/produto/worklife.png",
     sobre: "Ponto eletrônico para diarista de hotelaria tem dois donos que não podem dividir a mesma tela. Quem bate o ponto está de pé, na rua, com o celular na mão e dez segundos de paciência. Quem fecha a folha precisa de filtro, exceção e histórico. Desenhei as duas pontas para que o registro saia de uma e chegue na outra sem ninguém redigitar no meio, que é onde a folha costuma sangrar.", destino: "proto",
-    cover: "volume/assets/projetos/ponto/cover.webp",
+    cover: "/volume/assets/projetos/ponto/cover.webp",
     links: { vercel: "https://ponto-snowy.vercel.app", figma: null } },
-  { id: "kitamo-app", shots: ["volume/assets/projetos/kitamo/s1.webp"],
+  { id: "kitamo-app", shots: ["/volume/assets/projetos/kitamo/s1.webp"],
     title: "Kitamo", cat: "mobile", domain: "SaaS · Finanças", fav: false, chapterId: null,
     desc: "Visibilidade de dívida e projeção de contas do mês",
     sobre: "Ninguém perde a conta da própria dívida por preguiça: perde porque ela está espalhada em seis lugares que nunca aparecem juntos. Reunindo tudo numa vista e projetando o mês, a pergunta muda de lugar. Deixa de ser quanto eu devo, que assusta e não orienta, e passa a ser quanto sobra depois de pagar, que dá para decidir em cima.", destino: "ar",
-    cover: "volume/assets/projetos/kitamo/cover.webp",
+    cover: "/volume/assets/projetos/kitamo/cover.webp",
     links: { vercel: "https://kitamo.com.br/", figma: null } },
   { id: "isabella", title: "Isabella Pires", cat: "web", domain: "Website · Arquitetura", fav: false, chapterId: null,
     desc: "Site institucional de arquitetura, do portfólio ao contato",
-    marca: "volume/assets/marcas/mono/isabella.png",
+    marca: "/volume/assets/marcas/mono/isabella.png",
     sobre: "Arquitetura vende pelo olho, então o projeto aparece grande e cedo, sem caixa de texto disputando espaço com a foto. Do portfólio ao contato são poucos passos: quem gosta de um projeto quer falar com quem fez.", destino: "ar",
-    cover: "volume/assets/projetos/isabella/cover.webp",
+    cover: "/volume/assets/projetos/isabella/cover.webp",
     links: { vercel: "https://isabellapiresarquitetura.com.br/", figma: null } },
   { id: "locarmais-site", title: "Locarmais", cat: "web", domain: "Website · Fiança digital", fav: false, chapterId: null,
     desc: "Site da fiadora digital, um pitch para três públicos",
-    marca: "volume/assets/marcas/mono/locarmais.png",
+    marca: "/volume/assets/marcas/mono/locarmais.png",
     sobre: "Fiança digital tem três públicos com desejos opostos: o inquilino quer alugar sem depósito, o proprietário quer garantia e a imobiliária quer fechar rápido. O site conta a mesma história três vezes, cada uma pela dor de quem lê.", destino: "ar",
-    cover: "volume/assets/projetos/locarmais/cover.webp",
+    cover: "/volume/assets/projetos/locarmais/cover.webp",
     links: { vercel: "https://site.locarmais.com/", figma: null } },
   { id: "signamais", title: "Signamais", cat: "saas", domain: "SaaS · Assinaturas", fav: false, chapterId: null,
     desc: "Plataforma de assinaturas",
-    marca: "volume/assets/marcas/mono/signamais.svg",
+    marca: "/volume/assets/marcas/mono/signamais.svg",
     sobre: "Assinatura eletrônica é vendida por quem entende de lei para quem não entende, e o produto costuma sair com a cara do contrato em vez da cara de quem assina. Aqui a sequência é a óbvia: sobe o documento, escolhe quem assina, acompanha quem já assinou. O rigor jurídico continua todo lá, só que embaixo do capô, que é onde ele serve.", destino: "proto",
-    cover: "volume/assets/projetos/signamais/cover.webp",
+    cover: "/volume/assets/projetos/signamais/cover.webp",
     links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null } },
 
   /* ---- fora do índice até terem link publicado ----------------------
@@ -1206,12 +1206,12 @@ const PROJECTS = [
      mais mostrá-los do que citá-los. `destino: "loja"` é o selo próprio. */
   { id: "quantocobro", title: "Quanto Cobro", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
     desc: "Calcula o valor da hora de quem cobra por hora",
-    marca: "volume/assets/marcas/produto/quantocobro.png",
+    marca: "/volume/assets/marcas/produto/quantocobro.png",
     sobre: "Todo freelancer trava na mesma pergunta, e não é técnica: quanto custa. A conta usual começa no preço e torce para sobrar. Esta começa no que precisa sobrar e volta até o preço, descontando o tempo que ninguém paga: proposta, reunião, imprevisto, férias. Cada recebimento já separa o imposto pela faixa real, não pela alíquota cheia. Sem login e sem servidor, porque renda alheia não é dado que eu queira guardar.", destino: "loja",
     links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.quantocobro" } },
   { id: "deixeiaqui", title: "Deixei Aqui", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
     desc: "Marca onde o carro ficou e devolve o caminho de volta",
-    marca: "volume/assets/marcas/produto/deixeiaqui.png",
+    marca: "/volume/assets/marcas/produto/deixeiaqui.png",
     sobre: "Desenhar a seta é fácil. O difícil é admitir que o GPS morre exatamente onde você esquece o carro: subsolo de shopping, garagem de aeroporto, prédio de muitos andares. Então o app mostra o quanto confia no próprio sinal e troca de estratégia sozinho. Sinal firme, siga a seta. Sinal ruim, a foto do pilar e o número do andar assumem. Apontar com falsa certeza seria pior que não apontar.", destino: "loja",
     links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.deixeiaqui" } },
   { id: "remoctrl", title: "Remoctrl", cat: "desktop", domain: "Web app · Controle de TV", fav: false, chapterId: null,
@@ -1220,12 +1220,12 @@ const PROJECTS = [
     links: { vercel: "https://remoctrl.vercel.app/", figma: null } },
   { id: "traxium", title: "Traxium", cat: "saas", domain: "SaaS", fav: false, chapterId: null,
     desc: "Compliance agrologístico de exportação: EUDR, IDTF e TRACES NT",
-    marca: "volume/assets/marcas/mono/traxium.svg",
+    marca: "/volume/assets/marcas/mono/traxium.svg",
     sobre: "Vender grão para a Europa deixou de ser questão de preço e virou questão de prova: é preciso demonstrar que a carga não nasceu em área desmatada, e a exigência chega por três frentes que não conversam entre si, EUDR, IDTF e TRACES NT. A torre de controle põe as três no mesmo lote e responde a única pergunta que o exportador faz de manhã: este embarque sai hoje ou não sai.", destino: "proto",
     links: { vercel: "https://traxium-prototipo.vercel.app/Torre%20de%20Controle%20v2.dc.html", figma: null } },
   { id: "dropchina", title: "DropChina", cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: null,
     desc: "Loja Shopify com catálogo montado por script",
-    marca: "volume/assets/marcas/produto/dropchina.png",
+    marca: "/volume/assets/marcas/produto/dropchina.png",
     sobre: "Catálogo de dropshipping envelhece rápido demais para ser mantido no braço: preço muda, item some, ficha desatualiza. Aqui o ERP é a fonte da verdade e um script derrama o catálogo na loja, então nenhuma hora de design é gasta cadastrando produto. Ela vai inteira para os dois lugares que mexem em venda: a página do produto e o caminho até o carrinho.", destino: "ar",
     links: { vercel: "https://dropchinaoficial.com.br/", figma: null } },
   { id: "web2design", title: "Web2Design", cat: "web", domain: "Ferramenta · Design", fav: false, chapterId: null,
@@ -1305,7 +1305,7 @@ function nextProjectId(id) {
 
 /* ---- the brand seal (hanko stamp) --------------------------------- */
 function Seal({ size = 32, alt = "" }) {
-  return <img src="volume/assets/seal.svg" width={size} height={size} alt={alt} draggable="false" />;
+  return <img src="/volume/assets/seal.svg" width={size} height={size} alt={alt} draggable="false" />;
 }
 
 /* ---- IntersectionObserver reveal: ma pause -> dry cut ------------- */

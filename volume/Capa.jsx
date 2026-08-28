@@ -536,7 +536,7 @@ function QuemSou({ onSobre }) {
             esticar. Medido: nitidez (desvio do laplaciano) 4,80 -> 5,67, e
             o arquivo caiu de 256KB para 101KB em WebP. */}
         <figure className="qs-foto">
-          <img src="uploads/gabrielfelix-foto.webp" width="1290" height="1290"
+          <img src="/uploads/gabrielfelix-foto.webp" width="1290" height="1290"
                alt={t("Retrato de Gabriel Felix Barbosa", "Portrait of Gabriel Felix Barbosa")}
                loading="lazy" decoding="async" draggable="false" />
           <span className="qsf-tone" aria-hidden="true"></span>
