@@ -36,6 +36,15 @@ export const HERO = {
    O parágrafo do meio entra cortado no ponto final de "informação": o resto
    dele fala de IA, e a regra de copy do Gabriel é não vender isso. Nenhuma
    palavra foi trocada, só houve corte. */
+/* A declaração da home. É o MANIFESTO condensado numa frase só, na voz que
+   ele já tinha: nada aqui foi inventado, só cortado. O MANIFESTO inteiro
+   continua abaixo porque migra para /sobre numa fase futura. */
+export const DECLARACAO =
+  "Nunca consegui pensar design e código como duas coisas separadas. " +
+  "Coloco uma tela clicável na mão das pessoas cedo, porque opinião sobre " +
+  "imagem estática é gosto, e opinião sobre uma coisa que a pessoa tentou " +
+  "usar é informação.";
+
 export const MANIFESTO = {
   lead:
     "Nunca consegui pensar design e código como duas coisas separadas. " +

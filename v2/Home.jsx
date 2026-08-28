@@ -1,15 +1,16 @@
-/* Home da V2. Fase 2: dobras 1 a 4 (hero, manifesto, vitrine, marcas).
-   As dobras 5 a 9 entram na Fase 3, abaixo do marquee. */
+/* Home da V2. A ordem das dobras e o spec
+   docs/superpowers/specs/2026-08-28-home-v2-redesign-design.md, decisoes H1 a H8:
+   hero, declaracao, pilha de casos, marcas, processo, onde estive, fita, fecho. */
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky } from "./motion.js";
+import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky, usePilha, usePalavra } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import {
   ALL_MARKS, VOL, PROCESSO, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, MANIFESTO } from "./copy.js";
+import { HERO, DECLARACAO } from "./copy.js";
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -90,24 +91,24 @@ function Hero({ paraCasos }) {
   );
 }
 
-/* ------------------------------------------------------------- 2. manifesto */
+/* ----------------------------------------------------------- 2. declaracao */
 
-function Manifesto() {
-  const rise = useRise();
+function Declaracao() {
+  const palavras = DECLARACAO.split(" ");
+  const { ref, opacidades, quieto } = usePalavra(palavras.length);
   return (
-    <section className="v2-wrap" id="sobre">
-      <Regua />
-      <div className="v2-duas">
-        <Label>Quem eu sou</Label>
-        <div>
-          <motion.p className="v2-manifesto" {...rise(0)}>{MANIFESTO.lead}</motion.p>
-          <div className="v2-manifesto-cols">
-            {MANIFESTO.colunas.map((p, i) => (
-              <motion.p key={i} className="v2-corpo" {...rise(i + 1)}>{p}</motion.p>
-            ))}
-          </div>
-        </div>
-      </div>
+    <section className="v2-declaracao-secao" id="sobre">
+      <p className="v2-declaracao" ref={ref}>
+        {palavras.map((w, i) => (
+          <motion.span
+            key={i}
+            className="v2-declaracao-w"
+            style={quieto ? undefined : { opacity: opacidades[i] }}
+          >
+            {w}{" "}
+          </motion.span>
+        ))}
+      </p>
     </section>
   );
 }
@@ -390,7 +391,7 @@ export default function Home({ ir }) {
       {/* Tudo que vem depois do hero é opaco e sobe por cima dele. Sem este
           fundo, o hero preso aparece por baixo das dobras claras. */}
       <div className="v2-corpo-claro" data-clara="1">
-        <Manifesto />
+        <Declaracao />
         <Marquee />
         <Processo />
         <Casos ir={ir} />
