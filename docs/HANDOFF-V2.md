@@ -1,246 +1,137 @@
-# Handoff: portfólio V2, depois das Fases 6, 7 e 8
+# Handoff: home da V2, depois do redesenho recusado
 
-Reescrito em 2026-08-28, depois das Fases 6 a 8 entregues. Substitui a versão
-anterior e substitui qualquer necessidade de ler transcript.
+Escrito em 2026-08-28, no fim da sessão que reescreveu a home. Substitui a
+versão anterior deste arquivo. Não leia transcript: o repositório, o spec e este
+arquivo têm tudo.
 
 ## Antes de tudo
 
 1. Invoque a skill `token-hygiene` e siga as regras dela na tarefa inteira.
-2. Leia o spec: `docs/superpowers/specs/2026-08-28-portfolio-v2-design.md`. Ele é a
-   fonte das decisões D1 a D8.
-3. Não leia transcripts. O repositório, o spec e este arquivo têm tudo.
+2. Leia, nesta ordem: este arquivo, o spec da home
+   (`docs/superpowers/specs/2026-08-28-home-v2-redesign-design.md`) e o spec da
+   V2 (`docs/superpowers/specs/2026-08-28-portfolio-v2-design.md`, decisões D1 a
+   D8, que continuam valendo para a página de caso).
+3. **Não comece a mexer no visual antes de perguntar.** Ver "A pergunta que abre
+   a próxima sessão", abaixo.
 
-## Postura
+## O estado, em uma frase
 
-Você é um UI designer sênior acostumado a layout de agência: grade larga, respiro
-generoso, tipografia grande e confiante, motion contínuo e discreto. A V2 tem que
-parecer trabalho de estúdio, não template preenchido. Onde o gosto conflitar com
-legibilidade, hierarquia ou acessibilidade, vence a legibilidade, e você diz que
-divergiu.
+A home foi inteiramente reescrita nesta sessão, está funcionando, medida e
+acessível, **e Gabriel não gostou do resultado**. As palavras dele: "não gostei
+muito pra falar a verdade, esperava outra coisa da homepage".
 
-Gabriel decide o visual por comparação de print, não por descrição.
+## O que ele pediu, no começo da sessão
 
-## Estado do código
+Palavras dele, resumidas sem interpretar:
 
-Fases 0 a 8 entregues. As Fases 0 a 5 foram aprovadas pelo Gabriel; as 6, 7 e 8
-foram feitas de uma vez, a pedido dele, e **ainda não passaram pelo print de
-aprovação**. É a primeira coisa a fazer na próxima sessão.
+- a home estava repetitiva: segunda seção lista, terceira lista, quarta grade;
+- os projetos extras não podem ficar tão evidentes, "são projetos extras num
+  portfólio de UX";
+- queria a vibe do `viper-template`, e o que ele mais gostou lá foi **os
+  projetos sendo comidos pelos de cima**;
+- queria imagens de qualidade, motion, fotos em largura total;
+- queria o portfólio "bem apple": fonte massa, espaçamento, motion suave,
+  bonito, "uma experiência dentro do website".
 
-Commits: `9f2ff22` (Fase 6), `d59fc19` (Fase 7), e o commit da Fase 8 logo acima
-deste arquivo.
+## O que foi decidido com ele, por pergunta direta
 
-Arquivos: `v2/{app.jsx, Home.jsx, Case.jsx, Shell.jsx, content.js, copy.js,
-motion.js, tokens.css, shell.css, home.css, case.css, index.template.html}`.
+| Decisão | Escolha dele |
+|---|---|
+| Escopo | refazer a home inteira |
+| Tipografia | trocar por uma grotesk de display |
+| Fonte, por print | **Switzer** (contra Hanken, Inter, Geist, General Sans) |
+| Peças extras | fita de imagens no rodapé, não grade |
+| Processo | três frases, não seis etapas, e não trilho horizontal |
+| Formato dos casos | **linhas de dois cards grudando**, no formato do viper, depois de ver e recusar a versão de painel de foto sangrando |
 
-### O que mudou nas Fases 6 a 8
+## O que existe hoje, na branch
 
-**A grade de fundo saiu.** `.v2-grade` não existe mais em lugar nenhum. Ela era
-seis linhas de `#E6E6E8` sobre branco atravessando parágrafo. No lugar dela:
+Branch `home-v2-redesign`, **não mergeada em `main`**. Onze commits, de
+`177b11a` a `6f0e9c2`.
 
-- a cruz saiu do meio da régua e foi para as duas pontas (`.v2-cruz`, em
-  `shell.css`), onde não precisa de retângulo de papel mascarando a linha;
-- a textura de 5px foi para dentro do painel de mídia (`.v2-textura`, tile SVG
-  gerado em `tokens.css`), nunca na página.
+Ordem da home (`v2/Home.jsx`): hero, declaração, pilha de casos, marcas,
+processo, onde estive, fita de peças. O rodapé vem do Shell.
 
-**A página de caso tem UMA grade.** `label 220 · leitura 640 · nota marginal 300`,
-somando 1240, centrada no container. Toda dobra usa a mesma, então todo label
-começa no mesmo x. `fonte`, `nota` e `leitura`, que competiam com o argumento
-dentro da coluna de leitura, foram para a coluna da direita (`Dobra` ganhou as
-props `topo` e `aside`).
+| Dobra | Tratamento |
+|---|---|
+| Hero | intocado, com a saída por cobertura que já existia |
+| Declaração | uma frase, coluna de 900px, acesa palavra a palavra no scroll |
+| Casos | duas linhas de dois cards; a linha gruda num `top` 40px maior que a anterior e cobre a de cima |
+| Marcas | o marquee de antes, agora entre as duas dobras pesadas |
+| Processo | três frases grandes, sem numeral e sem régua |
+| Onde estive | a timeline de antes, intocada |
+| Peças | uma fita de sete capas correndo, mais uma linha de texto com as sete sem imagem |
+| Rodapé | o `Rodape` do Shell, agora escuro, valendo para todas as rotas |
 
-**Existe um componente de dado e só um.** `Dado` em `Case.jsx`: número → régua de
-1px → rótulo, empilhado, sem caixa. Quando o dado tem proporção, quem a carrega é
-a própria régua. Usado pelas cinco etapas do funil, pelos cinco itens do mapa de
-calor, pela taxa de conversão, pelo achado da busca, pelo ritmo e pelos raios do
-design system.
+Arquivos tocados: `v2/{Home.jsx, Shell.jsx, motion.js, copy.js, tokens.css,
+home.css, shell.css, case.css, index.template.html}` e `tools/home-v2.mjs`.
 
-**`--v2-card` significa uma coisa só: mídia.** Figura, comparador e palco da
-coluna presa. Para o cromo (pill, chip de código) existe `--v2-superficie`.
+## Medido, não achado
 
-**Dezoito dobras viraram quatro movimentos.** `Movimento` abre cada um em largura
-cheia, sem label, com a única régua com cruz da página. Não é índice: não navega,
-não fica preso na tela e não numera seção (D7 continua valendo).
+- Fonte aplicada: `fonteH1` = `Switzer`. A Fontshare serve 400 a 700; o peso 800
+  da Hanken sumiu do projeto inteiro.
+- Pilha grudando: `tops` 96 e 136 com as duas linhas na tela, lombada de 40px.
+- Vão entre casos e marcas: 104px.
+- `axe` sem violação na home e na página de caso, a 1440.
+- Movimento reduzido: pilha vira `relative`, fita para, declaração fica em
+  opacidade 1.
+- Celular a 390px: uma coluna, sem overflow horizontal.
+- `Tab`: um foco por card, duplicata da fita com `tabIndex={-1}`.
 
-**A home perdeu a repetição.** A tríade de vitrine saiu (mostrava três dos quatro
-casos que a lista logo abaixo já mostra). As catorze peças viraram sete na grade,
-só as que têm foto, e as outras sete numa lista de texto atrás de um botão.
+## A pergunta que abre a próxima sessão
 
-**O header perdeu os maneirismos.** Sem sobrescritos `⁰¹ ⁰² ⁰³` e sem o ponto
-accent depois do nome. O que separa os links agora é espaço, peso e um traço que
-cresce no hover.
+O que falhou não é execução, é direção: tudo que ele pediu foi implementado e o
+resultado ainda não é o que ele esperava. **Não redesenhe nada antes de saber o
+quê.** A pergunta útil não é "o que você achou", é uma comparação:
 
-**O pill tem comportamento.** O círculo accent cresce até virar a pílula inteira
-(`.v2-pill-filler`) e a fita de duas setas troca de seta na janela de 12px.
+> Abre o `viper-template` em `~/dev/refs/viper-template.framer.website` e a home
+> em `npm run dev` → `http://localhost:5173/v2/`, lado a lado. Aponta duas
+> telas da ref que você queria e que a home não tem.
 
-## Números medidos a 2026-08-28
+Ele decide visual por comparação de print, nunca por descrição. Print de opção
+A contra opção B funciona; parágrafo descrevendo a proposta não funciona.
 
-Todos com Playwright em `deviceScaleFactor: 1`, depois de rolar a página inteira e
-esperar as animações assentarem.
+Hipóteses do que pode estar faltando, para testar com ele, **não para
+implementar por conta**:
 
-| | antes (Fase 5) | agora |
-|---|---|---|
-| altura da página de caso a 1440 | 29.583px | 35.263px |
-| labels de seção no caso | 18 | 14 |
-| réguas no caso | 23 | 10 |
-| vazio assimétrico à direita do parágrafo | 500px em 40 parágrafos | 80px na maioria, 220px no pior caso |
-| altura da home a 1440 | 8.260px | 7.182px |
-| peças na grade da home | 14 (7 sem imagem) | 7, todas com foto |
+1. A home ficou branca e quieta demais. A ref tem seções de tela cheia, fundo
+   escuro alternado e imagem grande; a nossa só tem uma dobra escura, o hero.
+2. Os cards de caso mostram print de tela dentro de moldura pequena. Ele falou
+   em "fotos em largura total" e isso não sobreviveu à escolha do formato de
+   card, que veio depois.
+3. Falta transição entre seções. Cada dobra começa e termina no branco, e a
+   única passagem trabalhada é hero → corpo.
+4. O material de imagem é desigual: PCYES 33, Locarmais 16, Odex 6, Oderço 5, e
+   Locarmais nem capa tem. Pode não haver foto suficiente para o tratamento que
+   ele imagina, e isso é conversa de conteúdo, não de código.
 
-A página ficou mais alta porque os quatro movimentos e o vão entre dobras entraram
-no lugar das réguas. O ganho não é comprimento, é hierarquia.
+## Armadilhas custaram tempo nesta sessão
 
-O pior caso de 220px é a coluna presa da ponte (`.v2-preso-passo .v2-corpo`), que
-tem 52ch dentro de uma coluna de 52% ao lado da mídia presa. É composição, não
-sobra.
+- `npm run build` **não** emite `dist/v2/`. Use `BUILD_V2=1 npm run build`
+  (`build.mjs:41`).
+- O servidor estático não faz fallback de rota: `/v2/case/pcyes` responde 404 e
+  você acaba medindo a página de erro. Para conferir a página de caso, abra
+  `/v2/` e clique num card.
+- `position: sticky` só gruda dentro do bloco que o contém. Dar um invólucro
+  por elemento grudado equivale a não grudar. Os elementos grudados são filhos
+  diretos da seção, e nenhum ancestral pode ter `overflow` diferente de
+  `visible` nem `transform`.
+- Espaço no fim de um `inline-block` é descartado. Na revelação por palavra, o
+  espaço fica fora do span.
+- `pkill -f chromium` mata o próprio shell quando a palavra aparece no comando.
+  Use `pkill -f "[h]eadless_shell"` numa chamada separada.
+- Verificação: `node tools/home-v2.mjs medidas` e `... prints` (precisa do
+  servidor em 8793). `axe-core` sai de `ct-boxe/node_modules`, leitura apenas.
 
-### Fase 8, verificado
+## Se ele mandar recomeçar a home
 
-- **axe-core**: zero violação nas duas páginas, a 1440. Duas foram corrigidas nesta
-  rodada: `heading-order` (`.v2-proc-t` virou `h2`, `.v2-preso-t` virou `h3`) e
-  `color-contrast` em `.v2-par-tema`, que herdava a cor do token demonstrado e
-  ainda levava `opacity: .7` (2,93:1). Agora é tinta de legenda.
-- **Sem overflow horizontal** em 2560, 1920, 1600, 1440, 1280, 1100, 900, 810, 768,
-  600, 480, 390 e 360, nas duas páginas.
-- **Zero erro de console** em todas essas larguras.
-- **`prefers-reduced-motion: reduce`**: nenhum elemento revelado carrega `transform`
-  residual; só opacidade se move.
-- **Comparador com teclado**, idêntico nos dois modos: seta 2%, Shift 10%, Home 0,
-  End 100, `role="slider"` com `aria-valuetext`.
-- **`node build.mjs` sem `BUILD_V2` não gera `dist/v2/`.**
-- Peso local (dev, sem minificar): `app.js` 473KB, `v2.css` 37,9KB. A home carrega
-  9 requisições e 837KB; o caso, 10 e 1.125KB. Nós do DOM: 404 na home, 1.049 no
-  caso. Imagens: 28 na home, todas `lazy`; 38 no caso, 37 `lazy` (a capa do hero é
-  a única ansiosa, e é a que está acima da dobra).
-- **Lighthouse não rodou**: não está instalado nesta máquina e instalar puxaria
-  dependência para o repositório. Os números acima cobrem o que ele mediria de
-  útil aqui. `axe-core` foi instalado fora do repositório, em scratchpad.
+A branch inteira é descartável: `main` está intacta em `22b05d0`. O que vale a
+pena preservar de qualquer forma, porque foi decidido por print e não por gosto
+do agente:
 
-## Regras que já custaram tempo
+- Switzer, e a escala de `tokens.css` que veio com ela;
+- as peças extras fora da hierarquia principal;
+- o processo em três frases;
+- o rodapé escuro.
 
-- `volume/*` é **congelado**. Não edite nada lá. A V2 só lê `window`.
-- React não é bundlado: `react` e `react-dom/client` resolvem para `window.React` e
-  `window.ReactDOM` via plugin em `build.mjs`. A lista de exports é gerada de
-  `Object.keys(require("react"))`; escrita à mão ela quebra.
-- `buildV2()` só roda com `--serve` ou `BUILD_V2=1`. Produção não emite `dist/v2/`.
-  Não mexa em `vercel.json` e não publique.
-- Sem travessão em texto de site. Sem venda de IA. Ver a memória `gabriel-copy-rules`.
-- Nunca `pkill -f "node build.mjs"` nem `pkill -f headless_shell`: o padrão casa com
-  a própria linha de comando do shell e mata a sessão. Pare pelo PID ou pela porta.
-- O CSS da V2 é concatenado à mão em `buildV2Css()`. **Arquivo `.css` novo em `v2/`
-  precisa entrar na lista `ordem`** dentro de `build.mjs`, senão ele nunca é servido.
-- **Só um servidor de dev por vez.** Antes de subir servidor, rode
-  `ps -eo pid,args | grep '[b]uild.mjs'` e mate os órfãos por PID.
-- **`IntersectionObserver` conta interseção de área zero como interseção.** Por isso
-  `useSobreEscuro` em `app.jsx` é listener de scroll com faixa fixa de 72px. Bloco
-  escuro no meio da página se declara com `data-escuro-corpo`.
-- **Imagem no fluxo dentro de dobra de altura fixa impõe a altura intrínseca dela.**
-  A capa do hero é `position: absolute` dentro de um container `relative`.
-- **`useScroll` congela dentro de elemento `sticky`.** Nada de parallax dentro do
-  hero preso.
-- **Medir contraste com axe exige esperar a animação.** A entrada agora dura 1,2s;
-  medindo antes disso o axe pega o texto em opacidade parcial e acusa 44 violações
-  de contraste que não existem. Espere 3s depois de rolar.
-- **Especificidade de classe composta não cai sozinha em media query.**
-  `.v2-dados.is-funil` sobrevivia ao `.v2-dados { grid-template-columns: 1fr }` do
-  mobile e estourava a página a 390. Toda variante composta precisa da própria
-  linha no breakpoint.
-
-## As referências, medidas
-
-Todas em `~/dev/refs/`, clonadas com a skill `clonar-site`. São templates pagos:
-**nada delas entra no repositório**. Você lê para entender medida e técnica, e
-escreve o seu do zero. Não leia `framerusercontent.com` nem `updates.framer.com`:
-são centenas de MB de asset.
-
-O que já foi extraído e aplicado (não precisa medir de novo):
-
-- **viper.** Container 1800. Contador 128px `lh 148` `ls -10px`. A cruz de 9×9 na
-  ponta do separador, com a linha em `flex: 1 0 0` e `opacity: .65`. `BG Pattern`
-  de 5px dentro do card, `opacity: .25`. Spring `stiffness 200`, damping 60 e 70.
-  O pill com `Filler` que vai a 95% e duas setas empilhadas numa janela de 18px.
-  Componente de dado: número → régua → rótulo, sem borda, sem fundo, sem raio.
-- **porto.** Botão com camada que varre a partir da borda. Não usado: a V2 ficou
-  com o filler da viper, que é o mesmo gesto melhor resolvido.
-- **launchfolio.** Tween `[0.4, 0, 0.2, 1]` com atrasos longos. Aplicado no pé do
-  hero da home (`useTardio`).
-- **maxfolio.** Painel de vidro sobre a mídia: `backdrop-filter: blur(9px)`, borda
-  de 1px. Aplicado no botão "Abrir" que aparece no hover dos cards de peça.
-- **tabfolio.** Stagger de 0.1 em seis passos, duração 1.1. Virou o stagger global
-  de 0.12 e a duração de 1.2.
-
-As duas conclusões que continuam valendo:
-
-1. Nenhuma das cinco referências deixa vazio à direita da coluna de texto.
-2. Nenhuma das cinco põe um bloco de número dentro de uma caixa.
-
-## O que fazer agora
-
-1. **Print para o Gabriel aprovar.** As Fases 6 a 8 não passaram por isso. Os
-   pontos que ele mais provavelmente vai olhar: a fileira de cinco dados do funil,
-   a virada de movimento, o pill no hover, e a dobra de peças fechada.
-2. Se ele aprovar, a decisão seguinte é de escopo, não de código: publicar `/v2`
-   exige rever D6 e `vercel.json`, e isso é decisão dele.
-
-## Dívidas conhecidas
-
-- **Não existe vídeo nem gif de protótipo.** Confirmado com Gabriel em 2026-08-28:
-  pretende gravar um do fluxo inteiro mais tarde. Quando aparecer, entra no lugar
-  dos prints parados do módulo "O acabamento", com `loop`, `playsinline`, mudo e
-  `preload="metadata"`.
-- **`v2/copy.js` duplica texto.** O hero mora em `volume/Capa.jsx` e o manifesto em
-  `volume/Posfacio.jsx`, congelados, que não publicam nada em `window`. As strings
-  foram copiadas literalmente com a origem anotada. Some no dia em que `data.jsx`
-  publicar essas chaves.
-- **Quatro peças não têm imagem no repositório** (dropchina, 4yu, remoctrl, traxium).
-  Hoje elas vivem na lista de texto fechada. Se as capas aparecerem, elas sobem
-  sozinhas para a grade, sem mudança de código: o filtro é `p.cover || p.shots[0]`.
-- **`painel` e `notaSuporte` do pcyes não estão na página.** Ficaram de fora porque
-  `funil` dá o mesmo dado com mais detalhe. Se Gabriel pedir, é meia hora.
-- **`sticky` está no teto.** O spec permite duas aparições: a linha do tempo da home
-  e a ponte da V1.2 no caso. Uma terceira precisa de decisão do Gabriel.
-- **As primitivas de hero moram em `home.css`** e são usadas também pelo caso
-  (`.v2-hero`, `.v2-hero-in`, `.v2-hero-topo`, `.v2-hero-h`, `.v2-hero-linha`). Se
-  uma terceira página usar, mova para `shell.css`.
-- **O funil cai um degrau de tamanho.** É o único lugar da página onde o número do
-  componente de dado sai da escala: cinco etapas em fileira não cabem em 128px, e
-  quebrá-las em duas linhas destrói o argumento do despencar.
-
-## Como rodar e verificar
-
-```bash
-cd /home/gabrielbarbosa/dev/gabriel/portfolio
-ps -eo pid,args | grep '[b]uild.mjs'   # mate órfãos por PID antes de subir
-PORT=5190 node build.mjs --serve       # / é a V1, /v2 é a V2
-BUILD_V2=1 node build.mjs              # build único com V2
-node build.mjs                         # produção: não deve gerar dist/v2
-```
-
-Print (o caminho que funciona nesta máquina):
-
-```js
-import pkg from '/home/gabrielbarbosa/.claude/node_modules/playwright/index.js';
-const { chromium } = pkg;   // é CommonJS: import nomeado falha
-```
-
-Rode com `LD_LIBRARY_PATH=$HOME/.local/chromedeps/usr/lib/x86_64-linux-gnu`, salve em
-jpeg qualidade 72 com `deviceScaleFactor: 1`, e feche o browser no fim do script.
-Para print de uma dobra específica, role por seletor (`getBoundingClientRect().top`)
-e não por coordenada fixa: a página carrega imagem com `loading="lazy"` e as
-coordenadas mudam entre execuções.
-
-## Pronto quando
-
-Tudo abaixo está verificado hoje, e é o que a próxima sessão precisa manter:
-
-- `/v2` e `/v2/case/pcyes` rodam sem erro de console de 360 a 2560.
-- Nenhuma linha de fundo atravessa parágrafo.
-- Nenhum parágrafo sobra com mais de 220px de vazio assimétrico à direita.
-- Todo número da página usa o mesmo componente de dado, e o painel cinza significa
-  só mídia.
-- O botão tem preenchimento e troca de seta no hover.
-- A V1 continua idêntica e `node build.mjs` sem `BUILD_V2` não gera `dist/v2/`.
-- Com `prefers-reduced-motion: reduce`, só opacidade se move.
-- A página de caso não tem índice.
-- axe-core sem violação nas duas páginas.
-
-O único item em aberto: **Gabriel ainda não aprovou o print das Fases 6 a 8.**
+O que está em aberto é a dobra dos casos e o ritmo geral da página.
