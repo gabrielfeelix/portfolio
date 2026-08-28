@@ -169,7 +169,7 @@ function Splash({ onRead, onContact, onRapido, lit }) {
             ["a pesquisa à tela", "o dado à decisão", "a dúvida ao teste", "a ideia ao ar"],
             ["research to screen", "data to decision", "doubt to a test", "the idea live"])} /></span>
         </h1>
-        <p className="splash-sub">{t("Antes de desenhar, eu assisto", "Before I design, I watch")} <span className="red">{t("o usuário usar", "users use it")}</span>{t(". É de lá que saem as decisões.", ". That's where the decisions come from.")}</p>
+        <p className="splash-sub">{t("Antes de desenhar, eu assisto", "Before I design, I watch")} <span className="red">{t("sessão de usuário", "session recordings")}</span>{t(". É de lá que saem as decisões.", ". That's where the decisions come from.")}</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>{t("Começar a ler", "Start reading")} <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Bora conversar", "Let's talk")}</a>
@@ -329,7 +329,7 @@ function Diferencial() {
       <div className="shell">
         <div className="dif-left">
           <p className="dif-statement">
-            {t("Chego nas conversas difíceis com", "I walk into hard conversations with")} <b>{t("gravação de sessão", "session recordings")}</b> {t("em vez de opinião, e mudo de direção quando o dado", "instead of an opinion, and I change direction when the data")} <span className="red">{t("me desmente", "proves me wrong")}</span>. {t("No maior projeto deste volume, foi exatamente o que aconteceu.", "In the biggest project in this volume, that is exactly what happened.")}
+            {t("Levo o dado para a", "I take the data into the")} <b>{t("conversa difícil", "hard conversation")}</b>{t(", e mudo de direção quando ele", ", and I change direction when it")} <span className="red">{t("me contraria", "contradicts me")}</span>. {t("Foi o que aconteceu no projeto que abre este volume, e o redesenho inteiro mudou de alvo.", "That is what happened in the project that opens this volume, and the whole redesign changed target.")}
           </p>
         </div>
         <div className="dif-right">

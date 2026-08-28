@@ -1479,7 +1479,7 @@ function Decisoes({ chap, figN = {} }) {
     <>
       <div className="sec-head" style={{ margin: "0 0 var(--ma-3)" }}>
         <Brush as="h2" style={{ fontSize: "var(--t-d2)" }}>{t("O que o projeto passou a defender", "What the project came to stand for")}</Brush>
-        <span className="kicker">{t("o porquê de cada corte", "the why behind each cut")}</span>
+        <span className="kicker">{t("a razão de cada uma", "the reason behind each one")}</span>
       </div>
       {/* cada decisão é um beat de largura cheia, alternando o lado do número.
           A grade de cards iguais lia como lista de features; assim lê como
@@ -1585,7 +1585,6 @@ function Solucao({ chap }) {
             <div className="sol-intro-cols">
               {chap.solucao.p.map((para, i) => <p className="beat-p" key={i}>{renderPH(para)}</p>)}
             </div>
-            <div className="ai-note"><span className="b"></span> {t("Protótipo → produto no ar", "Prototype → product, live")}</div>
             <ProtoLinks links={chap.links} />
           </div>
         </div>
@@ -1955,7 +1954,7 @@ function Respiro({ ato }) {
       <div className="respiro-banda">
         <span className="respiro-kanji" lang="ja" translate="no" aria-hidden="true">{ato.kanji}</span>
         <div className="respiro-texto">
-          <span className="respiro-n">{t("Ato", "Act")} {ato.n}<span className="respiro-de" aria-hidden="true"> · {ato.n === "I" ? "1" : ato.n === "II" ? "2" : ato.n === "III" ? "3" : "4"}/4</span></span>
+          <span className="respiro-n">{t("Ato", "Act")} {ato.n}<span className="respiro-de" aria-hidden="true"> · {ato.pos}/{ato.total}</span></span>
           <span className="respiro-t">{t(ato.t[0], ato.t[1])}</span>
         </div>
         <span className="respiro-risco" aria-hidden="true"></span>
@@ -1999,7 +1998,19 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
      o próximo, então o marcador vem do mesmo dado do índice e um
      capítulo sem aquele ato não ganha uma virada que não existe. */
   const atos = indiceDo(chap);
-  const ato = (i) => atos[i] || null;
+  /* o ato é buscado pela chave, não pela posição: `indiceDo` remove ato
+     que ficou sem seção, e num capítulo sem o ato II (oderco, portfolio)
+     o índice posicional fazia a faixa do ato III aparecer no lugar do II
+     e a do IV antes das decisões. */
+  /* o ato carrega a própria posição na sequência que o leitor vê, e não
+     o número fixo da taxonomia: num capítulo sem o ato II (oderco,
+     portfolio) a faixa dizia "Ato III · 3/4" logo depois de "Ato I", e
+     o leitor contava três faixas terminando em "4/4". */
+  const ROMANO = ["I", "II", "III", "IV"];
+  const ato = (k) => {
+    const i = atos.findIndex((a) => a.k === k);
+    return i < 0 ? null : { ...atos[i], n: ROMANO[i] || atos[i].n, pos: i + 1, total: atos.length };
+  };
   return (
     <main key={chap.id} className="chapter-main">
       <Tobira chap={chap} onHome={onHome} />
@@ -2026,7 +2037,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         {/* ATO I · a cena e o buraco. A banda anuncia o primeiro ato
             como anuncia os outros três: sem ela o "Ato II" caía do céu,
             porque o leitor nunca tinha visto o "Ato I". */}
-        <Respiro ato={ato(0)} />
+        <Respiro ato={ato("cena")} />
         <Sec id="abertura"><Abertura chap={chap} figN={figN} /></Sec>
         <Sec id="problema"><Problema chap={chap} figN={figN} /></Sec>
         <Sec id="painel"><Painel dados={chap.painel} /></Sec>
@@ -2038,7 +2049,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             acabou de ver ser feita. É a virada do capítulo. */}
         <Sec id="funil"><Funil dados={chap.funil} /></Sec>
 
-        <Respiro ato={ato(1)} />
+        <Respiro ato={ato("dado")} />
 
         {/* ATO II · o que o dado disse. O gesto e a busca vêm antes da
             investigação porque são o que mandou olhar para onde ela
@@ -2049,7 +2060,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Sec id="investigacao"><Investigacao chap={chap} figN={figN} /></Sec>
         <Citacao dados={chap.citacao} />
 
-        <Respiro ato={ato(2)} />
+        <Respiro ato={ato("resolvi")} />
 
         {/* ATO III · como eu resolvi. `recusei` abre o ato porque o que
             ficou de fora é a primeira decisão; `sistema` traz o
@@ -2067,7 +2078,7 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <div className="vao-ato"></div>
         <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
 
-        <Respiro ato={ato(3)} />
+        <Respiro ato={ato("mudou")} />
 
         {/* ATO IV · o que mudou */}
         <Sec id="solucao"><Solucao chap={chap} /></Sec>

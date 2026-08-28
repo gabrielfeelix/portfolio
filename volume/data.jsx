@@ -279,7 +279,7 @@ const CHAPTERS = [
     },
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
-      p: ["Nada disso saiu de relatório. Saiu de assistir sessão gravada no Clarity, cruzar com métrica de navegação e conversar com quem estava tentando comprar.",
+      p: ["Nada disso saiu de relatório. Saiu do Clarity, de métrica de navegação e de conversa com quem estava tentando comprar.",
           "Assisti as sessões inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É trabalho lento, e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
           "A diretoria queria uma direção minimalista, com foco em valor de marca, e o comportamento no site apontava para o outro lado. Levei as gravações para a reunião e propus um terceiro caminho, com a marca presente em momentos escolhidos e o caminho de compra como eixo do site. O modelo final foi aprovado."],
       achados: [
@@ -337,7 +337,7 @@ const CHAPTERS = [
       itens: [
         { o: "Trocar uma home institucional por outra", r: "A direção minimalista que chegou pronta resolvia a estética e mantinha o produto fora da primeira dobra. Levei as gravações para a reunião e propus o contrário do que tinham pedido." },
         { o: "Apagar a marca do site", r: "Depois de virar a mesa, o caminho fácil seria transformar tudo em vitrine seca, mas a PCYES tem personalidade e ela vende, então a marca continuou, com hora e lugar marcados." },
-        { o: "Abrir chamado e esperar", r: "O bug do módulo de pagamento travava compra de verdade. Diagnosticar não era o meu papel, mas era o que destravava a etapa mais cara do funil." },
+        { o: "Abrir chamado e esperar", r: "O bug do módulo de pagamento travava compra. Diagnosticar não era o meu papel, mas era o que destravava a etapa mais cara do funil." },
       ],
     },
     solucao: {
@@ -656,7 +656,7 @@ const CHAPTERS = [
     },
     investigacao: {
       t: "Junto de quem opera todo dia",
-      p: ["Trabalhei junto da equipe financeira, que era quem operava o processo todo dia, e acompanhei a rotina real de conferência para entender onde estava o esforço e onde apareciam os erros.",
+      p: ["Trabalhei com a equipe financeira e acompanhei a rotina real de conferência, para entender onde estava o esforço e onde apareciam os erros.",
           "Também fiz benchmarking de plataformas de conciliação já consolidadas no mercado, para usar o vocabulário que profissionais da área já dominam e não inventar termo novo onde já existe um."],
       achados: [
         "A maior parte dos lançamentos fecha sozinha, e o tempo do time ia embora procurando a minoria divergente no meio da maioria correta. Conciliar, na prática, é achar o que não bate.",
@@ -740,7 +740,7 @@ const CHAPTERS = [
       p: ["O sistema é operado por gestores e diretoria, então a avaliação aconteceu com eles, que são os usuários reais. Cada versão foi entregue como protótipo navegável, com comentários registrados em cima das telas, e ajustada antes da versão seguinte."],
       achados: [
         "Os caminhos funcionavam havia anos e ninguém pedia para mudá-los.",
-        "O sistema é operado por gestores e diretoria, um grupo pequeno e nominal, então dava para validar cada versão com o usuário real em vez de com uma amostra.",
+        "O que incomodava era sempre a superfície: o que a tela mostrava primeiro, o peso do texto, a idade do layout.",
       ],
     },
     decisoes: [
@@ -748,7 +748,7 @@ const CHAPTERS = [
       { d: "Linguagem visual nova, percurso intacto", r: "porque em sistema com anos de uso, mudar a aparência sem mudar o percurso é a diferença entre modernizar e atrapalhar." },
       { d: "App redesenhado nas telas principais", r: "porque a superfície mobile precisa falar a mesma língua. Hoje está em protótipo: a implementação ainda não entrou no roadmap." },
       { d: "Assumi a implementação do site", r: "porque a entrega estava presa a um evento com data fechada e o time de desenvolvimento não tinha janela. Fui direto ao Magento: alterei o código da home, criei e indexei as categorias, refiz cabeçalho e rodapé e ajustei os redirecionamentos." },
-      { d: "Validação com gestores e diretoria", r: "porque são eles que operam o sistema todo dia, e opinião de quem não usa o produto não serve de critério." },
+      { d: "Validação com gestores e diretoria", r: "porque opinião de quem não usa o produto todo dia não serve de critério." },
     ],
     solucao: {
       t: "A superfície inteira, sem reaprender nada",
@@ -997,7 +997,7 @@ const COMPANIES = [
     anos: "2026 →", atual: true,
     note: "PCYES, Odex, Tonante, Vinik, Skul",
     logo: "/volume/assets/logos/mono/oderco.png", logoInv: "/volume/assets/logos/mono-inv/oderco.png",
-    blurb: "Hoje. Designer único de uma distribuidora nacional, tocando cinco marcas em três frentes ao mesmo tempo.",
+    blurb: "Designer único de uma distribuidora nacional, tocando cinco marcas em três frentes ao mesmo tempo.",
     abre: "Sou o único designer de uma distribuidora nacional com cinco marcas próprias. E-commerce, plataforma e sistema interno rodando ao mesmo tempo, sem ninguém acima para revisar. A fila é minha, e a prioridade também.",
     falaApos: 2,
     fala: "A diretoria queria minimalismo, a gravação de sessão mostrava gente desistindo antes de comprar, e o que eu propus foi não escolher nenhum dos dois: separar as camadas.",
