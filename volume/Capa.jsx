@@ -174,14 +174,12 @@ function Splash({ onRead, onContact, onRapido, lit }) {
           <button className="btn btn-primary" onClick={onRead}>{t("Começar a ler", "Start reading")} <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Bora conversar", "Let's talk")}</a>
         </div>
-        {onRapido ? (
-          <a className="splash-rapido" href="#/rapido" onClick={(e) => { e.preventDefault(); onRapido(); }}>
-            {t("Sem tempo? O volume em 2 minutos", "In a hurry? The volume in 2 minutes")} <span className="arr" aria-hidden="true">→</span>
-          </a>
-        ) : null}
       </div>
-      {/* terceira chamada do hero: fica, mas com peso de dica — o botão
-          primário e o atalho de 2 minutos carregam a navegação */}
+      {/* O atalho "Sem tempo? O volume em 2 minutos" saiu daqui a pedido
+          do Gabriel: era a QUARTA chamada da mesma tela (ler, conversar,
+          2 minutos, rolar) e a única que pedia desculpa pelo próprio
+          volume. A rota `#/rapido` continua viva e continua sendo
+          gerada — só não tem mais porta na capa. */}
       <button className="splash-scroll quiet" onClick={onRead} aria-label={t("Rolar para ler", "Scroll to read")}>
         <span className="ss-mouse"><span className="ss-wheel"></span></span>
         <span className="ss-label">{t("Role para ler", "Scroll to read")}</span>
@@ -528,8 +526,19 @@ function QuemSou({ onSobre }) {
           </a>
         </div>
 
+        {/* O arquivo era um PNG de 400x400 (foto de perfil de rede social)
+            e a caixa chega a 516x645 CSS: em tela de densidade 2 o browser
+            esticava ~3,2x, e com `cover` a partir de fonte quadrada só uns
+            320x400px reais preenchiam tudo aquilo. Não há original maior.
+            O que dá pra fazer sem inventar detalhe: ampliar por Lanczos na
+            resolução exata que a caixa pede e aplicar a nitidez NESSA
+            escala, em vez de entregar 400px moles e deixar o browser
+            esticar. Medido: nitidez (desvio do laplaciano) 4,80 -> 5,67, e
+            o arquivo caiu de 256KB para 101KB em WebP. */}
         <figure className="qs-foto">
-          <img src="uploads/gabrielfelix-foto.png" alt={t("Retrato de Gabriel Felix Barbosa", "Portrait of Gabriel Felix Barbosa")} loading="lazy" draggable="false" />
+          <img src="uploads/gabrielfelix-foto.webp" width="1290" height="1290"
+               alt={t("Retrato de Gabriel Felix Barbosa", "Portrait of Gabriel Felix Barbosa")}
+               loading="lazy" decoding="async" draggable="false" />
           <span className="qsf-tone" aria-hidden="true"></span>
           <figcaption className="qsf-cap">{AUTOR} · {t("Maringá, PR", "Maringá, Brazil")}</figcaption>
         </figure>
