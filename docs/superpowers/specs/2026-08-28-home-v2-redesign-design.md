@@ -42,13 +42,23 @@ imagem em vez de competir com ela. Servida pela Fontshare
 com `system-ui` de fallback. `--v2-font` em `tokens.css` passa a apontar para ela,
 e a escala tipográfica é reaferida porque a métrica muda.
 
-**H3. Os casos viram uma pilha grudada.** Quatro painéis de `88vh`, cada um
-`position:sticky` com `top` crescente, no padrão do `viper-template` (medido:
-`top:70px` e `top:110px` em painéis consecutivos). O painel N sobe e cobre o N−1;
-o coberto perde escala para `0.94` e recebe um véu escuro. Dentro do painel, imagem
-em largura cheia com parallax de 8%, e sobre ela numeral, título em display,
-descritor e domínio. O painel inteiro é o link do caso. Substitui a `CasoLinha`
-atual.
+**H3. Os casos viram uma pilha grudada de linhas de dois.** Corrigido em
+2026-08-28, depois do primeiro print: a versão de painel de foto sangrando em
+`88vh` foi feita, vista e recusada por Gabriel, que preferiu o tratamento do
+`viper-template`. O formato final é o da ref, medido nela: os casos andam em
+**linhas de dois cards**, e a linha inteira é que gruda, num `top` 40px maior
+que a anterior (`top:70px` e `top:110px` na ref). A linha seguinte sobe e cobre
+a anterior, sobrando a lombada de 40px.
+
+O card é moldura clara, não foto sangrando: fundo `--v2-superficie`, borda de
+1px, raio de mídia, a imagem embutida com 10px de respiro e a legenda embaixo
+(título e descritor à esquerda, domínio à direita). Medida da ref: 658 por 526.
+A mídia é 16/10, e não 4/3: print de produto é largo, e num box de 4/3 o `cover`
+cortava o texto da tela no meio da palavra.
+
+A escala do coberto cai só para 0.97, porque quem separa as camadas é a
+lombada, não o encolhimento. Quatro casos dão duas linhas. Locar Mais, que não
+tem foto de capa, recebe a capa de marca, mesma solução da V1.
 
 **H4. O manifesto vira uma declaração.** Uma frase só, em `--v2-t-manifesto`,
 revelada palavra a palavra no scroll. Os dois parágrafos de apoio saem da home e
@@ -80,7 +90,7 @@ marquee de marcas (que muda de posição, não de forma) e a timeline de `OndeEs
 
 1. Hero, largura cheia, escuro, saída por cobertura
 2. Declaração, coluna estreita, revelação por palavra
-3. Pilha de casos, largura cheia, quatro painéis grudados
+3. Pilha de casos, duas linhas de dois cards, grudadas
 4. Marcas, marquee fino, respiro
 5. Processo, três frases, coluna larga
 6. Onde estive, timeline com logo
@@ -101,9 +111,13 @@ empilhados normais e a declaração aparece inteira.
 
 ## Riscos
 
-- **Pilha grudada em telas baixas.** `88vh` com quatro painéis exige que o conteúdo
-  interno caiba em 500px de altura útil. Abaixo de 600px de viewport a pilha
-  desliga e vira lista vertical de painéis.
+- **Pilha grudada no celular.** Duas colunas em 390px dariam card de 170px, que
+  não mostra tela de produto nenhuma. Abaixo de 860px a pilha desliga e vira
+  uma coluna. O mesmo vale para `prefers-reduced-motion`.
+- **Curso de scroll.** A pilha precisa de altura sobrando depois que a última
+  linha gruda, senão a travessia acaba antes de ser vista. Medido: sem isso os
+  tops iam de 96 para -354 em 1000px. Resolvido com 44vh de margem por linha e
+  48vh de rodapé na seção.
 - **Peso das imagens.** Quatro imagens em largura cheia mais duas fitas. Todas WebP,
   `loading="lazy"` fora do primeiro painel, e o primeiro painel entra em preload.
 - **Troca de fonte.** Muda a métrica de tudo, inclusive da página de caso, que não é

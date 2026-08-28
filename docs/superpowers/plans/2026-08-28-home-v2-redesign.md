@@ -972,3 +972,25 @@ git commit -m "fix(a11y): contraste e foco na home nova"
 Atualizar `docs/HANDOFF-V2.md` e `docs/STATE.md` com a home nova, citando os
 commits. O spec `2026-08-28-home-v2-redesign-design.md` é a fonte das decisões H1
 a H8 e não deve ser reescrito, só referenciado.
+
+---
+
+## Desvios registrados na execução
+
+1. **Task 5, formato dos casos.** A pilha de painéis de foto sangrando em `88vh`
+   foi implementada, vista em print e recusada por Gabriel, que preferiu o
+   tratamento do `viper-template`: linhas de dois cards claros, com a linha
+   inteira grudando. Refeita nesse formato. O spec H3 foi corrigido.
+2. **Task 5, estrutura do sticky.** A primeira versão dava um invólucro por
+   painel; sticky só gruda dentro do bloco que o contém, então painel de 88vh
+   em invólucro de 92vh não grudava (medido: tops negativos). Os elementos
+   grudados passaram a ser filhos diretos da seção.
+3. **Task 7, uma fita e não duas.** Só sete peças têm foto, e três por fita não
+   enchem 1440px: o loop mostraria o vão da costura. Ficou uma fita de sete,
+   duplicada, mais uma linha de texto com as sete peças sem imagem.
+4. **Task 9, piso da declaração.** O piso de opacidade 0.16 reprovou em
+   contraste no axe. Subiu para 0.45, que é o mínimo que dá 3:1 em texto grande.
+5. **Build.** `npm run build` sozinho não emite `dist/v2/`: precisa de
+   `BUILD_V2=1` (`build.mjs:41`). Os comandos do plano foram corrigidos.
+6. **Bug de renderização.** A declaração saía sem espaço entre palavras: espaço
+   no fim de um `inline-block` é descartado. O espaço passou para fora do span.
