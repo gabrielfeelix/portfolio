@@ -3,6 +3,8 @@
 Guia curto para revisar os 5 capítulos, a home, o método e o posfácio sem produzir cinco vozes diferentes.
 Todos os exemplos são texto seu. **Nada aqui foi inventado — foi destilado.**
 
+**Estado (28/08):** aplicado na home e no método (9fbbbe8) e no capítulo `pcyes` (56cb02e). Faltam `locarmais`, `odex`, `oderco` e `portfolio`. Comece pela Regra C nesses quatro: ela decide a ordem das seções, e mexer em frase antes disso é retrabalho.
+
 ---
 
 ## A descoberta que define este guia
@@ -78,7 +80,7 @@ Nenhuma afirmação sobre o seu trabalho viaja sozinha. Ou vem com número, ou c
 
 ### 3. Admite o limite
 É o que mais te faz parecer sênior, e você já faz naturalmente. Não corte na revisão.
-- **Sim:** "Ele corrigiu a minha própria leitura: eu suspeitava do checkout, e o dado mostrou que quem chega lá converte a 25%."
+- **Sim:** "Perdi a aposta aqui. Quem chega ao checkout compra a 25%, um em cada quatro, então a última tela nunca foi o buraco principal, nem antes nem depois do conserto que eu tinha acabado de fazer nela." (`funil.nota`, reescrito em 56cb02e)
 - **Não:** qualquer versão que esconda que você mudou de ideia.
 
 ### 4. Uma ideia por frase
@@ -125,13 +127,15 @@ Você tem o hábito de escrever a conclusão que o leitor já ia tirar sozinho. 
 
 ---
 
-## 06 — As duas regras novas
+## 06 — As três regras novas
 
-Estas não existem no texto hoje. São elas que consertam o "repetitivo" e o "não parece humano".
+A e B consertam o "repetitivo" e o "não parece humano". C, escrita depois de 56cb02e, conserta o que sobra quando A e B já foram aplicadas e o capítulo continua sem história.
 
 ### Regra A — o ponto não pode cair sempre no mesmo lugar
 
 Hoje 41 viradas retóricas em 3.593 palavras (`deixou de` 8, `virou` 14, `passou a` 7, `, não` 7, `em vez de` 5), quase todas na **última frase do bloco**. O leitor aprende o compasso em três beats e passa a ler só o fecho — consome o slogan e pula o argumento.
+
+> **Correção de medida (28/08).** Aquela contagem varria o arquivo inteiro e somava comentário de código junto com prosa. Recontado só na prosa que o leitor vê, o `pcyes` tinha 24 viradas em 4.465 palavras, uma a cada 186, e boa parte é uso literal ("quando o tema vira, ele vira sozinho") ou legenda de figura. **O problema nunca foi a frequência, foi a posição:** quase todas caíam no fim do bloco. Ao revisar os outros capítulos, conte onde o ponto cai, não quantas vezes a palavra aparece.
 
 **Regra:** no máximo **um em cada três blocos** pode terminar na própria tese. Os outros terminam em fato, número, ressalva, ou no meio de um raciocínio.
 **Teto:** **um** verbo de virada (`virou` / `passou a` / `deixou de`) por beat.
@@ -153,6 +157,24 @@ Exemplo real, na emenda `gesto` → `busca`:
 A primeira frase da `busca` repete o que a `gesto` acabou de dizer. **Corte-a.** O beat abre em *"Fui testar o que a busca respondia."*
 
 **Conectivos autorizados** (hoje quase ausentes): só que · o que me obrigou a · e foi aí que · por isso · mesmo assim · só depois · e aí.
+
+### Regra C — o capítulo precisa ter uma virada, e ela precisa estar no lugar onde vira
+
+As regras A e B consertam a frase e a emenda. Elas não consertam o problema que sobrou depois delas: **um capítulo pode ter todas as frases certas e mesmo assim não contar história nenhuma.** Foi o caso do `pcyes` até 56cb02e.
+
+O capítulo tinha uma virada real e não a contava. Ele suspeitou do checkout, **agiu** em cima da suspeita (a V1.2), e o funil do trimestre o desmentiu. Os três pedaços existiam, em três beats que não se conheciam, e o clímax estava dentro de uma nota de rodapé.
+
+**Regra:** todo capítulo responde a uma pergunta, e em algum ponto **a resposta que o leitor está montando tem que quebrar.** Sem isso o texto é uma lista de achados competentes em ordem cronológica, que é o que ele foi.
+
+Três coisas que a virada exige, e nenhuma delas é frase bonita:
+
+1. **Plantar antes.** A virada só vira se o leitor comprou a versão anterior. No `problema`: *"foi ali que eu apostei minhas fichas: se as pessoas somem na última tela, o problema mora na última tela."*
+2. **Pagar no lugar de leitura, não no lugar de arquivo.** O clímax não pode morar numa `nota`, e a seção que o prepara tem que vir **antes** dele na tela. A V1.2 subiu do Ato III para o fim do Ato I por isso: o funil agora desmente uma ação que o leitor acabou de ver ser tomada.
+3. **Fechar nela.** O `aprendi` fechava na lição sobre marca, que é a menor das três. Passou a fechar no erro.
+
+**Teste:** conte quantas frases do capítulo mudariam se a virada não existisse. Se a resposta for "nenhuma", ela não está sendo contada, só registrada.
+
+**Onde isso ainda não foi feito:** `locarmais`, `odex`, `oderco` e `portfolio`. Antes de revisar frase nesses quatro, ache a pergunta e ache onde a resposta quebra. Se não quebrar em lugar nenhum, isso é o achado, e é ele que decide a ordem das seções.
 
 ---
 
@@ -177,6 +199,8 @@ A voz é a mesma. O que muda é quanto ela relaxa.
 > **Depois:** "Para mim, design e código nunca foram duas coisas separadas. Desenho a experiência e levo ela até o ar."
 
 *Por quê:* o "depois" é **sua própria frase**, do Posfácio (`Posfacio.jsx`), com `Pra` normalizado para `Para`. Mesma afirmação, dita uma vez, sem "de verdade" e sem se defender de ninguém. É a prova de que o conserto é transplante, não invenção.
+
+> **Ressalva do Gabriel (28/08):** a frase fica, a insistência no tema não. "Design e código" já foi dito o suficiente no volume e cansou. Trate o assunto como qualquer outro fato do seu trabalho: uma vez, onde couber, e sem virar bandeira. Isto vale para toda revisão futura, não só para a home.
 
 **2. O tique** — `data.jsx:962`
 > **Antes:** "Onde desenhei produto de verdade, testei com usuário de verdade e enfrentei a primeira regra de negócio pesada."

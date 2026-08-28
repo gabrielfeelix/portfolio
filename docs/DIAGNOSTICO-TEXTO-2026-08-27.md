@@ -372,3 +372,36 @@ Minha tese original continua válida para os capítulos: **bem escrito frase a f
 Para a home ela precisa de uma segunda metade, e é mais séria: **a home está bem escrita e argumentando a tese errada.** Nenhuma edição de frase conserta isso. É preciso trocar o que ela afirma.
 
 E aqui eu revejo uma coisa que escrevi antes. Eu disse que "cringe" não procedia. Isso valia para o capítulo `pcyes`, e continua valendo. **Não valia para a home, que eu não tinha lido.** Ali procede: a densidade de autoafirmação defensiva por centímetro de tela é alta, e é exatamente o que dói de ler em voz alta.
+
+---
+
+# Adendo — o que a Etapa 3 fechou no `pcyes` (28/08, commit 56cb02e)
+
+Este relatório é registro do dia 27 e fica como está. O que segue é só o placar da lista priorizada, para ninguém reabrir item já resolvido.
+
+| # | Correção | Estado |
+|---|---|---|
+| 1 | Atalho para longe da prova | **fechado.** Aponta para `funil`, rótulo "comece pelo dado que me desmentiu" |
+| 2 | `fact` PT/EN desalinhado | fechado em 9fbbbe8 |
+| 3 | `tldr.resultado` sem consequência | fechado em 9fbbbe8 |
+| 4 | Promover `funil.nota` | **fechado por reescrita, não por tipografia.** A nota virou o clímax do capítulo e ganhou setup ("apostei minhas fichas", em `problema`) e payoff ("Perdi a aposta aqui") |
+| 5 | Premissa repetida em `problema.p[0]` | **fechado.** O beat abre na cena e o título virou "Três pedágios até o mouse" |
+| 6 | 71.416 no 5º parágrafo | fechado em 9fbbbe8. O 5º parágrafo, que virou redundante, **foi cortado** em 56cb02e |
+| 7 | `notaSuporte` gasta o melhor minuto | **encolhida** (as duas frases que só concluíam saíram). Continua antes do Ato I: mover é `Capitulo.jsx:2016` e não foi feito |
+| 8 | Quebrar o molde retórico | **fechado.** Zero "não é X, é Y" restantes. Ver correção de medida na Regra A do `VOZ.md`: a contagem de 41 somava comentário de código |
+| 9 | Ligação entre beats | **fechado no `pcyes`**, aberto nos outros quatro |
+| 10 | Reposicionar `sistema` | **fechado.** Desceu para depois de `decisoes`, que é onde o comentário do `data.jsx` sempre disse que era o lugar |
+
+## A "maior oportunidade perdida" foi o que o trabalho virou
+
+O relatório dizia que o arco "ele estava errado e o dado o corrigiu" estava desmontado em três pedaços e que reconectá-lo exigia "três frases de ligação e uma promoção de tipografia". Exigiu mais que isso, e menos do que parecia: exigiu **mover a V1.2**.
+
+Ela morava no Ato III, cinco beats depois do funil. Subiu para o fim do Ato I, na ordem em que aconteceu, e o funil passou a desmentir uma ação que o leitor **acabou de ver ser tomada**. Nenhuma frase de ligação faz esse trabalho: é posição.
+
+Isso virou a Regra C do `VOZ.md`, e é a primeira coisa a rodar nos outros quatro capítulos.
+
+## O que este adendo não fechou
+
+- Item 7 pela metade: a `notaSuporte` encolheu, mas continua antes do Ato I.
+- Os quatro finais sem resultado medido (`PENDENCIAS-TEXTO.md`, item 1). A recomendação continua: esperar outubro.
+- `locarmais`, `odex`, `oderco` e `portfolio` não foram tocados.

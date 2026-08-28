@@ -74,10 +74,8 @@ Isto **é** texto e será corrigido quando a revisão chegar na página do `odex
 
 ---
 
-## 4. O atalho de leitura do capítulo
+## 4. O atalho de leitura do capítulo — RESOLVIDO em 56cb02e
 
-`volume/Capitulo.jsx:76` — `irParaSec("solucao")`
+`volume/Capitulo.jsx:76` apontava para `solucao`, e quem aceitava "se você tiver 3 minutos" pulava os quatro beats que provam raciocínio para cair em três telas com legenda.
 
-Quem aceita "se você tiver 3 minutos" pula `painel`, `funil`, `gesto` e `busca` — os quatro beats que provam raciocínio — e cai em três telas com legenda.
-
-Não mexi: o destino do atalho é uma linha de código, não texto. Mas é a correção de maior retorno por esforço do volume inteiro.
+Agora aponta para `funil`, que é o clímax do capítulo, sob o rótulo "comece pelo dado que me desmentiu". Vale conferir se os outros capítulos que ganharem `minutos` apontam o atalho para a própria virada, e não para o resultado.
