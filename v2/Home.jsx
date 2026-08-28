@@ -3,11 +3,11 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { spring, useRise, useMaskLine, useParallax, useCobertura, useSticky } from "./motion.js";
+import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import {
-  ALL_MARKS, projectById, CASE_ORDER, VOL, PROCESSO, COMPANIES,
-  casos, pieceProjects, projTag, pieceLink,
+  ALL_MARKS, VOL, PROCESSO, COMPANIES,
+  casos, pieceProjects, pieceLink,
 } from "./content.js";
 import { HERO, MANIFESTO } from "./copy.js";
 
@@ -50,6 +50,7 @@ function Rotativa({ itens, intervalo = 2800 }) {
 
 function Hero({ paraCasos }) {
   const linha = useMaskLine();
+  const tardio = useTardio(1.4);
   // O hero fica preso enquanto o manifesto sobe por cima dele, e sai perdendo
   // escala em vez de rolar para fora. É a única passagem coberta da home.
   const capa = useCobertura();
@@ -70,14 +71,14 @@ function Hero({ paraCasos }) {
           </span>
         </h1>
 
-        <div className="v2-hero-pe">
+        <motion.div className="v2-hero-pe" {...tardio}>
           <p className="v2-hero-sub">
             {HERO.sub[0]}
             <span className="v2-marca-texto">{HERO.sub[1]}</span>
             {HERO.sub[2]}
           </p>
           <Pill onClick={paraCasos} escuro>Ver os casos</Pill>
-        </div>
+        </motion.div>
         </div>
 
         <button className="v2-hero-seta" onClick={paraCasos} aria-label="Rolar para o conteúdo">
@@ -111,50 +112,11 @@ function Manifesto() {
   );
 }
 
-/* ---------------------------------------------------------------- 3. vitrine */
-
-/* Três covers reais. O parallax é por item, então cada um tem o próprio hook. */
-function VitrineItem({ proj, i, ir }) {
-  const { ref, style } = useParallax(10);
-  const rise = useRise();
-  const abre = () => ir(`/v2/case/${proj.id}`);
-  return (
-    <motion.article className="v2-vit-item" {...rise(i)}>
-      <a
-        className="v2-vit-link"
-        href={`/v2/case/${proj.id}`}
-        onClick={(e) => { e.preventDefault(); abre(); }}
-      >
-        <span className="v2-vit-media" ref={ref}>
-          <motion.span className="v2-vit-foto" style={style}>
-            <img src={proj.cover} alt="" loading="lazy" decoding="async" />
-          </motion.span>
-        </span>
-        <span className="v2-vit-pe">
-          <span className="v2-vit-titulo">{proj.title}</span>
-          <span className="v2-vit-dom">{proj.domain}</span>
-        </span>
-      </a>
-    </motion.article>
-  );
-}
-
-function Vitrine({ ir }) {
-  // Os casos que têm cover de verdade no repo, na ordem que a V1 já definiu.
-  const itens = CASE_ORDER().map(projectById).filter((p) => p && p.cover).slice(0, 3);
-  if (!itens.length) return null;
-  return (
-    <section className="v2-wrap v2-vitrine" id="vitrine">
-      <Regua />
-      <div className="v2-duas">
-        <Label>Trabalho recente</Label>
-        <div className="v2-vit-grade">
-          {itens.map((p, i) => <VitrineItem key={p.id} proj={p} i={i} ir={ir} />)}
-        </div>
-      </div>
-    </section>
-  );
-}
+/* A tríade de vitrine saiu na Fase 7. Ela mostrava três dos quatro casos
+   que a lista de casos logo abaixo já mostra, com hover de cover, e a lista
+   é o tratamento mais forte dos dois. Repetir os mesmos projetos em duas
+   dobras era o que fazia a home parecer maior do que o trabalho.
+   O `parallax`, que morava nela, foi para a grade de peças. */
 
 /* ---------------------------------------------------------------- 4. marcas */
 
@@ -268,45 +230,110 @@ function Casos({ ir }) {
 
 /* ------------------------------------------------------------------ 7. peças */
 
+/* Fase 7. Eram catorze peças na grade, sete delas sem imagem nenhuma,
+   viradas em chapa tipográfica escura. Chapa é uma saída honesta para uma
+   peça sem foto, mas sete delas em grade de três colunas fazem a dobra
+   competir com os casos, e era para ela ficar mais discreta.
+   Agora a grade só recebe o que tem foto de verdade. O resto vira lista de
+   texto, fechada, atrás de um botão. */
+function PecaComFoto({ p, i }) {
+  const rise = useRise();
+  const { ref, style } = useParallax(8);
+  const href = pieceLink(p);
+  const capa = p.cover || (p.shots && p.shots[0]);
+  const Tag = href ? "a" : "div";
+  return (
+    <motion.article className="v2-peca" {...rise(i % 3)}>
+      <Tag
+        className="v2-peca-link"
+        href={href || undefined}
+        target={href ? "_blank" : undefined}
+        rel={href ? "noopener noreferrer" : undefined}
+      >
+        <span className="v2-peca-media" ref={ref}>
+          <motion.span className="v2-peca-foto" style={style}>
+            <img src={capa} alt="" loading="lazy" decoding="async" />
+          </motion.span>
+          {/* O painel de vidro do maxfolio: borda de 1px e blur de 9px
+              sobre a mídia. Ele diz o que a etiqueta "PEÇA" não dizia: a
+              etiqueta era igual nos sete cards, então não informava nada.
+              Aqui o painel só aparece no hover, e só onde há link. */}
+          {href ? (
+            <span className="v2-peca-abrir" aria-hidden="true">
+              Abrir
+              <svg viewBox="0 0 16 16" width="11" height="11" fill="none">
+                <path d="M4 12 12 4M6 4h6v6" stroke="currentColor" strokeWidth="1.6"
+                      strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          ) : null}
+        </span>
+        <span className="v2-peca-pe">
+          <span className="v2-peca-t">{p.title}</span>
+          <span className="v2-peca-d">{p.domain || p.desc}</span>
+        </span>
+      </Tag>
+    </motion.article>
+  );
+}
+
 function Pecas() {
   const rise = useRise();
+  const [aberta, setAberta] = useState(false);
   const lista = pieceProjects();
   if (!lista.length) return null;
+
+  const temFoto = (p) => Boolean(p.cover || (p.shots && p.shots[0]));
+  const comFoto = lista.filter(temFoto);
+  const semFoto = lista.filter((p) => !temFoto(p));
+
   return (
     <section className="v2-wrap" id="pecas">
       <Regua />
       <div className="v2-duas">
         <Label>Outras peças</Label>
-        <div className="v2-pecas">
-          {lista.map((p, i) => {
-            const href = pieceLink(p);
-            const capa = p.cover || (p.shots && p.shots[0]);
-            const Tag = href ? "a" : "div";
-            return (
-              <motion.article key={p.id} className="v2-peca" {...rise(i % 3)}>
-                <Tag
-                  className="v2-peca-link"
-                  href={href || undefined}
-                  target={href ? "_blank" : undefined}
-                  rel={href ? "noopener noreferrer" : undefined}
-                >
-                  {/* Quatro peças não têm imagem no repositório. Caixa vazia
-                      lê como erro de carregamento, então elas viram chapa
-                      tipográfica, que é uma escolha e não um buraco. */}
-                  <span className={"v2-peca-media" + (capa ? "" : " is-vazia")}>
-                    {capa
-                      ? <img src={capa} alt="" loading="lazy" decoding="async" />
-                      : <span className="v2-peca-chapa">{p.title}</span>}
-                    <span className="v2-peca-tag">{projTag(p)}</span>
-                  </span>
-                  <span className="v2-peca-pe">
-                    <span className="v2-peca-t">{p.title}</span>
-                    <span className="v2-peca-d">{p.domain || p.desc}</span>
-                  </span>
-                </Tag>
-              </motion.article>
-            );
-          })}
+        <div>
+          <div className="v2-pecas">
+            {comFoto.map((p, i) => <PecaComFoto p={p} i={i} key={p.id} />)}
+          </div>
+
+          {semFoto.length ? (
+            <div className="v2-pecas-resto">
+              <button
+                type="button"
+                className="v2-pecas-botao"
+                aria-expanded={aberta}
+                aria-controls="v2-pecas-lista"
+                onClick={() => setAberta((v) => !v)}
+              >
+                <span className="v2-pecas-botao-n">{String(semFoto.length).padStart(2, "0")}</span>
+                <span>{aberta ? "Esconder as outras" : "Ver todas as peças"}</span>
+                <span className={"v2-pecas-seta" + (aberta ? " is-aberta" : "")} aria-hidden="true" />
+              </button>
+
+              {aberta ? (
+                <ul className="v2-pecas-lista" id="v2-pecas-lista">
+                  {semFoto.map((p, i) => {
+                    const href = pieceLink(p);
+                    const Tag = href ? "a" : "span";
+                    return (
+                      <motion.li key={p.id} {...rise(Math.min(i, 4))}>
+                        <Tag
+                          className="v2-pecas-linha"
+                          href={href || undefined}
+                          target={href ? "_blank" : undefined}
+                          rel={href ? "noopener noreferrer" : undefined}
+                        >
+                          <span className="v2-pecas-linha-t">{p.title}</span>
+                          <span className="v2-pecas-linha-d">{p.domain || p.desc}</span>
+                        </Tag>
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
@@ -351,9 +378,8 @@ function OndeEstive() {
 /* -------------------------------------------------------------------- home */
 
 export default function Home({ ir }) {
-  // #casos entra na Fase 3; até lá o pill do hero aterrissa na vitrine.
   const rolar = () => {
-    const alvo = document.getElementById("casos") || document.getElementById("vitrine");
+    const alvo = document.getElementById("casos");
     if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -364,7 +390,6 @@ export default function Home({ ir }) {
           fundo, o hero preso aparece por baixo das dobras claras. */}
       <div className="v2-corpo-claro" data-clara="1">
         <Manifesto />
-        <Vitrine ir={ir} />
         <Marquee />
         <Processo />
         <Casos ir={ir} />

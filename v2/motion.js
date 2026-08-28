@@ -31,6 +31,21 @@ export const ease = [0.44, 0, 0.56, 1];
 export const dur = 1.2;
 export const passo = 0.12;
 
+/* 2c. tweenLaunch
+   O tween da launchfolio: `ease: [0.4, 0, 0.2, 1]` em 0.6s, usado lá com
+   atrasos longos (até 1.8s) para o pé de um hero entrar depois da headline.
+   É o sotaque que faltava na V2, que entrava com tudo junto. */
+export const tweenLaunch = { duration: 0.6, ease: [0.4, 0, 0.2, 1] };
+
+/* Entrada tardia obediente ao sistema: em reduced-motion sobra a opacidade,
+   e mesmo ela entra sem o atraso longo. */
+export function useTardio(delay = 1.4) {
+  const quieto = useReducedMotion();
+  return quieto
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.2 } }
+    : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { ...tweenLaunch, delay } };
+}
+
 /* 2b. longa
    A entrada de dobra grande: sem retorno, sem quique, e devagar o
    suficiente para o olho acompanhar em vez de notar. É a tradução do
