@@ -1822,9 +1822,11 @@ html.ink .mk-word { color: var(--wash-4); }
    Ilustração de corpo inteiro: `contain` sobre papel, senão cabeça e pé
    saem no corte. P&B em repouso, colore no hover — como a legenda promete. */
 .about-photo.has-photo { background: var(--paper); }
+/* colorida em repouso, como o retrato da home (pedido do Gabriel): o
+   cinza escondia a pessoa atrás de um hover que ninguém descobre */
 .ap-img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom;
-  filter: grayscale(1) contrast(1.06); transition: filter 420ms var(--cut);
+  transition: filter 420ms var(--cut);
 }
 /* O .ap-wash é uma chapa de vermilion em multiply sobre a foto inteira:
    servia pro estado sem foto, mas com foto pintava tudo de vermelho no
@@ -2691,13 +2693,17 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 
 /* ---- SOBRE MIM: retrato + os números que os dados provam ---------- */
 .qs-foto { position: relative; }
+/* o retrato é SEMPRE colorido (pedido do Gabriel). Era `grayscale(1)` com
+   a cor entrando só no hover: num volume que é tinta sobre papel a foto
+   em cinza casava com o resto, mas escondia a única pessoa da página
+   atrás de uma interação que ninguém sabe que existe. O hover manteve o
+   que ainda vale — o levantar da prancha e a sombra vermelha. */
 .qs-foto img {
   display: block; inline-size: 100%; block-size: auto; aspect-ratio: 4 / 5; object-fit: cover;
   border: var(--ink-stroke) solid var(--ink); box-shadow: 12px 12px 0 var(--ink);
-  filter: grayscale(1) contrast(1.06);
-  transition: filter var(--cut), transform var(--cut), box-shadow var(--cut);
+  transition: transform var(--cut), box-shadow var(--cut);
 }
-.qs-foto:hover img { filter: grayscale(0) contrast(1); transform: translate(-4px, -4px);
+.qs-foto:hover img { transform: translate(-4px, -4px);
   box-shadow: 18px 18px 0 var(--vermilion); }
 .qs-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(12px, 2vw, 28px); margin-block: var(--ma-3);
@@ -2955,7 +2961,7 @@ html.ink .ad-punho { background: #B01510; color: #FFFFFF; }
 /* a foto entra por baixo da própria moldura, revelada de baixo pra cima */
 .quemsou .qs-foto img {
   clip-path: inset(0 0 100% 0); transition: clip-path 900ms var(--curva) 120ms,
-    filter var(--cut), transform var(--cut), box-shadow var(--cut);
+    transform var(--cut), box-shadow var(--cut);
 }
 .quemsou.on .qs-foto img { clip-path: inset(0 0 0 0); }
 .qsf-tone {
