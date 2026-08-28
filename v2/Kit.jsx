@@ -120,35 +120,8 @@ export function Cabecalho({ olho, titulo, marca, lead, cta, nota, prova, i = 0 }
 
 /* -------------------------------------------------------------------- mídia */
 
-/* M4: a mídia é o conteúdo.
- *
- * A fita do bungee: colunas altas em arco, sangrando nas duas bordas, cortadas
- * embaixo pela dobra, misturando vídeo e imagem, sem card e sem moldura. As
- * colunas têm alturas diferentes de propósito; alinhar todas devolve a grade de
- * template que a análise diz para evitar.
- *
- * `itens`: [{ src, video, alt, alto }]. */
-export function FitaMidia({ itens, altura = 1 }) {
-  const revelar = useRevelar();
-  return (
-    <div className="v2-fitam" style={{ "--fitam-h": altura }} aria-hidden="true">
-      {itens.map((it, i) => (
-        <motion.div
-          className="v2-fitam-col"
-          key={it.src}
-          style={{ "--col-alto": it.alto || 1 }}
-          {...revelar(i * 0.4)}
-        >
-          {it.video ? (
-            <video src={it.src} autoPlay muted loop playsInline preload="metadata" />
-          ) : (
-            <img src={it.src} alt="" loading="lazy" />
-          )}
-        </motion.div>
-      ))}
-    </div>
-  );
-}
+/* A FitaMidia (as colunas em arco do bungee) saiu em 28/08. O porquê está
+   em Home.jsx, na função Passagem. */
 
 /* A quebra de imagem do viper: `[SECTION] [IMG] [SECTION]`, largura total, sem
    uma palavra em cima. É o que dá respiro entre duas dobras pesadas e o que a

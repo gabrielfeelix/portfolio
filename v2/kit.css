@@ -153,40 +153,6 @@
 
 /* ------------------------------------------------------------------ mídia */
 
-/* A fita do bungee. Colunas altas em arco, sangrando nas duas bordas, cortadas
-   embaixo. `--fitam-h` escala a altura toda; `--col-alto` desalinha cada
-   coluna, e é o desalinho que tira o cheiro de grade. */
-.v2-fitam {
-  display: flex;
-  gap: var(--v2-s1);
-  align-items: flex-end;
-  width: 100%;
-  overflow: hidden;
-  height: calc(46vh * var(--fitam-h, 1));
-  padding: 0 var(--v2-s1);
-}
-.v2-fitam-col {
-  flex: 1 1 0;
-  min-width: 0;
-  height: calc(100% * var(--col-alto, 1));
-  border-radius: var(--v2-r-arco) var(--v2-r-arco) 0 0;
-  overflow: hidden;
-  background: var(--v2-card);
-}
-.v2-fitam-col img,
-.v2-fitam-col video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-/* Abaixo de 900 a fita não cabe com nove colunas sem virar listra: some da
-   quinta em diante e a altura cai. */
-@media (max-width: 900px) {
-  .v2-fitam { height: calc(30vh * var(--fitam-h, 1)); }
-  .v2-fitam-col:nth-child(n + 5) { display: none; }
-}
-
 /* A quebra de imagem: largura total de verdade, sem goteira, sem raio. A
    sobra de 12% de altura é o curso do parallax; sem ela a imagem descola e
    aparece o fundo. */

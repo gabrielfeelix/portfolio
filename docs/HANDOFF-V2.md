@@ -119,6 +119,42 @@ sem erro no console:
 
 Se uma dobra nova sair invisível, comece por aqui.
 
+## Segunda rodada, 28/08: a fita saiu e os casos viraram quadro
+
+Depois de ver os prints, o Gabriel recusou uma coisa e pediu outra.
+
+**A fita de mídia saiu.** Palavras dele: "não curti essas ideias dos vídeos em
+círculo, acho que não combinou". O motivo está na própria ANÁLISE: no bungee a
+coluna em arco funciona porque o conteúdo dela é render 3D e moda, onde a forma
+É a arte. Com tela de sistema dentro, o arco corta justo a interface. O
+componente `FitaMidia` foi removido do kit, não só da home.
+
+**No lugar entrou a passagem do viper**, medida em `~/dev/refs/viper-template`
+(as seis refs foram baixadas nesta máquina, 384MB): o escuro termina em corte
+seco e o branco abre com uma régua fina e a cruz de registro no meio. Reusa a
+`.v2-cruz` que já existia no Shell. Zero movimento, e responde "mudei de seção"
+igual.
+
+**Os casos viraram quadro.** Pedido literal: "não quero essas fotos chapadas,
+prefiro que tenham um fundo com um componente dentro". É o tratamento que a V1
+já tinha em `.rvm-art` (`volume/app.css`): chapa na cor da marca do cliente
+(`capa.bg` de `data.jsx`, PCYES #B00000, Locar Mais #3C1354, ODEX #0D1D52,
+Oderço #00308F), degradê para a cor não ficar lisa, logo branco no canto, e a
+tela flutuando inteira por cima com sombra. **A retícula pontilhada da V1 ficou
+de fora, por pedido dele.**
+
+Uma exceção declarada à regra do raio 0: a tela flutuante tem 10px. Ela não é
+um card, é o desenho de uma janela de navegador, e sem raio lia como adesivo
+colado na chapa.
+
+**Bug achado no caminho: `useCobertura` nunca funcionou.** Ela media
+`target: ref` com o ref no herói, que é `position: sticky`, e o retângulo de um
+elemento preso congela: progresso 0 a página inteira, opacidade 1 e transform
+`none` em qualquer rolagem, medido. O corpo branco subia e guilhotinava a
+headline no meio da palavra, em opacidade cheia. É a mesma armadilha que
+`usePilhaTrilho` já documentava três hooks abaixo. Agora mede a janela: a
+opacidade cai 1 → 0.70 → 0.41 → 0.11 → 0 ao longo da altura do herói.
+
 ## Caçada de erro visual, 28/08 (segunda máquina)
 
 Esta lista foi percorrida com Playwright em 1440x900, 1280x620 e 390x844, e o

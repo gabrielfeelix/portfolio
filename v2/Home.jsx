@@ -26,11 +26,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
-  spring, ease, useTardio, useRise, useMaskLine, useParallax, useCobertura,
+  spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
-import { Cromo, Relogio, Dobra, Titulo, Cabecalho, FitaMidia, Quebra, Contador } from "./Kit.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
@@ -157,34 +157,26 @@ function Hero({ paraCasos }) {
 
 /* --------------------------------------------------------------- passagem */
 
-/* A fita do bungee, usada como passagem em vez de decoração: o hero escuro
-   termina, e a primeira coisa do corpo claro é mídia sangrando nas duas
-   bordas, cortada embaixo. A home recusada cortava seco do escuro para o
-   branco, e era daí que vinha o "não dá pra entender que mudei de seção".
+/* A fita de mídia do bungee SAIU. Recusada pelo Gabriel em 28/08, palavras
+   dele: "não curti essas ideias dos vídeos em círculo, acho que não combinou".
+   Ele tem razão, e o motivo está na própria ANÁLISE: a fita do bungee carrega
+   render 3D e moda, onde a coluna em arco É a arte. Com tela de sistema
+   dentro, o arco corta justo a interface e sobra forma sem conteúdo.
 
-   Mistura vídeo e imagem porque a referência mistura: nove colunas iguais em
-   conteúdo viram grade de template. As capas de caso entram aqui de graça, o
-   que também resolve a queixa de que as fotos não aparecem em lugar nenhum. */
+   No lugar entra a passagem do viper, medida em ~/dev/refs/viper-template: o
+   escuro termina em corte seco e o branco abre com uma régua fina e a cruz de
+   registro no meio dela. Nada se move, e mesmo assim responde "mudei de
+   seção", que era o pedido. A cruz é a mesma `.v2-cruz` do Shell. */
 function Passagem() {
-  const capas = casos()
-    .map((c) => c.chap.cover || (c.proj && c.proj.cover))
-    .filter(Boolean);
-  /* Sete de nove colunas são trabalho dele; a tinta entra duas vezes, como
-     pontuação. As três telas extras saem do PCYES, que é o caso com material
-     de sobra, e não repetem a capa que já está na coluna 2. */
-  const itens = [
-    capas[0] ? { src: capas[0], alto: 0.86 } : null,
-    { src: EXTRA.busca,   alto: 1 },
-    { src: INK.difusa, video: true, alto: 0.68 },
-    capas[1] ? { src: capas[1], alto: 0.94 } : null,
-    { src: EXTRA.builder, alto: 0.78 },
-    capas[2] ? { src: capas[2], alto: 1 } : null,
-    { src: INK.vermelha, video: true, alto: 0.66 },
-    capas[3] ? { src: capas[3], alto: 0.88 } : null,
-    { src: EXTRA.sku,     alto: 0.74 },
-  ].filter(Boolean);
-  return <FitaMidia itens={itens} />;
+  return (
+    <div className="v2-passagem" aria-hidden="true">
+      <span className="v2-passagem-linha" />
+      <span className="v2-cruz" />
+      <span className="v2-passagem-linha" />
+    </div>
+  );
 }
+
 
 /* ----------------------------------------------------------- 2. declaracao */
 
@@ -269,16 +261,25 @@ function Marquee() {
 const PILHA_TOPO = 96;    /* nav de 72px, mais respiro */
 const PILHA_PASSO = 40;   /* a lombada de cada linha coberta, medida na ref */
 
+/* O quadro, e não a foto chapada. Pedido do Gabriel em 28/08: "não quero essas
+   fotos chapadas, prefiro que tenham um fundo com um componente dentro".
+   É o tratamento que a V1 já tinha em `.rvm-art` (volume/app.css): chapa na cor
+   da marca do cliente, degradê para a cor não ficar lisa, e a tela flutuando
+   inteira por cima, com sombra. A retícula pontilhada da V1 fica de fora, por
+   pedido dele: ela é idioma de mangá e aqui brigaria com a interface do print.
+
+   `capa.bg` vem de volume/data.jsx, capítulo a capítulo, e é a cor da marca:
+   PCYES #B00000, Locar Mais #3C1354, ODEX #0D1D52, Oderço #00308F. É o único
+   lugar da home onde cor de produto aparece, que é a mesma regra do volume. */
 function Cartao({ caso, i, ir }) {
-  const { ref: refFoto, style: estiloFoto } = useParallax(6);
   const cap = caso.chap;
   /* terceiro degrau: locarmais-conciliacao nao tem `cover` nem no capitulo
-     nem no projeto, so `shots`. Sem ele o card caia na chapa de marca roxa,
+     nem no projeto, so `shots`. Sem ele o card caia numa chapa de marca vazia,
      que ao lado do print do PCYES lia como card faltando imagem. O primeiro
      shot e tela real do proprio caso. */
   const proj = caso.proj;
   const foto = cap.cover || (proj && (proj.cover || (proj.shots && proj.shots[0])));
-  const marca = !foto && cap.capa ? cap.capa : null;
+  const capa = cap.capa;
   const href = `/v2/case/${caso.id}`;
   return (
     <article className="v2-cartao">
@@ -287,20 +288,24 @@ function Cartao({ caso, i, ir }) {
         href={href}
         onClick={(e) => { e.preventDefault(); ir(href); }}
       >
-        <span className="v2-cartao-media" ref={refFoto}>
-          {foto ? (
-            <motion.img
-              className="v2-cartao-foto"
-              style={estiloFoto}
-              src={foto}
-              alt=""
-              loading={i < 2 ? "eager" : "lazy"}
-              decoding="async"
-            />
+        <span
+          className="v2-cartao-media"
+          style={capa ? { "--chapa": capa.bg } : undefined}
+        >
+          {/* o degradê: sem ele a chapa é cor lisa e a tela não tem onde pousar */}
+          <span className="v2-cartao-luz" aria-hidden="true" />
+          {capa && capa.logo ? (
+            <img className="v2-cartao-marca" src={capa.logo} alt="" loading="lazy" decoding="async" />
           ) : null}
-          {marca ? (
-            <span className="v2-cartao-marca" style={{ background: marca.bg }} aria-hidden="true">
-              <img src={marca.logo} alt="" loading="lazy" decoding="async" />
+          {foto ? (
+            <span className="v2-cartao-tela">
+              <img
+                className="v2-cartao-foto"
+                src={foto}
+                alt=""
+                loading={i < 2 ? "eager" : "lazy"}
+                decoding="async"
+              />
             </span>
           ) : null}
         </span>

@@ -240,13 +240,31 @@ export function useScrollSuave({ atrito = 0.11, ligado = true } = {}) {
 export function useCobertura() {
   const ref = useRef(null);
   const quieto = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
+
+  /* BUG, achado em print em 28/08: isto media `target: ref` com offset
+     ["start start", "end start"], e o `ref` mora no herói, que é
+     `position: sticky`. O retângulo de um elemento preso CONGELA enquanto ele
+     está preso, então o progresso ficava em 0 a página inteira: opacidade 1 e
+     transform `none` em qualquer rolagem, medido. O corpo branco subia e
+     guilhotinava a headline no meio da palavra, em opacidade cheia.
+
+     É a mesma armadilha já anotada em `usePilhaTrilho`, três hooks abaixo, e a
+     saída é a mesma: quem se move é a janela, então meça a janela. */
+  const { scrollY } = useScroll();
+  const [alt, setAlt] = useState(0);
+  useEffect(() => {
+    const medir = () => {
+      const el = ref.current;
+      if (el) setAlt(el.offsetHeight || window.innerHeight);
+    };
+    medir();
+    window.addEventListener("resize", medir);
+    return () => window.removeEventListener("resize", medir);
+  }, []);
+  const curso = alt || 1;
+  const opacity = useTransform(scrollY, [0, curso * 0.75], [1, 0]);
+  const scale = useTransform(scrollY, [0, curso], [1, 0.94]);
+  const y = useTransform(scrollY, [0, curso], ["0%", "8%"]);
   return { ref, style: quieto ? undefined : { opacity, scale, y } };
 }
 

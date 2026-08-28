@@ -162,6 +162,26 @@
   60%, 100% { transform: translateY(250%); }
 }
 
+/* ---------------- passagem: hero → corpo ---------------- */
+
+/* A regua com a cruz de registro no meio, medida no viper. Ela e o unico
+   conteudo entre o corte seco do escuro e a primeira dobra clara, e sozinha
+   ja responde "mudei de secao". Substituiu a fita de colunas em arco, que o
+   Gabriel recusou em 28/08. */
+.v2-passagem {
+  display: flex;
+  align-items: center;
+  gap: var(--v2-s2);
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: var(--v2-s6) var(--v2-gutter) 0;
+}
+.v2-passagem-linha {
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--v2-rule);
+}
+
 /* ---------------- 2. declaracao ---------------- */
 
 /* Ideia do Gabriel: a frase nao e um paragrafo seco no meio da pagina. Duas
@@ -340,31 +360,67 @@
   text-decoration: none;
 }
 
+/* A chapa. 16/11 e nao 16/10: a razao mais alta e o que da ar em cima e
+   embaixo da tela flutuante. Raio 0 continua valendo aqui, porque a chapa e
+   conteudo. */
 .v2-cartao-media {
   position: relative;
   display: block;
-  /* 16/10 e nao 4/3: print de produto e largo, e num box de 4/3 o `cover`
-     comia as laterais e cortava o texto da tela no meio da palavra. */
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 11;
   border-radius: 0;
   overflow: hidden;
-  background: var(--v2-card);
+  background: var(--chapa, var(--v2-ink));
 }
 
-/* 110% de altura porque o parallax move a foto dentro da janela: em 100% a
-   borda de baixo apareceria no fim do curso. */
+/* Claro no alto e escuro embaixo: a tela flutuante ganha um fundo que ABRE
+   atras dela em vez de competir. E o que separa chapa de cor de bloco de cor. */
+.v2-cartao-luz {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 92% at 50% -12%, rgba(255, 255, 255, .24), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, .08), transparent 44%, rgba(0, 0, 0, .34));
+}
+
+/* A marca do cliente, em branco, no canto. Identifica a chapa sem legenda e e
+   o unico lugar da home, junto do quadro, onde cor de produto aparece. */
+.v2-cartao-marca {
+  position: absolute;
+  z-index: 3;
+  top: clamp(16px, 4%, 28px);
+  left: clamp(16px, 3%, 26px);
+  height: clamp(16px, 1.9vw, 26px);
+  width: auto;
+  opacity: .9;
+}
+
+/* A tela flutua INTEIRA, com ar dos quatro lados. `contain` porque print de
+   desktop (16/10) e de celular (390x844) convivem na mesma grade e nenhum dos
+   dois pode deformar. */
+.v2-cartao-tela {
+  position: absolute;
+  z-index: 2;
+  inset: clamp(34px, 13%, 92px) clamp(28px, 8%, 72px);
+  display: grid;
+  place-items: center;
+}
+
+/* O raio de 10px e a unica excecao a regra do raio 0, e ela e literal: isto
+   nao e um card, e o desenho de uma JANELA de navegador. Sem raio a tela lia
+   como adesivo colado na chapa. */
 .v2-cartao-foto {
-  width: 100%;
-  height: 108%;
-  object-fit: cover;
-  /* topo da tela e onde mora a marca e o cabecalho do produto: se algo tem
-     que sair do enquadramento, que seja o rodape. */
-  object-position: center top;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  inline-size: auto;
+  block-size: auto;
+  object-fit: contain;
   display: block;
+  border-radius: 10px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .38), 0 4px 12px rgba(0, 0, 0, .22);
+  transition: transform 900ms var(--v2-ease);
 }
-
-.v2-cartao-marca { position: absolute; inset: 0; display: grid; place-items: center; }
-.v2-cartao-marca img { width: min(46%, 260px); height: auto; opacity: .94; }
 
 .v2-cartao-pe {
   display: flex;
@@ -398,9 +454,8 @@
   color: var(--v2-muted);
 }
 
-.v2-cartao-link:hover .v2-cartao-media,
-.v2-cartao-link:focus-visible .v2-cartao-media { background: var(--v2-rule); }
-.v2-cartao-link:hover .v2-cartao-foto { opacity: .92; }
+.v2-cartao-link:hover .v2-cartao-foto,
+.v2-cartao-link:focus-visible .v2-cartao-foto { transform: translateY(-8px) scale(1.015); }
 
 .v2-cartao-link:focus-visible { outline: 2px solid var(--v2-ink); outline-offset: 4px; }
 
