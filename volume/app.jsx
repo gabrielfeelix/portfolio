@@ -128,44 +128,55 @@ function applyTweaks(t) {
   document.body.classList.toggle("rtl-off", t.rtlGesture === false);
 }
 
-/* ---- hash routing: every view has a shareable URL --------------------
-   #/            home        #/sobre       posfácio
-   #/processo    processo    #/empresa/id  company page
-   #/cap/id      chapter (deep case or peça)
-   Back/forward work (popstate), refresh restores the view, links can be
-   shared. Unknown hashes fall back to home. */
-function viewToHash(view) {
-  if (view === "home") return "#/";
-  if (view === "404") return "#/404";
-  if (view === "sobre" || view === "processo" || view === "rapido") return "#/" + view;
-  if (view.indexOf("empresa:") === 0) return "#/empresa/" + view.slice(8);
-  return "#/cap/" + view;
+/* ---- path routing: every view has a real, shareable, indexable URL ----
+   /             home        /sobre        posfácio
+   /processo     processo    /empresa/id   company page
+   /cap/id       chapter (deep case or peça)
+
+   Era hash routing (#/cap/id) até 2026-08-28. O `#` nunca chega ao
+   servidor, então todo capítulo era a mesma URL para buscador e para
+   quem compartilha: cinco capítulos sem endereço próprio. O rewrite do
+   vercel.json já servia index.html para qualquer path, então a estrada
+   limpa existia e não estava sendo usada.
+   Back/forward continuam por popstate; path desconhecido cai em 404. */
+function viewToPath(view) {
+  if (view === "home") return "/";
+  if (view === "404") return "/404";
+  if (view === "sobre" || view === "processo" || view === "rapido") return "/" + view;
+  if (view.indexOf("empresa:") === 0) return "/empresa/" + view.slice(8);
+  return "/cap/" + view;
 }
-function hashToView(hash) {
-  const h = (hash || "").replace(/^#\/?/, "");
-  if (!h) return "home";
-  if (h === "sobre" || h === "processo" || h === "rapido") return h;
-  if (h.indexOf("empresa/") === 0) {
-    const id = h.slice(8);
+function pathToView(path) {
+  const p = (path || "/").replace(/^\/+/, "").replace(/\/+$/, "");
+  if (!p || p === "index.html") return "home";
+  if (p === "sobre" || p === "processo" || p === "rapido") return p;
+  if (p.indexOf("empresa/") === 0) {
+    const id = p.slice(8);
     return COMPANIES.some((c) => c.id === id) ? "empresa:" + id : "404";
   }
-  if (h.indexOf("cap/") === 0) {
-    const id = h.slice(4);
+  if (p.indexOf("cap/") === 0) {
+    const id = p.slice(4);
     return chapterFor(id) ? id : "404";
   }
   return "404";
 }
-/* initial view: the SPA is hash-routed, but Vercel's SPA-fallback serves
-   index.html for ANY path (e.g. /teste). A direct hit on a non-root path
-   is a URL that doesn't exist → normalize the bar to /#/404 and open the
-   blank-page chapter. Root path defers to the hash. */
+/* links antigos (#/cap/pcyes) continuam válidos: o hash é traduzido para
+   o path equivalente uma vez, no boot, e sai da barra. Só vale para hash
+   de rota — âncora de página, como o skip-link #conteudo, passa direto. */
+function legacyHashPath() {
+  const h = window.location.hash || "";
+  if (h.indexOf("#/") !== 0) return null;
+  const r = h.slice(1);
+  return r === "/" ? "/" : r;
+}
 function initialView() {
-  const p = window.location.pathname;
-  if (p && p !== "/" && p !== "/index.html") {
-    try { window.history.replaceState(null, "", "/#/404"); } catch (e) {}
-    return "404";
+  const legado = legacyHashPath();
+  if (legado) {
+    const v = pathToView(legado);
+    try { window.history.replaceState(null, "", viewToPath(v)); } catch (e) {}
+    return v;
   }
-  return hashToView(window.location.hash);
+  return pathToView(window.location.pathname);
 }
 function viewTitle(view) {
   const BASE = t("Volume · Portfólio de ", "Volume · Portfolio of ") + AUTOR;
@@ -303,24 +314,39 @@ function App() {
   // keep the URL + tab title in sync with the view; browser back/forward
   // (popstate) restores the view without pushing a duplicate entry.
   useEffect(() => {
-    const h = viewToHash(view);
-    if (window.location.hash !== h) {
-      // same view under a different hash (initial load, normalization) →
-      // replace; a real navigation → push a history entry.
-      const fn = hashToView(window.location.hash) === view ? "replaceState" : "pushState";
-      window.history[fn](null, "", h);
+    const alvo = viewToPath(view);
+    if (window.location.pathname !== alvo) {
+      // mesma view sob outro path (boot, normalização) → replace;
+      // navegação de verdade → push, para o voltar funcionar.
+      const fn = pathToView(window.location.pathname) === view ? "replaceState" : "pushState";
+      window.history[fn](null, "", alvo);
     }
     document.title = viewTitle(view);
-    // analytics: o script da Vercel não conta troca de hash (mesmo pathname),
-    // então a rota é reportada aqui. O pageview de entrada já saiu sozinho.
+    // canonical e og:url acompanham a rota. O HTML servido e o mesmo em todo
+    // path, entao sem isto as cinco URLs novas se declarariam duplicatas da
+    // home e o ganho de sair do hash morria no canonical.
+    try {
+      const abs = window.location.origin + alvo;
+      const can = document.querySelector('link[rel="canonical"]');
+      if (can) can.setAttribute("href", abs);
+      const og = document.querySelector('meta[property="og:url"]');
+      if (og) og.setAttribute("content", abs);
+    } catch (e) {}
+    // analytics: com path routing o pathname muda de verdade, mas o script
+    // da Vercel só conta o pageview de entrada, então a troca de rota
+    // continua sendo reportada aqui.
     if (primeiraRota.current) primeiraRota.current = false;
-    else if (window.vpage) window.vpage(h.slice(1) || "/");
+    else if (window.vpage) window.vpage(alvo);
   }, [view]);
   useEffect(() => {
     const onPop = () => {
-      const h = window.location.hash;
-      if (h && h.indexOf("#/") !== 0) return;   // in-page anchor (e.g. skip-link #conteudo), not a route
-      setView(hashToView(h)); window.scrollTo(0, 0);
+      const v = pathToView(window.location.pathname);
+      // âncora de página (skip-link #conteudo) não muda o path: não é rota,
+      // e rolar para o topo aqui jogaria o leitor fora de onde ele estava.
+      setView((atual) => {
+        if (atual !== v) window.scrollTo(0, 0);
+        return v;
+      });
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);

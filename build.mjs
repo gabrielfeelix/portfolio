@@ -1,5 +1,6 @@
 import * as esbuild from "esbuild";
 import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
+import http from "node:http";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -170,15 +171,32 @@ if (process.argv.includes("--serve")) {
     loader: { ".jsx": "jsx" }, target: ["es2018"],
   });
   await ctx.watch();
+  // esbuild serve numa porta interna; o proxy na frente devolve index.html
+  // para path que nao e arquivo, que e o mesmo fallback do vercel.json. Sem
+  // isso /cap/pcyes da 404 no dev e so funciona em producao.
+  const { host: iHost, port: iPort } = await ctx.serve({ servedir: DIST, port: 0 });
   const wanted = Number(process.env.PORT) || 5173;
-  let port;
-  try {
-    ({ port } = await ctx.serve({ servedir: DIST, port: wanted }));
-  } catch (err) {
-    if (!/address already in use/i.test(err.message)) throw err;
-    console.log(`porta ${wanted} ocupada, escolhendo outra…`);
-    ({ port } = await ctx.serve({ servedir: DIST, port: 0 }));
-  }
+  const proxy = http.createServer((req, res) => {
+    const enc = (p) => http.request(
+      { hostname: iHost, port: iPort, path: p, method: req.method, headers: req.headers },
+      (up) => {
+        if (up.statusCode === 404 && !path.extname(req.url.split("?")[0])) {
+          // rota do SPA: serve o index e deixa o app.jsx decidir a view
+          return enc("/index.html").end();
+        }
+        res.writeHead(up.statusCode, up.headers);
+        up.pipe(res, { end: true });
+      });
+    req.pipe(enc(req.url), { end: true });
+  });
+  const port = await new Promise((ok, no) => {
+    proxy.once("error", (err) => {
+      if (!/EADDRINUSE/.test(err.code || "")) return no(err);
+      console.log(`porta ${wanted} ocupada, escolhendo outra…`);
+      proxy.listen(0, () => ok(proxy.address().port));
+    });
+    proxy.listen(wanted, () => ok(proxy.address().port));
+  });
   console.log(`dev server: http://localhost:${port}`);
 } else {
   await buildOnce();
