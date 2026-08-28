@@ -1,0 +1,513 @@
+/* Casca: nav, pill, label, régua, dado, progresso, rodapé.
+   Só tokens. Nenhum valor cru fora de tokens.css. */
+
+/* ---------------- estruturas de página ---------------- */
+
+.v2-shell { min-height: 100vh; }
+
+.v2-wrap {
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding-inline: var(--v2-gutter);
+}
+
+/* O par label-esquerda / conteudo-direita que estrutura quase toda dobra. */
+.v2-duas {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) 1fr;
+  gap: var(--v2-s4);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .v2-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  :root { --v2-gutter: var(--v2-s3); }
+}
+
+/* ---------------- label de seção ---------------- */
+
+.v2-label {
+  display: flex;
+  align-items: center;
+  gap: var(--v2-s1);
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+.v2-label-quad {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--v2-accent);
+  flex: none;
+}
+
+/* ---------------- régua com cruz nas pontas ---------------- */
+
+/* A referência não centraliza a cruz: ela põe uma em cada ponta de um
+   separador que estica por `flex: 1 0 0`, e a linha ganha opacidade em vez
+   de cor própria. Assim nada precisa mascarar nada. */
+.v2-regua {
+  display: flex;
+  align-items: center;
+  margin-block: var(--v2-s6);
+}
+
+.v2-regua-linha {
+  flex: 1 0 0;
+  height: 1px;
+  background: var(--v2-rule);
+  opacity: .65;
+}
+
+/* A régua de dentro de um movimento: separa sem anunciar. Sem cruz. */
+.v2-regua.is-discreta { margin-block: var(--v2-s5); }
+.v2-regua.is-discreta .v2-cruz { display: none; }
+.v2-regua.is-discreta .v2-regua-linha { opacity: .4; }
+
+/* A cruz: 9×9, duas barras de 1px. O raio de 16px em uma barra de 1px só
+   arredonda as pontas, que é o que tira o aspecto de crucifixo. */
+.v2-cruz {
+  position: relative;
+  flex: none;
+  width: 9px;
+  height: 9px;
+}
+
+.v2-cruz::before,
+.v2-cruz::after {
+  content: "";
+  position: absolute;
+  background: var(--v2-ink);
+  opacity: .55;
+  border-radius: 16px;
+}
+
+.v2-cruz::before { left: 0; right: 0; top: 4px; height: 1px; }
+.v2-cruz::after  { top: 0; bottom: 0; left: 4px; width: 1px; }
+
+/* ---------------- componente de dado ---------------- */
+
+/* O único jeito de mostrar número na V2: número → régua de 1px → rótulo,
+   empilhado, sem caixa, sem fundo, sem raio. É a gramática da referência, e
+   é o que faz cinco dados de dobras diferentes lerem como um sistema em vez
+   de cinco invenções.
+   Quando o dado tem proporção (uma etapa de funil, um clique de mapa de
+   calor), quem carrega a proporção é a própria régua: o traço em tinta
+   ocupa a fração do valor. Nenhuma barra dentro de trilho cinza. */
+.v2-dado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v2-s3);
+  min-width: 0;
+}
+
+.v2-dado-v {
+  margin: 0;
+  font-size: var(--v2-t-dado);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -.06em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.v2-dado-sufixo { font-size: .42em; letter-spacing: -.02em; margin-left: .08em; }
+
+.v2-dado-regua {
+  position: relative;
+  display: block;
+  height: 3px;   /* a caixa é 3px; a régua dentro dela é 1px */
+}
+
+.v2-dado-regua::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--v2-rule);
+  opacity: .65;
+}
+
+.v2-dado-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--v2-ink);
+  transform-origin: 0 50%;
+}
+
+.v2-dado-fill.is-accent { background: var(--v2-accent); }
+.v2-dado-fill.is-muted  { background: var(--v2-muted); }
+
+.v2-dado-l {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.v2-dado-n {
+  margin: var(--v2-s1) 0 0;
+  color: var(--v2-muted);
+  font-size: var(--v2-t-label);
+  line-height: 1.5;
+}
+
+/* Meio degrau abaixo, para linha de dado que se repete muitas vezes. */
+.v2-dado.is-mini { gap: var(--v2-s2); }
+.v2-dado.is-mini .v2-dado-v { font-size: clamp(1.75rem, 3.4vw, 3rem); letter-spacing: -.04em; }
+
+/* Fileira de dados. `auto-fit` porque cinco etapas a 1440 cabem em fileira e
+   a 1100 não: em vez de um breakpoint, a fileira quebra sozinha. */
+.v2-dados {
+  list-style: none;
+  margin: var(--v2-s5) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--v2-s5) var(--v2-s4);
+}
+
+/* ---------------- textura de painel ---------------- */
+
+/* O `BG Pattern` da referência vive DENTRO do painel, nunca na página. Tile
+   de 5px gerado em tokens.css, opacidade baixa, sem ponteiro. */
+.v2-textura { position: relative; }
+.v2-textura > * { position: relative; z-index: 1; }
+
+.v2-textura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: var(--v2-textura);
+  background-size: 5px 5px;
+  opacity: .25;
+  pointer-events: none;
+}
+
+/* ---------------- pill ---------------- */
+
+.v2-pill-wrap { display: inline-block; }
+
+.v2-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v2-s2);
+  padding: 7px var(--v2-s3) 7px 7px;
+  border: 0;
+  border-radius: var(--v2-r-pill);
+  background: var(--v2-superficie);
+  color: var(--v2-ink);
+  font: inherit;
+  font-weight: 500;
+  font-size: var(--v2-t-label);
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(11, 11, 12, .06), 0 8px 24px rgba(11, 11, 12, .06);
+}
+
+/* O filler: o círculo accent que cresce até virar a pílula inteira. Ele é
+   quem tem o accent; o `dot` só carrega a seta por cima. */
+.v2-pill-filler {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  margin-top: -17px;
+  border-radius: var(--v2-r-pill);
+  background: var(--v2-accent);
+  transition: width 620ms var(--v2-ease);
+  pointer-events: none;
+}
+
+.v2-pill:hover .v2-pill-filler,
+.v2-pill:focus-visible .v2-pill-filler { width: calc(100% - 14px); }
+
+.v2-pill-dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #fff;
+  flex: none;
+}
+
+/* A janela de 12px com a fita de duas setas. No hover a fita anda meia
+   largura: uma seta sai, a outra entra. */
+.v2-pill-janela {
+  display: block;
+  width: 12px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.v2-pill-fita {
+  display: flex;
+  width: 24px;
+  transition: transform 620ms var(--v2-ease);
+}
+
+.v2-pill:hover .v2-pill-fita,
+.v2-pill:focus-visible .v2-pill-fita { transform: translateX(-12px); }
+
+/* Quando o filler cobre o botão, o rótulo fica sobre o accent: branco sobre
+   #E4231B mede 4.51:1, que passa AA em texto normal. */
+.v2-pill-rot {
+  position: relative;
+  z-index: 1;
+  transition: color 400ms var(--v2-ease);
+}
+
+.v2-pill:hover .v2-pill-rot,
+.v2-pill:focus-visible .v2-pill-rot { color: #fff; }
+
+/* Sobre hero escuro o pill inverte: fundo claro continua, mas a sombra some
+   (sombra sobre preto vira sujeira). */
+.v2-pill-wrap.is-escuro .v2-pill { box-shadow: none; }
+
+/* ---------------- nav ---------------- */
+
+.v2-nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--v2-s4);
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: var(--v2-s3) var(--v2-gutter);
+  color: var(--v2-ink);
+  transition: padding 240ms var(--v2-ease), color 240ms var(--v2-ease);
+}
+
+.v2-nav.is-encolhida { padding-block: var(--v2-s2); }
+.v2-nav.is-escuro { color: #fff; }
+
+/* Fora do hero a nav precisa de chão: sem isto, no trecho em que o hero
+   escuro ainda ocupa a faixa da barra mas já não a pinta, a marca em tinta
+   fica preta sobre preto e some. A faixa é 100vw porque a nav é centrada e
+   limitada a --v2-max. */
+.v2-nav::before {
+  content: "";
+  position: absolute;
+  /* left + width + transform, e NAO right: com os tres o navegador descarta
+     o right e a faixa fica sem altura. */
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--v2-paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 240ms var(--v2-ease);
+  pointer-events: none;
+}
+
+.v2-nav.is-encolhida:not(.is-escuro)::before { opacity: 1; }
+
+.v2-nav > * { position: relative; }
+
+/* Nome inteiro, sem o ponto accent. O peso e o letter-spacing fazem o
+   trabalho que o truque fazia. */
+.v2-nav-marca {
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: -.015em;
+  color: inherit;
+  text-decoration: none;
+  justify-self: start;
+}
+
+.v2-nav-links {
+  display: flex;
+  gap: var(--v2-s5);
+  justify-self: center;
+}
+
+.v2-nav-link {
+  position: relative;
+  display: block;
+  padding-block: 2px;
+  color: inherit;
+  text-decoration: none;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  opacity: .6;
+  transition: opacity 400ms var(--v2-ease);
+}
+
+.v2-nav-link:hover,
+.v2-nav-link:focus-visible { opacity: 1; }
+
+/* O traço que cresce da esquerda no lugar do sobrescrito. */
+.v2-nav-link-traco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 520ms var(--v2-ease);
+}
+
+.v2-nav-link:hover .v2-nav-link-traco,
+.v2-nav-link:focus-visible .v2-nav-link-traco { transform: scaleX(1); }
+
+.v2-nav-cta { justify-self: end; }
+
+@media (max-width: 860px) {
+  .v2-nav { grid-template-columns: 1fr auto; }
+  .v2-nav-links { display: none; }
+}
+
+/* ---------------- progresso ---------------- */
+
+.v2-progresso {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  height: 2px;
+  background: var(--v2-accent);
+  transform-origin: 0 50%;
+}
+
+/* ---------------- rodapé ---------------- */
+
+.v2-rodape {
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: 0 var(--v2-gutter) var(--v2-s5);
+}
+
+.v2-rodape-topo {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) 1fr;
+  gap: var(--v2-s4);
+  align-items: start;
+}
+
+.v2-rodape-chamada {
+  margin: 0;
+  font-size: var(--v2-t-manifesto);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  max-width: 20ch;
+}
+
+.v2-rodape-lista {
+  list-style: none;
+  margin: var(--v2-s6) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-rodape-lista a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--v2-s3);
+  padding: var(--v2-s3) 0;
+  border-bottom: 1px solid var(--v2-rule);
+  color: inherit;
+  text-decoration: none;
+  transition: padding-inline-start 420ms var(--v2-ease);
+}
+
+.v2-rodape-lista a:hover,
+.v2-rodape-lista a:focus-visible { padding-inline-start: var(--v2-s2); }
+
+.v2-rodape-canal { font-weight: 500; }
+.v2-rodape-valor { color: var(--v2-muted); font-size: var(--v2-t-label); }
+
+.v2-rodape-base {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--v2-s3);
+  margin-top: var(--v2-s4);
+  color: var(--v2-muted);
+  font-size: var(--v2-t-label);
+}
+
+@media (max-width: 860px) {
+  .v2-rodape-topo { grid-template-columns: 1fr; gap: var(--v2-s3); }
+}
+
+/* ---------------- foco visível ---------------- */
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--v2-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------------- componentes de fundo ---------------- */
+
+/* A grade de colunas de página SAIU na Fase 6. Eram seis linhas de #E6E6E8
+   sobre branco atravessando parágrafo; a única referência que usa linhas de
+   fundo (porto) põe três linhas escuras sobre preto, onde elas somem, e a
+   principal (viper) não usa nenhuma. No lugar delas: cruz na ponta da régua
+   e textura dentro do painel de mídia. Ver `.v2-cruz` e `.v2-textura`. */
+
+/* O corpo claro que sobe por cima do hero preso. Opaco de propósito: sem
+   fundo, o hero sticky aparece por baixo das dobras. */
+.v2-corpo-claro {
+  position: relative;
+  z-index: 1;
+  background: var(--v2-paper);
+}
+
+/* Grão. Ruído próprio, gerado por feTurbulence inline: nenhuma imagem de
+   referência entra no repositório. Só sobre superfície escura, onde a
+   textura aparece sem sujar o texto. */
+.v2-grao { position: relative; }
+
+.v2-grao > * { position: relative; z-index: 1; }
+
+.v2-grao::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Halo do accent. Gradiente radial, não `filter: blur`: borrar um elemento
+   desse tamanho custa caro a cada quadro. Fica no lado vazio da dobra, longe
+   da headline, e nunca encosta em texto. */
+.v2-halo { position: relative; }
+
+.v2-halo > * { position: relative; z-index: 1; }
+
+.v2-halo::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  top: -18%;
+  right: -14%;
+  width: 68vw;
+  height: 68vw;
+  background: radial-gradient(circle at center,
+    color-mix(in srgb, var(--v2-accent) 30%, transparent) 0%,
+    color-mix(in srgb, var(--v2-accent) 9%, transparent) 36%,
+    transparent 66%);
+}

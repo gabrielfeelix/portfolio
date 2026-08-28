@@ -1,0 +1,1127 @@
+/* Página de caso.
+   As primitivas de hero (.v2-hero, .v2-hero-in, .v2-hero-topo, .v2-hero-h)
+   moram em home.css e são reaproveitadas aqui: são duas páginas usando a
+   mesma dobra, não duas dobras parecidas. */
+
+/* ---------------- hero ---------------- */
+
+/* O bloco ocupa toda a sobra do hero: o titulo de caso tem uma linha, nao
+   tres como o da home, e sem isso o alto da dobra ficava vazio. O texto
+   continua colado embaixo; quem preenche a altura e a capa. */
+.v2-caso-hero-grade {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 32%);
+  gap: var(--v2-s5);
+  align-items: end;
+  margin-top: var(--v2-s5);
+}
+
+.v2-caso-hero-texto { min-width: 0; align-self: end; }
+
+/* O título de caso é uma palavra curta, não uma frase de três linhas como a
+   da home: sem o degrau ele fica maior que o hero inteiro. */
+.v2-caso-hero-h { font-size: var(--v2-t-caso-hero); }
+
+.v2-caso-hero-premissa {
+  margin: var(--v2-s3) 0 0;
+  max-width: 30ch;
+  font-size: var(--v2-t-caso-manifesto);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -.02em;
+  color: rgba(255, 255, 255, .78);
+}
+
+.v2-caso-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s2);
+  margin-top: var(--v2-s4);
+}
+
+.v2-caso-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s1) var(--v2-s3);
+  margin: var(--v2-s4) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--v2-t-label);
+  color: rgba(255, 255, 255, .62);
+}
+
+/* Separador de tag: ponto médio, não travessão. */
+.v2-caso-tags li + li::before {
+  content: "·";
+  margin-right: var(--v2-s3);
+  opacity: .5;
+}
+
+/* `position: relative` + imagem absoluta: com a imagem no fluxo, a altura
+   intrinseca dela (4:5 de 1000px) empurrava o hero para 1830px de altura em
+   vez de obedecer aos 100svh. */
+.v2-caso-hero-media {
+  position: relative;
+  align-self: stretch;
+  justify-self: end;
+  width: 100%;
+  min-height: 0;
+  border-radius: var(--v2-r-media);
+  overflow: hidden;
+  background: rgba(255, 255, 255, .06);
+}
+
+.v2-caso-hero-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------------- a grade da página ---------------- */
+
+/* Fase 6, crítica B. Antes: `220px + 900px` encostado à esquerda de um
+   container de 1800, com o parágrafo medindo 600 dentro dos 900. Sobravam
+   500px de vazio à direita de quarenta parágrafos, e era o defeito mais
+   visível da leitura.
+   Agora existe UMA grade para a página inteira, centrada no container:
+   label 220 · leitura 640 · nota marginal 300. Toda dobra usa a mesma, então
+   todo label começa no mesmo x e a coluna de leitura nunca muda de lugar.
+   A 1440 sobram 320px à esquerda do parágrafo e 400 à direita: 80px de
+   assimetria, contra os 500 de antes. As duas saídas do handoff acabaram
+   sendo a mesma: conjunto centrado E lado direito com conteúdo. */
+.v2-caso-duas {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: start;
+  max-width: var(--v2-caso-larga);
+  margin-inline: auto;
+}
+
+.v2-caso-coluna { min-width: 0; }
+
+/* O topo de uma dobra larga: texto à esquerda na medida de leitura, nota
+   marginal à direita. `fonte`, `nota` e `leitura` moravam dentro da coluna
+   de leitura e competiam com o argumento; aqui elas ficam ao lado dele. */
+.v2-caso-topo {
+  display: grid;
+  grid-template-columns: minmax(0, var(--v2-medida-caso)) minmax(0, var(--v2-margem-caso));
+  gap: var(--v2-s4);
+  align-items: start;
+}
+
+.v2-caso-margem { min-width: 0; }
+
+.v2-margem-nota {
+  margin-top: var(--v2-s3);
+  padding-top: var(--v2-s2);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-margem-k {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-label);
+  font-weight: 600;
+}
+
+.v2-margem-p {
+  margin: 0;
+  font-size: .8125rem;
+  line-height: 1.6;
+  color: var(--v2-muted);
+}
+
+/* O espaço entre dobras. Era uma régua a cada dobra, vinte e três delas,
+   todas do mesmo peso: é isso que faz vinte e nove mil pixels de leitura
+   parecerem catálogo. Agora quem separa é o vão. */
+.v2-dobra { margin-top: var(--v2-s6); }
+
+/* Primeira dobra depois do hero: régua ali em cima colaria no escuro, então
+   quem abre o espaço é o padding. */
+.v2-caso-abre { padding-top: var(--v2-s6); }
+
+.v2-caso-ato {
+  margin: 0 0 var(--v2-s3);
+  max-width: 24ch;
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -.025em;
+}
+
+/* A coluna passou a ser a medida, então o parágrafo não precisa mais de
+   limite próprio: 640px a 17px dão ~68 caracteres. */
+.v2-caso-p { max-width: none; margin: 0; }
+
+.v2-caso-p + .v2-caso-p { margin-top: var(--v2-s3); }
+
+/* ---------------- movimento ---------------- */
+
+/* A virada. Largura cheia, tipografia grande, nenhum label, e a única régua
+   com cruz da página. Quatro por caso. */
+.v2-mov { margin-top: var(--v2-s7); }
+
+.v2-mov .v2-regua {
+  max-width: var(--v2-caso-larga);
+  margin-inline: auto;
+  margin-block: 0 var(--v2-s5);
+}
+
+.v2-mov-in {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: baseline;
+  max-width: var(--v2-caso-larga);
+  margin-inline: auto;
+  padding-bottom: var(--v2-s2);
+}
+
+.v2-mov-n {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  color: var(--v2-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-mov-t {
+  margin: 0;
+  font-size: var(--v2-t-movimento);
+  font-weight: 800;
+  line-height: .98;
+  letter-spacing: -.03em;
+}
+
+/* ---------------- ficha ---------------- */
+
+.v2-ficha {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-ficha-cel { min-width: 0; }
+
+.v2-ficha-l {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-ficha-v {
+  margin: 0;
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* ---------------- resumo ---------------- */
+
+/* Sem painel cinza: cinza agora significa mídia e nada mais. Duas células
+   com régua em cima dizem a mesma coisa sem fingir que o resumo é imagem. */
+.v2-resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s4);
+}
+
+.v2-resumo-cel {
+  min-width: 0;
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-resumo-l {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-resumo-v {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+/* ---------------- utilidades da pagina ---------------- */
+
+.v2-caso-medida { max-width: var(--v2-medida-caso); min-width: 0; }
+
+.v2-fonte {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  line-height: 1.5;
+}
+
+/* Nota de rodape de dobra: regua fina a esquerda, sem caixa. */
+.v2-nota {
+  margin-top: var(--v2-s3);
+  padding-left: var(--v2-s3);
+  border-left: 2px solid var(--v2-rule);
+}
+
+/* O buraco que o modulo resolve. Uma frase, marcada com o accent em grafismo
+   e nunca em texto: accent sobre papel reprova AA em corpo. */
+.v2-buraco {
+  margin: 0 0 var(--v2-s3);
+  padding-left: var(--v2-s3);
+  border-left: 2px solid var(--v2-accent);
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+}
+
+.v2-bloco { margin-top: var(--v2-s6); }
+
+.v2-bloco-t {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+
+.v2-token,
+.v2-formula {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--v2-t-label);
+  padding: 2px var(--v2-s1);
+  border-radius: 6px;
+  background: var(--v2-superficie);
+}
+
+/* ---------------- midia emoldurada ---------------- */
+
+/* A midia da pagina de caso vive dentro de um painel e nunca sangra. O
+   painel é o único lugar onde `--v2-card` aparece, e a textura de 5px mora
+   dentro dele (`.v2-textura`, em shell.css), nunca na página. */
+.v2-fig {
+  margin: var(--v2-s4) 0 0;
+  padding: var(--v2-s3);
+  border-radius: var(--v2-r-secao);
+  background: var(--v2-card);
+}
+
+.v2-fig-moldura {
+  display: block;
+  border-radius: var(--v2-r-media);
+  overflow: hidden;
+  background: var(--v2-paper);
+}
+
+.v2-fig-moldura img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.v2-fig-leg {
+  margin: var(--v2-s2) 0 0;
+  max-width: 70ch;
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  line-height: 1.5;
+}
+
+.v2-fig.is-larga { max-width: none; }
+
+/* A copia mobile de uma figura que ja aparece na coluna presa. */
+.v2-fig.is-mobile { display: none; }
+
+.v2-figs-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+.v2-figs-2 .v2-fig { margin-top: var(--v2-s4); }
+
+/* ---------------- fileira de dados ---------------- */
+
+/* A `li` só existe para o stagger: quem desenha é `.v2-dado`, em shell.css. */
+.v2-dados li { min-width: 0; }
+
+/* Cinco etapas em UMA fileira. Quebradas em 3 + 2 elas deixam de ser funil e
+   viram duas fileiras de números soltos: o despencar entre a terceira e a
+   quarta é o argumento da dobra, e ele só existe na horizontal. O número cai
+   um degrau para caber, e é o único lugar da página onde isso acontece. */
+.v2-dados.is-funil {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+.v2-dados.is-funil .v2-dado-v { font-size: clamp(1.5rem, 2.6vw, 2.5rem); }
+
+.v2-dados.is-apertada {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--v2-s4) var(--v2-s3);
+  margin-top: var(--v2-s4);
+}
+
+/* O número solitário: 128px sozinho na dobra é o que faz a página respirar. */
+.v2-dado-solo {
+  margin-top: var(--v2-s6);
+  max-width: var(--v2-medida-caso);
+}
+
+/* A taxa de conversão, com a faixa saudável do mercado marcada dentro da
+   própria régua do dado. Sem a faixa, 0,13% é só um número pequeno. */
+.v2-marca-solo {
+  margin-top: var(--v2-s7);
+  max-width: var(--v2-medida-caso);
+}
+
+.v2-marca-solo .v2-dado-regua { height: 14px; }
+
+.v2-mr-faixa {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  background: color-mix(in srgb, var(--v2-ink) 14%, transparent);
+}
+
+.v2-mr-tick {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 14px;
+  background: var(--v2-ink);
+}
+
+.v2-mr-tick.is-nosso { background: var(--v2-accent); width: 3px; }
+
+.v2-mr-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s3);
+  margin-top: var(--v2-s3);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-mr-tag { display: inline-flex; align-items: center; gap: var(--v2-s1); }
+
+.v2-mr-tag::before {
+  content: "";
+  width: 10px; height: 3px;
+  background: var(--v2-ink);
+}
+
+.v2-mr-tag.is-nosso { color: var(--v2-ink); font-weight: 600; }
+.v2-mr-tag.is-nosso::before { background: var(--v2-accent); }
+.v2-mr-tag.is-faixa::before { background: color-mix(in srgb, var(--v2-ink) 14%, transparent); height: 6px; }
+
+/* ---------------- achados ---------------- */
+
+.v2-achados {
+  list-style: none;
+  margin: var(--v2-s5) 0 0;
+  padding: 0;
+  max-width: var(--v2-medida-caso);
+}
+
+.v2-achados li {
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  gap: var(--v2-s3);
+  padding-block: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-achados-n {
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-muted);
+  font-size: var(--v2-t-label);
+  padding-top: .25em;
+}
+
+.v2-achados-t { max-width: none; }
+
+/* ---------------- citacao ---------------- */
+
+.v2-citacao {
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-block: var(--v2-s5);
+}
+
+.v2-citacao-q {
+  margin: 0;
+  max-width: 24ch;
+  font-size: var(--v2-t-caso-manifesto);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+/* As aspas sao grafismo em accent: e um dos poucos lugares onde ele cabe. */
+.v2-citacao-q::before {
+  content: "\201C";
+  color: var(--v2-accent);
+  margin-right: .1em;
+}
+
+.v2-citacao-f {
+  margin-top: var(--v2-s3);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+/* ---------------- decisoes ---------------- */
+
+.v2-dec {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+  max-width: var(--v2-caso-larga);
+}
+
+.v2-dec-i {
+  display: grid;
+  grid-template-columns: minmax(0, 8ch) minmax(0, 26ch) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: baseline;
+  padding-block: var(--v2-s4);
+  border-bottom: 1px solid var(--v2-rule);
+}
+
+.v2-dec-n {
+  margin: 0;
+  font-size: var(--v2-t-num);
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-dec-n-zero { color: var(--v2-muted); }
+
+.v2-dec-t {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.v2-dec-r { max-width: none; }
+
+/* ---------------- recusei ---------------- */
+
+.v2-recusei-lead {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.v2-recusei-l {
+  list-style: none;
+  max-width: var(--v2-medida-caso);
+  margin: var(--v2-s5) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-recusei-l li {
+  padding-block: var(--v2-s3);
+  border-bottom: 1px solid var(--v2-rule);
+}
+
+.v2-recusei-o {
+  margin: 0 0 var(--v2-s1);
+  font-weight: 600;
+  text-decoration: line-through;
+  text-decoration-color: var(--v2-accent);
+  text-decoration-thickness: 2px;
+}
+
+/* ---------------- solucao ---------------- */
+
+.v2-sol-grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+/* A primeira tela ocupa a linha inteira: e o comeco do caminho, e o conjunto
+   perde a cronologia se as tres chegam do mesmo tamanho. */
+.v2-sol-grade > .v2-fig:first-child { grid-column: 1 / -1; }
+
+/* ---------------- sistema ---------------- */
+
+.v2-escada { list-style: none; margin: var(--v2-s3) 0 0; padding: 0; }
+
+.v2-escada li {
+  display: grid;
+  grid-template-columns: minmax(0, 14ch) minmax(0, 26ch) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--v2-s3);
+  align-items: center;
+  padding-block: var(--v2-s2);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-escada-f { color: var(--v2-muted); font-size: var(--v2-t-label); }
+
+.v2-escada-par { display: inline-flex; align-items: center; gap: var(--v2-s1); }
+
+.v2-escada-v {
+  font-size: var(--v2-t-label);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--v2-muted);
+  overflow-wrap: anywhere;
+}
+
+.v2-swatch {
+  width: 26px; height: 26px;
+  flex: none;
+  border-radius: 6px;
+  border: 1px solid var(--v2-rule);
+}
+
+/* O swatch do tema escuro precisa de fundo escuro atras, senao um cinza
+   #323232 sobre papel branco parece so um cinza. */
+.v2-escada-par.is-escuro {
+  padding: 4px var(--v2-s1) 4px 4px;
+  border-radius: var(--v2-r-pill);
+  background: var(--v2-ink);
+}
+
+.v2-escada-par.is-escuro .v2-escada-v { color: rgba(255, 255, 255, .68); }
+.v2-escada-par.is-escuro .v2-swatch { border-color: rgba(255, 255, 255, .18); }
+
+.v2-funcoes {
+  list-style: none;
+  margin: var(--v2-s3) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+}
+
+.v2-func-chip {
+  display: block;
+  width: 100%;
+  height: 56px;
+  border-radius: var(--v2-r-card);
+}
+
+.v2-func-n { margin: var(--v2-s2) 0 0; font-weight: 700; }
+
+.v2-func-f {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-pares {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s3);
+  margin-top: var(--v2-s3);
+  max-width: var(--v2-medida);
+}
+
+.v2-par {
+  padding: var(--v2-s4);
+  border-radius: var(--v2-r-card);
+  border: 1px solid var(--v2-rule);
+}
+
+.v2-par.is-escuro { border-color: rgba(255, 255, 255, .12); }
+
+.v2-par-tema { margin: 0 0 var(--v2-s1); font-size: var(--v2-t-label); opacity: .7; }
+
+.v2-par-r { margin: 0; font-size: var(--v2-t-bloco); font-weight: 800; }
+
+.v2-deriv {
+  position: relative;
+  padding: var(--v2-s3);
+  border-radius: var(--v2-r-card);
+  border: 1px solid var(--v2-rule);
+}
+
+.v2-deriv-am {
+  display: block;
+  height: 120px;
+  border-radius: var(--v2-r-media);
+  margin-bottom: var(--v2-s2);
+}
+
+.v2-motion {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: start;
+  margin-top: var(--v2-s3);
+  max-width: var(--v2-medida);
+}
+
+/* Sem preenchimento: é desenho de linha, não painel de mídia. */
+.v2-curva {
+  width: 100%;
+  height: auto;
+}
+
+.v2-curva-eixo { fill: none; stroke: var(--v2-rule); stroke-width: 2; }
+.v2-curva-linha { fill: none; stroke: var(--v2-accent); stroke-width: 3; stroke-linecap: round; }
+
+.v2-marcos { list-style: none; margin: var(--v2-s3) 0 0; padding: 0; font-size: var(--v2-t-label); }
+
+.v2-marcos li {
+  display: flex;
+  gap: var(--v2-s2);
+  padding-block: var(--v2-s1);
+  border-top: 1px solid var(--v2-rule);
+  color: var(--v2-muted);
+}
+
+.v2-marcos-l {
+  min-width: 6ch;
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-ink);
+  font-weight: 600;
+}
+
+.v2-escala { list-style: none; margin: var(--v2-s3) 0 0; padding: 0; max-width: var(--v2-medida); }
+
+.v2-escala li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v2-s4);
+  padding-block: var(--v2-s2);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-escala-am { line-height: 1; letter-spacing: -.02em; }
+
+.v2-escala-m {
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  white-space: nowrap;
+}
+
+/* A amostra de raio: contorno, não preenchimento cinza. */
+.v2-raio-am {
+  display: block;
+  height: 48px;
+  border: 1px solid var(--v2-rule);
+  margin-bottom: var(--v2-s2);
+}
+
+/* ---------------- midia presa a esquerda ---------------- */
+
+.v2-preso {
+  display: grid;
+  grid-template-columns: minmax(0, 48%) minmax(0, 1fr);
+  gap: var(--v2-s5);
+  margin-top: var(--v2-s5);
+  align-items: start;
+}
+
+/* A midia para abaixo da nav e um pouco acima do meio da tela, que e onde o
+   passo ativo esta quando cruza a faixa do observador. */
+.v2-preso-media {
+  position: sticky;
+  top: 14svh;
+}
+
+.v2-preso-palco {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--v2-r-secao);
+  background: var(--v2-card);
+  padding: var(--v2-s2);
+  overflow: hidden;
+}
+
+.v2-preso-img {
+  position: absolute;
+  inset: var(--v2-s2);
+  width: calc(100% - var(--v2-s2) * 2);
+  height: calc(100% - var(--v2-s2) * 2);
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 420ms var(--v2-ease);
+  border-radius: var(--v2-r-media);
+}
+
+.v2-preso-img.is-ativa { opacity: 1; }
+
+.v2-preso-texto { list-style: none; margin: 0; padding: 0; }
+
+/* 15svh de respiro por passo: e o suficiente para um passo por vez cruzar a
+   faixa do meio da tela. A 22svh o trilho ficava mais alto que a leitura. */
+.v2-preso-passo {
+  padding-block: 15svh;
+  max-width: 52ch;
+  opacity: .45;
+  transition: opacity 420ms var(--v2-ease);
+}
+
+.v2-preso-passo.is-ativo { opacity: 1; }
+
+.v2-preso-k {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-preso-t {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+/* ---------------- modulos ---------------- */
+
+.v2-mod + .v2-mod { margin-top: var(--v2-s6); }
+
+.v2-mod .v2-regua { margin-block: 0 var(--v2-s4); }
+
+.v2-mod-k {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  color: var(--v2-muted);
+}
+
+.v2-caminhos {
+  list-style: none;
+  margin: var(--v2-s4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+.v2-caminhos .v2-fig { margin-top: 0; }
+
+.v2-cam-para {
+  margin: var(--v2-s2) 0 0;
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-cam-t {
+  margin: 0 0 var(--v2-s1);
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.v2-passos { list-style: none; margin: var(--v2-s4) 0 0; padding: 0; }
+
+.v2-passo {
+  display: grid;
+  grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: center;
+  padding-block: var(--v2-s4);
+  border-top: 1px solid var(--v2-rule);
+}
+
+/* A figura troca de lado a cada passo: e o que impede oito passos iguais de
+   virarem catalogo. As duas colunas trocam de largura junto com a ordem,
+   senao a figura muda de tamanho de um passo para o outro. */
+.v2-passo.is-invertido {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34%);
+}
+
+.v2-passo.is-invertido .v2-passo-texto { order: 2; }
+
+.v2-passo .v2-fig { margin-top: 0; }
+
+.v2-passo-t {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+/* ---------------- calendario ---------------- */
+
+/* Contorno, não preenchimento: cinza é mídia. */
+.v2-cal {
+  display: inline-block;
+  padding: var(--v2-s3);
+  border-radius: var(--v2-r-secao);
+  border: 1px solid var(--v2-rule);
+}
+
+.v2-cal-mes { margin: 0 0 var(--v2-s2); font-weight: 700; }
+
+.v2-cal-tab { border-collapse: collapse; }
+
+.v2-cal-tab th,
+.v2-cal-tab td {
+  width: 44px;
+  height: 40px;
+  text-align: center;
+  font-size: var(--v2-t-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-cal-tab th { color: var(--v2-muted); font-weight: 500; }
+
+.v2-cal-marca {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: var(--v2-r-pill);
+  background: var(--v2-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ---------------- antes e depois ---------------- */
+
+.v2-comp {
+  margin: var(--v2-s4) 0 0;
+  padding: var(--v2-s3);
+  border-radius: var(--v2-r-secao);
+  background: var(--v2-card);
+}
+
+.v2-comp-caixa {
+  position: relative;
+  border-radius: var(--v2-r-media);
+  overflow: hidden;
+  background: var(--v2-paper);
+  touch-action: pan-y;
+  cursor: ew-resize;
+  user-select: none;
+}
+
+.v2-comp-caixa img { display: block; width: 100%; height: auto; }
+
+.v2-comp-antes { position: absolute; inset: 0; }
+.v2-comp-antes img { height: 100%; object-fit: cover; object-position: top center; }
+
+.v2-comp-rot {
+  position: absolute;
+  top: var(--v2-s2);
+  padding: 4px var(--v2-s2);
+  border-radius: var(--v2-r-pill);
+  background: rgba(11, 11, 12, .72);
+  color: #fff;
+  font-size: var(--v2-t-label);
+  font-weight: 600;
+}
+
+.v2-comp-rot.is-esq { left: var(--v2-s2); }
+.v2-comp-rot.is-dir { right: var(--v2-s2); }
+
+.v2-comp-alca {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  cursor: ew-resize;
+}
+
+.v2-comp-alca-p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; height: 40px;
+  border-radius: var(--v2-r-pill);
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .28);
+}
+
+/* A seta dupla e desenhada em CSS: um SVG a mais por comparador nao paga. */
+.v2-comp-alca-p::before,
+.v2-comp-alca-p::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px; height: 7px;
+  border-top: 2px solid var(--v2-ink);
+  border-left: 2px solid var(--v2-ink);
+}
+
+.v2-comp-alca-p::before { left: 10px; transform: translateY(-50%) rotate(-45deg); }
+.v2-comp-alca-p::after  { right: 10px; transform: translateY(-50%) rotate(135deg); }
+
+/* ---------------- resultado ---------------- */
+
+.v2-result-t {
+  margin: 0 0 var(--v2-s3);
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  max-width: 22ch;
+}
+
+/* Sem painel: régua em cima e linhas. */
+.v2-result-lista {
+  margin-top: var(--v2-s5);
+  max-width: var(--v2-medida-caso);
+}
+
+.v2-result-k { margin: 0 0 var(--v2-s2); font-size: var(--v2-t-label); color: var(--v2-muted); }
+
+.v2-result-lista ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--v2-rule); }
+
+.v2-result-lista li {
+  padding-block: var(--v2-s3);
+  border-bottom: 1px solid var(--v2-rule);
+  font-weight: 500;
+}
+
+/* ---------------- aprendi ---------------- */
+
+/* A excecao nomeada em D5: o unico bloco escuro fora do hero. */
+.v2-aprendi {
+  position: relative;
+  z-index: 1;
+  background: var(--v2-ink);
+  color: #fff;
+  margin-top: var(--v2-s7);
+  padding-block: var(--v2-s7);
+}
+
+.v2-aprendi .v2-label { color: rgba(255, 255, 255, .72); }
+
+.v2-aprendi-p {
+  margin: 0;
+  max-width: var(--v2-medida-caso);
+  font-size: var(--v2-t-caso-manifesto);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: rgba(255, 255, 255, .88);
+}
+
+.v2-aprendi-p + .v2-aprendi-p { margin-top: var(--v2-s4); }
+
+/* ---------------- proximo caso ---------------- */
+
+.v2-proximo {
+  display: block;
+  max-width: var(--v2-caso-larga);
+  margin-inline: auto;
+  padding-block: var(--v2-s5);
+  color: inherit;
+  text-decoration: none;
+  transition: padding-inline-start 420ms var(--v2-ease);
+}
+
+.v2-proximo:hover,
+.v2-proximo:focus-visible { padding-inline-start: var(--v2-s3); }
+
+.v2-proximo-k {
+  display: block;
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  margin-bottom: var(--v2-s2);
+}
+
+.v2-proximo-t {
+  display: block;
+  font-size: var(--v2-t-manifesto);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.025em;
+}
+
+.v2-proximo-d { display: block; margin-top: var(--v2-s1); color: var(--v2-muted); }
+
+/* ---------------- respiro ---------------- */
+
+@media (max-width: 1320px) {
+  /* Abaixo da largura da grade cheia a nota marginal não cabe mais ao lado
+     do texto: ela desce e vira nota de rodapé de dobra. */
+  .v2-caso-topo { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  .v2-caso-margem { max-width: var(--v2-medida-caso); }
+}
+
+@media (max-width: 1100px) {
+  .v2-caso-hero-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 38%); gap: var(--v2-s4); }
+  .v2-caso-hero-media { align-self: end; aspect-ratio: 4 / 5; max-height: 56svh; }
+  .v2-funcoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v2-caminhos { grid-template-columns: 1fr; }
+  .v2-preso { grid-template-columns: minmax(0, 46%) minmax(0, 1fr); gap: var(--v2-s4); }
+  /* Cinco colunas de funil abaixo de 1100 dão 180px cada e o rótulo quebra
+     em palavra por linha. Três é o último degrau que ainda lê como fileira. */
+  .v2-dados.is-funil { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .v2-dec-i { grid-template-columns: minmax(0, 6ch) minmax(0, 1fr); }
+  .v2-dec-r { grid-column: 2; margin-top: var(--v2-s2); }
+}
+
+@media (max-width: 860px) {
+  /* A capa sai no celular: 4:5 ao lado de um título já não cabe, e embaixo
+     ela empurraria o pé do hero para fora da tela. */
+  .v2-caso-hero-grade { grid-template-columns: 1fr; }
+  .v2-caso-hero-media { display: none; }
+  .v2-caso-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  .v2-mov-in { grid-template-columns: 1fr; gap: var(--v2-s1); }
+  .v2-caso-abre { padding-top: var(--v2-s5); }
+  .v2-dobra { margin-top: var(--v2-s5); }
+  .v2-mov { margin-top: var(--v2-s6); }
+  .v2-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
+  .v2-resumo { grid-template-columns: 1fr; gap: var(--v2-s3); }
+
+  /* Uma coluna so: tudo que era duas colunas empilha, e a coluna presa
+     deixa de existir. A figura de cada passo passa a andar junto do texto,
+     que e a unica leitura possivel numa tela dessa largura. */
+  .v2-figs-2,
+  .v2-sol-grade,
+  .v2-pares,
+  .v2-funcoes { grid-template-columns: 1fr; }
+
+  .v2-dados { grid-template-columns: 1fr; gap: var(--v2-s4); }
+  .v2-dados.is-apertada,
+  .v2-dados.is-funil { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .v2-preso { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  .v2-preso-media { display: none; }
+  .v2-preso-passo { padding-block: var(--v2-s4); opacity: 1; max-width: none; }
+  .v2-fig.is-mobile { display: block; }
+
+  .v2-passo,
+  .v2-passo.is-invertido { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  .v2-passo.is-invertido .v2-passo-texto { order: 0; }
+
+  .v2-escada li { grid-template-columns: 1fr 1fr; gap: var(--v2-s2); }
+  .v2-escada-f { grid-column: 1 / -1; }
+
+  .v2-motion { grid-template-columns: 1fr; }
+  .v2-curva { max-width: 200px; }
+  .v2-cal-tab th, .v2-cal-tab td { width: 36px; height: 34px; }
+  .v2-aprendi { padding-block: var(--v2-s6); }
+}
+
+@media (max-width: 520px) {
+  .v2-dados.is-apertada,
+  .v2-dados.is-funil { grid-template-columns: 1fr; }
+}
+
+/* Sem movimento nenhum para quem pediu: a troca de figura da coluna presa e
+   a atenuacao dos passos deixam de animar. */
+@media (prefers-reduced-motion: reduce) {
+  .v2-preso-img,
+  .v2-preso-passo,
+  .v2-proximo,
+  .v2-fig { transition-duration: 200ms; }
+}

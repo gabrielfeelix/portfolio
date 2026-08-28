@@ -1,0 +1,157 @@
+/* Tokens da V2. Fonte única de cor, tipo, forma e espaço.
+   Nenhum valor cru fora daqui: se um componente precisa de um número novo,
+   ele vira token antes de ser usado. */
+
+:root {
+  /* --- superfície --- */
+  /* Branco puro, não creme: pedido do Gabriel em 2026-08-28. A relação se
+     inverte — antes o papel era creme e o card branco; agora o papel é
+     branco e o card é o cinza. As referências (launchfolio, tabfolio)
+     trabalham assim: fundo branco/quase-branco e painel cinza para a mídia. */
+  --v2-paper: #FFFFFF;
+
+  /* Fase 6: o painel cinza passou a significar UMA coisa só, mídia. Todo
+     bloco de dado, de texto ou de lista que usava este fundo perdeu a caixa
+     e virou número → régua → rótulo, que é a gramática da viper. Onde antes
+     `--v2-card` era usado como cromo (pill, chip de token), entra
+     `--v2-superficie`, que é o mesmo cinza com outro contrato. */
+  --v2-card:  #F6F6F7;   /* SÓ mídia: figura, comparador, coluna presa */
+  --v2-superficie: #F5F4F3;  /* cromo: pill, chip de código */
+
+  --v2-ink:   #0B0B0C;
+  --v2-muted: #6B6B70;
+  --v2-rule:  #E6E6E8;
+  --v2-accent:#E4231B;
+
+  /* Contraste medido (WCAG 2.1) na paleta branca:
+     ink/paper 19.67:1 · branco/ink 19.67:1 · muted/paper 5.30:1
+     muted/card 4.91:1 · accent/paper 4.61:1 · accent/ink 4.27:1
+     branco/accent 4.51:1 (rótulo do pill quando o filler cobre o botão)
+     Os dois de accent NÃO passam AA em texto normal. O accent só é
+     grafismo, ou texto >=24px peso 800 (mínimo 3:1). Nunca corpo. */
+
+  /* --- tipo --- */
+  --v2-font: "Hanken Grotesk", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* Escala medida na referencia a 1440: headline de secao 110px com
+     line-height 90 (0.82) e medida travada em ~1000px. A V2 escreve frase
+     inteira onde a referencia escreve duas palavras, entao fica um degrau
+     abaixo: hero 124px e manifesto 72px a 1440. */
+  --v2-t-hero:      clamp(2.75rem, 8.6vw, 8.5rem);
+  --v2-t-manifesto: clamp(1.875rem, 5vw, 4.5rem);
+  --v2-t-num:       clamp(2rem, 4vw, 3.5rem);
+
+  /* O contador da viper: 128px, line-height 148 (1.16), letter-spacing -10px
+     (-.078em). É o tamanho que faz uma dobra de dado respirar sozinha, e a
+     V2 parava em 56px. A 1440 isto dá 108px; a 1707 e acima, 128px. */
+  --v2-t-dado:      clamp(3.25rem, 7.5vw, 8rem);
+
+  /* Pagina de caso. A escala cai: leitura longa em coluna de 900px nao
+     aguenta os 124px do hero da home nem os 72px do manifesto. Medido no
+     tabfolio: h1 40px, h2 28px, corpo ~17px. A V2 fica um degrau acima,
+     porque o hero dela e full-bleed e o titulo divide a dobra com a capa. */
+  --v2-t-caso-hero:      clamp(2.5rem, 6.4vw, 6rem);
+  --v2-t-caso-manifesto: clamp(1.25rem, 2.2vw, 2rem);
+  --v2-t-caso-ato:       clamp(1.5rem, 2.6vw, 2.5rem);
+  /* A virada de movimento. Maior que o título de ato e menor que o hero:
+     ela é a única tipografia da página que não divide a dobra com nada. */
+  --v2-t-movimento:      clamp(2.25rem, 5.2vw, 4.5rem);
+  --v2-t-bloco:     1.375rem;
+  --v2-t-corpo:     1.0625rem;
+  --v2-t-label:     0.875rem;
+
+  /* --- forma --- */
+  --v2-r-pill:  999px;
+  --v2-r-card:  20px;
+  --v2-r-media: 24px;
+  --v2-r-secao: 28px;
+
+  /* --- espaço --- */
+  --v2-s1: 8px;
+  --v2-s2: 16px;
+  --v2-s3: 24px;
+  --v2-s4: 40px;
+  --v2-s5: 64px;
+  --v2-s6: 104px;
+  --v2-s7: 168px;
+
+  /* --- grade --- */
+  /* A referencia trava em 1800, nao em 1440: a 1920 o conteudo dela ocupa
+     1800 e o meu ocupava 1440, e era dai que vinha a sensacao de caixa
+     estreita. A 1440 os dois medem 1360, entao nada muda no notebook. */
+  --v2-max: 1800px;
+  --v2-gutter: var(--v2-s4);
+  --v2-label-col: 220px;
+  --v2-medida: 1000px;   /* medida maxima de texto grande, igual a referencia */
+
+  /* Fase 6. A coluna de leitura do caso caiu de 900 para 640 e a página
+     ganhou uma grade só: label + leitura + nota marginal, centrada. 900px
+     deixavam 500px de vazio à direita porque o parágrafo media 600 dentro
+     dela: a coluna era larga e o texto não. Agora a coluna É a medida. */
+  --v2-medida-caso: 640px;
+  --v2-margem-caso: 300px;   /* a coluna de nota marginal das dobras de dado */
+  /* 220 + 40 + 640 + 40 + 300 */
+  --v2-caso-larga: 1240px;
+
+  /* --- motion (espelha v2/motion.js; CSS usa para o que não passa por JS) --- */
+  --v2-ease: cubic-bezier(.44, 0, .56, 1);
+  /* Fase 6: 700ms era curto e nervoso perto da referência, que entra em
+     spring damping 60 e em tween de 3s. Ver a nota em motion.js. */
+  --v2-dur: 1200ms;
+
+  /* Textura de painel. Tile de 5px gerado aqui, como o `BG Pattern` da
+     referência: ela vive DENTRO do painel de mídia, com opacidade baixa, e
+     nunca na página. Nada da referência entra no repositório. */
+  --v2-textura: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Crect width='1' height='1' fill='%230b0b0c'/%3E%3C/svg%3E");
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--v2-paper);
+  color: var(--v2-ink);
+  font-family: var(--v2-font);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nada se move para quem pediu para nada se mover. Vale para a V2 inteira:
+   as primitivas de motion.js leem a mesma media query no JS. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 200ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Fase 0: prova de que o conteúdo da V1 chegou --- */
+.v2-boot {
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: var(--v2-s6) var(--v2-gutter);
+}
+.v2-boot h1 {
+  font-size: var(--v2-t-manifesto);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.08;
+  margin: 0 0 var(--v2-s4);
+}
+.v2-boot table { border-collapse: collapse; width: 100%; max-width: 560px; }
+.v2-boot td {
+  border-bottom: 1px solid var(--v2-rule);
+  padding: var(--v2-s2) 0;
+  font-size: var(--v2-t-label);
+}
+.v2-boot td:last-child { text-align: right; color: var(--v2-muted); }
+.v2-erro {
+  border-left: 3px solid var(--v2-accent);
+  padding-left: var(--v2-s3);
+  font-size: var(--v2-t-label);
+}

@@ -1,0 +1,601 @@
+/* Home da V2, dobras 1 a 4. Só tokens: nenhum valor cru que não seja
+   geometria local (proporção de mídia, altura de faixa). */
+
+/* ---------------- utilidades ---------------- */
+
+.v2-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.v2-corpo {
+  margin: 0;
+  color: var(--v2-muted);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.55;
+}
+
+/* ---------------- 1. hero ---------------- */
+
+.v2-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  background: var(--v2-ink);
+  color: #fff;
+  padding-block: var(--v2-s7) var(--v2-s5);
+  overflow: hidden;
+}
+
+/* A dobra é uma coluna que empurra: rótulo colado na nav em cima, headline e
+   pé colados embaixo. O vazio do meio é intencional e é ele que dá a escala. */
+.v2-hero-in {
+  width: 100%;
+  min-height: calc(100svh - var(--v2-s7) - var(--v2-s5));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.v2-hero-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v2-s3);
+}
+
+.v2-hero-papel {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: rgba(255, 255, 255, .62);
+}
+
+.v2-hero-h {
+  margin: 0;
+  font-size: var(--v2-t-hero);
+  font-weight: 800;
+  line-height: .88;          /* a referência anda em .82; .88 aguenta acento */
+  letter-spacing: -.035em;
+}
+
+/* Cada linha é a janela do clip-path do maskLine. O filho é quem anima. */
+.v2-hero-linha { display: block; overflow: hidden; }
+.v2-hero-linha > span { display: block; }
+
+/* A rotativa é a única coisa em accent na tela, e só pode ser porque é
+   grande e 800: accent sobre ink mede 4.27:1, que passa AA de texto grande
+   (>=3:1) e reprovaria em corpo. Ver a tabela em tokens.css. */
+.v2-hero-linha.is-rot { color: var(--v2-accent); }
+
+.v2-rot { display: block; }
+
+.v2-rot-caixa {
+  position: relative;
+  display: block;
+  height: 1.14em;
+  margin-bottom: -.18em;   /* devolve o respiro extra que a caixa criou */
+  overflow: hidden;
+}
+
+.v2-rot-item {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: block;
+  white-space: nowrap;
+}
+
+.v2-hero-pe {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v2-s3);
+  margin-top: var(--v2-s4);
+}
+
+.v2-hero-sub {
+  margin: 0;
+  max-width: 42ch;
+  font-size: var(--v2-t-corpo);
+  color: rgba(255, 255, 255, .68);
+}
+
+/* O destaque não vira texto vermelho: o vermelho fica embaixo, como marcação.
+   Texto accent em corpo reprova contraste; a régua não tem esse problema. */
+.v2-marca-texto {
+  color: #fff;
+  background-image: linear-gradient(var(--v2-accent), var(--v2-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  padding-bottom: 1px;
+}
+
+.v2-hero-seta {
+  position: absolute;
+  right: var(--v2-gutter);
+  bottom: var(--v2-s5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--v2-s2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, .62);
+  font: inherit;
+  font-size: var(--v2-t-label);
+  cursor: pointer;
+}
+
+.v2-hero-seta-rot { writing-mode: vertical-rl; letter-spacing: .08em; }
+
+.v2-hero-seta-tra {
+  width: 1px;
+  height: var(--v2-s4);
+  background: rgba(255, 255, 255, .28);
+  overflow: hidden;
+  position: relative;
+}
+
+.v2-hero-seta-tra::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40%;
+  background: var(--v2-accent);
+  animation: v2-desce 2.5s var(--v2-ease) infinite;
+}
+
+@keyframes v2-desce {
+  0%   { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(250%); }
+}
+
+/* ---------------- 2. manifesto ---------------- */
+
+.v2-manifesto {
+  margin: 0;
+  max-width: min(22ch, var(--v2-medida));
+  font-size: var(--v2-t-manifesto);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+}
+
+.v2-manifesto-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--v2-s4);
+  max-width: 760px;
+  margin-top: var(--v2-s5);
+}
+
+/* ---------------- 3. vitrine ---------------- */
+
+.v2-vit-grade {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+}
+
+.v2-vit-item { margin: 0; }
+
+.v2-vit-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-vit-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--v2-r-media);
+  background: var(--v2-card);
+  overflow: hidden;
+  transition: transform 420ms var(--v2-ease);
+}
+
+.v2-vit-link:hover .v2-vit-media,
+.v2-vit-link:focus-visible .v2-vit-media { transform: translateY(-8px); }
+
+/* O filho é maior que a janela para o parallax não abrir buraco na borda. */
+.v2-vit-foto {
+  position: absolute;
+  inset: -9% 0;
+  display: block;
+}
+
+.v2-vit-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.v2-vit-pe {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v2-s2);
+  margin-top: var(--v2-s2);
+  padding-top: var(--v2-s2);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-vit-titulo { font-weight: 600; }
+.v2-vit-dom { color: var(--v2-muted); font-size: var(--v2-t-label); text-align: right; }
+
+/* ---------------- 4. marcas ---------------- */
+
+.v2-marquee {
+  border-block: 1px solid var(--v2-rule);
+  overflow: hidden;
+}
+
+.v2-marquee-trilho {
+  display: flex;
+  width: max-content;
+  animation: v2-desliza 48s linear infinite;
+}
+
+.v2-marquee:hover .v2-marquee-trilho,
+.v2-marquee:focus-within .v2-marquee-trilho { animation-play-state: paused; }
+
+.v2-marquee-fita { display: flex; }
+
+@keyframes v2-desliza {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.v2-marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 112px;
+  padding-inline: var(--v2-s5);
+  border-right: 1px solid var(--v2-rule);
+}
+
+.v2-marca-logo {
+  height: 26px;
+  width: auto;
+  opacity: .72;
+  display: block;
+}
+
+.v2-marca-nome {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--v2-ink);
+  opacity: .62;
+  white-space: nowrap;
+}
+
+/* ---------------- respiro mobile ---------------- */
+
+@media (max-width: 860px) {
+  .v2-hero { padding-block: var(--v2-s6) var(--v2-s5); }
+  .v2-hero-pe { flex-direction: column; align-items: flex-start; gap: var(--v2-s3); }
+  .v2-hero-seta { display: none; }
+  .v2-manifesto { max-width: none; }
+  .v2-manifesto-cols { grid-template-columns: 1fr; gap: var(--v2-s3); margin-top: var(--v2-s4); }
+  .v2-vit-grade { grid-template-columns: 1fr; }
+  .v2-marca { height: 88px; padding-inline: var(--v2-s4); }
+}
+
+@media (min-width: 861px) and (max-width: 1100px) {
+  .v2-vit-grade { grid-template-columns: repeat(3, 1fr); gap: var(--v2-s2); }
+}
+
+/* ---------------- passagem hero → corpo ---------------- */
+
+/* O hero fica preso e o corpo claro sobe por cima. `position: sticky` mantém
+   o scroll nativo, então âncora, teclado e IntersectionObserver continuam
+   valendo — o que um container transladado quebraria. */
+.v2-hero { position: sticky; top: 0; z-index: 0; }
+
+/* `.v2-corpo-claro` mora em shell.css: a pagina de caso usa o mesmo corpo. */
+
+/* ---------------- 5. processo ---------------- */
+
+/* Lista, não cards. O separador é régua de 1px; caixa, raio e fundo saíram. */
+.v2-proc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-proc-linha {
+  display: grid;
+  grid-template-columns: minmax(0, 8ch) minmax(0, 24ch) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: baseline;
+  padding-block: var(--v2-s4);
+  border-bottom: 1px solid var(--v2-rule);
+  transition: padding-inline-start 420ms var(--v2-ease);
+}
+
+/* Mesmo deslocamento das linhas de caso: a lista responde ao ponteiro sem
+   virar botão. */
+.v2-proc-linha:hover { padding-inline-start: var(--v2-s1); }
+
+/* O accent não entra aqui: seis numerais vermelhos deixam de ser micro-dose.
+   Ele fica no quadrado do label, que é onde a dobra já o carrega. */
+.v2-proc-n {
+  margin: 0;
+  font-size: var(--v2-t-num);
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.04em;
+  color: var(--v2-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-proc-n-zero { color: var(--v2-muted); }
+
+.v2-proc-t {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.v2-proc-p { max-width: 46ch; }
+
+/* ---------------- 6. casos ---------------- */
+
+.v2-casos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-caso { border-bottom: 1px solid var(--v2-rule); }
+
+.v2-caso-link {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 20ch) 12ch;
+  align-items: baseline;
+  gap: var(--v2-s4);
+  padding: var(--v2-s4) 0;
+  color: inherit;
+  text-decoration: none;
+  transition: padding-inline-start 420ms var(--v2-ease);
+}
+
+.v2-caso-link:hover,
+.v2-caso-link:focus-visible { padding-inline-start: var(--v2-s3); }
+
+.v2-caso-n {
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-caso-t {
+  font-size: var(--v2-t-manifesto);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.025em;
+}
+
+/* O cover ocupa a faixa do descritor: em vez de cobrir texto legível, o
+   descritor sai enquanto a imagem entra. */
+.v2-caso-d {
+  color: var(--v2-muted);
+  transition: opacity 260ms var(--v2-ease);
+}
+
+.v2-caso-link:hover .v2-caso-d,
+.v2-caso-link:focus-visible .v2-caso-d { opacity: 0; }
+.v2-caso-dom {
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* O cover só existe no hover: parado na página ele viraria mais um card. */
+.v2-caso-cover {
+  position: absolute;
+  right: 12ch;
+  top: 50%;
+  width: 280px;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--v2-r-card);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(0, -46%) scale(.96);
+  transition: opacity 320ms var(--v2-ease), transform 420ms var(--v2-ease);
+  box-shadow: 0 18px 48px rgba(11, 11, 12, .18);
+}
+
+.v2-caso-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.v2-caso-link:hover .v2-caso-cover,
+.v2-caso-link:focus-visible .v2-caso-cover {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+}
+
+/* ---------------- 7. peças ---------------- */
+
+.v2-pecas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--v2-s3);
+}
+
+.v2-peca { margin: 0; }
+
+.v2-peca-link { display: block; color: inherit; text-decoration: none; }
+
+.v2-peca-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 11;
+  border-radius: var(--v2-r-card);
+  background: var(--v2-card);
+  overflow: hidden;
+}
+
+.v2-peca-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 520ms var(--v2-ease);
+}
+
+.v2-peca-link:hover img,
+.v2-peca-link:focus-visible img { transform: scale(1.03); }
+
+.v2-peca-tag {
+  position: absolute;
+  left: var(--v2-s2);
+  top: var(--v2-s2);
+  padding: 4px var(--v2-s2);
+  border-radius: var(--v2-r-pill);
+  background: var(--v2-card);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+/* Chapa tipográfica para a peça sem imagem. */
+.v2-peca-media.is-vazia {
+  display: grid;
+  align-items: end;
+  padding: var(--v2-s4);
+  background: var(--v2-ink);
+}
+
+.v2-peca-chapa {
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: #fff;
+  max-width: 12ch;
+}
+
+.v2-peca-pe {
+  display: block;
+  margin-top: var(--v2-s2);
+  padding-top: var(--v2-s2);
+  border-top: 1px solid var(--v2-rule);
+}
+
+/* Título e descritor empilhados: alinhado à direita, o descritor longo
+   quebrava em escada e brigava com o título. */
+.v2-peca-t { display: block; font-weight: 600; }
+.v2-peca-d {
+  display: block;
+  margin-top: 2px;
+  color: var(--v2-muted);
+  font-size: var(--v2-t-label);
+}
+
+/* ---------------- 8. onde estive ---------------- */
+
+.v2-linha-tempo { position: relative; padding-left: var(--v2-s5); }
+
+.v2-lt-trilho {
+  position: absolute;
+  left: 0;
+  top: var(--v2-s1);
+  bottom: var(--v2-s1);
+  width: 2px;
+  background: var(--v2-rule);
+}
+
+.v2-lt-trilho-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--v2-accent);
+  transform-origin: 50% 0;
+}
+
+.v2-lt-item {
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  gap: var(--v2-s4);
+  padding-block: var(--v2-s4);
+  border-bottom: 1px solid var(--v2-rule);
+  margin: 0;
+}
+
+.v2-lt-item:last-child { border-bottom: 0; }
+
+.v2-lt-ano {
+  position: sticky;
+  top: var(--v2-s6);
+  align-self: start;
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-muted);
+}
+
+.v2-lt-agora {
+  display: block;
+  margin-top: var(--v2-s1);
+  color: var(--v2-accent);
+  font-weight: 600;
+}
+
+.v2-lt-nome {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+
+.v2-lt-papel {
+  margin: 2px 0 var(--v2-s2);
+  font-size: var(--v2-t-label);
+  color: var(--v2-muted);
+}
+
+.v2-lt-corpo .v2-corpo { max-width: 62ch; }
+
+/* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
+
+@media (max-width: 1100px) {
+  .v2-pecas { grid-template-columns: repeat(2, 1fr); }
+  /* A terceira coluna do processo (texto de apoio) desce para baixo do
+     titulo: mantida, ela some para 30ch e quebra em palavra por linha. */
+  .v2-proc-linha { grid-template-columns: minmax(0, 6ch) minmax(0, 1fr); }
+  .v2-proc-p { grid-column: 2; max-width: 62ch; }
+  .v2-caso-link { grid-template-columns: 3rem minmax(0, 1fr) 12ch; }
+  .v2-caso-d { display: none; }
+  .v2-caso-cover { display: none; }
+}
+
+@media (max-width: 860px) {
+  .v2-pecas { grid-template-columns: 1fr; }
+  .v2-proc-linha { gap: var(--v2-s2) var(--v2-s3); padding-block: var(--v2-s3); }
+  .v2-caso-link { grid-template-columns: 3rem minmax(0, 1fr); gap: var(--v2-s3); }
+  .v2-caso-dom { display: none; }
+  .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
+  .v2-lt-ano { position: static; }
+  .v2-linha-tempo { padding-left: var(--v2-s4); }
+}
