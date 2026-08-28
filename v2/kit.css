@@ -1,0 +1,230 @@
+/* Estilo do kit. Pareia com v2/Kit.jsx.
+   Nenhum valor cru: tudo sai de tokens.css. Se um número novo aparecer aqui,
+   ele vira token antes. */
+
+/* ------------------------------------------------------------------ cromo */
+
+/* A segunda voz. Mono, 11px, caixa alta, tracking aberto. Ela nunca compete
+   com o conteúdo porque nunca cresce: é a mesma linha em toda dobra, e é a
+   repetição que costura a página. */
+.v2-cromo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s3);
+  margin: 0 0 var(--v2-s5);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  font-weight: 400;
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+  border-top: 1px solid var(--v2-rule);
+  padding-top: var(--v2-s2);
+}
+.v2-cromo[data-escuro="1"] {
+  color: rgba(255, 255, 255, .55);
+  border-top-color: rgba(255, 255, 255, .16);
+}
+/* O índice é o único pedaço do cromo em cor de texto: ele é a âncora que o
+   olho procura ao rolar, e o resto da linha é apoio. */
+.v2-cromo-n { color: var(--v2-ink); }
+.v2-cromo[data-escuro="1"] .v2-cromo-n { color: #fff; }
+.v2-cromo-carimbo { margin-left: auto; }
+
+.v2-relogio {
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+/* --------------------------------------------------------------- estrutura */
+
+.v2-dobra { position: relative; }
+.v2-dobra-in {
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: var(--v2-s7) var(--v2-gutter);
+}
+/* Dobra larga: a mídia encosta na borda da tela e só o texto respeita a
+   goteira. É como o bungee trata a fita do hero. */
+.v2-dobra[data-largo="1"] .v2-dobra-in { padding-left: 0; padding-right: 0; }
+.v2-dobra[data-largo="1"] .v2-cromo,
+.v2-dobra[data-largo="1"] .v2-cabecalho { padding: 0 var(--v2-gutter); }
+
+.v2-dobra[data-escuro="1"] {
+  background: var(--v2-ink);
+  color: #fff;
+}
+
+/* ----------------------------------------------------------------- título */
+
+/* A janela é quem corta: o clip-path do revelar precisa de overflow escondido
+   num pai que não seja o próprio elemento animado. */
+.v2-titulo-janela { display: block; overflow: hidden; }
+
+.v2-titulo {
+  margin: 0;
+  font-size: var(--v2-t-secao);
+  font-weight: 700;
+  line-height: .92;
+  letter-spacing: var(--v2-track-display);
+  max-width: var(--v2-medida);
+  text-wrap: balance;
+}
+/* A marca colada, do jeito das referências: `Portfolio®`, `greyola©`. Meio
+   corpo acima da linha de base e um terço do tamanho, senão vira caractere de
+   texto em vez de grafismo. */
+.v2-titulo-marca {
+  font-size: .3em;
+  vertical-align: .95em;
+  margin-left: .06em;
+  letter-spacing: 0;
+  color: var(--v2-accent);
+}
+
+/* --------------------------------------------------------------- cabeçalho */
+
+/* As cinco partes. Título à esquerda, apoio à direita: é a divisão do viper, e
+   ela existe para o lead nunca ficar embaixo de um título de 104px, onde ele
+   sumiria. */
+.v2-cabecalho {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--v2-s5) var(--v2-s6);
+  align-items: end;
+  margin-bottom: var(--v2-s6);
+}
+.v2-cabecalho-dir {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v2-s3);
+  padding-bottom: .4em;
+}
+
+/* O olho. Mesma voz do cromo, mas em cor de texto: ele nomeia a dobra, o cromo
+   só a numera. */
+.v2-olho {
+  margin: 0 0 var(--v2-s3);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-accent);
+}
+
+.v2-lead {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  line-height: 1.45;
+  letter-spacing: var(--v2-track-titulo);
+  color: var(--v2-muted);
+  max-width: 46ch;
+}
+.v2-dobra[data-escuro="1"] .v2-lead { color: rgba(255, 255, 255, .68); }
+
+.v2-cabecalho-cta { margin-top: var(--v2-s1); }
+
+.v2-cabecalho-nota,
+.v2-contador-nota {
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+.v2-cabecalho-prova { margin-top: var(--v2-s2); }
+
+/* ------------------------------------------------------------------ mídia */
+
+/* A fita do bungee. Colunas altas em arco, sangrando nas duas bordas, cortadas
+   embaixo. `--fitam-h` escala a altura toda; `--col-alto` desalinha cada
+   coluna, e é o desalinho que tira o cheiro de grade. */
+.v2-fitam {
+  display: flex;
+  gap: var(--v2-s1);
+  align-items: flex-end;
+  width: 100%;
+  overflow: hidden;
+  height: calc(46vh * var(--fitam-h, 1));
+  padding: 0 var(--v2-s1);
+}
+.v2-fitam-col {
+  flex: 1 1 0;
+  min-width: 0;
+  height: calc(100% * var(--col-alto, 1));
+  border-radius: var(--v2-r-arco) var(--v2-r-arco) 0 0;
+  overflow: hidden;
+  background: var(--v2-card);
+}
+.v2-fitam-col img,
+.v2-fitam-col video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Abaixo de 900 a fita não cabe com nove colunas sem virar listra: some da
+   quinta em diante e a altura cai. */
+@media (max-width: 900px) {
+  .v2-fitam { height: calc(30vh * var(--fitam-h, 1)); }
+  .v2-fitam-col:nth-child(n + 5) { display: none; }
+}
+
+/* A quebra de imagem: largura total de verdade, sem goteira, sem raio. A
+   sobra de 12% de altura é o curso do parallax; sem ela a imagem descola e
+   aparece o fundo. */
+.v2-quebra {
+  margin: 0;
+  width: 100%;
+  height: 74vh;
+  overflow: hidden;
+  background: var(--v2-card);
+}
+.v2-quebra-in { width: 100%; height: 112%; margin-top: -6%; }
+.v2-quebra img,
+.v2-quebra video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 900px) { .v2-quebra { height: 52vh; } }
+
+/* ------------------------------------------------------------------ dados */
+
+.v2-contador { min-width: 0; }
+.v2-contador-n {
+  margin: 0;
+  font-size: var(--v2-t-dado);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--v2-track-display);
+  font-variant-numeric: tabular-nums;
+}
+.v2-contador-suf { color: var(--v2-accent); }
+.v2-contador-rot {
+  margin: var(--v2-s2) 0 var(--v2-s1);
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+  border-top: 1px solid var(--v2-rule);
+  padding-top: var(--v2-s2);
+}
+.v2-dobra[data-escuro="1"] .v2-contador-rot { border-top-color: rgba(255,255,255,.16); }
+
+.v2-linha { border: 0; border-top: 1px solid var(--v2-rule); margin: 0; }
+
+/* ------------------------------------------------------------------ móvel */
+
+@media (max-width: 900px) {
+  .v2-dobra-in { padding: var(--v2-s6) var(--v2-s3); }
+  .v2-dobra[data-largo="1"] .v2-cromo,
+  .v2-dobra[data-largo="1"] .v2-cabecalho { padding: 0 var(--v2-s3); }
+  .v2-cabecalho { grid-template-columns: 1fr; align-items: start; }
+  .v2-cabecalho-dir { padding-bottom: 0; }
+  .v2-cromo { gap: var(--v2-s2); }
+}

@@ -160,23 +160,26 @@
 
 /* ---------------- 2. declaracao ---------------- */
 
-/* A unica dobra da home sem label e sem regua. Coluna estreita, branco
-   generoso em volta: e o silencio entre o hero e a pilha. */
-.v2-declaracao-secao {
-  padding: var(--v2-s7) var(--v2-gutter);
+/* Ideia do Gabriel: a frase nao e um paragrafo seco no meio da pagina. Duas
+   metades, uma ancorada a esquerda e outra a direita, com um degrau de altura
+   entre elas. A revelacao palavra a palavra continua por cima. */
+.v2-declaracao-par {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: var(--v2-s5);
 }
 
 .v2-declaracao {
   margin: 0;
-  max-width: 900px;
-  font-size: var(--v2-t-manifesto);
+  max-width: var(--v2-medida);
+  font-size: var(--v2-t-secao);
   font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: var(--v2-track-titulo);
+  line-height: 1.02;
+  letter-spacing: var(--v2-track-display);
   text-wrap: balance;
 }
+.v2-declaracao.is-esq { align-self: flex-start; }
+.v2-declaracao.is-dir { align-self: flex-end; text-align: right; }
 
 /* inline-block para a opacidade por palavra nao quebrar a quebra de linha */
 .v2-declaracao-w { display: inline-block; }
@@ -320,7 +323,7 @@
   /* 16/10 e nao 4/3: print de produto e largo, e num box de 4/3 o `cover`
      comia as laterais e cortava o texto da tela no meio da palavra. */
   aspect-ratio: 16 / 10;
-  border-radius: 14px;
+  border-radius: 0;
   overflow: hidden;
   background: var(--v2-card);
 }
@@ -532,4 +535,140 @@
   .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
   .v2-lt-ano { position: static; }
   .v2-linha-tempo { padding-left: var(--v2-s4); }
+}
+
+
+/* ================= dobras novas, montadas sobre o kit ================= */
+
+/* A prova social ao lado do lead, como o "Also work with these international
+   partners:" do viper. Logos pequenas, nunca do tamanho das da marquee. */
+.v2-prova-logos {
+  display: flex;
+  align-items: center;
+  gap: var(--v2-s3);
+  flex-wrap: wrap;
+  opacity: .55;
+}
+.v2-prova-logos .v2-marca-logo { height: 18px; }
+.v2-prova-logos .v2-marca-nome { font-size: var(--v2-t-cromo); }
+
+/* O indice do caso em cima do dominio, como o `THINGS® _ 07.25` do bungee. */
+.v2-cartao-idx {
+  font-family: var(--v2-mono);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-accent);
+  margin-right: var(--v2-s2);
+}
+
+/* A pilha perde o padding proprio: quem espaca agora e a dobra. */
+.v2-pilha { padding: 0 0 var(--v2-s6); }
+.v2-linha-casos { padding-inline: 0; }
+
+/* ---- numeros ---- */
+
+/* Quatro contadores em linha, separados por regua e nao por caixa. A 128px
+   eles nao cabem em quatro colunas abaixo de 1200: viram dois por linha. */
+.v2-numeros {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--v2-s5) var(--v2-s4);
+}
+@media (max-width: 1200px) { .v2-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px)  { .v2-numeros { grid-template-columns: 1fr; } }
+
+/* ---- processo ---- */
+
+/* Numeral na mono a esquerda, frase a direita: a lista de servicos do bungee.
+   Sem tamanho de tipo novo, so posicao. */
+.v2-passos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.v2-passo {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  padding: var(--v2-s5) 0;
+  border-top: 1px solid var(--v2-rule);
+  align-items: start;
+}
+.v2-passo:last-child { border-bottom: 1px solid var(--v2-rule); }
+.v2-passo-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-accent);
+  padding-top: .5em;
+}
+.v2-passo-p {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  line-height: 1.4;
+  letter-spacing: var(--v2-track-titulo);
+  max-width: var(--v2-medida);
+}
+@media (max-width: 760px) {
+  .v2-passo { grid-template-columns: 1fr; gap: var(--v2-s2); }
+}
+
+/* ---- sobre ---- */
+
+/* O efeito do porto: a foto cresce ao longo do curso da dobra e cruza por cima
+   do nome. O nome fica atras, em display grande; a foto e a camada da frente.
+   `overflow: hidden` na janela para a foto nao vazar quando esta em 0.55. */
+.v2-sobre {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 86vh;
+  overflow: hidden;
+}
+.v2-sobre-nome {
+  margin: 0;
+  font-size: clamp(4rem, 19vw, 17rem);
+  font-weight: 700;
+  line-height: .8;
+  letter-spacing: var(--v2-track-display);
+  color: var(--v2-ink);
+  user-select: none;
+}
+.v2-sobre-foto {
+  position: absolute;
+  z-index: 1;
+  width: min(46vw, 620px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  will-change: transform;
+}
+.v2-sobre-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.v2-sobre-texto {
+  max-width: var(--v2-medida);
+  margin: var(--v2-s6) auto 0;
+  padding: 0 var(--v2-gutter);
+  text-align: center;
+}
+.v2-sobre-frase {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  line-height: 1.4;
+  letter-spacing: var(--v2-track-titulo);
+}
+/* A assinatura das referencias. Sem arquivo de caligrafia no repositorio, a
+   aproximacao honesta e o nome em italico grande, nao uma fonte de script
+   falsa. Troca por SVG assim que o Gabriel mandar a assinatura dele. */
+.v2-sobre-ass {
+  margin: var(--v2-s3) 0 0;
+  font-size: var(--v2-t-lead);
+  font-style: italic;
+  color: var(--v2-muted);
+}
+
+@media (max-width: 900px) {
+  .v2-sobre { height: 60vh; }
+  .v2-sobre-foto { width: 62vw; }
+  .v2-declaracao-par { gap: var(--v2-s4); }
 }

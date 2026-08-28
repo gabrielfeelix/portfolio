@@ -214,7 +214,7 @@ const v2Opcoes = (dev) => ({
 
 async function buildV2Css() {
   // Um arquivo so, na ordem em que os tokens precisam existir antes do resto.
-  const ordem = ["tokens.css", "shell.css", "home.css", "case.css"];
+  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css"];
   const partes = [];
   for (const css of ordem) {
     const src = path.join(ROOT, "v2", css);

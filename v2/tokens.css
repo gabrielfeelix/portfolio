@@ -30,31 +30,38 @@
      Os dois de accent NÃO passam AA em texto normal. O accent só é
      grafismo, ou texto >=24px peso 800 (mínimo 3:1). Nunca corpo. */
 
-  /* --- tipo --- */
+  /* --- tipo ---
+     Duas vozes, com papel separado (M1 de docs/ANALISE-REFS.md):
+       Switzer      conteúdo: hero, título de dobra, lead, corpo
+       Geist Mono   cromo: índice de seção, carimbo de ano, relógio, número
+                    de contador, rótulo. Nunca corpo, nunca título.
+     A escala não tem miolo (M2). Medido no viper: display de 82 a 260px,
+     rótulo de 10 a 12px, corpo de 15 a 18px, e quase nada entre 20 e 80. São
+     cinco degraus e mais nenhum. Se um componente pedir um sexto, o degrau
+     escolhido está errado; não falta degrau. */
   --v2-font: "Switzer", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --v2-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Switzer tem altura de x maior e avanco menor que a Hanken: no mesmo
-     font-size ela le maior e ocupa menos linha. A escala desce um degrau e o
-     tracking aperta, senao o hero passa a bater na margem a 1440. */
-  --v2-track-display: -0.032em;   /* hero, titulo de painel */
-  --v2-track-titulo:  -0.02em;    /* declaracao, frase de processo */
+  /* O viper aperta -10px em 128px, que da -0.078em. Os -0.032em da tentativa
+     recusada eram menos da metade, e e parte do porque o display lia mole. */
+  --v2-track-display: -0.055em;
+  --v2-track-titulo:  -0.03em;
+  --v2-track-cromo:    0.14em;   /* a mono so existe em caixa alta e aberta */
 
-  /* Escala medida na referencia a 1440: headline de secao 110px com
-     line-height 90 (0.82) e medida travada em ~1000px. A V2 escreve frase
-     inteira onde a referencia escreve duas palavras, entao fica um degrau
-     abaixo: hero 124px e manifesto 72px a 1440. */
-  --v2-t-hero:      clamp(2.5rem, 8.2vw, 8rem);
-  --v2-t-manifesto: clamp(1.75rem, 4.6vw, 4rem);
-  /* titulo do painel de caso, que divide a dobra com a foto */
-  --v2-t-painel:    clamp(2rem, 5vw, 4.5rem);
-  /* as tres frases do processo */
-  --v2-t-frase:     clamp(1.5rem, 3.4vw, 2.75rem);
-  --v2-t-num:       clamp(2rem, 4vw, 3.5rem);
+  /* Os cinco degraus. */
+  --v2-t-hero:   clamp(2.75rem, 9.4vw, 8.75rem);   /* 140 a partir de ~1490 */
+  --v2-t-secao:  clamp(2.25rem, 6.8vw, 6.5rem);    /* 104, titulo de dobra */
+  --v2-t-dado:   clamp(3.25rem, 7.5vw, 8rem);      /* 128, contador */
+  --v2-t-lead:   clamp(1.125rem, 1.5vw, 1.375rem); /* 22, descricao de 2 linhas */
+  --v2-t-cromo:  0.6875rem;                        /* 11, como o 11px do viper */
 
-  /* O contador da viper: 128px, line-height 148 (1.16), letter-spacing -10px
-     (-.078em). É o tamanho que faz uma dobra de dado respirar sozinha, e a
-     V2 parava em 56px. A 1440 isto dá 108px; a 1707 e acima, 128px. */
-  --v2-t-dado:      clamp(3.25rem, 7.5vw, 8rem);
+  /* Apelidos, nao degraus novos: a pagina de caso e o Shell ainda pedem
+     estes nomes. Nenhum deles introduz um tamanho que a escala nao tenha. */
+  --v2-t-manifesto: var(--v2-t-secao);
+  --v2-t-painel:    var(--v2-t-secao);
+  --v2-t-frase:     var(--v2-t-lead);
+  --v2-t-num:       var(--v2-t-dado);
+
 
   /* Pagina de caso. A escala cai: leitura longa em coluna de 900px nao
      aguenta os 124px do hero da home nem os 72px do manifesto. Medido no
@@ -66,15 +73,20 @@
   /* A virada de movimento. Maior que o título de ato e menor que o hero:
      ela é a única tipografia da página que não divide a dobra com nada. */
   --v2-t-movimento:      clamp(2.25rem, 5.2vw, 4.5rem);
-  --v2-t-bloco:     1.375rem;
+  --v2-t-bloco:     var(--v2-t-lead);
   --v2-t-corpo:     1.0625rem;
-  --v2-t-label:     0.875rem;
+  --v2-t-label:     0.75rem;   /* 12px: a faixa 10-12 das referencias */
 
-  /* --- forma --- */
+  /* --- forma ---
+     M3: as referencias escolhem um extremo. viper serve border-radius 0 em 28
+     lugares e nada medio; bungee serve 0 e 500px (o arco das colunas do hero).
+     Raio medio em tudo e a assinatura visual de template padrao, e era o que a
+     V2 fazia com 20/24/28. Conteudo agora e reto; redondo so onde e acento. */
   --v2-r-pill:  999px;
-  --v2-r-card:  20px;
-  --v2-r-media: 24px;
-  --v2-r-secao: 28px;
+  --v2-r-arco:  500px;   /* o topo em arco das colunas da fita de midia */
+  --v2-r-card:  0px;
+  --v2-r-media: 0px;
+  --v2-r-secao: 0px;
 
   /* --- espaço --- */
   --v2-s1: 8px;
@@ -92,7 +104,7 @@
   --v2-max: 1800px;
   --v2-gutter: var(--v2-s4);
   --v2-label-col: 220px;
-  --v2-medida: 1000px;   /* medida maxima de texto grande, igual a referencia */
+  --v2-medida: 809px;    /* medido no viper: max-width 809px no texto grande */
 
   /* Fase 6. A coluna de leitura do caso caiu de 900 para 640 e a página
      ganhou uma grade só: label + leitura + nota marginal, centrada. 900px

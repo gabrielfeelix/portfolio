@@ -10,8 +10,8 @@
  *   - reveal dispara uma vez, não volta ao rolar de volta.
  */
 
-import { useReducedMotion, useScroll, useTransform, useSpring, useMotionValue } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useReducedMotion, useScroll, useTransform, useSpring, useMotionValue, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 /* 1. spring
    Default de tudo que responde a hover, clique ou drag.
@@ -308,4 +308,95 @@ export function usePalavra(total) {
     opacidades.push(useTransform(scrollYProgress, [i / total, (i + 1) / total], [0.45, 1]));
   }
   return { ref, opacidades, quieto };
+}
+
+/* 11. revelar
+   A entrada padrao de tudo que nao e titulo: opacidade mais um passo curto.
+   E a mesma familia do `rise`, com o curso menor, para poder repetir a pagina
+   inteira sem cansar. Ver M5 de docs/ANALISE-REFS.md: nas referencias o motion
+   e vocabulario repetido, nao enfeite pontual.
+
+   Por que nao clipPath aqui: `whileInView` com clipPath nao interpola no motion
+   (fica preso no `initial` e o elemento nunca aparece); com `animate` funciona,
+   e e por isso que o useMaskLine do hero pode usar. Medido em 2026-08-28. */
+export function useRevelar() {
+  const quieto = useReducedMotion();
+  return (i = 0) =>
+    quieto
+      ? {
+          initial: { opacity: 0 },
+          whileInView: { opacity: 1 },
+          viewport: { once: true, amount: 0.2 },
+          transition: { duration: 0.2 },
+        }
+      : {
+          initial: { opacity: 0, y: 18 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.3 },
+          transition: { duration: 1, ease, delay: i * 0.08 },
+        };
+}
+
+/* 11b. cortina
+   O mascaramento de verdade, so para titulo de dobra: o texto sobe de dentro de
+   uma janela com `overflow: hidden`.
+
+   Por que ela devolve um ref em vez de props de `whileInView`: o
+   IntersectionObserver recorta o retangulo do alvo pelo `overflow` dos
+   ancestrais. Com o texto empurrado 108% para fora da janela, o retangulo
+   visivel dele e zero, o observer nunca acusa entrada e a animacao nunca
+   dispara. Quem e observado tem que ser a janela, que nao se move. Medido em
+   2026-08-28, depois de duas dobras da home saírem em branco por causa disso. */
+export function useCortina() {
+  const quieto = useReducedMotion();
+  const ref = useRef(null);
+  const dentro = useInView(ref, { once: true, amount: 0.25 });
+  const props = (i = 0) =>
+    quieto
+      ? {
+          initial: { opacity: 0 },
+          animate: { opacity: dentro ? 1 : 0 },
+          transition: { duration: 0.2 },
+        }
+      : {
+          initial: { y: "108%" },
+          animate: dentro ? { y: 0 } : { y: "108%" },
+          transition: { duration: 1.15, ease, delay: i * 0.09 },
+        };
+  return { ref, props };
+}
+
+/* 12. contador
+   Número que sobe de 0 até `ate` quando a dobra entra. O DOM da viper serve
+   `0 +` parado, prova de que o valor final é escrito por JS; em
+   reduced-motion o valor entra pronto, sem contagem. */
+export function useContador(ate, duracao = 1.6) {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const [valor, setValor] = useState(quieto ? ate : 0);
+  useEffect(() => {
+    if (quieto) return;
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        obs.disconnect();
+        const t0 = performance.now();
+        const passo = (t) => {
+          const p = Math.min(1, (t - t0) / (duracao * 1000));
+          /* easeOutQuart: chega perto do fim rápido e assenta devagar, que é
+             como o contador da referência se comporta. */
+          setValor(Math.round(ate * (1 - Math.pow(1 - p, 4))));
+          if (p < 1) raf = requestAnimationFrame(passo);
+        };
+        raf = requestAnimationFrame(passo);
+      },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => { obs.disconnect(); cancelAnimationFrame(raf); };
+  }, [ate, duracao, quieto]);
+  return { ref, valor };
 }

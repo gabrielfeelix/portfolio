@@ -1,16 +1,56 @@
-/* Home da V2. A ordem das dobras e o spec
-   docs/superpowers/specs/2026-08-28-home-v2-redesign-design.md, decisoes H1 a H8:
-   hero, declaracao, pilha de casos, marcas, processo, onde estive, fita, fecho. */
+/* Home da V2, remontada sobre o kit.
+ *
+ * A tentativa anterior foi recusada. O diagnóstico está em docs/ANALISE-REFS.md:
+ * não faltava seção, faltava gramática. Cada dobra resolvia o próprio problema
+ * do próprio jeito e o resultado lia como coleção, não como página.
+ *
+ * O que mudou de verdade:
+ *   - toda dobra abre com o mesmo cromo (índice, nome, carimbo) na mono;
+ *   - toda dobra pesada usa o cabeçalho de cinco partes do viper;
+ *   - a mídia sangra: fita no lugar da passagem, quebra entre dobras pesadas;
+ *   - a ordem defende uma tese, e está anotada dobra a dobra abaixo.
+ *
+ * A ordem, e por que ela é essa:
+ *   hero        quem é
+ *   declaração  a tese, partida em duas metades ao rolar
+ *   marcas      a prova social vem logo depois da tese, como no bungee
+ *   trabalho    o que ele quer que vejam, com o cabeçalho de cinco partes
+ *   quebra      respiro, sem uma palavra
+ *   números     a escala do que veio antes
+ *   processo    responde "como você chegou nesses resultados"
+ *   onde estive a trajetória
+ *   sobre       quem é a pessoa, com assinatura
+ *   peças       extra, fora da hierarquia principal, de propósito
+ */
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { spring, useTardio, useRise, useMaskLine, useParallax, useCobertura, useSticky, usePilha, usePilhaTrilho, usePalavra } from "./motion.js";
-import { Label, Regua, Pill } from "./Shell.jsx";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
+import {
+  spring, useTardio, useRise, useMaskLine, useParallax, useCobertura,
+  useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar,
+} from "./motion.js";
+import { Pill } from "./Shell.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, FitaMidia, Quebra, Contador } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
+
+/* Mídia de banco, temporária. Tinta preta e vermelha em fundo branco: não é
+   stock genérico, é a mesma linguagem que o portfólio já tem em
+   volume/assets/ink-splash.png e splatter.svg, e o vermelho bate com
+   --v2-accent. Sai quando as gravações de tela do Gabriel entrarem.
+   Licença Mixkit, uso comercial liberado, sem atribuição. */
+const TINTA = "/volume/assets/stock/ink-";
+const INK = {
+  difusa:  TINTA + "44818.mp4",
+  bloom:   TINTA + "470.mp4",
+  espalha: TINTA + "505.mp4",
+  despeja: TINTA + "3989.mp4",
+  fumaca:  TINTA + "152.mp4",
+  vermelha: TINTA + "41999.mp4",
+};
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -20,26 +60,23 @@ import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
 function Rotativa({ itens, intervalo = 2800 }) {
   const [i, setI] = useState(0);
   const quieto = useReducedMotion();
-
   useEffect(() => {
     if (quieto) return;
-    const id = setInterval(() => setI((n) => (n + 1) % itens.length), intervalo);
-    return () => clearInterval(id);
+    const t = setInterval(() => setI((v) => (v + 1) % itens.length), intervalo);
+    return () => clearInterval(t);
   }, [itens.length, intervalo, quieto]);
-
+  if (quieto) return <span className="v2-rot">{itens[0]}</span>;
   return (
     <span className="v2-rot">
-      {/* leitor de tela lê uma frase só, não o carrossel inteiro */}
-      <span className="v2-sr">{itens[i]}</span>
-      <span className="v2-rot-caixa" aria-hidden="true">
-        <AnimatePresence initial={false} mode="popLayout">
+      <span className="v2-rot-caixa">
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={i}
             className="v2-rot-item"
-            initial={quieto ? { opacity: 0 } : { y: "106%", opacity: 0 }}
-            animate={quieto ? { opacity: 1 } : { y: "0%", opacity: 1 }}
-            exit={quieto ? { opacity: 0 } : { y: "-106%", opacity: 0 }}
-            transition={quieto ? { duration: 0.2 } : spring}
+            initial={{ y: "0.9em", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-0.9em", opacity: 0 }}
+            transition={spring}
           >
             {itens[i]}
           </motion.span>
@@ -52,7 +89,7 @@ function Rotativa({ itens, intervalo = 2800 }) {
 function Hero({ paraCasos }) {
   const linha = useMaskLine();
   const tardio = useTardio(1.4);
-  // O hero fica preso enquanto o manifesto sobe por cima dele, e sai perdendo
+  // O hero fica preso enquanto o corpo sobe por cima dele, e sai perdendo
   // escala em vez de rolar para fora. É a única passagem coberta da home.
   const capa = useCobertura();
   return (
@@ -60,6 +97,9 @@ function Hero({ paraCasos }) {
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
         <motion.div className="v2-hero-topo" {...linha(0)}>
           <p className="v2-hero-papel">{HERO.papel}</p>
+          {/* O relógio é o enfeite mais barato das referências e o único
+              elemento da página que prova que tem alguém do outro lado. */}
+          <Relogio />
           <p className="v2-hero-papel">{VOL()}</p>
         </motion.div>
 
@@ -91,39 +131,75 @@ function Hero({ paraCasos }) {
   );
 }
 
+/* --------------------------------------------------------------- passagem */
+
+/* A fita do bungee, usada como passagem em vez de decoração: o hero escuro
+   termina, e a primeira coisa do corpo claro é mídia sangrando nas duas
+   bordas, cortada embaixo. A home recusada cortava seco do escuro para o
+   branco, e era daí que vinha o "não dá pra entender que mudei de seção".
+
+   Mistura vídeo e imagem porque a referência mistura: nove colunas iguais em
+   conteúdo viram grade de template. As capas de caso entram aqui de graça, o
+   que também resolve a queixa de que as fotos não aparecem em lugar nenhum. */
+function Passagem() {
+  const capas = casos()
+    .map((c) => c.chap.cover || (c.proj && c.proj.cover))
+    .filter(Boolean);
+  const itens = [
+    { src: INK.difusa,  video: true,  alto: 0.82 },
+    capas[0] ? { src: capas[0], alto: 1 } : null,
+    { src: INK.bloom,   video: true,  alto: 0.7 },
+    { src: INK.vermelha, video: true, alto: 0.94 },
+    capas[1] ? { src: capas[1], alto: 0.78 } : null,
+    { src: INK.espalha, video: true,  alto: 1 },
+    capas[2] ? { src: capas[2], alto: 0.66 } : null,
+    { src: INK.despeja, video: true,  alto: 0.88 },
+    capas[3] ? { src: capas[3], alto: 0.74 } : null,
+  ].filter(Boolean);
+  return <FitaMidia itens={itens} />;
+}
+
 /* ----------------------------------------------------------- 2. declaracao */
 
+/* Ideia do Gabriel, e ela é boa: a frase não é um parágrafo seco no meio da
+   página. A primeira metade abre alinhada à esquerda, a segunda assenta à
+   direita conforme a dobra passa. A revelação palavra a palavra continua, mas
+   agora tem duas âncoras em vez de um bloco só. */
 function Declaracao() {
   const palavras = DECLARACAO.split(" ");
+  const corte = Math.ceil(palavras.length / 2);
   const { ref, opacidades, quieto } = usePalavra(palavras.length);
-  return (
-    <section className="v2-declaracao-secao" id="sobre">
-      <p className="v2-declaracao" ref={ref}>
-        {/* o espaço fica FORA do span: espaço no fim de um inline-block é
-            descartado na hora de renderizar, e a frase saía sem separação */}
-        {palavras.map((w, i) => (
+  const trecho = (de, ate, classe) => (
+    <p className={`v2-declaracao ${classe}`}>
+      {palavras.slice(de, ate).map((w, k) => {
+        const i = de + k;
+        return (
           <React.Fragment key={i}>
+            {/* o espaço fica FORA do span: espaço no fim de um inline-block é
+                descartado na hora de renderizar, e a frase saía sem separação */}
             <motion.span
               className="v2-declaracao-w"
               style={quieto ? undefined : { opacity: opacidades[i] }}
             >
               {w}
             </motion.span>
-            {i < palavras.length - 1 ? " " : null}
+            {i < ate - 1 ? " " : null}
           </React.Fragment>
-        ))}
-      </p>
-    </section>
+        );
+      })}
+    </p>
+  );
+  return (
+    <Dobra id="sobre" n="01" nome="A tese" carimbo="©26">
+      <div className="v2-declaracao-par" ref={ref}>
+        {trecho(0, corte, "is-esq")}
+        {trecho(corte, palavras.length, "is-dir")}
+      </div>
+    </Dobra>
   );
 }
 
-/* A tríade de vitrine saiu na Fase 7. Ela mostrava três dos quatro casos
-   que a lista de casos logo abaixo já mostra, com hover de cover, e a lista
-   é o tratamento mais forte dos dois. Repetir os mesmos projetos em duas
-   dobras era o que fazia a home parecer maior do que o trabalho.
-   O `parallax`, que morava nela, foi para a grade de peças. */
-
-/* ---------------------------------------------------------------- 4. marcas */
+/* ---------------------------------------------------------------- 3. marcas */
 
 function Marca({ m }) {
   return (
@@ -135,12 +211,13 @@ function Marca({ m }) {
   );
 }
 
+/* Sem cromo e sem título: no bungee a fileira de logos vem colada na frase de
+   tese, como rodapé dela, não como seção nova. É o mesmo aqui. */
 function Marquee() {
   const marcas = ALL_MARKS();
   const trilho = marcas.map((m) => <Marca key={m.id} m={m} />);
   return (
     <section className="v2-marquee-secao" aria-label="Marcas por onde o design passou">
-      <div className="v2-wrap"><Regua /></div>
       <div className="v2-marquee">
         <div className="v2-marquee-trilho">
           <div className="v2-marquee-fita">{trilho}</div>
@@ -154,41 +231,14 @@ function Marquee() {
   );
 }
 
-/* --------------------------------------------------------------- 5. processo */
+/* ------------------------------------------------------------------ 4. casos */
 
-/* Seis etapas numeradas eram um índice disfarçado de conteúdo. Três frases
-   grandes dizem a mesma coisa em um terço da altura. Sem numeral e sem régua
-   entre elas: a quebra de linha já separa. */
-function Processo() {
-  const rise = useRise();
-  return (
-    <section className="v2-wrap" id="processo">
-      <Regua />
-      <div className="v2-duas">
-        <Label>Como eu trabalho</Label>
-        <div className="v2-frases">
-          {PROCESSO_CURTO.map((f, i) => (
-            <motion.p key={i} className="v2-frase" {...rise(i)}>{f}</motion.p>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+/* Pilha grudada, no formato medido no viper: os casos andam em LINHAS de dois,
+   e a linha inteira gruda num `top` 40px maior que a anterior. A linha seguinte
+   sobe e cobre a de cima, sobrando a lombada de 40px.
 
-/* ------------------------------------------------------------------ 3. casos */
-
-/* Pilha grudada, no formato medido no viper-template: os casos andam em
-   LINHAS de dois, e a linha inteira é que gruda, num `top` 40px maior que a
-   anterior (a ref usa 70 e 110). A linha seguinte sobe e cobre a de cima,
-   sobrando a lombada de 40px, que é o que dá a leitura de baralho.
-
-   O card não é foto sangrando: é moldura clara com a imagem embutida e a
-   legenda embaixo, que é o que faz a ref parecer catálogo e não banner.
-   Medida da ref: 658x526 com 10px de respiro em volta da mídia.
-
-   Locar Mais não tem foto de capa (o print não fecha no enquadramento), então
-   a mídia dela recebe a capa de marca, mesma solução da V1. */
+   O que mudou: o card perdeu o raio (M3) e ganhou o cromo de índice em cima da
+   mídia, como o bungee faz com `THINGS® _ 07.25`. */
 const PILHA_TOPO = 96;    /* nav de 72px, mais respiro */
 const PILHA_PASSO = 40;   /* a lombada de cada linha coberta, medida na ref */
 
@@ -225,17 +275,20 @@ function Cartao({ caso, i, ir }) {
 
         <span className="v2-cartao-pe">
           <span className="v2-cartao-texto">
-            <h2 className="v2-cartao-t">{cap.title}</h2>
+            <h3 className="v2-cartao-t">{cap.title}</h3>
             <span className="v2-cartao-d">{cap.descriptor}</span>
           </span>
-          <span className="v2-cartao-dom">{cap.domain}</span>
+          <span className="v2-cartao-dom">
+            <span className="v2-cartao-idx">{`_0${i + 1}`}</span>
+            {cap.domain}
+          </span>
         </span>
       </a>
     </article>
   );
 }
 
-function Linha({ itens, i, total, progresso, ir }) {
+function LinhaCasos({ itens, i, total, progresso, ir }) {
   const { escala } = usePilha(progresso, i, total);
   return (
     <motion.div
@@ -249,37 +302,168 @@ function Linha({ itens, i, total, progresso, ir }) {
   );
 }
 
-function Pilha({ ir }) {
+function Trabalho({ ir }) {
   const lista = casos();
   const linhas = [];
   for (let k = 0; k < lista.length; k += 2) linhas.push(lista.slice(k, k + 2));
   const { ref, progresso } = usePilhaTrilho();
+  const marcas = ALL_MARKS().slice(0, 5);
   return (
-    <section className="v2-pilha" id="casos" aria-label="Casos" ref={ref}>
-      {linhas.map((itens, i) => (
-        <Linha
-          key={i}
-          itens={itens}
-          i={i}
-          total={linhas.length}
-          progresso={progresso}
-          ir={ir}
-        />
-      ))}
-    </section>
+    <Dobra id="casos" n="02" nome="Trabalho" carimbo="©26" aria-label="Casos">
+      {/* As cinco partes do viper. É a dobra que o Gabriel dissecou. */}
+      <Cabecalho
+        olho="Casos"
+        titulo="Trabalho selecionado"
+        marca="®"
+        lead="Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar."
+        cta={<Pill href="#pecas">Ver tudo</Pill>}
+        nota="Também passei por"
+        prova={
+          <span className="v2-prova-logos" aria-hidden="true">
+            {marcas.map((m) => <Marca key={m.id} m={m} />)}
+          </span>
+        }
+      />
+      <div className="v2-pilha" ref={ref}>
+        {linhas.map((itens, i) => (
+          <LinhaCasos key={i} itens={itens} i={i} total={linhas.length} progresso={progresso} ir={ir} />
+        ))}
+      </div>
+    </Dobra>
   );
 }
 
-/* ------------------------------------------------------------------ 7. peças */
+/* ----------------------------------------------------------------- 6. números */
 
-/* Peça extra num portfólio de UX não pode ter tratamento de caso. Saiu a grade
-   de sete cards e saiu a lista atrás de botão: entra uma fita que corre
-   sozinha, altura baixa, sem título e sem etiqueta.
+/* A dobra de dado que a V2 não tinha. O Gabriel chamou a do porto de MUITO
+   FODA, e o mecanismo é o tamanho: 128px faz o número virar afirmação.
 
-   Uma fita e não duas: só sete peças têm foto, e três por fita não enchem
-   1440px, então o loop mostraria o vão da costura. As outras sete não têm
-   imagem nenhuma e viram uma linha de texto abaixo, que é o tratamento mais
-   discreto que ainda deixa o nome delas na página. */
+   Nada aqui é inventado. Os quatro valores saem de volume/data.jsx: COMPANIES,
+   CASE_ORDER e PIECE_ORDER. O ano de início é 2024, que é o `anos` da primeira
+   empresa da lista. */
+const ANO_INICIO = 2024;
+
+function Numeros() {
+  const empresas = COMPANIES().length;
+  const casosN = casos().length;
+  const pecas = pieceProjects().length;
+  const anos = Math.max(1, new Date().getFullYear() - ANO_INICIO);
+  return (
+    <Dobra id="numeros" n="03" nome="Em números" carimbo="©26">
+      <Cabecalho
+        olho="Escala"
+        titulo="O que já saiu da mesa"
+        lead="Números de produção, não de vaidade: cada um deles tem página no site."
+      />
+      <div className="v2-numeros">
+        <Contador ate={casosN} rotulo="Casos abertos" nota="Problema, pesquisa e resultado" />
+        <Contador ate={casosN + pecas} rotulo="Projetos publicados" nota="Casos mais peças" />
+        <Contador ate={empresas} rotulo="Times por dentro" nota="Estágio, UX e produto" />
+        <Contador ate={anos} sufixo="+" rotulo="Anos em produto" nota={`Desde ${ANO_INICIO}`} />
+      </div>
+    </Dobra>
+  );
+}
+
+/* --------------------------------------------------------------- 7. processo */
+
+/* Três frases, e agora numeradas na mono como os serviços do bungee
+   (`( 001 )` + título + descrição). O numeral entra porque a lista precisa de
+   uma âncora que não seja um tamanho de tipo novo: a escala tem cinco degraus
+   e nenhum deles é "um pouco maior que o corpo". */
+function Processo() {
+  const revelar = useRevelar();
+  return (
+    <Dobra id="processo" n="04" nome="Método" carimbo="©26">
+      <Cabecalho
+        olho="Como eu trabalho"
+        titulo="Do objetivo ao ar"
+        lead="Três movimentos, e o do meio é o que a maioria pula."
+      />
+      <ol className="v2-passos">
+        {PROCESSO_CURTO.map((f, i) => (
+          <motion.li key={i} className="v2-passo" {...revelar(i)}>
+            <span className="v2-passo-n">{`( 00${i + 1} )`}</span>
+            <p className="v2-passo-p">{f}</p>
+          </motion.li>
+        ))}
+      </ol>
+    </Dobra>
+  );
+}
+
+/* ------------------------------------------------------------ 8. onde estive */
+
+function OndeEstive() {
+  const rise = useRise();
+  const { ref, progresso } = useSticky();
+  const lista = COMPANIES();
+  return (
+    <Dobra id="onde" n="05" nome="Trajetória" carimbo="©26">
+      <Cabecalho olho="Onde estive" titulo="A linha do tempo" />
+      <div className="v2-linha-tempo" ref={ref}>
+        {/* o trilho preenche conforme a dobra passa: orienta sem pedir atenção */}
+        <span className="v2-lt-trilho" aria-hidden="true">
+          <motion.span className="v2-lt-trilho-fill" style={{ scaleY: progresso }} />
+        </span>
+        {lista.map((c, i) => (
+          <motion.article key={c.id} className="v2-lt-item" {...rise(Math.min(i, 3))}>
+            <p className="v2-lt-ano">
+              {c.anos}
+              {c.atual ? <span className="v2-lt-agora">agora</span> : null}
+            </p>
+            <div className="v2-lt-corpo">
+              <h3 className="v2-lt-nome">{c.name}</h3>
+              <p className="v2-lt-papel">{c.role}<span className="v2-lt-sep"> · </span>{c.period}</p>
+              <p className="v2-corpo">{c.blurb}</p>
+            </div>
+          </motion.article>
+        ))}
+      </div>
+    </Dobra>
+  );
+}
+
+/* ------------------------------------------------------------------ 9. sobre */
+
+/* O efeito do porto que o Gabriel elogiou mais que qualquer outro: a foto
+   cresce conforme a dobra passa e cruza por cima do texto, revelando o nome.
+
+   Mecanismo: a foto é a camada de baixo e escala de 0.55 até 1 ao longo do
+   curso da dobra; o texto fica preso por cima com mix-blend-mode. Em
+   reduced-motion a foto entra já no tamanho final e nada se move. */
+function Sobre() {
+  const alvo = useRef(null);
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: alvo, offset: ["start end", "end start"] });
+  const escala = useTransform(scrollYProgress, [0, 0.55], [0.55, 1]);
+  const sobe = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
+  return (
+    <Dobra id="sobre-mim" n="06" nome="Quem assina" carimbo="©26" largo>
+      <div className="v2-sobre" ref={alvo}>
+        <motion.div
+          className="v2-sobre-foto"
+          style={quieto ? undefined : { scale: escala, y: sobe }}
+        >
+          <img src="/volume/assets/gabriel.webp" alt="Gabriel Felix Barbosa" loading="lazy" />
+        </motion.div>
+        <h2 className="v2-sobre-nome" aria-hidden="true">GABRIEL</h2>
+      </div>
+      <div className="v2-sobre-texto">
+        <p className="v2-sobre-frase">
+          Designer de produto em Maringá, que aprende o problema antes de abrir o Figma
+          e implementa quando o prazo aperta.
+        </p>
+        <p className="v2-sobre-ass">Gabriel Felix Barbosa</p>
+      </div>
+    </Dobra>
+  );
+}
+
+/* ----------------------------------------------------------------- 10. peças */
+
+/* Peça extra num portfólio de UX não pode ter tratamento de caso. Uma fita que
+   corre sozinha, altura baixa. As sem imagem viram uma linha de texto. */
 function Fita() {
   const lista = pieceProjects();
   const capa = (p) => p.cover || (p.shots && p.shots[0]);
@@ -307,6 +491,7 @@ function Fita() {
 
   return (
     <section className="v2-fita-secao" id="pecas" aria-label="Outras peças">
+      <div className="v2-wrap"><Cromo n="07" nome="Fora da estante" carimbo="©26" /></div>
       <div className="v2-fita">
         <div className="v2-fita-trilho">
           <div className="v2-fita-grupo">{comFoto.map((p) => item(p, false))}</div>
@@ -330,41 +515,6 @@ function Fita() {
   );
 }
 
-/* ------------------------------------------------------------ 8. onde estive */
-
-function OndeEstive() {
-  const rise = useRise();
-  const { ref, progresso } = useSticky();
-  const lista = COMPANIES();
-  return (
-    <section className="v2-wrap" id="onde">
-      <Regua />
-      <div className="v2-duas">
-        <Label>Onde estive</Label>
-        <div className="v2-linha-tempo" ref={ref}>
-          {/* o trilho preenche conforme a dobra passa: orienta sem pedir atenção */}
-          <span className="v2-lt-trilho" aria-hidden="true">
-            <motion.span className="v2-lt-trilho-fill" style={{ scaleY: progresso }} />
-          </span>
-          {lista.map((c, i) => (
-            <motion.article key={c.id} className="v2-lt-item" {...rise(Math.min(i, 3))}>
-              <p className="v2-lt-ano">
-                {c.anos}
-                {c.atual ? <span className="v2-lt-agora">agora</span> : null}
-              </p>
-              <div className="v2-lt-corpo">
-                <h3 className="v2-lt-nome">{c.name}</h3>
-                <p className="v2-lt-papel">{c.role}<span className="v2-lt-sep"> · </span>{c.period}</p>
-                <p className="v2-corpo">{c.blurb}</p>
-              </div>
-            </motion.article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* -------------------------------------------------------------------- home */
 
 export default function Home({ ir }) {
@@ -379,11 +529,15 @@ export default function Home({ ir }) {
       {/* Tudo que vem depois do hero é opaco e sobe por cima dele. Sem este
           fundo, o hero preso aparece por baixo das dobras claras. */}
       <div className="v2-corpo-claro" data-clara="1">
+        <Passagem />
         <Declaracao />
-        <Pilha ir={ir} />
         <Marquee />
+        <Trabalho ir={ir} />
+        <Quebra src={INK.fumaca} video alt="" />
+        <Numeros />
         <Processo />
         <OndeEstive />
+        <Sobre />
         <Fita />
       </div>
     </>
