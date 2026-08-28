@@ -1722,7 +1722,7 @@ function SistemaVolume() {
               <span className="st-body">{t("Hanken Grotesk, a voz da leitura.", "Hanken Grotesk, the reading voice.")}</span>
               <span className="st-kana" lang="ja" translate="no">ドン · 墨</span>
             </div>
-            <p className="sis-p">{t("Display grita, condensada organiza, humanista lê. O kana é SFX de verdade, com romaji pra quem não lê japonês.", "Display shouts, condensed organizes, humanist reads. The kana is real SFX, with romaji for whoever doesn't read Japanese.")}</p>
+            <p className="sis-p">{t("A display grita e a condensada organiza. A leitura inteira fica com a humanista, e o kana é SFX de verdade, com romaji para quem não lê japonês.", "The display shouts and the condensed organizes. All the reading falls to the humanist, and the kana is real SFX, with romaji for whoever doesn't read Japanese.")}</p>
           </div>
           <div className="sis">
             <div className="sis-k">{t("Espaço é ma ", "Space is ma ")}<span lang="ja" translate="no">間</span></div>

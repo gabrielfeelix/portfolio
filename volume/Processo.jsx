@@ -50,7 +50,7 @@ function Processo({ onContact, onNav }) {
         <div className="splash-kicker">{t("O método", "The method")}</div>
         <Brush as="h1" className="proc-h1">{t("Do objetivo ao protótipo,", "From goal to prototype,")}<br />{t("em dias.", "in days.")}</Brush>
         <p className="splash-lead" style={{ maxWidth: "46ch", margin: "var(--ma-3) 0 var(--ma-4)" }}>
-          {t("Honesto e veloz. Sem teatro de discovery. Valido com critério real e construo de verdade.", "Honest and fast. No discovery theater. I validate with real criteria and actually build.")}
+          {t("Valido com quem vai usar antes de fechar a tela. O que não passa no teste eu corto.", "I validate with the people who'll use it before locking the screen. What doesn't survive the test, I cut.")}
         </p>
         <div className="proc-scrollhint"><span className="dn">↓</span> {t("Role para seguir o método", "Scroll to follow the method")}</div>
       </section>
@@ -110,7 +110,7 @@ function Processo({ onContact, onNav }) {
       </section>
 
       <section className="shell proc-close">
-        <Brush as="h2" className="proc-msg">{t("Protótipo vira produto.", "Prototype becomes product.")} <span className="red">{t("Eu construo.", "I build it.")}</span></Brush>
+        <Brush as="h2" className="proc-msg">{t("Protótipo vira produto.", "Prototype becomes product.")} <span className="red">{t("Eu vou junto até o ar.", "I go with it until it's live.")}</span></Brush>
         {/* uma chamada só, no fim. Antes ela vivia dentro do painel sticky,
             então reaparecia colada nos 6 passos. */}
         <div className="proc-cta-row">

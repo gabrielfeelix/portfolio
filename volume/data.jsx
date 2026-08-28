@@ -72,7 +72,7 @@ const CHAPTERS = [
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
-      resultado: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
+      resultado: "A direção oposta à do briefing foi a aprovada. Entra no ar em outubro de 2026",
     },
     /* ---- a nota do suporte, antes do Ato I --------------------------
        O capítulo foi desenhado mobile first e mostra telas de celular ao
@@ -162,7 +162,7 @@ const CHAPTERS = [
         legenda: "V2: o pop-up só aparece depois de 15% de rolagem. Quem acabou de chegar vê a loja primeiro; quem já demonstrou interesse é que recebe a oferta." },
       buscaMouse: { src: "volume/assets/projetos/pcyes/busca-mouse.webp", ar: "1600/796",
         alt: "Busca da V1 por mouse devolvendo mousepad nos primeiros resultados",
-        legenda: "V1, busca por \u201cmouse\u201d: o primeiro resultado é mousepad. O motor rankeava por texto parecido, não pelo que a loja precisava vender." },
+        legenda: "V1, busca por \u201cmouse\u201d: o primeiro resultado é mousepad." },
       buscaMause: { src: "volume/assets/projetos/pcyes/busca-mause.webp", ar: "1600/786",
         alt: "Busca da V1 por mause devolvendo tela sem nenhum resultado",
         legenda: "V1, busca por \u201cmause\u201d: nenhum resultado. Uma letra trocada e a loja inteira desaparece." },
@@ -193,10 +193,10 @@ const CHAPTERS = [
     },
     problema: {
       t: "Bonita de ver, difícil de comprar",
-      p: ["A primeira versão do site foi construída em cima da marca, com vídeo, animação e muita presença institucional. Ficou bonita e ficou lenta de comprar.",
-          "As pessoas não chegavam ao checkout. Para comprar qualquer coisa era obrigatório abrir a página do produto. Vitrine, home e categoria não deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
+      p: ["A primeira versão do site foi construída em cima da marca, com vídeo, animação e muita presença institucional.",
+          "As pessoas não chegavam ao checkout, e o motivo estava antes: para comprar qualquer coisa era obrigatório abrir a página do produto, porque nem a vitrine, nem a home, nem a categoria deixavam adicionar ao carrinho direto. Cada compra custava cliques que não precisavam existir.",
           "E quem chegava ao checkout não finalizava. A etapa final concentrava o abandono, e não estava claro por quê.",
-          "Somando, o site cobrava três pedágios de quem só queria comprar um mouse: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho e descobrir no escuro se dava para pagar do jeito que a pessoa queria. Cada um desses pedágios tem o seu jeito de sumir com o cliente."],
+          "Somando, o site cobrava três pedágios de quem só queria comprar um mouse: achar o produto no meio da campanha, abrir a página dele para conseguir colocar no carrinho e descobrir no escuro se dava para pagar do jeito que a pessoa queria."],
     },
     /* o tamanho do problema, em número. Print de dashboard vira foto de
        ferramenta; aqui o dado é desenhado e carrega a fonte junto. */
@@ -297,11 +297,11 @@ const CHAPTERS = [
     busca: {
       k: "O achado que ampliou o escopo",
       t: "A loja cobrava ortografia para deixar comprar",
-      p: ["O mapa de calor dizia que buscar era o segundo gesto mais comum do site. Fui testar o que a busca respondia.",
+      p: ["Fui testar o que a busca respondia. Era o caminho principal da loja: 71.416 sessões usaram a busca no trimestre, 43% do total, mais do que as 50.399 que abriram uma página de produto.",
           "Procurei por mouse. A vitrine devolveu mousepad na frente do mouse, e o mouse era justamente a linha em que a empresa mais investia naquele momento. O motor rankeava por proximidade de texto, não por relevância de catálogo.",
           "Depois procurei por mause. Nenhum resultado, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
           "Isso não é detalhe de motor de busca. É a loja decidindo que quem não escreve certo não compra. Numa loja de hardware, onde metade dos nomes é estrangeira e cheia de número, isso exclui gente que tem dinheiro e intenção de gastar.",
-          "Depois fui atrás do tamanho disso no GA4 do trimestre, e o número era maior do que eu supunha: 71.416 sessões usaram a busca, 43% de todas. Mais gente buscava do que via página de produto, que teve 50.399. A busca não era um caminho secundário da loja: era o principal, e era justamente ela que devolvia mousepad para quem procurava mouse e nada para quem escrevia mause."],
+          "E era esse caminho, o mais usado da loja inteira, que devolvia mousepad para quem procurava mouse e nada para quem escrevia mause."],
       figs: ["buscaMouse", "buscaMause"],
       /* o dado que transforma o achado qualitativo em medida: sem ele a
          busca parece caso de borda que eu encontrei testando na mão. Com
@@ -312,7 +312,7 @@ const CHAPTERS = [
     },
     /* a frase que virou a reunião, no tamanho de fala de painel */
     citacao: {
-      q: "A diretoria pedia minimalismo. O comportamento no site pedia atalho. Em vez de escolher um dos dois, separei as camadas.",
+      q: "A diretoria pedia minimalismo e o comportamento no site pedia atalho, então em vez de escolher um dos dois eu separei as camadas.",
       fonte: "A proposta que destravou o projeto",
       tinta: "orbit",
     },
@@ -338,7 +338,7 @@ const CHAPTERS = [
       p: "Nem tudo que apareceu na pesquisa virou tela. Três coisas ficaram de fora de propósito.",
       itens: [
         { o: "Trocar uma home institucional por outra", r: "A direção minimalista que chegou pronta resolvia a estética e mantinha o produto fora da primeira dobra. Levei as gravações para a reunião e propus o contrário do que tinham pedido." },
-        { o: "Apagar a marca do site", r: "Depois de virar a mesa, o caminho fácil seria transformar tudo em vitrine seca. A PCYES tem personalidade e ela vende. A marca continuou, com hora e lugar marcados." },
+        { o: "Apagar a marca do site", r: "Depois de virar a mesa, o caminho fácil seria transformar tudo em vitrine seca, mas a PCYES tem personalidade e ela vende, então a marca continuou, com hora e lugar marcados." },
         { o: "Abrir chamado e esperar", r: "O bug do módulo de pagamento travava compra de verdade. Diagnosticar não era o meu papel, mas era o que destravava a etapa mais cara do funil." },
       ],
     },
@@ -364,7 +364,7 @@ const CHAPTERS = [
       shots: [{ fig: "vitrine" },
               { fig: "checkout" },
               "volume/assets/projetos/pcyes/s5.webp"],
-      legendas: ["Onde o caminho come\u00e7a. Na vitrine, comprar deixou de exigir a p\u00e1gina do produto.",
+      legendas: ["Onde o caminho come\u00e7a. Quem j\u00e1 sabe o que quer compra sem sair da vitrine.",
                  "Onde ele termina. O checkout abre no meio de pagamento, antes de a pessoa decidir se continua.",
                  "E onde ele cabe no bolso. A mesma regra na tela pequena, com o pre\u00e7o fixo na base."],
     },
@@ -381,7 +381,7 @@ const CHAPTERS = [
       k: "Antes das telas",
       t: "A V1 tinha cores. A V2 tem um sistema que sabe o que cada cor faz",
       p: ["Quarenta telas desenhadas na mão viram quarenta decisões repetidas sobre espaçamento, estado e cor. Antes de desenhar, construí o vocabulário: 239 tokens no arquivo de tema, 69 componentes montados em cima deles.",
-          "O que muda não é a quantidade de cor, é o endereço dela. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela. Na V2 ele tem nome e função. O ink-muted não é um cinza, é o papel \u201ctexto secundário\u201d. Quando o tema vira, ele vira sozinho."],
+          "O que muda não é a quantidade de cor, é o endereço dela. Na V1, cinza de texto secundário era um hexadecimal escrito na hora, diferente em cada tela; na V2 ele tem nome e função, e o ink-muted passou a ser o papel \u201ctexto secundário\u201d em vez de um cinza qualquer. Quando o tema vira, ele vira sozinho."],
       /* o par que prova o argumento: o mesmo token, os dois temas.
          Escala aqui é papel, não valor: surface é fundo, ink é texto,
          edge é borda. */
@@ -419,7 +419,7 @@ const CHAPTERS = [
          Cor sozinha responde "que cores tem". O sistema aparece mesmo
          quando o mesmo raciocínio se repete em motion, tipografia e
          espaço. Cada bloco abaixo é um valor real do theme.css, não
-         escala inventada pra ilustrar. */
+         escala inventada para ilustrar. */
       /* a curva é a assinatura de movimento da casa: sai rápido e chega
          devagar, que é como objeto pesado para. Desenhada, não descrita:
          dá para ver a desaceleração no fim. */
@@ -476,8 +476,8 @@ const CHAPTERS = [
         k: "O caso que fecha",
         t: "O card de produto não guarda cor nenhuma",
         p: ["O fundo da foto do produto é o componente mais repetido da loja, e aparece na home, na vitrine, na busca, no carrinho. Seria o candidato natural a ter um cinza escolhido na mão.",
-            "Não tem. O fundo é a cor de texto do tema rebaixada a 10% e 3% de opacidade, em diagonal. No claro, isso é preto quase transparente; no escuro, é branco quase transparente. Mesma regra, dois resultados, nenhum valor guardado.",
-            "É a diferença entre uma paleta e um sistema. Paleta é uma lista de cores. Sistema é uma regra que produz a cor certa em um contexto que ninguém previu."],
+            "Não tem. O fundo é a cor de texto do tema rebaixada a 10% e 3% de opacidade, em diagonal, então no claro vira preto quase transparente e no escuro vira branco quase transparente. É a mesma regra dando dois resultados, sem guardar valor nenhum.",
+            "Paleta é uma lista de cores. Isso é uma regra que produz a cor certa num contexto que ninguém previu."],
         formula: "rgba(var(--foreground-rgb), .10) → .03",
         temas: [{ tema: "Claro", ink: "22, 22, 22", bg: "#fafafa", escuro: false },
                 { tema: "Escuro", ink: "255, 255, 255", bg: "#0a0a0a", escuro: true }],
@@ -501,7 +501,7 @@ const CHAPTERS = [
             p: "Com tudo carregado, cada meio de pagamento ocupa uma linha inteira. O bloco desce por metade da tela e empurra a decisão para longe de quem já escolheu o produto.",
             fig: "ckCarregado" },
           { k: "O estado real", t: "E quando não carregava, sumia",
-            p: "O módulo de pagamento do Magento falhava. Sobravam dois meios e um vão maior que o próprio conteúdo, exatamente onde a compra acontece. Quem paga com cartão não via como pagar.",
+            p: "O módulo de pagamento do Magento falhava, e quando falhava sobravam dois meios e um vão maior que o próprio conteúdo, exatamente onde a compra acontece. Quem paga com cartão não via como pagar.",
             fig: "ckLento" },
           { k: "A correção", t: "Os quatro meios em uma linha só",
             p: "Os quatro passaram a caber lado a lado e o frete condensou em três opções com um \u201cver mais\u201d. O mesmo checkout ficou 60% mais curto: 3421 pixels de altura contra 1366.",
@@ -510,12 +510,12 @@ const CHAPTERS = [
             p: "Selecionar Pix abre o que acontece depois de finalizar, em três passos. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela.",
             fig: "ckV12Pix" },
           { k: "No celular", t: "A mesma decisão, na tela pequena",
-            p: "No mobile a diferença fica literal. A V1.2 termina onde a V1 ainda tem um quarto de tela pela frente. Mesma compra, menos caminho.",
+            p: "No mobile a diferença fica literal: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente, para a mesma compra.",
             fig: "ckMobile" },
         ] },
     modulos: [
       { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
-        buraco: "A PCYES vive de lançamento, edição limitada, coleção com o Maringá FC. A V1 tratava lançamento igual a qualquer produto. Ou tinha estoque, ou sumia da vitrine.",
+        buraco: "A PCYES vive de lançamento, edição limitada, coleção com o Maringá FC, e a V1 tratava tudo isso igual a qualquer outro produto: ou tinha estoque, ou sumia da vitrine.",
         p: ["Na V2, produto anunciado antes de chegar entra em pré-venda com reserva. A pessoa vê quantas reservas já saíram, quantas ainda existem e a data prevista de entrega, e o cartão só é cobrado no despacho.",
             "A escassez aqui não é truque de urgência inventada. O número de reservas é real e a data também, e é isso que faz a barra funcionar em vez de irritar."],
         figs: ["prevenda"] },
@@ -549,7 +549,7 @@ const CHAPTERS = [
          diferente do mesmo caminho. `buscaV2` e `popup` ainda s\u00e3o
          molduras pendentes: caem em MangaPlate at\u00e9 o print subir. */
       { k: "O acabamento", t: "As oito corre\u00e7\u00f5es que encurtaram o caminho",
-        buraco: "O caminho at\u00e9 a compra era longo porque cada dobra somava um atrito pequeno, e atrito somado \u00e9 caminho longo.",
+        buraco: "O caminho at\u00e9 a compra era longo porque cada dobra somava um atrito pequeno, e nenhum deles sozinho parecia grande o bastante para consertar.",
         p: ["As quatro \u00e2ncoras dizem o que o projeto passou a defender. Estas oito s\u00e3o o que foi preciso mexer para que a defesa valesse em tela, uma dobra por vez."],
         passos: [
           { k: "A entrada", t: "A busca deixou de exigir ortografia",
@@ -581,7 +581,7 @@ const CHAPTERS = [
             p: "As fichas eram inconsistentes, cada uma escrita por uma pessoa diferente em um ano diferente. Uma ferramenta interna passou a gerar o HTML com hierarquia de t\u00edtulos e imagens formatadas. O que era manual e desigual virou padr\u00e3o.",
             fig: "sku" },
           { k: "A esteira", t: "E o time passou a ver onde cada produto est\u00e1",
-            p: "Cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publica\u00e7\u00e3o. A fila deixou de ser combinado de bastidor e virou tela.",
+            p: "Cada SKU percorre CRM, SEO, gerador de HTML, Page Builder e publica\u00e7\u00e3o. Agora d\u00e1 para ver em que etapa cada um est\u00e1.",
             fig: "skuFila" },
           { k: "A leitura", t: "O salto de brilho saiu da navega\u00e7\u00e3o",
             p: "O site \u00e9 escuro e a V1 abria uma dobra branca inteira no meio do caminho. De madrugada, que \u00e9 quando boa parte desse p\u00fablico compra, esse salto \u00e9 a parte que cansa.",
@@ -621,7 +621,7 @@ const CHAPTERS = [
     },
     resultado: {
       t: "Entra em produção em outubro",
-      p: ["Comprar deixou de exigir a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada e a data ficou marcada.",
+      p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada e a data ficou marcada.",
           "Resultado de operação eu ainda não tenho, e prefiro não apresentar número que não existe."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
@@ -670,10 +670,10 @@ const CHAPTERS = [
     decisoes: [
       { d: "Cinco status, uma linguagem comum", r: "porque o time já usava essas ideias com nomes diferentes entre as pessoas. Conciliado, não conciliado, divergente, em disputa e ignorado: fixar o vocabulário na interface acabou com a ambiguidade nas conversas do dia a dia." },
       { d: "O topo responde antes de a pessoa perguntar", r: "porque previsto, valor líquido, diferença acumulada e percentual conciliado são o que se olha primeiro. A diferença acumulada aparece em destaque junto da contagem de divergentes, porque é ela que dispara a ação." },
-      { d: "Três caminhos, do mais barato ao mais caro", r: "porque o esforço da pessoa tem que ficar reservado pra onde ele é realmente necessário: conciliação automática ao importar os extratos, em lote para o que sobra, e individual forçada para o que exige julgamento humano." },
+      { d: "Três caminhos, do mais barato ao mais caro", r: "porque o esforço da pessoa tem que ficar reservado para onde ele é realmente necessário: conciliação automática ao importar os extratos, em lote para o que sobra, e individual forçada para o que exige julgamento humano." },
       { d: "Forçar conciliação exige motivo", r: "porque a exceção era um buraco no processo e virou dado. Fechar com diferença pede justificativa em lista fechada (taxa ou tarifa, pagamento fracionado, diferença de data, arredondamento do adquirente, outros), e com o tempo a empresa passa a saber quais divergências mais se repetem e com qual adquirente. É a decisão de que mais me orgulho no módulo." },
       { d: "Origem dos dados lado a lado", r: "porque a conferência tem que acontecer na tela, sem abrir dois sistemas: no detalhe do lançamento, o registro da plataforma e o do gateway aparecem juntos, com contrato, taxa esperada, valor líquido previsto e data prevista de repasse." },
-      { d: "Histórico com rastro completo", r: "porque em módulo financeiro poder responder 'quem mexeu nisso e por quê' não é conforto, é requisito: conciliação automática, importação de extrato e ajuste manual com autor e horário." },
+      { d: "Histórico com rastro completo", r: "porque em módulo financeiro responder 'quem mexeu nisso e por quê' é requisito: conciliação automática, importação de extrato e ajuste manual guardam autor e horário." },
       { d: "Importação com múltiplas origens", r: "porque o usuário sobe os extratos de vários adquirentes numa operação só e recebe o consolidado: quantos conciliaram sozinhos, quantos divergiram e quantos ficaram pendentes, com exportação em CSV de cada grupo." },
     ],
     solucao: {
@@ -701,11 +701,11 @@ const CHAPTERS = [
         { n: "Em disputa", d: "A diferença virou contestação com o adquirente. Sai do fluxo normal sem sumir do controle." },
         { n: "Ignorado", d: "Alguém decidiu que aquele lançamento não entra na conciliação. Decisão registrada, não lançamento esquecido." },
       ],
-      nota: "O time já usava essas cinco ideias, mas com nomes diferentes entre as pessoas. Fixar o vocabulário na interface acabou com a ambiguidade nas conversas do dia a dia.",
+      nota: "Cinco palavras que o time passou a usar do mesmo jeito na tela e na conversa.",
     },
     resultado: {
       t: "Em produção, e as planilhas sumiram",
-      p: ["Não tenho medição formal de antes e depois, mas três mudanças de comportamento aconteceram e são verificáveis. O retorno do time foi de um processo mais rápido e mais claro de acompanhar."],
+      p: ["Não tenho medição formal de antes e depois, mas três mudanças de comportamento aconteceram e são verificáveis."],
       listaK: "O que mudou no comportamento do time",
       lista: ["As planilhas paralelas sumiram. O time mantinha várias para controlar o processo, uma por frente, e depois da entrega deixou de usar.",
               "O financeiro parou de pedir relatório para o time de desenvolvimento: os dados passaram a estar acessíveis na própria plataforma.",
@@ -744,7 +744,7 @@ const CHAPTERS = [
       p: ["O sistema é operado por gestores e diretoria, então a avaliação aconteceu com eles, que são os usuários reais. Cada versão foi entregue como protótipo navegável, com comentários registrados em cima das telas, e ajustada antes da versão seguinte."],
       achados: [
         "Não era um problema de fluxo. Os caminhos funcionavam havia anos e ninguém pedia para mudá-los.",
-        "Era a interface que tinha envelhecido junto com o produto e passado a comunicar menos do que o negócio já entrega hoje.",
+        "A interface prometia menos do que o negócio já entrega hoje.",
         "Qualquer mudança de percurso custaria caro: quem usa o sistema todo dia sabe onde tudo está de cor.",
       ],
     },
@@ -753,7 +753,7 @@ const CHAPTERS = [
       { d: "Linguagem visual nova, percurso intacto", r: "porque em sistema com anos de uso, mudar a aparência sem mudar o percurso é a diferença entre modernizar e atrapalhar." },
       { d: "App redesenhado nas telas principais", r: "porque a superfície mobile precisa falar a mesma língua. Hoje está em protótipo: a implementação ainda não entrou no roadmap." },
       { d: "Assumi a implementação do site", r: "porque a entrega estava presa a um evento com data fechada e o time de desenvolvimento não tinha janela. Fui direto ao Magento: alterei o código da home, criei e indexei as categorias, refiz cabeçalho e rodapé e ajustei os redirecionamentos." },
-      { d: "Validação com gestores e diretoria", r: "porque são eles que operam o sistema. Cada versão saiu como protótipo navegável, com comentários registrados em cima das telas, e ajustada antes da versão seguinte." },
+      { d: "Validação com gestores e diretoria", r: "porque são eles que operam o sistema todo dia, e opinião de quem não usa o produto não serve de critério." },
     ],
     solucao: {
       t: "A superfície inteira, sem reaprender nada",
@@ -773,7 +773,7 @@ const CHAPTERS = [
     },
     aprendi: {
       p: ["A tentação, num sistema assim, é reorganizar tudo de uma vez. O trabalho certo é atualizar a interface sem obrigar quem usa o produto todo dia a reaprender onde as coisas estão.",
-          "E que saber mexer no código muda o que você consegue entregar. Nesse projeto foi a diferença entre chegar na feira com o site novo ou não chegar."],
+          "Saber mexer no código muda o que você consegue entregar. Nesse projeto foi a diferença entre chegar na feira com o site novo ou não chegar."],
     },
   },
   {
@@ -810,7 +810,7 @@ const CHAPTERS = [
     solucao: {
       t: "A página responde antes do formulário",
       p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso.",
-          "Preencher deixou de ser um ato de fé e passou a ser uma decisão informada."],
+          "Quem preenche já sabe o que está aceitando."],
       slots: 3,
       shots: ["volume/assets/projetos/oderco-revenda/s1.webp", "volume/assets/projetos/oderco-revenda/s2.webp", "volume/assets/projetos/oderco-revenda/s3.webp"],
     },
@@ -818,15 +818,15 @@ const CHAPTERS = [
       t: "Um sistema a menos no comercial",
       p: ["A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
           "Não era o resultado previsto. Para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava. Isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, e eles começaram a conectar o RD ao CRM interno. Um sistema saiu de cena, e o caminho agora é consolidar tudo dentro do CRM próprio, agora que o fluxo foi validado na prática com os vendedores.",
-          "O lançamento é em etapas, de propósito. Primeiro ela recebe só o tráfego de anúncio, que é onde o problema aparecia com mais força, e só depois substitui a página de cadastro do site oficial. Até aqui foi testada com usuários internos e com um grupo pequeno de externos."],
+          "O lançamento é em etapas. Primeiro ela recebe só o tráfego de anúncio, que é onde o problema aparecia com mais força, e só depois substitui a página de cadastro do site oficial. Até aqui foi testada com usuários internos e com um grupo pequeno de externos."],
       listaK: "O que será acompanhado nessa primeira fase",
       lista: ["Conclusão de cada etapa",
               "Abandono entre a etapa 1 e a etapa 2",
               "Qualidade dos leads que chegam ao comercial"],
     },
     aprendi: {
-      p: ["Formulário curto não é um objetivo em si. O que importa é onde você corta. Cortar no ponto certo transforma um abandono em um contato recuperável.",
-          "E a maior parte do trabalho não estava no formulário. Estava em responder, antes dele, a pergunta que o visitante fazia em silêncio: quem é essa empresa e por que eu deveria confiar nela."],
+      p: ["Formulário curto não é um objetivo em si. O que importa é onde você corta: no ponto certo, um abandono vira um contato recuperável.",
+          "A maior parte do trabalho nem estava no formulário. Estava em responder, antes dele, a pergunta que o visitante fazia em silêncio: quem é essa empresa e por que eu deveria confiar nela."],
     },
   },
   {
@@ -859,8 +859,8 @@ const CHAPTERS = [
     ],
     solucao: {
       t: "Capa, capítulos, processo e posfácio",
-      p: ["Uma lista de capítulos, virada de página estilo mangá, motion de tinta e screentone. Caminho rápido pro recrutador, caminho profundo pra quem quer ler o case inteiro.",
-          "Construído de verdade: do protótipo navegável ao site publicado."],
+      p: ["Uma lista de capítulos, virada de página estilo mangá, motion de tinta e screentone. Caminho rápido para quem tem pressa, caminho profundo para quem quer o case inteiro.",
+          "Do protótipo navegável ao site publicado."],
       /* Prints tirados do próprio site rodando, em 1600x1000 — o capítulo do
          portfólio mostra o portfólio de verdade, não uma maquete dele. */
       shots: ["volume/assets/projetos/portfolio/01-home-splash.webp",
@@ -884,10 +884,10 @@ const CHAPTERS = [
 const PROCESSO = [
   { n: "01", t: "Objetivo", p: "Entender o que precisa acontecer, não a lista de telas." },
   { n: "02", t: "Referência", p: "Caçar o que já funciona. Roubar como artista, não como decalque." },
-  { n: "03", t: "Protótipo navegável", p: "Do objetivo ao protótipo clicável em dias. Pra tocar, não pra imaginar." },
+  { n: "03", t: "Protótipo navegável", p: "Do objetivo ao protótipo clicável em dias. Para tocar, não para imaginar." },
   { n: "04", t: "Apresenta", p: "Mostro cedo. Critério real na mesa, não opinião solta." },
-  { n: "05", t: "Ajusta", p: "Corto o que não serve. A restrição afia a decisão." },
-  { n: "06", t: "Entrega / Constrói", p: "Protótipo vira produto no ar. Desenho e construo." },
+  { n: "05", t: "Ajusta", p: "Corto o que não serve." },
+  { n: "06", t: "Entrega / Constrói", p: "Protótipo vira produto no ar." },
 ];
 
 const CONTATO = {
@@ -918,7 +918,7 @@ const COMPANIES = [
     id: "ttt", name: "TT&T", role: "Estagiário em UX/UI Design", period: "2024 · 11 meses · remoto",
     anos: "2024", atual: false,
     note: "Onde vi um time de produto por dentro", logo: null, logoInv: null,   /* sem arquivo: cai no wordmark */
-    blurb: "Programa de formação em produto com quarenta estagiários. Entrei pra desenhar e acabei coordenando gente.",
+    blurb: "Programa de formação em produto com quarenta estagiários. Entrei para desenhar e acabei coordenando gente.",
     abre: "Meu primeiro lugar em design não pagava nada e não teve um único usuário real. Ainda assim foi ali que eu vi, pela primeira vez, como um time de produto se organiza por dentro. E é isso que sustenta tudo o que veio depois.",
     falaApos: 1,
     fala: "Estagiário coordenando estagiário. Ninguém ali tinha bagagem, e mesmo assim o squad precisava entregar toda semana.",
@@ -928,28 +928,28 @@ const COMPANIES = [
         "Nenhum de nós tinha experiência. A estrutura toda se apoiava na ideia de que gente aprendendo junto entrega mais rápido do que gente aprendendo sozinha, o que às vezes é verdade e às vezes é só barulho organizado.",
       ] },
       { k: "Como um estagiário virou coordenador", p: [
-        "O fundador olhava quem tomava frente e puxava pra coordenação. Foi assim que eu peguei o squad de design: backlog, rituais e acompanhamento de entrega, tocados em Trello e FigJam, com gente da minha idade e do meu nível de bagagem do outro lado da chamada.",
+        "O fundador olhava quem tomava frente e puxava para a coordenação. Foi assim que eu peguei o squad de design: backlog, rituais e acompanhamento de entrega, tocados em Trello e FigJam, com gente da minha idade e do meu nível de bagagem do outro lado da chamada.",
         "Coordenar sem autoridade e sem repertório ensina uma coisa específica: quando você não tem argumento de senioridade, sobra o argumento escrito. Se a definição não estava clara no card, a entrega vinha diferente da conversa, e a culpa era do card.",
       ] },
       { k: "O que passou pela minha mão", p: [
-        "Mapeamento de fluxo e jornada, do rabiscoframe à validação interna. Facilitação de dinâmica e apresentação de método ágil pro time. Seleção e integração de designer novo, capacitação inclusive.",
-        "E uma função que não tinha nome: pegar a ideia do fundador, que chegava falada, e devolver desenhada em fluxo no FigJam pra que o resto do time pudesse discordar dela. Virou rotina, e foi a parte mais útil.",
+        "Mapeamento de fluxo e jornada, do rabiscoframe à validação interna. Facilitação de dinâmica e apresentação de método ágil para o time. Seleção e integração de designer novo, capacitação inclusive.",
+        "E uma função que não tinha nome: pegar a ideia do fundador, que chegava falada, e devolver desenhada em fluxo no FigJam para que o resto do time pudesse discordar dela. Virou rotina, e foi a parte mais útil.",
       ] },
       { k: "O que faltava, e faltava muito", p: [
         "Teste com usuário real, em momento nenhum. Isso precisa ser dito com todas as letras, porque é a diferença entre um portfólio honesto e um currículo enfeitado.",
         "O que se aprende num lugar assim é como uma operação de produto se organiza. Como se valida uma tela é outra coisa, e só veio depois.",
       ] },
       { k: "A saída", p: [
-        "Voluntário e meio período não paga conta. Saí pra trabalhar com vendas, o que na época pareceu um desvio e hoje parece parte do currículo: passei um tempo do lado de quem precisa convencer alguém, e isso muda como você defende uma decisão de design.",
+        "Voluntário e meio período não paga conta. Saí para trabalhar com vendas, o que na época pareceu um desvio e hoje parece parte do currículo: passei um tempo do lado de quem precisa convencer alguém, e isso muda como você defende uma decisão de design.",
       ] },
     ],
-    fecha: "Saí de lá sem um caso pra mostrar, e com uma coisa que caso nenhum ensina: o que acontece com um time quando ninguém escreve a definição.",
+    fecha: "Saí de lá sem um caso para mostrar, e com uma coisa que caso nenhum ensina: o que acontece com um time quando ninguém escreve a definição.",
     skills: [
       { k: "Coordenação de squad", p: "backlog, rituais e acompanhamento de entrega em Trello e FigJam" },
       { k: "Fluxo e jornada", p: "do rabiscoframe à validação interna com o time" },
-      { k: "Facilitação", p: "dinâmica e apresentação de método ágil pro squad de design" },
+      { k: "Facilitação", p: "dinâmica e apresentação de método ágil para o squad de design" },
       { k: "Seleção e integração", p: "entrevista, onboarding e capacitação de designer novo" },
-      { k: "Documentação", p: "definição de produto organizada pra consulta do time" },
+      { k: "Documentação", p: "definição de produto organizada para consulta do time" },
     ],
     related: [],
   },
@@ -959,10 +959,10 @@ const COMPANIES = [
     anos: "2025 · 26", atual: false,
     note: "IMMO, Signa Mais e o financeiro",
     logo: "volume/assets/logos/mono/locarmais.png", logoInv: "volume/assets/logos/mono-inv/locarmais.png",
-    blurb: "Onde desenhei produto de verdade, testei com usuário de verdade e enfrentei a primeira regra de negócio pesada.",
+    blurb: "Onde desenhei produto, testei com usuário e enfrentei a primeira regra de negócio pesada.",
     abre: "Treze meses num grupo com cinco produtos do mercado imobiliário, uma base visual herdada e uma regra clara vinda de cima: resolver sem pesquisa formal. Foi ali que eu desenhei a coisa mais complexa da minha carreira até hoje.",
     falaApos: 1,
-    fala: "Resolve, mas sem pesquisa. Dava pra fazer formulário e entrevista, e mesmo assim a ordem era entregar função nova.",
+    fala: "Resolve, mas sem pesquisa. Dava para fazer formulário e entrevista, e mesmo assim a ordem era entregar função nova.",
     atos: [
       { k: "O terreno", p: [
         "Locarmais, IMMO, Locar Fácil, Signa Mais e Credfacil dividiam time de desenvolvimento e parte da base de usuário. SaaS de regra de negócio densa, do tipo em que uma tela errada não incomoda: quebra o fechamento do mês de alguém.",
@@ -970,19 +970,19 @@ const COMPANIES = [
       ] },
       { k: "A regra da casa", p: [
         "A gestão media output. Função nova valia mais que função melhorada, e a ordem era resolver sem pesquisa formal, mesmo sendo tecnicamente possível montar formulário e marcar entrevista.",
-        "Dá pra brigar por método, e eu briguei. Também dá pra achar a fonte que ninguém proibiu. O time financeiro rodava a conciliação numa planilha paralela todo mês: era pesquisa de campo servida na mesa, só não chamava por esse nome.",
+        "Dá para brigar por método, e eu briguei. Também dá para achar a fonte que ninguém proibiu. O time financeiro rodava a conciliação numa planilha paralela todo mês: era pesquisa de campo servida na mesa, só não chamava por esse nome.",
       ] },
       { k: "O módulo financeiro", p: [
-        "Desenhei do zero o projeto mais pesado do período. Conciliação com cinco status. Adquirentes com taxa, imposto e prazo de repasse diferentes entre si. Conciliação automática, em lote e forçada com justificativa obrigatória. Importação de extrato de várias origens. Histórico com autoria e horário, e a origem dos dados lado a lado pra quem precisa conferir.",
+        "Desenhei do zero o projeto mais pesado do período. Conciliação com cinco status. Adquirentes com taxa, imposto e prazo de repasse diferentes entre si. Conciliação automática, em lote e forçada com justificativa obrigatória. Importação de extrato de várias origens. Histórico com autoria e horário, e a origem dos dados lado a lado para quem precisa conferir.",
         "A parte difícil não foi desenhar nenhuma dessas telas. Foi decidir a ordem em que elas aparecem, e o que fica visível quando o número não bate. Regra de negócio densa não se resolve com componente bonito: se resolve escolhendo o que o usuário vê primeiro quando alguma coisa deu errado.",
       ] },
       { k: "O que mudou na operação", p: [
-        "O módulo entrou em produção e trouxe pra dentro de casa uma conciliação que rodava numa plataforma contratada, o que tornou a projeção de recebimento mais confiável.",
-        "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado pro time de desenvolvimento só pra tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
+        "O módulo entrou em produção e trouxe para dentro de casa uma conciliação que rodava numa plataforma contratada, o que tornou a projeção de recebimento mais confiável.",
+        "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado para o time de desenvolvimento só para tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
       ] },
       { k: "A primeira vez que testei de verdade", p: [
         "Foi o único lugar onde testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
-        "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou pra sempre meu jeito de escrever rótulo e de ordenar campo.",
+        "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou para sempre meu jeito de escrever rótulo e de ordenar campo.",
       ] },
       { k: "E olhei o trabalho de outra pessoa", p: [
         "Fiz o sistema da IMMO e, no caminho, virei a referência de UX de outro designer do time: revisão de entrega, direção e acompanhamento. Primeira vez que parte do meu trabalho era olhar o trabalho de alguém, que é bem diferente de olhar o próprio.",
@@ -1006,12 +1006,12 @@ const COMPANIES = [
     note: "PCYES, Odex, Tonante, Vinik, Skul",
     logo: "volume/assets/logos/mono/oderco.png", logoInv: "volume/assets/logos/mono-inv/oderco.png",
     blurb: "Hoje. Designer único de uma distribuidora nacional, tocando cinco marcas em três frentes ao mesmo tempo.",
-    abre: "Sou o único designer de uma distribuidora nacional com cinco marcas próprias. E-commerce, plataforma e sistema interno rodando ao mesmo tempo, sem ninguém acima pra revisar. A fila é minha, e a prioridade também.",
+    abre: "Sou o único designer de uma distribuidora nacional com cinco marcas próprias. E-commerce, plataforma e sistema interno rodando ao mesmo tempo, sem ninguém acima para revisar. A fila é minha, e a prioridade também.",
     falaApos: 2,
-    fala: "A diretoria queria minimalismo. A gravação de sessão mostrava gente desistindo antes de comprar. Não escolhi um lado: separei as camadas.",
+    fala: "A diretoria queria minimalismo, a gravação de sessão mostrava gente desistindo antes de comprar, e o que eu propus foi não escolher nenhum dos dois: separar as camadas.",
     atos: [
       { k: "A casa", p: [
-        "Uma distribuidora de eletrônicos fundada em 1988, que começou batendo de porta em porta no Paraná e hoje distribui pro país inteiro. Cinco marcas próprias: PCYES no gamer, Vinik no multissegmento, Skul na industrialização de PC, Odex na energia solar e Tonante no musical.",
+        "Uma distribuidora de eletrônicos fundada em 1988, que começou batendo de porta em porta no Paraná e hoje distribui para o país inteiro. Cinco marcas próprias: PCYES no gamer, Vinik no multissegmento, Skul na industrialização de PC, Odex na energia solar e Tonante no musical.",
         "Cada marca tem público, canal e tom diferentes. Designer único significa que a coerência entre elas também é responsabilidade minha, e que não existe a quem recorrer quando a decisão é difícil.",
       ] },
       { k: "O PCYES V2", p: [
@@ -1020,14 +1020,14 @@ const COMPANIES = [
       ] },
       { k: "A briga que valeu a pena", p: [
         "A diretoria queria direção minimalista focada em valor de marca, na linha das marcas de referência do setor. Foi essa a escolha da primeira versão, e é uma escolha defensável. O comportamento no site dizia outra coisa.",
-        "Levei as gravações pra conversa em vez de levar minha opinião, e propus não escolher: separar as duas camadas. A marca aparece em momentos definidos e o produto ocupa o eixo da página. O modelo foi aprovado assim, e é o que está indo pro ar.",
+        "Levei as gravações para a conversa em vez de levar minha opinião, e propus não escolher: separar as duas camadas. A marca aparece em momentos definidos e o produto ocupa o eixo da página. O modelo foi aprovado assim, e é o que está indo para o ar.",
       ] },
       { k: "Quando o prazo não esperou", p: [
         "Na página de armazenamento de energia da Odex, o time de desenvolvimento não tinha janela e a feira tinha data. Implementei direto no Magento: alterei a home, criei e indexei categoria, refiz header e footer e ajustei redirecionamento.",
         "Foi desconfortável e foi certo. Desenhar sabendo o que custa implementar mudou o que eu proponho: hoje eu corto sozinho a ideia que sei que vai morrer na fila do dev.",
       ] },
       { k: "O efeito colateral", p: [
-        "Pra automatizar a esteira de lead da página de cadastro de revenda, documentei a API do RD Station. Ao ler a documentação, o time de desenvolvimento viu que dava pra conectar o RD ao CRM interno.",
+        "Para automatizar a esteira de lead da página de cadastro de revenda, documentei a API do RD Station. Ao ler a documentação, o time de desenvolvimento viu que dava para conectar o RD ao CRM interno.",
         "A operação usava três sistemas em paralelo e passou a usar dois. Não estava no escopo, ninguém pediu, e é a entrega que eu mais gosto de contar.",
       ] },
     ],
@@ -1035,7 +1035,7 @@ const COMPANIES = [
     skills: [
       { k: "Design System", p: "biblioteca de componentes e paleta do PCYES, aplicadas em todo o site" },
       { k: "E-commerce e checkout", p: "checkout reconstruído, carrinho na vitrine, coluna de preço fixa" },
-      { k: "Gravação de sessão", p: "Microsoft Clarity pra achar onde a compra travava, e pra sustentar decisão" },
+      { k: "Gravação de sessão", p: "Microsoft Clarity para achar onde a compra travava, e para sustentar decisão" },
       { k: "Implementação", p: "Magento na mão quando o prazo não esperava o time de dev" },
       { k: "Automação de marketing", p: "RD Station: campo personalizado, esteira de lead e régua por segmento" },
       { k: "Acessibilidade", p: "VLibras, contraste e padronização de foto de produto" },
@@ -1070,10 +1070,10 @@ function brandLogo(id) { return BRAND_LOGOS[id] || null; }
 /* ---- a faixa completa: toda empresa e cliente por onde o design passou.
    `logo` só onde o arquivo existe de verdade no repo; o resto entra como
    wordmark tipográfico (honesto, monocromático, mesma altura óptica).
-   Os logos apontam pra marcas/mono/: a mesma marca em tinta sobre fundo
+   Os logos apontam para marcas/mono/: a mesma marca em tinta sobre fundo
    TRANSPARENTE. Os originais coloridos ficam em marcas/ e seguem servindo
    os cards de projeto (.eq-logo), que mostram a marca em cor.
-   Pra promover um wordmark a logo: solte o PNG colorido em marcas/ e rode
+   Para promover um wordmark a logo: solte o PNG colorido em marcas/ e rode
    de novo a conversão mono (luminância -> alpha, normalizada, em tinta).
    Fundo opaco no arquivo vira retângulo visível dentro do chip. --------- */
 const ALL_MARKS = [
@@ -1288,7 +1288,7 @@ function synthChapter(p) {
     premise: "[premissa: a linha que abre o capítulo]",
     role: "[seu papel]", surface: p.domain, year: "2026", fact: null,
     tldr: { papel: "[seu papel]", oque: "[o que é, em 1 linha]", resultado: "[resultado]" },
-    problema: { t: "[o problema em 3 a 5 palavras]", p: ["[a situação: pra quem, qual a restrição real, o que travava]"] },
+    problema: { t: "[o problema em 3 a 5 palavras]", p: ["[a situação: para quem, qual a restrição real, o que travava]"] },
     decisoes: [{ d: "[escolhi ___]", r: "porque [___]" }, { d: "[escolhi ___]", r: "porque [___]" }, { d: "[escolhi ___]", r: "porque [___]" }],
     solucao: { t: "[a solução em 3 a 5 palavras]", p: ["[o que foi construído]"], slots: 2 },
     resultado: { t: "[o que aconteceu / o que aprendi]", p: ["[reflexão honesta, número real quando houver]"] },

@@ -523,7 +523,7 @@ class VolumeBoundary extends React.Component {
           <div className="nf-sfx" aria-hidden="true"><span lang="ja" translate="no">ドサッ</span><i className="sfx-ro">DOSA</i></div>
           <div className="nf-k">{t("Erro · o volume caiu no chão", "Error · the volume hit the floor")}</div>
           <h1 className="nf-t">{t("Algo rasgou esta página.", "Something tore this page.")}</h1>
-          <p className="nf-p">{t("Recarregue pra voltar ao volume.", "Reload to get back to the volume.")}</p>
+          <p className="nf-p">{t("Recarregue para voltar ao volume.", "Reload to get back to the volume.")}</p>
           <button className="btn btn-primary" onClick={() => window.location.reload()}>{t("Recarregar", "Reload")} <span className="arr">→</span></button>
         </div>
       </main>

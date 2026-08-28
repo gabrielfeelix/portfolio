@@ -166,10 +166,10 @@ function Splash({ onRead, onContact, onRapido, lit }) {
         <h1 className="splash-h">
           <span className="sh-line">Product <span className="sh-ghost">Designer</span></span>
           <span className="sh-line sh-line-rot">{t("que leva", "who takes")} <RotateWord items={t(
-            ["a ideia ao ar", "o protótipo ao produto", "da tela à entrega", "o design ao código"],
-            ["the idea live", "the prototype to product", "the screen to shipping", "design into code"])} /></span>
+            ["a pesquisa à tela", "o dado à decisão", "a dúvida ao teste", "a ideia ao ar"],
+            ["research to screen", "data to decision", "doubt to a test", "the idea live"])} /></span>
         </h1>
-        <p className="splash-sub">{t("Desenho, construo e publico.", "I design, build and ship.")} <span className="red">{t("Design e código", "Design and code")}</span> {t("na mesma mão.", "in the same hand.")}</p>
+        <p className="splash-sub">{t("Antes de desenhar, eu assisto", "Before I design, I watch")} <span className="red">{t("as pessoas usando", "people using it")}</span>{t(". É de lá que saem as decisões.", ". That's where the decisions come from.")}</p>
         <div className="splash-cta">
           <button className="btn btn-primary" onClick={onRead}>{t("Começar a ler", "Start reading")} <span className="arr">→</span></button>
           <a className="btn btn-ghost" href="#" onClick={(e) => { e.preventDefault(); onContact(); }}>{t("Bora conversar", "Let's talk")}</a>
@@ -329,7 +329,7 @@ function Diferencial() {
       <div className="shell">
         <div className="dif-left">
           <p className="dif-statement">
-            {t("Desenho a experiência", "I design the experience")} <b>{t("e construo de verdade", "and actually build it")}</b>: {t("do protótipo navegável ao produto no ar.", "from navigable prototype to product, live.")} <span className="red">{t("Entrego o produto", "I ship the product")}</span>, {t("não só o Figma.", "not just the Figma.")}
+            {t("Para mim, design e código nunca foram", "For me, design and code were never")} <b>{t("duas coisas separadas", "two separate things")}</b>. {t("Desenho a experiência e levo ela", "I design the experience and take it")} <span className="red">{t("até o ar", "all the way live")}</span>, {t("do protótipo ao que o cliente usa.", "from prototype to what the customer actually uses.")}
           </p>
         </div>
         <div className="dif-right">
@@ -450,8 +450,8 @@ function Sumario({ onOpen }) {
           {t("O volume em cinco capítulos", "The volume in five chapters")}
         </Brush>
         <p className="sh-sub">
-          {t("Cada capítulo é um produto que foi ao ar: o problema, o que eu decidi e o que mudou depois. O primeiro é o mais longo de propósito.",
-             "Each chapter is a product that shipped: the problem, what I decided, and what changed after. The first one is the longest on purpose.")}
+          {t("Cada capítulo é um produto real: o problema, o que eu decidi e o que mudou depois. O primeiro é o mais longo, e é onde tem mais dado.",
+             "Each chapter is a real product: the problem, what I decided, and what changed after. The first one is the longest, and it's where the data is.")}
         </p>
         <ul className="sh-meta">
           <li><b>{String(n).padStart(2, "0")}</b> {n === 1 ? t("capítulo", "chapter") : t("capítulos", "chapters")}</li>
@@ -503,12 +503,12 @@ function QuemSou({ onSobre }) {
         <div className="qs-left">
           <div className="qk">{t("Quem sou", "Who I am")}</div>
           <p className="qs-bio">
-            {t("UX/Product Designer. Larguei o Direito quando descobri que dava pra desenhar e construir produto de verdade.",
-               "UX/Product Designer. I left law behind when I found out I could design and build real product.")}
+            {t("UX/Product Designer. Larguei o Direito quando descobri que dava para desenhar e construir produto.",
+               "UX/Product Designer. I left law behind when I found out I could design and build products.")}
           </p>
           <p className="qs-bio qs-bio-2">
-            {t("Leio mangá desde criança, e é de lá que vem o jeito de organizar este portfólio: capítulo, página, respiro. Levo cada projeto do protótipo ao ar, e quando o prazo aperta eu implemento.",
-               "I've read manga since I was a kid, and that's where the shape of this portfolio comes from: chapters, pages, breathing room. I take every project from prototype to live, and when the deadline bites, I implement it myself.")}
+            {t("Leio mangá desde criança, e é de lá que vem o jeito de organizar este portfólio: capítulo, página, respiro. Trabalho perto de quem usa o produto, e mudo de direção quando o dado pede.",
+               "I've read manga since I was a kid, and that's where the shape of this portfolio comes from: chapters, pages, breathing room. I work close to the people who use the product, and I change direction when the data asks for it.")}
           </p>
           <div className="qs-nums">
             {nums.map((x, i) => (

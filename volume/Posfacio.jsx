@@ -38,8 +38,8 @@ function Posfacio({ onContact, t: tweaks = {}, onEmpresa, onProject, onNav }) {
           <div className="pos-sec">
             <div className="pos-k">{t("Como eu trabalho", "How I work")}</div>
             <div className="pos-block">
-              <p className="pos-p">{t("Pra mim, design e código nunca foram duas coisas separadas. Desenho a experiência e levo ela até o ar.", "For me, design and code were never two separate things. I design the experience and take it all the way live.")}</p>
-              <p className="pos-p">{t("Gosto de colocar uma tela clicável na mão das pessoas cedo, porque opinião sobre imagem estática costuma ser gosto, e opinião sobre uma coisa que a pessoa tentou usar costuma ser informação. Uso IA no meio do caminho, não pra entregar mais rápido, mas pra chegar antes na parte que interessa, que é sentar com alguém e descobrir onde a ideia não funciona.", "I like putting a clickable screen in people's hands early, because an opinion about a static image is usually taste, and an opinion about something the person actually tried to use is usually information. I use AI along the way, not to deliver faster, but to reach sooner the part that matters: sitting down with someone and finding out where the idea doesn't work.")}</p>
+              <p className="pos-p">{t("Nunca consegui pensar design e código como duas coisas separadas. Quando o prazo aperta, eu mesmo implemento.", "I have never been able to think of design and code as two separate things. When the deadline bites, I implement it myself.")}</p>
+              <p className="pos-p">{t("Gosto de colocar uma tela clicável na mão das pessoas cedo, porque opinião sobre imagem estática costuma ser gosto, e opinião sobre uma coisa que a pessoa tentou usar costuma ser informação. Uso IA no meio do caminho, não para entregar mais rápido, mas para chegar antes na parte que interessa, que é sentar com alguém e descobrir onde a ideia não funciona.", "I like putting a clickable screen in people's hands early, because an opinion about a static image is usually taste, and an opinion about something the person actually tried to use is usually information. I use AI along the way, not to deliver faster, but to reach sooner the part that matters: sitting down with someone and finding out where the idea doesn't work.")}</p>
               <p className="pos-p">{t("Depois disso é ajuste, e mais ajuste. A parte demorada do meu trabalho é essa, e é a parte que eu não abro mão.", "After that it's adjustment, and more adjustment. That's the slow part of my work, and it's the part I won't give up.")}</p>
             </div>
           </div>
@@ -48,9 +48,9 @@ function Posfacio({ onContact, t: tweaks = {}, onEmpresa, onProject, onNav }) {
         <div className="pos-traj">
           <div className="pt-text">
             <div className="pt-kicker">{t("Como eu cheguei aqui", "How I got here")}</div>
-            <p className="pos-p">{t("Eu estava no fim do curso de Direito na UEM quando a pandemia parou tudo. Pra ocupar a cabeça, montei um e-commerce só pra aprender a mexer.", "I was at the end of law school at UEM when the pandemic stopped everything. To keep my head busy, I built an e-commerce just to learn my way around it.")}</p>
+            <p className="pos-p">{t("Eu estava no fim do curso de Direito na UEM quando a pandemia parou tudo. Para ocupar a cabeça, montei um e-commerce só para aprender a mexer.", "I was at the end of law school at UEM when the pandemic stopped everything. To keep my head busy, I built an e-commerce just to learn my way around it.")}</p>
             <p className="pos-p">{t("Foi ali que a coisa virou. Não me peguei gostando só das telas: gostei da engenharia de fazer um sistema existir, de tirar algo do nada e botar de pé.", "That's where it turned. I didn't just find myself liking the screens: I liked the engineering of making a system exist, of pulling something out of nothing and standing it up.")}</p>
-            <p className="pos-p">{t(`Larguei o Direito, me formei em Design Gráfico, fui atrás de curso de UX${showCursos ? " (Design Circuit, Coderhouse, UX à prova de balas)" : ""} e tirei a certificação Scrum pra andar no ritmo de time ágil. Comecei na TT&T, desenhei produto de verdade na Locarmais, e hoje toco o design de um time inteiro de marcas no Grupo Oderço.`, `I left law, got a degree in Graphic Design, chased UX courses${showCursos ? " (Design Circuit, Coderhouse, UX à prova de balas)" : ""} and took the Scrum certification to keep pace with agile teams. I started at TT&T, designed real product at Locarmais, and today I run design for a whole team of brands at Grupo Oderço.`)}</p>
+            <p className="pos-p">{t(`Larguei o Direito, me formei em Design Gráfico, fui atrás de curso de UX${showCursos ? " (Design Circuit, Coderhouse, UX à prova de balas)" : ""} e tirei a certificação Scrum para andar no ritmo de time ágil. Comecei na TT&T, desenhei produto na Locarmais, e hoje toco o design de um time inteiro de marcas no Grupo Oderço.`, `I left law, got a degree in Graphic Design, chased UX courses${showCursos ? " (Design Circuit, Coderhouse, UX à prova de balas)" : ""} and took the Scrum certification to keep pace with agile teams. I started at TT&T, designed real product at Locarmais, and today I run design for a whole team of brands at Grupo Oderço.`)}</p>
           </div>
           <div className="pt-photo">
             <div className="about-photo has-photo" tabIndex={0}>
@@ -117,7 +117,7 @@ function Posfacio({ onContact, t: tweaks = {}, onEmpresa, onProject, onNav }) {
           </div>
 
           <div className="pos-next">
-            <div className="pos-k">{t("Pra onde eu vou", "Where I'm headed")}</div>
+            <div className="pos-k">{t("Para onde eu vou", "Where I'm headed")}</div>
             <p className="pos-lead">{t("Quero trabalhar em produto maior, com gente que sabe mais que eu, e estar mais perto de onde as decisões são tomadas.", "I want to work on bigger product, with people who know more than I do, and to be closer to where the decisions are made.")}</p>
           </div>
 
