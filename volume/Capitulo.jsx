@@ -73,8 +73,8 @@ function Tldr({ tldr, links, minutos }) {
       <div className="l">{t("Como ler", "How to read")}</div>
       <div className="v">
         {t(`O capítulo inteiro leva ${minutos} minutos. Se você tiver 3, `, `The whole chapter takes ${minutos} minutes. If you have 3, `)}
-        <button type="button" className="atalho-b" onClick={() => irParaSec("solucao")}>
-          {t("veja só o que mudou", "see just what changed")}
+        <button type="button" className="atalho-b" onClick={() => irParaSec("funil")}>
+          {t("comece pelo dado que me desmentiu", "start with the data that proved me wrong")}
           <span className="atalho-arr" aria-hidden="true">↓</span>
         </button>
       </div>
@@ -587,9 +587,9 @@ function Funil({ dados }) {
             </div>
             <div className="fn-marca-legendas">
               <span className="fn-tag nosso">
-                <b><ContaAte alvo={m.nosso} decimais={2} ligado={on} />%</b> a loja
+                <b><ContaAte alvo={m.nosso} decimais={2} ligado={on} />%</b> {t("a loja", "the store")}
               </span>
-              <span className="fn-tag mercado"><b>{String(m.mercado).replace(".", ",")}%</b> a categoria</span>
+              <span className="fn-tag mercado"><b>{t(String(m.mercado).replace(".", ","), String(m.mercado))}%</b> {t("a categoria", "the category")}</span>
             </div>
             {m.n ? <p className="fn-marca-n">{renderPH(m.n)}</p> : null}
             {m.fonte ? <div className="fn-marca-fonte">{m.fonte}</div> : null}
@@ -1809,6 +1809,7 @@ const ATOS = [
     { id: "abertura", chave: "abertura", t: ["A cena", "The scene"] },
     { id: "problema", chave: "problema", t: ["O problema", "The problem"] },
     { id: "painel", chave: "painel", t: ["O tamanho do buraco", "The size of the hole"] },
+    { id: "v12", chave: "ponte", t: ["A V1.2", "The V1.2"] },
     { id: "funil", chave: "funil", t: ["O funil", "The funnel"] },
   ] },
   { k: "dado", n: "II", kanji: "数字", t: ["O que o dado disse", "What the data said"], secs: [
@@ -1817,10 +1818,9 @@ const ATOS = [
     { id: "investigacao", chave: "investigacao", t: ["A pesquisa", "The research"] },
   ] },
   { k: "resolvi", n: "III", kanji: "設計", t: ["Como eu resolvi", "How I solved it"], secs: [
-    { id: "v12", chave: "ponte", t: ["A V1.2", "The V1.2"] },
     { id: "recusei", chave: "recusei", t: ["O que recusei", "What I turned down"] },
-    { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
     { id: "decisoes", chave: "decisoes", t: ["Decisão e razão", "Decision and reason"] },
+    { id: "sistema", chave: "sistema", t: ["Design System", "Design System"] },
     { id: "modulos", chave: "modulos", t: ["Os módulos", "The modules"] },
   ] },
   { k: "mudou", n: "IV", kanji: "変化", t: ["O que mudou", "What changed"], secs: [
@@ -2030,7 +2030,12 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
         <Sec id="abertura"><Abertura chap={chap} figN={figN} /></Sec>
         <Sec id="problema"><Problema chap={chap} figN={figN} /></Sec>
         <Sec id="painel"><Painel dados={chap.painel} /></Sec>
-        {/* o funil fecha o ato I: o problema já tem tamanho e endereço */}
+        {/* A PONTE, na ordem em que aconteceu: o checkout era onde ele
+            tinha apostado, então a primeira resposta foi consertar o
+            checkout, antes do redesenho e antes do funil do trimestre. */}
+        {chap.ponte ? <Sec id="v12"><ModuloPassos mod={chap.ponte} chap={chap} figN={figN} /></Sec> : null}
+        {/* e o funil fecha o ato I desmentindo a aposta que o leitor
+            acabou de ver ser feita. É a virada do capítulo. */}
         <Sec id="funil"><Funil dados={chap.funil} /></Sec>
 
         <Respiro ato={ato(1)} />
@@ -2052,14 +2057,13 @@ function Capitulo({ chap, next, onOpen, onHome, onNav }) {
             prova de que o sistema funciona. `decisoes` são as quatro
             âncoras, sem figura: argumento antes de prova. */}
         <SfxBeat word={chap.sfx} />
-        {/* A PONTE. A cronologia real: a investigação apontou o buraco
-            mais caro no fim do funil, a V2 tinha data, e a primeira
-            resposta não esperou o redesenho. Antes, este módulo morava no
-            meio dos outros e a linha do tempo lia embaralhada. */}
-        {chap.ponte ? <Sec id="v12"><ModuloPassos mod={chap.ponte} chap={chap} figN={figN} /></Sec> : null}
         <Sec id="recusei"><Recusei dados={chap.recusei} /></Sec>
-        <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <Sec id="decisoes"><Decisoes chap={chap} figN={figN} /></Sec>
+        {/* o sistema vem DEPOIS das decisões, como o próprio data.jsx
+            declara: o vocabulário chega antes das telas, e por isso cada
+            tela de `modulos` lê como prova de que ele funciona. Antes
+            este bloco caía entre a pergunta e a resposta. */}
+        <Sec id="sistema"><Sistema dados={chap.sistema} /></Sec>
         <div className="vao-ato"></div>
         <Sec id="modulos"><Modulos chap={chap} figN={figN} /></Sec>
 
