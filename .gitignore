@@ -11,3 +11,10 @@ dossie-profissional-gabriel.md
 *Curriculo*.pdf
 *.Zone.Identifier
 *Zone.Identifier
+
+# biblioteca de skills de escrita (cópia local, não vai pro deploy)
+skills-de-escrita.zip
+writing-skills/
+
+# material biográfico com salário: NUNCA commitar
+empresas-para-o-portfolio.md

@@ -10,7 +10,10 @@
  *   - reveal dispara uma vez, não volta ao rolar de volta.
  */
 
-import { useReducedMotion, useScroll, useTransform, useSpring, useMotionValue, useInView } from "motion/react";
+import {
+  useReducedMotion, useScroll, useTransform, useSpring, useMotionValue,
+  useInView, useMotionTemplate, animate,
+} from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /* 1. spring
@@ -316,27 +319,78 @@ export function usePilha(progresso, i, total) {
 export function usePalavra(total) {
   const ref = useRef(null);
   const quieto = useReducedMotion();
+  /* O curso vai da entrada do paragrafo ate ele quase sair, nao da entrada da
+     secao. A diferenca importa: a declaracao tem ~1300px de altura, mais que
+     uma janela. Com o curso antigo ("start 0.85" a "start 0.3") a revelacao
+     inteira acontecia enquanto so as duas primeiras linhas estavam visiveis, e
+     a metade de baixo ja chegava nitida na tela. Ninguem via o efeito na parte
+     que mais rola. Agora a palavra acende quando ela mesma esta passando pelo
+     meio da janela. */
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.85", "start 0.3"],
+    offset: ["start 0.9", "end 0.45"],
   });
-  const opacidades = [];
+  const palavras = [];
+  /* A janela de cada palavra e ~2,6x mais larga que o passo entre elas, entao
+     tres ou quatro palavras estao sempre em transicao ao mesmo tempo. E isso
+     que faz a leitura parecer uma faixa passando pela frase em vez de um
+     interruptor por palavra. O ultimo termina em 0.87, com folga antes do fim
+     do curso, para a frase nunca ficar meio nitida no repouso. */
+  const passo = 0.78 / Math.max(total, 1);
+  const janela = (1 / Math.max(total, 1)) * 2.6;
   for (let i = 0; i < total; i++) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    opacidades.push(useTransform(scrollYProgress, [i / total, (i + 1) / total], [0.45, 1]));
+    const de = i * passo;
+    const ate = de + janela;
+    /* eslint-disable react-hooks/rules-of-hooks */
+    const t = useTransform(scrollYProgress, [de, ate], [0, 1], { clamp: true });
+    const opacidade = useTransform(t, [0, 1], [0.06, 1]);
+    const desfoque = useTransform(t, [0, 1], [7, 0]);
+    const y = useTransform(t, [0, 1], [12, 0]);
+    const filtro = useMotionTemplate`blur(${desfoque}px)`;
+    /* eslint-enable react-hooks/rules-of-hooks */
+    palavras.push({ opacidade, filtro, y });
   }
-  return { ref, opacidades, quieto };
+  return { ref, palavras, quieto };
 }
 
-/* 11. revelar
-   A entrada padrao de tudo que nao e titulo: opacidade mais um passo curto.
-   E a mesma familia do `rise`, com o curso menor, para poder repetir a pagina
-   inteira sem cansar. Ver M5 de docs/ANALISE-REFS.md: nas referencias o motion
-   e vocabulario repetido, nao enfeite pontual.
+/* 16. escrita
+   A assinatura, revelada como se estivesse sendo escrita.
 
-   Por que nao clipPath aqui: `whileInView` com clipPath nao interpola no motion
-   (fica preso no `initial` e o elemento nunca aparece); com `animate` funciona,
-   e e por isso que o useMaskLine do hero pode usar. Medido em 2026-08-28. */
+   Nao e desenho de traco de verdade (isso exige SVG com path e
+   stroke-dasharray, e vira quando o Gabriel mandar o SVG dele). Aqui e uma
+   mascara em degrade que anda da esquerda para a direita por cima do texto.
+   Funciona porque a fonte e cursiva e ligada: a borda da mascara atravessa as
+   ligaduras e o olho le uma caneta andando, nao uma cortina abrindo.
+
+   Duas escolhas que fazem a diferenca entre "cortina" e "caneta":
+   - a borda tem 9% de suavidade, entao a tinta aparece em vez de saltar;
+   - o easing e quase linear no miolo, com saida longa, que e o ritmo de quem
+     escreve e levanta a caneta no fim.
+
+   Nao usa whileInView de proposito: e useInView + animate, porque no motion
+   v13 valor dentro de mask-image nao interpola por whileInView (mesma
+   armadilha do clipPath, anotada em useMaskLine). */
+export function useEscrita({ duracao = 2.1, atraso = 0.2 } = {}) {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const naTela = useInView(ref, { once: true, amount: 0.55 });
+  const p = useMotionValue(0);
+  useEffect(() => {
+    if (quieto || !naTela) return undefined;
+    const ctrl = animate(p, 109, {
+      duration: duracao,
+      delay: atraso,
+      ease: [0.22, 0.42, 0.28, 1],
+    });
+    return () => ctrl.stop();
+  }, [naTela, quieto, p, duracao, atraso]);
+  const mascara = useMotionTemplate`linear-gradient(90deg, #000 0%, #000 ${p}%, rgba(0,0,0,0) calc(${p}% + 9%))`;
+  const estilo = quieto
+    ? undefined
+    : { maskImage: mascara, WebkitMaskImage: mascara };
+  return { ref, estilo, quieto };
+}
+
 export function useRevelar() {
   const quieto = useReducedMotion();
   return (i = 0) =>

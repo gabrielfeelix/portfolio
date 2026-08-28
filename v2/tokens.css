@@ -40,6 +40,9 @@
      cinco degraus e mais nenhum. Se um componente pedir um sexto, o degrau
      escolhido está errado; não falta degrau. */
   --v2-font: "Switzer", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  /* terceira voz, e a unica cursiva do site: so a assinatura da dobra 06.
+     Se aparecer em qualquer outro lugar, o lugar errado e o outro. */
+  --v2-font-mao: "Ephesis", cursive;
   --v2-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* O viper aperta -10px em 128px, que da -0.078em. Os -0.032em da tentativa

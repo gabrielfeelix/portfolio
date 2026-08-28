@@ -756,11 +756,26 @@
 /* A assinatura das referencias. Sem arquivo de caligrafia no repositorio, a
    aproximacao honesta e o nome em italico grande, nao uma fonte de script
    falsa. Troca por SVG assim que o Gabriel mandar a assinatura dele. */
+/* A assinatura. Cursiva roda pequena para o mesmo corpo: 2,6x o lead deixa a
+   altura de x parecida com a da frase acima, que e o que faz ela ler como
+   assinatura embaixo de um texto e nao como titulo.
+
+   A tinta e um span separado porque a mascara de escrita (useEscrita) precisa
+   de uma caixa que so tenha a largura do nome. No <p>, que ocupa a linha
+   inteira e e centralizado, a mascara comecaria a andar na margem esquerda e
+   metade do curso passaria em cima de nada. */
 .v2-sobre-ass {
   margin: var(--v2-s3) 0 0;
-  font-size: var(--v2-t-lead);
-  font-style: italic;
-  color: var(--v2-muted);
+  line-height: 1;
+}
+.v2-sobre-ass-tinta {
+  display: inline-block;
+  font-family: var(--v2-font-mao);
+  font-size: calc(var(--v2-t-lead) * 2.6);
+  line-height: 1.35;
+  color: var(--v2-ink);
+  /* a cursiva inclina para a direita: sem isso a ultima letra encosta no ar */
+  padding-right: 0.12em;
 }
 
 @media (max-width: 900px) {

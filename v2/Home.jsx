@@ -27,7 +27,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
-  useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar,
+  useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador } from "./Kit.jsx";
@@ -37,37 +37,18 @@ import {
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
 
-/* Mídia de banco, temporária, e agora em dose menor. Tinta preta e vermelha
-   em fundo branco: não é stock genérico, é a mesma linguagem que o portfólio
-   já tem em volume/assets/ink-splash.png e splatter.svg, e o vermelho bate
-   com --v2-accent. Licença Mixkit, uso comercial liberado, sem atribuição.
+/* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
-   Por que caiu de cinco para dois na fita: em nove colunas, cinco borrões de
-   tinta preta contra quatro telas de produto liam como mancha, não como
-   mídia, e a fita passava a falar de tinta em vez de falar do trabalho. A
-   ANÁLISE pede o contrário: a mídia É o conteúdo. A tinta fica como pontuação
-   entre telas, e sai de vez quando as gravações do Gabriel entrarem.
+   Pedido do Gabriel em 28/08: capa de banco, moderna, cor chamativa, no lugar
+   do print de sistema que estava aqui (a busca da V2 do PCYES, em
+   volume/assets/projetos/pcyes/busca-v2.webp, se for para voltar).
 
-   `ink-152` (fumaça) saiu inteiro: era a quebra de 666px entre casos e
-   números, e virou tela real. */
-const TINTA = "/volume/assets/stock/ink-";
-const INK = {
-  difusa:   TINTA + "44818.mp4",
-  vermelha: TINTA + "41999.mp4",
-};
-
-/* A quebra entre casos e números. Print de sistema em largura total, sem
-   moldura de device: é a busca da V2 do PCYES, que é a tela onde o dado do
-   capítulo desemboca. 1600x613 aguenta 100vw sem esticar. */
-const QUEBRA = "/volume/assets/projetos/pcyes/busca-v2.webp";
-
-/* Telas do PCYES que entram na fita para ela deixar de ser cinco borrões de
-   tinta com quatro capas no meio. */
-const EXTRA = {
-  busca:   "/volume/assets/projetos/pcyes/quickview.webp",
-  builder: "/volume/assets/projetos/pcyes/msp-builder.webp",
-  sku:     "/volume/assets/projetos/pcyes/sku-editor.webp",
-};
+   StockSnap, CC0, uso comercial liberado e sem atribuição, via a API da
+   Openverse (Unsplash e Pexels continuam atrás de bot-wall). O original só
+   serve 960px de largura, então isto é upscale para 1600: passa porque a
+   imagem é abstrata e desfocada, e não tem detalhe para perder. Se ela ficar,
+   vale procurar a mesma coisa em resolução nativa. */
+const QUEBRA = "/volume/assets/stock/capa-quebra.webp";
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -187,7 +168,7 @@ function Passagem() {
 function Declaracao() {
   const palavras = DECLARACAO.split(" ");
   const corte = Math.ceil(palavras.length / 2);
-  const { ref, opacidades, quieto } = usePalavra(palavras.length);
+  const { ref, palavras: anim, quieto } = usePalavra(palavras.length);
   const trecho = (de, ate, classe) => (
     <p className={`v2-declaracao ${classe}`}>
       {palavras.slice(de, ate).map((w, k) => {
@@ -198,7 +179,15 @@ function Declaracao() {
                 descartado na hora de renderizar, e a frase saía sem separação */}
             <motion.span
               className="v2-declaracao-w"
-              style={quieto ? undefined : { opacity: opacidades[i] }}
+              style={
+                quieto
+                  ? undefined
+                  : {
+                      opacity: anim[i].opacidade,
+                      filter: anim[i].filtro,
+                      y: anim[i].y,
+                    }
+              }
             >
               {w}
             </motion.span>
@@ -491,9 +480,31 @@ function Sobre() {
           Designer de produto em Maringá, que aprende o problema antes de abrir o Figma
           e implementa quando o prazo aperta.
         </p>
-        <p className="v2-sobre-ass">Gabriel Felix Barbosa</p>
+        <Assinatura>Gabriel Felix Barbosa</Assinatura>
       </div>
     </Dobra>
+  );
+}
+
+/* A assinatura da dobra 06, escrita à mão.
+
+   Ephesis, do Google Fonts. Escolhida por comparação de prancha contra outras
+   nove cursivas: é a que tem mão de verdade sem virar convite de casamento,
+   continua legível no sobrenome, e é monolinear, então não briga com a régua
+   reta do resto do site. É placeholder assumido: vira SVG com traço desenhado
+   quando o Gabriel mandar a assinatura dele, e aí useEscrita troca a máscara
+   por stroke-dasharray.
+
+   O <p> continua sendo o texto acessível: a máscara é só pintura, o leitor de
+   tela lê o nome inteiro desde o primeiro quadro. */
+function Assinatura({ children }) {
+  const { ref, estilo } = useEscrita();
+  return (
+    <p className="v2-sobre-ass" ref={ref}>
+      <motion.span className="v2-sobre-ass-tinta" style={estilo}>
+        {children}
+      </motion.span>
+    </p>
   );
 }
 
@@ -577,7 +588,7 @@ export default function Home({ ir }) {
             trabalho, no meio de um portfolio de UX. Agora e tela real em
             largura total, sem moldura de device, que e o tratamento que
             docs/ANALISE-REFS.md prescreve para print de sistema. */}
-        <Quebra src={QUEBRA} alt="Busca da V2 do PCYES, com o resultado corrigido" />
+        <Quebra src={QUEBRA} alt="" aria-hidden="true" />
         <Numeros />
         <Processo />
         <OndeEstive />
