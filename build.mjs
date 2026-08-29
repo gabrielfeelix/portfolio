@@ -268,37 +268,25 @@ async function buildCss() {
   await writeFile(path.join(DIST, "site.css"), out.code);
 }
 
-/* A decolagem entra INLINE no HTML, e não como arquivo externo.
+/* A cortina entra INLINE no <head>, e não como arquivo externo.
 
-   Ela é a tela de carregamento: desenho (decolagem.html), estilo
-   (carregando.css) e motor (decolagem.js). Se qualquer uma das três peças
-   viesse por <link> ou <script src>, a tela de carregamento só apareceria
-   depois de um round-trip de rede — ou seja, ela chegaria tarde exatamente na
-   conexão lenta em que ela é útil, e não apareceria nada na conexão rápida em
-   que ela é dispensável. Inline, ela está pintada no primeiro quadro.
+   São poucos KB, e a cortina de troca de página não pode chegar depois do
+   primeiro clique: se ela viesse por <link>, o primeiro link clicado trocaria
+   de rota sem lâmina nenhuma. Junto vai a calha da barra de rolagem, que
+   precisa valer no primeiro quadro (ver carregando.css).
 
-   O CSS carrega junto a cortina de troca de página, que é do bundle. Vale o
-   mesmo motivo por tabela: são poucos KB e a cortina não pode chegar depois do
-   primeiro clique. */
+   Aqui morava também a tela de carregamento — desenho, estilo e motor, os três
+   inline pelo mesmo motivo. Ela saiu em 29/08 a pedido do Gabriel: o site abre
+   direto. */
 async function inline() {
-  const ler = (n) => readFile(path.join(ROOT, "site", n), "utf8");
-  const [css, js, html] = await Promise.all([
-    ler("carregando.css"),
-    ler("decolagem.js"),
-    ler("decolagem.html"),
-  ]);
+  const css = await readFile(path.join(ROOT, "site", "carregando.css"), "utf8");
   const cssMin = (await esbuild.transform(css, { loader: "css", minify: true })).code;
-  const jsMin = (await esbuild.transform(js, { loader: "js", minify: true, target: ["es2015"] })).code;
-  return {
-    estilo: `<style>${cssMin}</style>`,
-    // o motor vai DEPOIS do desenho: ele procura #v2-decolagem no DOM
-    corpo: `${html}<script>${jsMin}</script>`,
-  };
+  return `<style>${cssMin}</style>`;
 }
 
 async function buildHtml() {
   const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
-  const dec = await inline();
+  const estiloInline = await inline();
   // A ordem é o contrato: React global, depois i18n e data (que publicam em
   // window), só então o app, que lê window.CHAPTERS. `defer` preserva a ordem
   // entre eles e não trava o parser.
@@ -310,8 +298,7 @@ async function buildHtml() {
     `<script defer src="/app.js"></script>`,
   ].join("\n");
   const html = tpl
-    .replace("<!--DECOLAGEM-CSS-->", dec.estilo)
-    .replace("<!--DECOLAGEM-->", dec.corpo)
+    .replace("<!--CORTINA-CSS-->", estiloInline)
     .replace("<!--SCRIPTS-->", tags)
     .replace("<!--ANALYTICS-->", analyticsSnippet());
   await writeFile(path.join(DIST, "index.html"), html);
@@ -361,13 +348,12 @@ if (process.argv.includes("--serve")) {
   // engano caro de depurar: o JS recarrega, o CSS fica velho.
   {
     const dir = path.join(ROOT, "site");
-    // As três peças da decolagem entram inline no index.html (ver `inline`),
-    // então editar qualquer uma delas pede um HTML novo, não um CSS novo.
-    const daDecolagem = new Set(["carregando.css", "decolagem.js", "decolagem.html"]);
+    // carregando.css entra inline no index.html (ver `inline`), então editar
+    // ele pede um HTML novo, não um site.css novo.
     let pendente = null;
     watch(dir, (_ev, arquivo) => {
       if (!arquivo) return;
-      const dec = daDecolagem.has(arquivo);
+      const dec = arquivo === "carregando.css";
       if (!dec && !arquivo.endsWith(".css")) return;
       clearTimeout(pendente);
       pendente = setTimeout(() => {

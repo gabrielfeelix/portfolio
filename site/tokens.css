@@ -107,6 +107,47 @@
   --v2-r-media: 0px;
   --v2-r-secao: 0px;
 
+  /* EXCECAO, e uma so: o cartao de caso da home.
+
+     A nota acima ("viper serve 0 em 28 lugares e nada medio") contou a FOLHA
+     de estilo da viper. O cartao de trabalho dela nao esta na folha: o raio
+     dele vai inline no elemento, `border-radius: 20px`, com moldura de 10px e
+     a foto a 10px por dentro. Foi essa peca que o Gabriel apontou em 29/08.
+
+     A regra geral nao muda — conteudo continua reto, e por isso estes tokens
+     sao proprios do cartao e nao um `--v2-r-card` reaberto para o site todo.
+     Quem quiser raio precisa vir aqui pedir. */
+  --v2-cartao-raio:    20px;
+  --v2-cartao-raio-in: 10px;
+  --v2-cartao-filete:  rgba(234, 234, 234, .65);
+
+  /* --- a descida ---
+
+     Quanto a tinta do Switzer passa POR BAIXO da caixa da linha, e portanto
+     quanto toda janela de máscara precisa devolver para não decepar o "g".
+
+     Não é chute: medido no navegador com TextMetrics. O Switzer tem ascent
+     .9833em e descent .25em (caixa de 1.2333em), e a tinta desce .2417em
+     abaixo da baseline. Com entrelinha L, o fundo da tinta cai a
+     (L - 1.2333)/2 + 1.225 do topo da caixa — que dá .1684em de sobra em
+     entrelinha .88 e .1484em em .92. Os .2em cobrem as duas.
+
+     Isto ja tinha sido corrigido uma vez, so no hero e so com .18em, e voltou:
+     o `clip-path` do filho recortava mais apertado que o `overflow` do pai, e
+     `getBoundingClientRect` nao enxerga `clip-path`. Se for medir de novo,
+     meça no PIXEL.
+
+     O token e ADIMENSIONAL de proposito. Em `em` ele so serviria onde a
+     janela tem o mesmo font-size do texto, e nao e o caso do titulo de secao:
+     la a janela e um <span> que herda 16px do corpo e quem cresce e o <h2>
+     dentro dela. Em `em` a folga saia 3.2px onde precisava de 17.6px. Cada
+     lugar multiplica pela medida certa. */
+  --v2-descida: .2;
+
+  /* Altura da lâmina diagonal entre o hero e o corpo claro. Piso de 420px:
+     ver a conta do skew em motion.js (useLamina). */
+  --v2-lamina-h: clamp(420px, 58vh, 700px);
+
   /* --- espaço --- */
   --v2-s1: 8px;
   --v2-s2: 16px;

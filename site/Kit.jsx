@@ -13,7 +13,12 @@
 import React from "react";
 import { motion } from "motion/react";
 import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir, useVoo, AVIAO_D } from "./motion.js";
-import { Label, Regua } from "./Shell.jsx";
+import { Label, Regua, Lamina } from "./Shell.jsx";
+
+/* A lâmina mora em Shell.jsx, que é o módulo de baixo — Kit importa de Shell,
+   então defini-la aqui e usá-la lá seria import circular. Reexportada porque
+   as páginas todas importam do Kit. */
+export { Lamina };
 import { casos } from "./content.js";
 import { CAPAS_CHEIAS } from "./copy.js";
 
@@ -88,15 +93,6 @@ export function Voo({ caminho, distancia, opacidade }) {
   );
 }
 
-/* A caixa que o voo mede e por onde ele é recortado.
-
-   Cada página embrulha o corpo dela aqui, e não ganha nível de DOM por isso:
-   quem já tinha um corpo claro (home, caso, processo, sobre) passa
-   `classe="v2-corpo-claro"` e continua sendo exatamente o mesmo elemento de
-   antes, agora com o avião como primeiro filho. Blog e post, que não têm
-   corpo claro, ficam com `.v2-voo-campo` — só posição e contexto de
-   empilhamento, sem fundo e sem `data-clara`, para a nav não mudar de ideia
-   sobre quando inverter. */
 export function CampoDeVoo({ variante, classe = "v2-voo-campo", children, ...resto }) {
   const caixa = React.useRef(null);
   const voo = useVoo(caixa, variante);

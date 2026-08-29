@@ -30,7 +30,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { useRise, useMaskLine, useCobertura } from "./motion.js";
 import { Label, Pill } from "./Shell.jsx";
-import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
+import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo, Lamina } from "./Kit.jsx";
 import { PROCESSO, casos, CONTATO } from "./content.js";
 import { PROCESSO_CURTO } from "./copy.js";
 
@@ -232,7 +232,7 @@ function Fecho() {
               {FECHO[0]} <span className="v2-proc-fecho-forte">{FECHO[1]}</span>
             </motion.p>
             <motion.div className="v2-caso-pills" {...rise(1)}>
-              <Pill href={CONTATO().email.href} escuro>Falar comigo</Pill>
+              <Pill href={CONTATO().whatsapp.href} escuro externo>Falar comigo</Pill>
             </motion.div>
           </div>
         </div>
@@ -249,7 +249,8 @@ export default function Processo({ ir }) {
   return (
     <>
       <ProcessoHero />
-      <CampoDeVoo variante="processo" classe="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="processo" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
+        <Lamina />
         <Ficha />
 
         <Dobra

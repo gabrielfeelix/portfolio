@@ -37,7 +37,7 @@ import {
 import { Pill, Label } from "./Shell.jsx";
 import {
   Relogio, Dobra, Cabecalho, DuasCores, Presa, Linha, CapaCapitulo, GradeCasos,
-  CampoDeVoo,
+  CampoDeVoo, Lamina,
 } from "./Kit.jsx";
 import { COMPANIES, CERTS, CONTATO, AUTOR, VOL } from "./content.js";
 import { FERRAMENTAS } from "./ferramentas.js";
@@ -124,7 +124,7 @@ function SobreHero() {
           <motion.p className="v2-sb-premissa" {...linha(4)}>{SOBRE_PREMISSA}</motion.p>
 
           <motion.div className="v2-caso-pills" {...tardio}>
-            <Pill href={c.email.href} escuro>Falar comigo</Pill>
+            <Pill href={c.whatsapp.href} escuro externo>Falar comigo</Pill>
             {c.linkedin ? <Pill href={c.linkedin.href} externo escuro>LinkedIn</Pill> : null}
           </motion.div>
 
@@ -541,7 +541,7 @@ function Adiante() {
           <p className="v2-sb-obrigado">{SOBRE_OBRIGADO}</p>
           <Assinatura>{AUTOR()}</Assinatura>
         </div>
-        <Pill href={c.email.href}>Falar comigo</Pill>
+        <Pill href={c.whatsapp.href} externo>Falar comigo</Pill>
       </motion.div>
     </Dobra>
   );
@@ -555,7 +555,8 @@ export default function Sobre({ ir }) {
       <SobreHero />
       {/* O corpo claro é opaco e sobe por cima do hero preso. `data-clara` é o
           que a nav observa para saber quando voltar ao preto. */}
-      <CampoDeVoo variante="sobre" classe="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="sobre" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
+        <Lamina />
         <Ficha />
         <Metodo />
         <Citacao />

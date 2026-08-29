@@ -5,7 +5,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ease, spring, AVIAO_D } from "./motion.js";
+import { ease, spring, useLamina, AVIAO_D } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
 
 /* Todo link passa pelo roteador (`ir`), inclusive "Casos".
@@ -33,8 +33,8 @@ const LINKS = [
 
    Era uma seta e virou o AVIÃO, em 29/08, a pedido do Gabriel: "em tudo que
    tiver setinha no site". E é literalmente o mesmo caminho do avião que cruza
-   a rolagem, da decolagem e da travessia — quatro lugares, um desenho só, um
-   `d` só. Se ele mudar, muda em todos de uma vez.
+   a rolagem e a travessia — três lugares, um desenho só, um `d` só. Se ele
+   mudar, muda em todos de uma vez.
 
    O único arredondamento é `stroke-linejoin`: em 13px, a ponta viva do bico
    vira serrilhado, e meio pixel de junta arredondada resolve sem tirar a
@@ -315,7 +315,7 @@ export function Nav({ sobreEscuro, ir, rota }) {
       </nav>
 
       <div className="v2-nav-cta">
-        <Pill href={CONTATO().email.href} escuro={sobreEscuro}>Falar comigo</Pill>
+        <Pill href={CONTATO().whatsapp.href} escuro={sobreEscuro} externo>Falar comigo</Pill>
       </div>
 
       <Hamburguer aberto={menu} onClick={() => setMenu((v) => !v)} />
@@ -324,11 +324,59 @@ export function Nav({ sobreEscuro, ir, rota }) {
   );
 }
 
+/* A LÂMINA diagonal entre duas superfícies de cor diferente.
+
+   Medida no fuel.framer.website (~/dev/refs/fuel-ANALISE.md). Lá ela é uma div
+   VAZIA, sem um único filho, que sobe torta na fronteira entre duas seções.
+   Dois valores, e os dois saturam junto:
+
+     skewY        0  ->  -7deg     (o termo da matriz satura em tan 7° exato)
+     translateY   0  ->  -220px
+
+   E ela aparece DUAS vezes na referência, com a mesma conta e cores opostas:
+
+     hero -> corpo    lâmina CLARA subindo sobre o escuro
+     corpo -> rodapé  lâmina ESCURA subindo sobre o claro  (medido: rgb(17,17,17))
+
+   É a mesma peça, na cor da seção que está CHEGANDO. Por isso `tom` e não dois
+   componentes: o desenho é um só e o que muda é de onde para onde.
+
+   `borda="topo"` é a fronteira de cima (a lâmina cobre o que está acima dela);
+   `borda="base"` é a de baixo. Muda só onde ela se ancora. */
+export function Lamina({ tom = "claro", borda = "topo" }) {
+  const { ref, style } = useLamina();
+  return (
+    <motion.div
+      className="v2-lamina"
+      data-tom={tom}
+      data-borda={borda}
+      ref={ref}
+      style={style}
+      aria-hidden="true"
+    />
+  );
+}
+
+/* A caixa que o voo mede e por onde ele é recortado.
+
+   Cada página embrulha o corpo dela aqui, e não ganha nível de DOM por isso:
+   quem já tinha um corpo claro (home, caso, processo, sobre) passa
+   `classe="v2-corpo-claro"` e continua sendo exatamente o mesmo elemento de
+   antes, agora com o avião como primeiro filho. Blog e post, que não têm
+   corpo claro, ficam com `.v2-voo-campo` — só posição e contexto de
+   empilhamento, sem fundo e sem `data-clara`, para a nav não mudar de ideia
+   sobre quando inverter. */
 export function Rodape() {
   const c = CONTATO();
   const canais = ["email", "linkedin", "whatsapp", "instagram"].filter((k) => c[k]);
   return (
     <footer className="v2-rodape" id="contato" data-escuro-corpo="1">
+      {/* A lâmina escura que subia aqui SAIU em 29/08, a pedido do Gabriel:
+          "tira esse efeito de lâmina diagonal do footer, só do footer". A
+          referência tem as duas — medi o par —, mas lá o rodapé não é uma
+          dobra cheia. Aqui ele passou a ser, e uma diagonal cortando a entrada
+          de uma dobra inteira é outro efeito, não o mesmo. A da fronteira
+          hero -> corpo continua. */}
       <div className="v2-rodape-topo">
         <Label>Contato</Label>
         <p className="v2-rodape-chamada">

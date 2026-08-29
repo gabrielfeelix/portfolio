@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { chapterById } from "./content.js";
 import { Nav, Rodape } from "./Shell.jsx";
-import { useScrollSuave } from "./motion.js";
+import { useScrollSuave, rolarPara } from "./motion.js";
 import Home from "./Home.jsx";
 import Caso from "./Case.jsx";
 import Processo from "./Processo.jsx";
@@ -48,26 +48,6 @@ function rotaAtual() {
   return rotaDe(window.location.pathname);
 }
 
-/* O nome que a lâmina da travessia mostra na parada.
-
-   É o nome da SEÇÃO, e não o título da página: quem clicou já sabe o que
-   clicou, e o que a parada precisa dizer é "chegou". Por isso o caso mostra o
-   nome do caso — que é a única troca de página em que o destino não estava
-   escrito no link — e o post mostra só `TEXTO`, porque o título de um post não
-   cabe numa linha de 12px em caixa alta. */
-function nomeDaRota(rota) {
-  if (!rota) return null;
-  if (rota.tipo === "home") return "INÍCIO";
-  if (rota.tipo === "processo") return "PROCESSO";
-  if (rota.tipo === "sobre") return "SOBRE";
-  if (rota.tipo === "blog") return "NOTAS";
-  if (rota.tipo === "post") return "TEXTO";
-  if (rota.tipo === "caso") {
-    const c = chapterById(rota.id);
-    return String((c && c.title) || "CASO").toUpperCase();
-  }
-  return null;
-}
 
 /* Link antigo da V1 com hash de rota (#/cap/pcyes) continua chegando de
    mensagem e de candidatura enviada. O `#` nunca sobe para o servidor, então
@@ -89,7 +69,7 @@ function useRota(atravessar) {
        popstate chega, então por 390ms a barra de endereço aponta para a página
        nova enquanto a antiga ainda está na tela — atrás da cortina, onde
        ninguém vê. */
-    const onPop = () => atravessar(() => setRota(rotaAtual()), nomeDaRota(rotaAtual()));
+    const onPop = () => atravessar(() => setRota(rotaAtual()));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [atravessar]);
@@ -121,7 +101,7 @@ function useRota(atravessar) {
     if (mesmaPagina) {
       window.history.replaceState(null, "", href);
       const alvo = document.getElementById(ancora);
-      if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (alvo) rolarPara(alvo);
       return;
     }
 
@@ -132,7 +112,7 @@ function useRota(atravessar) {
       setRota(rotaAtual());
 
       if (!ancora) {
-        window.scrollTo({ top: 0, behavior: "instant" });
+        rolarPara(0, { imediato: true });
         return;
       }
 
@@ -140,13 +120,13 @@ function useRota(atravessar) {
       const busca = () => {
         const alvo = document.getElementById(ancora);
         if (alvo) {
-          alvo.scrollIntoView({ behavior: "instant", block: "start" });
+          rolarPara(alvo, { imediato: true });
           return;
         }
         if (++quadros < 12) requestAnimationFrame(busca);
       };
       requestAnimationFrame(busca);
-    }, nomeDaRota(rotaDe(caminho)));
+    });
   }, [atravessar]);
 
   return [rota, ir];
@@ -200,7 +180,7 @@ function useSobreEscuro(rota) {
 }
 
 function App() {
-  const { fase, rotulo, atravessar } = useTravessia();
+  const { fase, atravessar } = useTravessia();
   const [rota, ir] = useRota(atravessar);
   const [erro, setErro] = useState(null);
   const sobreEscuro = useSobreEscuro(rota);
@@ -309,7 +289,7 @@ function App() {
   try {
     return (
       <div className="v2-shell">
-        <Cortina fase={fase} rotulo={rotulo} />
+        <Cortina fase={fase} />
         <Cursor />
         <Nav sobreEscuro={sobreEscuro} ir={ir} rota={rota} />
         <main>
@@ -333,13 +313,3 @@ function App() {
 
 const alvo = document.getElementById("v2-root");
 if (alvo) createRoot(alvo).render(<App />);
-
-/* O marco mais pesado da tela de carregamento (0.55) é este: o app montou.
-   Um quadro depois do render, para o aviso sair quando a primeira pintura já
-   aconteceu e não quando o React só prometeu que vai acontecer. Ver
-   site/decolagem.js. */
-requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    if (typeof window.__v2Pronto === "function") window.__v2Pronto();
-  });
-});

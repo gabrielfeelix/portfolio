@@ -15,6 +15,7 @@ import {
   useInView, useMotionTemplate, animate,
 } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import Lenis from "lenis";
 
 /* 1. spring
    Default de tudo que responde a hover, clique ou drag.
@@ -27,12 +28,29 @@ export const spring = { type: "spring", stiffness: 200, damping: 60, mass: 1 };
    Para o que é temporizado e não interativo. */
 export const ease = [0.44, 0, 0.56, 1];
 
-/* Fase 6. 0.7s com stagger de 60ms era curto e nervoso. Medido nas
-   referências: tabfolio entra em 1.1s com stagger de 0.1; a viper usa
-   spring damping 60 e tween `{bounce: 0, duration: 3}` com delays até 2.8s.
-   A V2 fica no meio: 1.2s de entrada, 120ms entre irmãos. */
-export const dur = 1.2;
-export const passo = 0.12;
+/* A VELOCIDADE DA REVELAÇÃO POR SCROLL. Era 1.2s com 120ms entre irmãos.
+
+   Aquele valor foi calibrado contra tabfolio (1.1s) e viper (até 3s) numa
+   época em que o scroll da página era nativo. Com o Lenis a `duration: 2.0`,
+   os dois tempos SOMAM: a rolagem já chega devagar no lugar e a fonte ainda
+   leva mais 1.2s para assentar. O Gabriel descreveu certo em 29/08 — "já tá
+   lento o scroll, se somar os efeitos de fonte a página fica muito morosa".
+
+   O valor novo é o do fuel, medido: 0.6s por elemento. O escalonamento cai de
+   120 para 70ms porque com peça mais curta o intervalo antigo abria buraco
+   entre um irmão e outro em vez de encadear.
+
+   O deslocamento cai junto, de 24 para 12px, e isso é parte da mesma medição:
+   na referência os elementos andam de 6 a 10px. Bloco grande andando muito lê
+   como slide; o que se quer é a letra assentando. */
+export const dur = 0.6;
+export const passo = 0.07;
+
+/* A curva da revelação é a mesma da entrada de página — ajustada contra os
+   pontos medidos no fuel, erro .038 contra .237 do que havia antes. Fica
+   separada de `ease` porque `ease` também serve o voo e a cortina, que são
+   outro gesto. */
+export const easeRevela = [0.4, 0, 0.2, 1];
 
 /* 2c. tweenLaunch
    O tween da launchfolio: `ease: [0.4, 0, 0.2, 1]` em 0.6s, usado lá com
@@ -54,16 +72,16 @@ export function useTardio(delay = 1.4) {
    suficiente para o olho acompanhar em vez de notar. É a tradução do
    `{type: "spring", bounce: 0, duration: 3}` da referência, encurtado
    porque a V2 tem mais dobras por página do que ela. */
-export const longa = { type: "spring", bounce: 0, duration: 1.8 };
+export const longa = { type: "spring", bounce: 0, duration: 0.9 };
 
 /* 3. rise
    Entrada padrão de bloco. `i` é a posição entre irmãos e gera o stagger. */
 export function rise(i = 0) {
   return {
-    initial: { opacity: 0, y: 24 },
+    initial: { opacity: 0, y: 12 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, amount: 0.25 },
-    transition: { duration: dur, ease, delay: i * passo },
+    transition: { duration: dur, ease: easeRevela, delay: i * passo },
   };
 }
 
@@ -120,9 +138,16 @@ export function useMaskLine() {
           transition: { duration: 0.2, delay: i * 0.04 },
         }
       : {
+          /* -30% e nao -10%: a % e da altura da propria linha (entrelinha
+             .88), e o descendente do Switzer cai .1684em abaixo dela, ou seja
+             19.1% dessa altura. Com -10% o clip do filho ficava mais apertado
+             que o `overflow` do pai e decepava o "g" de Designer — e como
+             `clip-path` nao aparece em getBoundingClientRect, a medicao dizia
+             que estava tudo certo. As duas escalas sao proporcionais ao
+             font-size, entao 30% vale em qualquer viewport. */
           initial: { clipPath: "inset(0 0 100% 0)", y: "0.12em" },
-          animate: { clipPath: "inset(0 0 -10% 0)", y: 0 },
-          transition: { duration: 1.25, ease, delay: 0.2 + i * 0.12 },
+          animate: { clipPath: "inset(0 0 -30% 0)", y: 0 },
+          transition: { duration: 0.7, ease: easeRevela, delay: 0.1 + i * 0.08 },
         };
 }
 
@@ -158,88 +183,77 @@ export function useSticky() {
   return { ref, progresso: scrollYProgress };
 }
 
-/* 7. scrollSuave
-   Adicionada depois das seis originais, a pedido: a referência não rola no
-   scroll cru do navegador, ela amortece. Nada aqui inventa vocabulário novo,
-   é a mesma ideia de mola aplicada à página inteira.
+/* 8. scroll com peso
+   O scroll suave do site, e ele é o LENIS — biblioteca, não código nosso.
 
-   O truque é NÃO transladar o conteúdo: quem move é o scroll de verdade, via
-   scrollTo. Se a página fosse transladada num container, `position: sticky`,
-   IntersectionObserver e âncora parariam de funcionar, e a V2 usa os três.
+   Aqui morava um lerp próprio: 11% da distância restante por quadro, só na
+   roda do mouse, com `preventDefault` no wheel. Funcionava e tinha dois furos
+   que ninguém nota até notar. O primeiro é que teclado, âncora e
+   `scrollIntoView` continuavam nativos — a roda era suave e o resto do site
+   pulava seco, ou seja o peso era do mouse e não da página. O segundo é que
+   ele era preso a quadro e não a tempo: numa tela de 120Hz a mesma conta roda
+   duas vezes mais rápido e a página fica mais leve do que foi desenhada.
 
-   Só roda com ponteiro fino e wheel. Toque não é interceptado: o scroll
-   nativo do celular já tem inércia e mexer nele piora. */
-export function useScrollSuave({ atrito = 0.11, ligado = true } = {}) {
+   O parâmetro veio medido do fuel.framer.website, que foi a referência que o
+   Gabriel trouxe em 29/08 (ver ~/dev/refs/fuel-ANALISE.md):
+
+     new Lenis({ duration: 2.0 })
+
+   Dois segundos, contra o default de 1.0 da biblioteca. É um valor ALTO de
+   propósito, e é dele que vem a sensação de peso que ele pediu. O easing é o
+   default do Lenis, `t => min(1, 1.001 - 2^(-10t))` — que é o mesmo
+   easeOutExpo das entradas de página, e isso não é coincidência nem economia:
+   é o site inteiro falando uma curva só.
+
+   Três cuidados que o Lenis exige e que quebram em silêncio se esquecidos:
+
+   - `data-lenis-prevent` em quem tem scroll próprio, senão o Lenis sequestra
+     a rolagem de dentro do painel. É varrido no mount e a cada mudança de rota.
+   - `lenis.stop()` quando o `<html>` trava em `overflow: hidden`, senão a
+     página rola por trás de qualquer coisa que cubra a tela.
+   - reduced-motion desliga tudo. Scroll suave é movimento, e quem pediu para
+     nada se mover não ganha exceção por ser bonito. */
+export function useScrollSuave({ duracao = 2.0, ligado = true } = {}) {
   const quieto = useReducedMotion();
 
   useEffect(() => {
     if (!ligado || quieto) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
 
-    let alvo = window.scrollY;
-    let rodando = false;
-    let quadro = 0;
-    // Ultima posicao ESCRITA por nos. Serve para separar o nosso scroll do
-    // scroll de fora (ancora, teclado, scrollIntoView): sem isto a animacao
-    // em curso desfaz um scrollTo de terceiros e o botao do hero nao leva a
-    // lugar nenhum.
-    let escrito = -1;
-
-    const limite = () =>
-      Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-
-    const passo = () => {
-      const atual = window.scrollY;
-      const delta = alvo - atual;
-      if (Math.abs(delta) < 0.4) {
-        escrito = alvo;
-        window.scrollTo(0, alvo);
-        rodando = false;
-        return;
-      }
-      escrito = atual + delta * atrito;
-      window.scrollTo(0, escrito);
+    const lenis = new Lenis({ duration: duracao });
+    let quadro = requestAnimationFrame(function passo(t) {
+      lenis.raf(t);
       quadro = requestAnimationFrame(passo);
-    };
+    });
 
-    const onWheel = (e) => {
-      // pinch-zoom e scroll dentro de um elemento com scroll próprio ficam
-      // com o navegador.
-      if (e.ctrlKey) return;
-      let d = e.deltaY;
-      if (e.deltaMode === 1) d *= 16;        // linhas
-      else if (e.deltaMode === 2) d *= window.innerHeight;
-      e.preventDefault();
-      alvo = Math.min(limite(), Math.max(0, alvo + d));
-      if (!rodando) { rodando = true; quadro = requestAnimationFrame(passo); }
+    /* Quem tem scroll próprio fica com o navegador. Sem isto, rolar dentro de
+       um painel com `overflow: auto` move a página inteira. */
+    const isolarRolaveis = () => {
+      document.querySelectorAll("*").forEach((el) => {
+        const ov = getComputedStyle(el).overflowY;
+        if (ov === "auto" || ov === "scroll") el.setAttribute("data-lenis-prevent", "true");
+      });
     };
+    isolarRolaveis();
 
-    // Teclado, âncora e scrollIntoView continuam nativos. Se a posição mudou
-    // por causa de alguém que não nós, a animação em curso é abandonada e o
-    // alvo passa a ser onde a página está.
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (rodando && Math.abs(y - escrito) < 2) return;   // fomos nós
-      cancelAnimationFrame(quadro);
-      rodando = false;
-      alvo = y;
+    /* E trava quando alguém cobre a tela. `overflow: hidden` no <html> é o
+       sinal que o site já usa para isso. */
+    const conferirTrava = () => {
+      const travado = document.documentElement.style.overflow === "hidden";
+      if (travado) lenis.stop(); else lenis.start();
     };
+    const obs = new MutationObserver(() => { conferirTrava(); isolarRolaveis(); });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
 
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.__lenis = lenis;
     return () => {
       cancelAnimationFrame(quadro);
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("scroll", onScroll);
+      obs.disconnect();
+      lenis.destroy();
+      delete window.__lenis;
     };
-  }, [atrito, ligado, quieto]);
+  }, [duracao, ligado, quieto]);
 }
 
-/* 8. cobertura
-   A passagem entre uma dobra que fica presa e a dobra seguinte, que sobe por
-   cima. Devolve o estilo do conteúdo que está sendo coberto: ele perde escala
-   e opacidade enquanto sai de cena, em vez de simplesmente rolar para fora.
-   Usada uma vez, entre o hero e o manifesto. */
 export function useCobertura() {
   const ref = useRef(null);
   const quieto = useReducedMotion();
@@ -269,6 +283,162 @@ export function useCobertura() {
   const scale = useTransform(scrollY, [0, curso], [1, 0.94]);
   const y = useTransform(scrollY, [0, curso], ["0%", "8%"]);
   return { ref, style: quieto ? undefined : { opacity, scale, y } };
+}
+
+/* 8b. rolar por código
+   O ÚNICO caminho para mover o scroll por código no site.
+
+   Com o Lenis no ar, `window.scrollTo` e `scrollIntoView` param de funcionar
+   como parecem: eles movem a barra, mas não contam nada ao Lenis, que continua
+   com o alvo antigo guardado e no quadro seguinte traz a página de volta. O
+   sintoma é uma página nova que abre no meio, e foi exatamente o que aconteceu
+   ao trocar de rota — o `scrollTo(0)` da travessia era desfeito pelo Lenis
+   antes de qualquer um ver.
+
+   Então todo scroll programático passa por aqui. Sem Lenis (reduced-motion,
+   ou antes do mount) cai no nativo, que é o comportamento correto nesses
+   casos. */
+export function rolarPara(alvo, { imediato = false } = {}) {
+  const lenis = typeof window !== "undefined" ? window.__lenis : null;
+  if (lenis) {
+    lenis.scrollTo(alvo, imediato ? { immediate: true, force: true } : { force: true });
+    return;
+  }
+  if (typeof alvo === "number") {
+    window.scrollTo({ top: alvo, behavior: imediato ? "instant" : "smooth" });
+    return;
+  }
+  const el = typeof alvo === "string" ? document.querySelector(alvo) : alvo;
+  if (el) el.scrollIntoView({ behavior: imediato ? "instant" : "smooth", block: "start" });
+}
+
+/* 9c. entrada de página
+   A MONTAGEM da página nova, depois que o véu da travessia sai.
+
+   SEGUNDA MEDIÇÃO, 29/08. A primeira mediu a página de ITEM do fuel e saiu
+   errada em quase tudo; o Gabriel viu e disse que não estava igual. Estava
+   certo. A hero da HOME dele — que é a que ele queria — funciona de outro
+   jeito, e a diferença é o desenho inteiro:
+
+     o que eu tinha        o que a referência faz
+     ------------------    ----------------------------------------
+     2 blocos grandes      ~10 elementos individuais
+     ±70 e ±100px          6 a 10px
+     título vindo de CIMA  TUDO vindo de BAIXO
+     tudo junto            escalonado, um atrás do outro
+     mola exponencial      cubic-bezier(.4, 0, .2, 1)
+
+   É por isso que ficava pesado: bloco grande andando muito lê como slide.
+   O que a referência faz é a letra "levemente aparecendo" — deslocamento
+   pequeno, muitos elementos, e o tempo entre eles fazendo o trabalho.
+
+   OS NÚMEROS, medidos elemento a elemento na hero da home:
+
+   - Deslocamento: +10px nas linhas do título e nos itens de menu, +8px no
+     item seguinte, +6px no próximo. ELE DIMINUI conforme desce a cascata:
+     quem chega depois anda menos. Sem isso o fim da sequência fica pesado.
+   - Escalonamento: ~0,2s entre linhas de título, ~0,1s entre itens de cromo.
+     Medido nos instantes de 50%: 1040, 1250 (título) e 830, 920, 1030, 1110
+     (menu).
+   - Curva: ajustei cinco candidatas contra os pontos medidos.
+
+       cubic-bezier(.4,  0,  .2,  1)   erro .038   ← esta
+       cubic-bezier(.25,.1,  .25, 1)   erro .066
+       cubic-bezier(.25,.46, .45,.94)  erro .074
+       cubic-bezier(.65, 0,  .35, 1)   erro .076
+       mola exponencial (o que eu usava) erro .237
+
+   - Duração: ~0,6s por elemento.
+
+   A FOTO é outra curva e outra duração. Ela é lenta de propósito: aos 400ms
+   ainda fez só 22,7% do caminho, o que dá ~1,4s de percurso contra os 0,6s do
+   texto. O texto chega e para; a foto continua respirando por baixo dele. Com
+   as duas iguais, a foto vira parte do mesmo gesto e some. */
+const ENTRADA_EASE = [0.4, 0, 0.2, 1];
+const ENTRADA_TEXTO = { duration: 0.6, ease: ENTRADA_EASE };
+const ENTRADA_FOTO = { duration: 1.4, ease: ENTRADA_EASE };
+
+/* O deslocamento encolhe com a ordem: 10, 10, 8, 6, e para em 6. Medido na
+   referência (Text 1 = 10px, Text 2 = 8px, Text 3 = 6px). */
+function desloca(i) {
+  return Math.max(6, 10 - Math.max(0, i - 1) * 2);
+}
+
+export function useEntrada() {
+  const quieto = useReducedMotion();
+
+  /* Em reduced-motion sobra um fade curto: a pessoa pediu para nada se MOVER,
+     e sem nenhuma marca a troca de rota volta a ser o corte seco que a
+     travessia existe para resolver. */
+  const seco = (atraso = 0) => ({
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.2, delay: atraso },
+  });
+
+  /* `sobe(i)` — o gesto único da entrada: nasce embaixo e assenta.
+     `passo` é o escalonamento: .2 entre linhas de título, .1 entre cromo. */
+  const sobe = (i = 0, { passo = 0.1, base = 0 } = {}) => {
+    const atraso = base + i * passo;
+    if (quieto) return seco(atraso);
+    return {
+      initial: { opacity: 0, y: desloca(i) },
+      animate: { opacity: 1, y: 0 },
+      transition: { ...ENTRADA_TEXTO, delay: atraso },
+    };
+  };
+
+  return {
+    sobe,
+    /* linhas de título: mesmo gesto, escalonamento mais largo */
+    linha: (i = 0, base = 0) => sobe(i, { passo: 0.2, base }),
+    /* o zoom, lento por baixo de tudo */
+    foto: () => quieto ? seco() : ({
+      initial: { opacity: 0, scale: 1.2 },
+      animate: { opacity: 1, scale: 1 },
+      transition: ENTRADA_FOTO,
+    }),
+  };
+}
+
+/* 9b. lâmina
+   A LÂMINA DIAGONAL entre o hero e o corpo claro.
+
+   Medida no fuel.framer.website em 29/08, a pedido do Gabriel — a análise
+   completa está em ~/dev/refs/fuel-ANALISE.md. Lá o efeito é uma div branca
+   VAZIA de 1440x834, sem um único filho, que sobe torta por cima de um hero
+   preso. Dois valores, e os dois saturam no mesmo ponto:
+
+     skewY        0  ->  -7deg
+     translateY   0  ->  -220px
+
+   O -7deg não é chute: o termo de cisalhamento da matriz satura em 0.122785,
+   que é tan(7°) exato. E o intervalo de scroll é a própria altura da lâmina —
+   começa quando o topo dela entra pela base da janela, termina quando a base
+   dela alcança a base da janela. Isso é literalmente o offset abaixo.
+
+   A ADAPTAÇÃO daqui: no fuel a lâmina é um vão em branco de 834px que empurra
+   o conteúdo para baixo. Aqui ela é a ARESTA DE ATAQUE do corpo claro — mesma
+   cor, encostada no topo dele, e por isso invisível em repouso. Quando sobe e
+   torce, o que aparece contra o hero escuro é só a borda de cima; a de baixo
+   continua encostada em papel da mesma cor. Efeito idêntico, zero mudança de
+   layout.
+
+   Por que a altura importa: o skew gira em torno do centro, então a borda de
+   baixo sobe (largura / 2) * tan(7°) de um lado. A 2560px isso é 157px, e
+   somado aos 220px de subida dá 377px. Abaixo disso a borda de baixo passaria
+   do topo do corpo claro e o hero apareceria por um rasgo embaixo. O piso de
+   420px em `--v2-lamina-h` é essa conta com folga. */
+export function useLamina() {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end end"],
+  });
+  const skew = useTransform(scrollYProgress, [0, 1], [0, -7]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -220]);
+  return { ref, style: quieto ? undefined : { skewY: skew, y } };
 }
 
 /* 9. pilha
@@ -357,12 +527,11 @@ export function usePalavra(total) {
 
    O contorno do avião de papel, em caixa 24x24, bico para a direita.
 
-   Ele aparece em quatro lugares — cruzando a rolagem (Kit.jsx), dentro do
-   botão (Shell.jsx), atravessando a cortina de página (Travessia.jsx) e
-   orbitando a tela de carregamento — e nos três primeiros é literalmente esta
-   constante. O quarto é HTML servido, inline no <head>, e não pode importar
-   nada: lá o mesmo `d` está escrito à mão em site/decolagem.html, e é o único
-   lugar em que ele se repete. Se este mudar, aquele muda junto. */
+   Ele aparece em três lugares — cruzando a rolagem (Kit.jsx), dentro do botão
+   (Shell.jsx) e atravessando a cortina de página (Travessia.jsx) — e nos três
+   é literalmente esta constante. Havia um quarto, a tela de carregamento, que
+   era HTML servido e repetia o `d` à mão; ela saiu em 29/08 e a duplicata
+   saiu junto. */
 export const AVIAO_D = "M23 12 L3 3 L9 12 L3 21 Z";
 
 /* 15b. voo
@@ -1012,7 +1181,7 @@ export function useNaAltura(total, faixa = "-45% 0px -45% 0px") {
    Nao usa whileInView de proposito: e useInView + animate, porque no motion
    v13 valor dentro de mask-image nao interpola por whileInView (mesma
    armadilha do clipPath, anotada em useMaskLine). */
-export function useEscrita({ duracao = 1.3, atraso = 0.15 } = {}) {
+export function useEscrita({ duracao = 0.8, atraso = 0.1 } = {}) {
   const ref = useRef(null);
   const quieto = useReducedMotion();
   const naTela = useInView(ref, { once: true, amount: 0.55 });
@@ -1044,10 +1213,10 @@ export function useRevelar() {
           transition: { duration: 0.2 },
         }
       : {
-          initial: { opacity: 0, y: 18 },
+          initial: { opacity: 0, y: 10 },
           whileInView: { opacity: 1, y: 0 },
           viewport: { once: true, amount: 0.3 },
-          transition: { duration: 1, ease, delay: i * 0.08 },
+          transition: { duration: 0.55, ease: easeRevela, delay: i * 0.06 },
         };
 }
 
@@ -1073,9 +1242,12 @@ export function useCortina() {
           transition: { duration: 0.2 },
         }
       : {
-          initial: { y: "108%" },
-          animate: dentro ? { y: 0 } : { y: "108%" },
-          transition: { duration: 1.15, ease, delay: i * 0.09 },
+          /* 118% e nao 108%: a janela do titulo ganhou .2em de padding por
+             baixo para o descendente, e com 108% o topo das letras espiava
+             pela borda antes da revelacao. Ver .v2-titulo-janela. */
+          initial: { y: "118%" },
+          animate: dentro ? { y: 0 } : { y: "118%" },
+          transition: { duration: 0.7, ease: easeRevela, delay: i * 0.06 },
         };
   return { ref, props };
 }

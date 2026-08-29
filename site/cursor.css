@@ -14,7 +14,7 @@ html[data-vento], html[data-vento] * { cursor: none !important; }
 .v2-vento {
   position: fixed;
   inset: 0;
-  z-index: 1300;      /* acima da cortina (900) e da decolagem (999) */
+  z-index: 1300;      /* acima da cortina (900) */
   pointer-events: none;
   color: var(--v2-accent);
   transition: opacity 180ms linear;

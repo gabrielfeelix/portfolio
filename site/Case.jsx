@@ -25,11 +25,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRise, useMaskLine, useCobertura, ease } from "./motion.js";
+import { useRise, useCobertura, useEntrada, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 /* A gramática de página interna mora no kit desde 29/08, quando /processo
    passou a existir: as mesmas peças montam as duas páginas. */
-import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
+import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo, Lamina } from "./Kit.jsx";
 import { chapterById } from "./content.js";
 import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
@@ -159,7 +159,7 @@ function NotaMargem({ k, children }) {
    para de andar em relação à viewport, então useScroll congela e o efeito
    viraria um deslocamento morto. Quem move a mídia é a própria cobertura. */
 function CasoHero({ cap }) {
-  const linha = useMaskLine();
+  const entrada = useEntrada();
   const capa = useCobertura();
   const quieto = useReducedMotion();
   const links = cap.links || {};
@@ -211,6 +211,7 @@ function CasoHero({ cap }) {
             decoding="async"
             fetchPriority="high"
             style={quieto ? undefined : { y: desloca }}
+            {...entrada.foto()}
           />
           {/* o veu: sem ele o titulo branco cai em cima de uma foto clara e
               o contraste vira sorte. Escuro embaixo e a esquerda, que e onde
@@ -219,33 +220,45 @@ function CasoHero({ cap }) {
         </div>
       ) : null}
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
-        <motion.div className="v2-hero-topo" {...linha(0)}>
-          <p className="v2-hero-papel">{cap.descriptor}</p>
-          <p className="v2-hero-papel">{cap.year}</p>
-        </motion.div>
+        {/* Cada peça sobe sozinha, escalonada. Ver useEntrada em motion.js:
+            o gesto é deslocamento pequeno e muitos elementos, não bloco. */}
+        <div className="v2-hero-topo">
+          <motion.p className="v2-hero-papel" {...entrada.sobe(0)}>{cap.descriptor}</motion.p>
+          <motion.p className="v2-hero-papel" {...entrada.sobe(1)}>{cap.year}</motion.p>
+        </div>
 
         <div className="v2-caso-hero-grade">
+          {/* O CONTRA-MOVIMENTO da entrada: o topo desce e este bloco sobe, ao
+              mesmo tempo. No fuel quem vinha de cima era o título, porque lá
+              ele é centralizado; aqui o título mora embaixo, e um título
+              ancorado no rodapé do hero descendo lia como queda. O que se
+              preserva é o gesto — dois grupos, direções opostas — e não a
+              atribuição literal. Ver useEntrada em motion.js.
+
+              As marcações por linha saíram: quem anima agora é o BLOCO. Máscara
+              por linha mais translação do bloco são dois movimentos no mesmo
+              texto, e o segundo já diz o que o primeiro dizia. */}
           <div className="v2-caso-hero-texto">
             <h1 className="v2-hero-h v2-caso-hero-h">
               <span className="v2-hero-linha">
-                <motion.span {...linha(1)}>{cap.title}</motion.span>
+                <motion.span {...entrada.linha(0, 0.1)}>{cap.title}</motion.span>
               </span>
             </h1>
 
             {cap.premise ? (
-              <motion.p className="v2-caso-hero-premissa" {...linha(2)}>{cap.premise}</motion.p>
+              <motion.p className="v2-caso-hero-premissa" {...entrada.linha(1, 0.1)}>{cap.premise}</motion.p>
             ) : null}
 
-            <div className="v2-caso-pills">
+            <motion.div className="v2-caso-pills" {...entrada.sobe(3, { base: 0.1 })}>
               {links.vercel ? <Pill href={links.vercel} externo escuro>Ver no ar</Pill> : null}
               {links.figma ? <Pill href={links.figma} externo escuro>Abrir no Figma</Pill> : null}
-            </div>
+            </motion.div>
 
-            <ul className="v2-caso-tags">
+            <motion.ul className="v2-caso-tags" {...entrada.sobe(4, { base: 0.1 })}>
               {[cap.role, cap.surface].filter(Boolean).map((tag) => (
                 <li key={tag}>{tag}</li>
               ))}
-            </ul>
+            </motion.ul>
           </div>
 
           {/* o mockup 4:5 que ficava aqui saiu em 29/08: a arte de capa agora
@@ -1278,7 +1291,8 @@ export default function Caso({ id, ir }) {
       <CasoHero cap={cap} />
       {/* Igual à home: o corpo claro é opaco e sobe por cima do hero preso.
           `data-clara` é o que a nav observa para saber quando inverter. */}
-      <CampoDeVoo variante="caso" classe="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="caso" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
+        <Lamina />
         {/* A abertura: quem é o projeto, antes de qualquer movimento. */}
         <Ficha cap={cap} />
         <Abertura cap={cap} />

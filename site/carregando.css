@@ -1,439 +1,87 @@
-/* A decolagem e a cortina: o que o site mostra ENTRE duas coisas.
+/* A cortina: o que o site mostra ENTRE duas páginas.
 
-   Duas peças, um vocabulário só. A decolagem é a tela de carregamento da
-   primeira visita; a cortina é o corte diagonal que troca de página. As duas
-   usam o mesmo par de cores (accent e ink), o mesmo corte na diagonal e o
-   mesmo avião, porque senão seriam dois efeitos e não uma linguagem.
-
-   Este arquivo é INJETADO no <head> do HTML, não concatenado em site.css. A
-   razão é a decolagem: uma tela de carregamento que só pinta depois de baixar
-   uma folha de estilo externa chega tarde exatamente na conexão em que ela
-   seria útil. Ver buildHtml em build.mjs. */
+   Este arquivo é INJETADO no <head> do HTML, não concatenado em site.css. O
+   motivo original era a tela de carregamento, que precisava pintar antes de
+   qualquer folha externa; a tela saiu (29/08), e o que sobrou continua aqui
+   por dois motivos próprios: a calha da barra de rolagem precisa ser
+   reservada no primeiro quadro, e a cortina não pode chegar depois do
+   primeiro clique. Ver buildHtml em build.mjs. */
 
 /* Os tokens são repetidos aqui em valor cru, e é a única exceção do site à
    regra "nenhum valor cru fora de tokens.css". O motivo é o mesmo: este bloco
    precisa funcionar antes de /site.css existir, e portanto antes de :root ter
-   sido definido. Os três valores são copiados de tokens.css e nada mais. */
+   sido definido. Os dois valores são copiados de tokens.css e nada mais. */
 :root {
   --v2-dec-accent: #E4231B;
   --v2-dec-ink: #0B0B0C;
 }
 
-/* Enquanto a decolagem está no ar a página não rola: a barra de rolagem
-   aparecendo por trás de uma tela cheia de vermelho é a única coisa que
-   denuncia que tem site atrás. */
-html[data-decolando] { overflow: hidden; }
+/* A calha da barra de rolagem, reservada desde o PRIMEIRO quadro.
 
-/* ---------------- a decolagem: a noite ---------------- */
+   Esta regra mora aqui, e não no CSS do site, porque só este arquivo é inline
+   no <head>: qualquer folha externa chega depois da primeira pintura, que é
+   tarde demais para reservar espaço.
 
-#v2-decolagem {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  overflow: hidden;
-  background: var(--v2-dec-ink);
-  color: #fff;
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  will-change: transform;
-}
+   Ela nasceu por causa da tela de carregamento, que travava o scroll e fazia
+   a barra sumir e voltar. A tela saiu, a regra fica: a cortina de troca de
+   página também cobre a janela, e `--v2-barra` continua sendo medido uma vez
+   na montagem do App (ver app.jsx). Quem sangra de borda a borda usa
+   `calc(50% - 50vw)` descontando esse token — com a calha instável a medida
+   nasce errada e aparece scroll lateral. */
+html { scrollbar-gutter: stable; }
 
-/* --- o céu ---
+/* ---------------- o véu de troca de página ---------------- */
 
-   Três camadas de névoa, borradas de verdade, correndo em velocidades
-   diferentes. A diferença de velocidade É a profundidade.
+/* UM VÉU ESCURO, e o gesto inteiro está no tempo.
 
-   Eram estrelas em duas versões seguidas, e o Gabriel cortou as duas: "parece o
-   espaço ainda". A razão é simples e não é de gosto — ponto branco sobre preto
-   É estrela, e estrela é céu profundo, não importa o que esteja voando na
-   frente. Nuvem borrada sobre preto é noite com tempo fechado, que é onde um
-   avião de papel de verdade voa.
+   Entrou em 29/08 no lugar da lâmina vermelha em diagonal, a pedido do
+   Gabriel, com a referência medida em ~/dev/refs/fuel-ANALISE.md.
 
-   NÃO há `filter: blur()` aqui, e essa é a decisão de engenharia da peça.
+   O desenho tem uma regra e ela é a razão de tudo funcionar: NÃO EXISTE
+   ANIMAÇÃO DE ENTRADA. O véu nasce opaco, num quadro, sem transição — o
+   clique tem resposta imediata. Todo o tempo percebido está na saída, que é
+   longa e desacelera. Resposta instantânea seguida de revelação longa lê como
+   fluidez; os dois lados animados leem como espera.
 
-   A primeira versão borrava três camadas em tela cheia com 58px de raio. Numa
-   máquina sem aceleração o borrão é rasterizado por software a cada quadro:
-   medido, o requestAnimationFrame caiu para uns cinco quadros por segundo e o
-   contador levava mais de três segundos e meio para chegar a 92. Uma tela de
-   carregamento que atrasa o carregamento é o pior defeito que esta peça pode
-   ter.
-
-   Um radial-gradient com paradas suaves JÁ é um borrão — só que resolvido pelo
-   compositor e não por um filtro. As paradas intermediárias abaixo são o que
-   substitui o raio de blur: sem elas a nuvem tem borda, com elas ela dissolve. */
-.v2-dec-ceu { position: absolute; inset: 0; overflow: hidden; }
-
-/* A lua.
-
-   Um disco branco com halo, e o halo e mais importante que o disco: e ele que
-   faz a luz existir na cena em vez de ficar so um circulo colado no fundo. As
-   tres paradas do gradiente sao o miolo, a beirada difusa e o brilho longo.
-
-   Ela fica do lado para onde o bico do aviao aponta. Nao e enfeite de canto: as
-   tres faces do papel tem degrades que sobem para a direita e para cima, e sem
-   uma fonte de luz naquele lado elas estavam iluminadas por nada. */
-.v2-dec-lua {
-  position: absolute;
-  left: 74%;
-  top: 18%;
-  /* A caixa é ENORME e o disco é uma fatia pequena dela: o halo precisa de
-     espaço para se dissolver, e um `border-radius: 50%` cortaria exatamente
-     onde ele deveria continuar. A primeira versão recortava, e o resultado era
-     uma bola de gude cinza colada no céu — disco com borda, sem luz em volta.
-
-     Uma parada só de gradiente resolve as duas coisas: o miolo branco até 9%,
-     a beirada difusa entre 9 e 13, e uma cauda longa até 60 que É a luz. */
-  width: min(46vmin, 470px);
-  aspect-ratio: 1;
-  background: radial-gradient(circle,
-    rgba(255, 255, 255, .96) 0%,
-    rgba(255, 255, 255, .90) 8%,
-    rgba(255, 253, 249, .42) 11%,
-    rgba(255, 251, 245, .14) 17%,
-    rgba(255, 249, 242, .06) 30%,
-    rgba(255, 248, 240, .022) 45%,
-    transparent 62%);
-  /* uma respiração lentíssima: lua parada num céu que anda denuncia colagem */
-  animation: v2-dec-lua 15s ease-in-out infinite alternate;
-}
-@keyframes v2-dec-lua {
-  from { transform: translate(-50%, -50%) scale(1);     opacity: .92; }
-  to   { transform: translate(-50%, -50%) scale(1.045); opacity: 1; }
-}
-
-.v2-dec-neb {
-  position: absolute;
-  /* sangra para fora dos quatro lados: borrão tem borda, e borda de borrão
-     dentro do quadro é uma moldura cinza em volta da noite */
-  inset: -22%;
-  will-change: transform;
-}
-
-.v2-dec-neb.is-1 {
-  animation: v2-dec-neb1 104s ease-in-out infinite alternate;
-  background:
-    radial-gradient(46% 34% at 18% 26%, rgba(255, 255, 255, .055) 0%, rgba(255, 255, 255, 0.0303) 38%, rgba(255, 255, 255, 0.0099) 64%, transparent 88%),
-    radial-gradient(38% 30% at 62% 74%, rgba(255, 255, 255, .045) 0%, rgba(255, 255, 255, 0.0248) 38%, rgba(255, 255, 255, 0.0081) 64%, transparent 88%),
-    radial-gradient(30% 26% at 88% 34%, rgba(228, 35, 27, .05) 0%, rgba(228, 35, 27, 0.0275) 38%, rgba(228, 35, 27, 0.009) 64%, transparent 88%);
-}
-.v2-dec-neb.is-2 {
-  animation: v2-dec-neb2 68s ease-in-out infinite alternate;
-  background:
-    radial-gradient(34% 26% at 40% 62%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0.0275) 38%, rgba(255, 255, 255, 0.009) 64%, transparent 88%),
-    radial-gradient(28% 22% at 78% 18%, rgba(255, 255, 255, .04) 0%, rgba(255, 255, 255, 0.022) 38%, rgba(255, 255, 255, 0.0072) 64%, transparent 88%),
-    radial-gradient(40% 30% at 8% 78%, rgba(228, 35, 27, .045) 0%, rgba(228, 35, 27, 0.0248) 38%, rgba(228, 35, 27, 0.0081) 64%, transparent 88%);
-}
-.v2-dec-neb.is-3 {
-  animation: v2-dec-neb3 44s ease-in-out infinite alternate;
-  background:
-    radial-gradient(22% 18% at 55% 38%, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, 0.0385) 38%, rgba(255, 255, 255, 0.0126) 64%, transparent 88%),
-    radial-gradient(26% 20% at 24% 68%, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, 0.0275) 38%, rgba(255, 255, 255, 0.009) 64%, transparent 88%);
-}
-
-/* Em `alternate` e não em loop: nuvem que dá a volta e reaparece do outro lado
-   é padrão, e padrão numa tela parada de dois segundos é o que se nota. Ir e
-   voltar devagar em amplitude pequena não fecha ciclo nenhum. */
-@keyframes v2-dec-neb1 { to { transform: translate3d(-6%, 2%, 0); } }
-@keyframes v2-dec-neb2 { to { transform: translate3d(7%, -3%, 0); } }
-@keyframes v2-dec-neb3 { to { transform: translate3d(-9%, -2%, 0); } }
-
-/* --- o vento ---
-
-   Riscos finos vindo da direita e escapando para a esquerda: o avião aponta
-   para a direita, então isto é vento de frente, que foi o pedido. Eles são o
-   único indicador de velocidade da tela — as estrelas andam devagar demais para
-   dizer que alguma coisa está voando. */
-.v2-dec-vento { position: absolute; inset: 0; overflow: hidden; }
-.v2-dec-vento i {
-  position: absolute;
-  top: var(--t);
-  left: 0;
-  width: var(--w, 100px);
-  height: 1px;
-  background: linear-gradient(to right,
-    transparent, rgba(255, 255, 255, .04) 18%, rgba(255, 255, 255, .34) 60%, transparent);
-  transform: translate3d(110vw, 0, 0);
-  animation: v2-dec-rajada var(--d, 1.2s) var(--a, 0s) linear infinite;
-  will-change: transform;
-}
-@keyframes v2-dec-rajada {
-  to { transform: translate3d(-40vw, 0, 0); }
-}
-
-/* --- o avião --- */
-
-.v2-dec-palco { position: absolute; inset: 0; }
-
-/* O eixo do voo: bico para cima e para a direita, 20 graus.
-
-   Ele existe para o rastro e o avião compartilharem UMA inclinação. Sem ele o
-   avião ficaria torto por conta própria e o rastro sairia na horizontal por
-   baixo dele, que é a mesma coisa que um avião subindo deixando fumaça reta. */
-.v2-dec-eixo {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  transform: rotate(-20deg);
-}
-
-/* O rastro, que É a barra de progresso.
-
-   Ele cresce para a esquerda porque esquerda é para trás, e é tracejado porque
-   rota de voo em mapa é tracejada. A máscara apaga a ponta mais distante: um
-   traço que termina em corte reto vira régua, e um que se dissolve vira rastro.
-
-   `--p` vai de 0 a 1 e é escrito pelo JS. A largura máxima é 42% da tela: mais
-   que isso ele encosta na borda e deixa de parecer que veio de longe. */
-.v2-dec-rastro {
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  height: 2px;
-  /* A folga até a cauda. O bico ocupa 12,5% da esquerda do viewBox, então a
-     cauda não está na borda da caixa: 100px deixavam um vão visível entre o
-     último traço e o papel. */
-  /* A folga até a cauda, medida no desenho: a cauda não está na borda da
-     caixa, e o vão entre o último traço e o papel apareceria. */
-  margin: -1px min(11vmin, 108px) 0 0;
-  width: calc(var(--p, 0) * 42vw);
-  background: repeating-linear-gradient(to right,
-    var(--v2-dec-accent) 0 9px, transparent 9px 20px);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 42%);
-          mask-image: linear-gradient(to right, transparent, #000 42%);
-  opacity: .85;
-}
-
-/* Os três movimentos do voo. Períodos diferentes de propósito: ver a nota no
-   HTML. Todos em `alternate`, porque ar não devolve nada em salto. */
-.v2-dec-boia { display: block; animation: v2-dec-boia 3.4s ease-in-out infinite alternate; }
-.v2-dec-caimento { display: block; animation: v2-dec-caimento 2.6s ease-in-out infinite alternate; }
-.v2-dec-tremor { display: block; animation: v2-dec-tremor .9s ease-in-out infinite alternate; }
-
-@keyframes v2-dec-boia     { from { transform: translateY(-11px); } to { transform: translateY(11px); } }
-@keyframes v2-dec-caimento { from { transform: rotate(-3.5deg); }  to { transform: rotate(4.5deg); } }
-@keyframes v2-dec-tremor   { from { transform: translateX(-3px); } to { transform: translateX(3px); } }
-
-.v2-dec-aviao {
-  display: block;
-  width: min(34vmin, 330px);
-  height: auto;
-  /* O brilho que separa o vermelho do preto. Sem ele o avião tem a mesma
-     luminosidade do fundo nas bordas e o contorno some. */
-  filter: drop-shadow(0 0 34px rgba(228, 35, 27, .40))
-          drop-shadow(0 16px 30px rgba(0, 0, 0, .75));
-}
-
-/* O pé: a frase e o filete.
-
-   A frase é em Switzer e não na mono, e essa é a decisão. A mono é a voz de
-   CROMO do site — rótulo, carimbo, relógio, número —, e em caixa alta espaçada
-   sobre preto ela já foi cortada duas vezes por parecer painel de nave. Esta
-   linha não é cromo: é a única frase da peça, e frase é conteúdo. Em Switzer,
-   em caixa baixa, com o tamanho do corpo, ela lê como alguém falando baixo.
-
-   Centralizada e não no canto porque a cena inteira é simétrica em torno do
-   avião, e uma legenda encostada num canto quebraria a quietude que é o ponto
-   da tela. */
-.v2-dec-pe {
-  position: absolute;
-  left: 50%;
-  bottom: max(9vh, 64px);
-  transform: translateX(-50%);
-  width: min(420px, 76vw);
-  display: grid;
-  justify-items: center;
-  gap: 18px;
-  /* entra depois da cena, e devagar: se ela já estivesse lá no primeiro quadro
-     seria um rótulo; aparecendo, é alguém completando o pensamento */
-  animation: v2-dec-sussurro 1.4s .5s cubic-bezier(.2, 0, .2, 1) both;
-}
-@keyframes v2-dec-sussurro {
-  from { opacity: 0; transform: translate(-50%, 10px); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
-}
-
-.v2-dec-frase {
-  margin: 0;
-  font-family: "Switzer", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-  text-align: center;
-  color: rgba(255, 255, 255, .62);
-}
-
-/* O filete. Um pixel, largura inteira do bloco, e o preenchimento em accent.
-   Ele é a única peça da tela que diz "isto vai acabar". */
-.v2-dec-barra {
-  display: block;
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, .13);
-  overflow: hidden;
-}
-.v2-dec-barra i {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--v2-dec-accent);
-  transform-origin: 0 50%;
-  transform: scaleX(var(--p, 0));
-}
-
-/* --- a saída, em dois tempos ---
-
-   1. `fim`: o avião acelera e sai pela direita, o rastro apaga e o vento
-      aperta. É o único momento em que ele deixa de lutar contra o vento.
-   2. `fora`: a noite sobe na diagonal com a borda vermelha na frente — o MESMO
-      gesto da lâmina que troca de página, nos mesmos 380ms e no mesmo easing.
-      Boot e troca de página têm um corte só.
-
-   As regras listam `fim` E `fora` porque `animation-fill-mode: forwards` só
-   vale enquanto o seletor casa: presas a `[data-fase="fim"]`, na troca para
-   `fora` elas soltavam e tudo voltava ao estado inicial — foi assim que o
-   contador ressuscitou mostrando 100 na versão anterior. */
-#v2-decolagem[data-fase="fim"] .v2-dec-palco,
-#v2-decolagem[data-fase="fora"] .v2-dec-palco {
-  animation: v2-dec-parte 520ms cubic-bezier(.5, 0, .2, 1) forwards;
-}
-#v2-decolagem[data-fase="fim"]::before,
-#v2-decolagem[data-fase="fora"]::before,
-#v2-decolagem[data-fase="fim"] .v2-dec-rastro,
-#v2-decolagem[data-fase="fora"] .v2-dec-rastro,
-#v2-decolagem[data-fase="fim"] .v2-dec-pe,
-#v2-decolagem[data-fase="fora"] .v2-dec-pe {
-  animation: v2-dec-apaga 300ms linear forwards;
-}
-#v2-decolagem[data-fase="fim"] .v2-dec-vento i,
-#v2-decolagem[data-fase="fora"] .v2-dec-vento i { animation-duration: .34s; }
-#v2-decolagem[data-fase="fim"] .v2-dec-caimento,
-#v2-decolagem[data-fase="fora"] .v2-dec-caimento {
-  animation: v2-dec-arranca 520ms cubic-bezier(.5, 0, .2, 1) forwards;
-}
-
-/* Ele sai na direção do bico, e não na horizontal: 20 graus para cima dá a
-   proporção 0,94 / 0,34 entre o que ele anda de lado e o que ele sobe. */
-@keyframes v2-dec-parte {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(100vw, -36vw, 0); }
-}
-@keyframes v2-dec-arranca {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(-9deg); }
-}
-@keyframes v2-dec-apaga { to { opacity: 0; } }
-
-#v2-decolagem[data-fase="fora"] {
-  animation: v2-dec-sai 380ms cubic-bezier(.72, 0, .26, 1) forwards;
-}
-@keyframes v2-dec-sai {
-  from { transform: translateY(0) skewY(0deg); }
-  to   { transform: translateY(-118%) skewY(-5deg); }
-}
-/* A borda vermelha corre na frente da subida — é ela que faz a saída ler como
-   corte, e é o mesmo vermelho da lâmina. Sobre a home, que tem hero escuro, ela
-   é o único sinal visível da troca, e é para isso que ela existe. */
-#v2-decolagem[data-fase="fora"]::after {
-  content: "";
-  position: absolute;
-  left: -12%;
-  right: -12%;
-  bottom: -6px;
-  height: 8px;
-  background: var(--v2-dec-accent);
-}
-
-/* ---------------- a cortina de troca de página ---------------- */
-
-/* UMA lâmina vermelha na diagonal, subindo e nunca voltando.
-
-   Ela cobre a tela, para 220ms e continua subindo até sair. O `skewY` é o que
-   corta em diagonal, e o `inset: -20% -12%` é a sobra que impede a ponta do
-   skew de descobrir o canto da janela.
-
-   O porquê de ser uma e não três está em Travessia.jsx.
-
-   As duas fases usam o MESMO sentido de translate — 115% para 0, e de 0 para
-   -118%. É esse detalhe que faz a lâmina ler como um objeto que passou pela
-   tela, e não como uma cortina que fechou e reabriu. */
+   Os tempos e o encadeamento estão em Travessia.jsx, que é quem os conta. */
 .v2-cortina {
   position: fixed;
-  inset: -20% -12%;
+  inset: 0;
   z-index: 900;
   pointer-events: none;
+  background: var(--v2-dec-ink);
 }
 
-.v2-cortina-placa {
-  position: absolute;
-  inset: 0;
-  background: var(--v2-dec-accent);
-  transform: translateY(115%) skewY(-5deg);
-  will-change: transform;
+/* `cobre` e `parada` são o mesmo desenho — véu inteiro, sem transição. São
+   dois estados e não um porque quem precisa da distinção é o relógio: a
+   parada só começa a contar quando a página nova pintou. */
+.v2-cortina[data-fase="cobre"],
+.v2-cortina[data-fase="parada"] {
+  opacity: 1;
+  transition: none;
 }
 
-.v2-cortina[data-fase="fecha"] .v2-cortina-placa,
-.v2-cortina[data-fase="parada"] .v2-cortina-placa {
-  transform: translateY(0) skewY(-5deg);
-  transition: transform 340ms cubic-bezier(.66, 0, .28, 1);
-}
-.v2-cortina[data-fase="abre"] .v2-cortina-placa {
-  transform: translateY(-118%) skewY(-5deg);
-  transition: transform 380ms cubic-bezier(.72, 0, .26, 1);
-}
+/* A revelação. 850ms, e a curva NÃO é chute: os onze pontos de brilho medidos
+   no fuel foram ajustados contra quatro candidatas, e o erro médio decidiu.
 
-/* O nome de onde se está indo, na parada.
+     cubic-bezier(.16,  1,   .3,  1)    erro .193   (easeOutExpo)
+     cubic-bezier(.25, .46, .45, .94)   erro .023   ← easeOutQuad
+     cubic-bezier(0,    0,  .58,  1)    erro .066   (ease-out do CSS)
+     cubic-bezier(.215,.61, .355, 1)    erro .079   (easeOutCubic)
 
-   Geist Mono em caixa alta e entre parênteses é a voz de cromo do site — a
-   mesma do `( _01 )` de toda dobra e do `( DECOLANDO )` da tela de
-   carregamento. Branco sobre accent mede 4.51:1, que passa AA.
+   A primeira era a que estava aqui, e ela entrega 71% da revelação onde o fuel
+   entrega 54%: cedo demais, e o fim vira espera. O easeOutQuad erra oito vezes
+   menos.
 
-   Ele entra subindo 10px e sai subindo mais 10: o texto anda no mesmo sentido
-   da lâmina, então a parada não interrompe o movimento, só o desacelera. */
-.v2-cortina-rot {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  margin: 0;
-  text-align: center;
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: .18em;
-  color: #fff;
+   Note que esta curva NÃO é a mesma das entradas de página (easeOutExpo). São
+   coisas diferentes: a entrada monta elementos e pode desacelerar muito no
+   fim; a revelação descobre a tela inteira de uma vez e um fim longo demais lê
+   como véu que não sai. */
+.v2-cortina[data-fase="abre"] {
   opacity: 0;
-  transform: translateY(10px);
-}
-/* O nome toca na PARADA, e não num atraso contado do clique. É a mesma razão
-   dos relógios encadeados em Travessia.jsx: se ele tocasse por atraso fixo,
-   numa página pesada ele tocaria inteiro durante o congelamento da montagem —
-   ou seja, ninguém veria. */
-.v2-cortina[data-fase="parada"] .v2-cortina-rot {
-  animation: v2-cortina-nome-entra 160ms var(--v2-ease) forwards;
-}
-@keyframes v2-cortina-nome-entra {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  transition: opacity 850ms cubic-bezier(.25, .46, .45, .94);
 }
 
-/* E sai JUNTO com a lâmina, não depois dela.
-
-   Medido na versão anterior: com uma saída própria de 420ms contados da
-   parada, o nome ainda marcava opacity 0,99 quando a lâmina já estava em
-   translateY(-989px) — ou seja, texto branco flutuando sobre a página nova já
-   revelada. Ele é mais rápido que a saída (160 contra 400) e sobe junto, então
-   some antes de a borda da lâmina passar por ele. */
-.v2-cortina[data-fase="abre"] .v2-cortina-rot {
-  animation: v2-cortina-nome-sai 160ms var(--v2-ease) forwards;
-}
-@keyframes v2-cortina-nome-sai {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-18px); }
-}
-
-/* Quem pediu para nada se mover não ganha exceção por ser bonito: a troca é
-   seca, como sempre foi. Vale para as duas peças. */
 @media (prefers-reduced-motion: reduce) {
-  #v2-decolagem { display: none; }
   .v2-cortina { display: none; }
 }

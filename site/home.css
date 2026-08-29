@@ -157,12 +157,14 @@
 /* A janela cortava o rabo do "g" de Designer e do "q" de que: com entrelinha
    .88 o descendente cai FORA da caixa da linha, e o `overflow: hidden` do
    clip come ele. A folga entra por baixo e volta por margem negativa, então a
-   janela cresce e o ritmo da pilha continua igual. Não vale para a linha
-   rotativa: lá a janela é a própria máscara da troca de palavra, e alargar
-   deixaria a frase seguinte aparecer pela borda. */
+   janela cresce e o ritmo da pilha continua igual.
+
+   O .18em daqui resolvia o pai e NÃO resolvia a linha, porque quem recorta
+   mais apertado é o `clip-path` do filho — ver o -30% em useMaskLine. Os dois
+   precisam da mesma folga, e agora saem do mesmo token. */
 .v2-hero-linha:not(.is-rot) {
-  padding-bottom: .18em;
-  margin-bottom: -.18em;
+  padding-bottom: calc(1em * var(--v2-descida));
+  margin-bottom: calc(1em * var(--v2-descida) * -1);
 }
 .v2-hero-linha > span { display: block; }
 
@@ -177,11 +179,34 @@
    folga acima e abaixo da linha, e era nessa folga que a frase de saida
    aparecia pela metade encostando no "que leva". 1.02em hospeda acento e
    cedilha e nao sobra. */
+/* A folga do descendente entra por PADDING, e isso é o ponto: `overflow`
+   recorta na caixa de padding, então o fundo desce e o TOPO não se mexe. Se
+   entrasse por `height` a janela abriria em cima também, que é exatamente
+   onde a frase de saída aparecia. O `.v2-rot-item` é absoluto contra a caixa
+   de padding, então o `inset: 0` dele continua no mesmo lugar. */
+/* A linha da rotativa NÃO recorta. Quem mascara a troca de palavra é a
+   `.v2-rot-caixa` aqui embaixo, e ela sozinha basta — o `overflow: hidden` que
+   `.v2-hero-linha` dá a todas as linhas virava aqui um segundo recorte, 37px
+   mais apertado que o da caixa, e era ele que decepava "a dúvida ao teste".
+
+   Esta linha estava fora da regra de folga por um motivo que deixou de valer:
+   a nota dizia que alargar a janela deixaria a frase de saída aparecer pela
+   borda. Verdade quando a janela era esta; hoje a janela é a caixa, e é lá que
+   a folga tem que entrar. */
+.v2-hero-linha.is-rot { overflow: visible; }
+
+/* A folga da caixa é maior que `--v2-descida` sozinha, e a diferença é medida:
+   a caixa trava a altura em 1.02em, mas a tinta do item termina a 1.228em do
+   topo dela — 0.208em de sobra, contra os 0.2em do token. Os .04 extras dão
+   ~4px de margem e continuam bem abaixo do 0.3em de onde a palavra ENTRA, que
+   é o limite que não pode ser cruzado sem a frase de saída espiar. */
 .v2-rot-caixa {
   position: relative;
   display: block;
   height: 1.02em;
-  margin-bottom: -.1em;   /* devolve o respiro extra que a caixa criou */
+  padding-bottom: calc(1em * (var(--v2-descida) + .04));
+  /* devolve o respiro extra da caixa E o do padding */
+  margin-bottom: calc(-.1em - 1em * (var(--v2-descida) + .04));
   overflow: hidden;
 }
 
@@ -266,26 +291,6 @@
 @keyframes v2-desce {
   0%   { transform: translateY(-100%); }
   60%, 100% { transform: translateY(250%); }
-}
-
-/* ---------------- passagem: hero → corpo ---------------- */
-
-/* A regua com a cruz de registro no meio, medida no viper. Ela e o unico
-   conteudo entre o corte seco do escuro e a primeira dobra clara, e sozinha
-   ja responde "mudei de secao". Substituiu a fita de colunas em arco, que o
-   Gabriel recusou em 28/08. */
-.v2-passagem {
-  display: flex;
-  align-items: center;
-  gap: var(--v2-s2);
-  max-width: var(--v2-max);
-  margin: 0 auto;
-  padding: var(--v2-s6) var(--v2-gutter) 0;
-}
-.v2-passagem-linha {
-  flex: 1 1 0;
-  height: 1px;
-  background: var(--v2-rule);
 }
 
 /* ---------------- 2. declaracao ---------------- */
@@ -476,16 +481,52 @@
    44vh entre os casos e as marcas. */
 .v2-linha-casos:last-child { margin-bottom: var(--v2-s6); }
 
-/* Sem moldura. O raio ja tinha ido para 0 (M3), mas a chapa cinza e o filete
-   continuavam desenhando um card em volta da foto, que e exatamente o
-   "componente pronto jogado ali". A midia e o card: o fundo dela e quem
-   cobre a linha de tras na pilha. */
+/* A MOLDURA, medida na ref da viper (29/08, pedido do Gabriel).
+
+   Ela tinha saido em M3 — raio 0, sem chapa, sem filete — com o argumento de
+   que a midia era o card. O Gabriel viu a viper e pediu de volta: raio, o
+   respiro claro em volta da foto, e a legenda dentro do quadro em vez de solta
+   no papel. Os numeros sao os dela, lidos do CSS: card de 658x526 com
+   `padding: 10px 10px 20px`, raio 20px, filete de 1px e a foto com raio 10px
+   por dentro. O respiro maior embaixo e o que abre lugar para a legenda.
+
+   O card continua OPACO, e isso nao e enfeite: e a opacidade dele que cobre a
+   linha de tras na pilha. O que muda com o raio e que os cantos passam a
+   deixar ver a linha anterior — na viper isso e o efeito, nao o defeito.
+
+   `isolation: isolate` porque a trama diagonal e um filho absoluto e o raio
+   precisa recortar ela junto com a foto. */
 .v2-cartao {
-  background: var(--v2-paper);
+  position: relative;
+  isolation: isolate;
+  padding: 10px 10px 20px;
+  border: 1px solid var(--v2-cartao-filete);
+  border-radius: var(--v2-cartao-raio);
+  background: var(--v2-card);
   overflow: hidden;
 }
 
+/* A trama diagonal da ref: linhas de 2px em tile de 5px, a 25% de opacidade.
+   Serve para o respiro claro nao ler como espaco vazio — e superficie, e a
+   textura e o que diz isso sem pedir mais uma cor. Vai inline em data URI:
+   sao 260 bytes e uma requisicao a menos numa peca que aparece seis vezes na
+   dobra. */
+.v2-cartao::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .25;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http://www.w3.org/2000/svg'%20width%3D'126'%20height%3D'126'%3E%3Cpath%20fill%3D'none'%20stroke%3D'%23000'%20stroke-width%3D'2'%20d%3D'M-1%2024%2024-1M-1%2066%2067-2M-1%20108%20108-1M21%20128%20127%2022m1%2041-65%2065m67-25-25%2025'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-position: left top;
+  background-size: 5px auto;
+}
+
 .v2-cartao-link {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--v2-s2);
   color: inherit;
@@ -493,13 +534,14 @@
 }
 
 /* A chapa. 16/11 e nao 16/10: a razao mais alta e o que da ar em cima e
-   embaixo da tela flutuante. Raio 0 continua valendo aqui, porque a chapa e
-   conteudo. */
+   embaixo da tela flutuante. O raio interno e metade do externo, que e a
+   proporcao da ref (10 por dentro, 20 por fora): raio igual nos dois faria a
+   moldura ler como borda desenhada em volta da foto em vez de respiro. */
 .v2-cartao-media {
   position: relative;
   display: block;
   aspect-ratio: 16 / 11;
-  border-radius: 0;
+  border-radius: var(--v2-cartao-raio-in);
   overflow: hidden;
   background: var(--chapa, var(--v2-ink));
 }
@@ -570,12 +612,15 @@
   transition: transform 900ms var(--v2-ease);
 }
 
+/* A legenda mora DENTRO do quadro agora. Os 16px sao os da ref, e somam com os
+   10px do card: 26px de recuo ate o texto, contra 10px ate a foto. E esse
+   degrau que faz a legenda ler como rodape do card e nao como mais uma faixa. */
 .v2-cartao-pe {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--v2-s3);
-  padding-inline: 0;
+  padding-inline: 16px;
 }
 
 .v2-cartao-texto { display: grid; gap: 2px; min-width: 0; }

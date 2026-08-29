@@ -68,8 +68,28 @@
 /* ----------------------------------------------------------------- título */
 
 /* A janela é quem corta: o clip-path do revelar precisa de overflow escondido
-   num pai que não seja o próprio elemento animado. */
-.v2-titulo-janela { display: block; overflow: hidden; }
+   num pai que não seja o próprio elemento animado.
+
+   A folga por baixo é o descendente: com entrelinha .92 o rabo do "q" de "O
+   que já saiu da mesa" e o "p" de "do tempo" caíam fora da caixa e a janela
+   comia os dois (medido: 12 e 11px em fonte de 88px). Entra por padding e
+   volta por margem negativa, então o ritmo da página não muda.
+
+   A medida é `--v2-t-secao`, e NÃO `1em`: esta janela é um <span> que herda
+   os 16px do corpo, e quem cresce é o <h2> dentro dela. Em `em` a folga saía
+   3.2px onde precisava de 17.6px, e o corte continuava igualzinho.
+   `.v2-titulo` nunca troca de tamanho — é sempre `--v2-t-secao` — então a
+   conta vale inclusive no `.v2-caso-ato`, que muda a janela e não o título.
+
+   O `y` inicial do useCortina subiu de 108% para 118% por causa disto: com a
+   janela mais funda, 108% deixava o topo das letras espiar antes da
+   revelação. */
+.v2-titulo-janela {
+  display: block;
+  overflow: hidden;
+  padding-bottom: calc(var(--v2-t-secao) * var(--v2-descida));
+  margin-bottom: calc(var(--v2-t-secao) * var(--v2-descida) * -1);
+}
 
 .v2-titulo {
   margin: 0;

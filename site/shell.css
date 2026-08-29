@@ -638,13 +638,54 @@
    terminava numa dobra clara igual as outras, e um fim precisa de mudanca de
    superficie. `data-escuro-corpo` no elemento faz a nav inverter enquanto a
    faixa dela estiver aqui dentro (ver app.jsx). */
+/* ---------------- rodapé: uma dobra cheia, sempre ---------------- */
+
+/* O rodapé ocupa UMA VIEWPORT, e nunca mais que isso.
+
+   Medido antes: 1084px de altura fixa, o que dava 1,58x a janela num notebook
+   de 1280x620 e 0,75x numa tela de 2560x1440. Duas falhas opostas pelo mesmo
+   motivo — todo o tamanho dele vinha de tokens de LARGURA, e a altura da
+   janela nunca entrava na conta.
+
+   A escala agora sai de `--pe-u`, e ela é o MENOR dos dois eixos. Só `vh`
+   quebraria em tela larga e baixa (texto minúsculo numa janela de 2560 de
+   largura); só `vw` é o que já estava quebrado. `min()` faz o eixo apertado
+   mandar, que é a única regra que não estoura em nenhum dos dois lados.
+
+   `min-height` e não `height`: se algum dia o conteúdo crescer além do que a
+   escala aguenta, ele empurra em vez de vazar por baixo. E `space-between`
+   distribui a sobra quando a tela é alta, em vez de deixar um vão morto
+   embaixo. */
 .v2-rodape {
+  /* A unidade de escala do rodapé, presa ao eixo mais curto.
+
+     O coeficiente de altura é 1.65 e não 1.9 por medição: com 1.9 o rodapé
+     ainda dava 648px numa janela de 1280x620 — 28px de sobra. Telas mais
+     altas não sentem a mudança porque nelas quem ganha o `min()` é o `vw`;
+     em 1440x900 a conta é min(14.4, ...) e o eixo largo já mandava. */
+  --pe-u: min(1vw, 1.65vh);
+
+  position: relative;
+  /* z-index 2 porque `.v2-corpo-claro` é 1 e o rodapé vem depois no DOM: sem
+     isto o corpo pinta por cima dele. Nasceu por causa da lâmina, que saiu,
+     mas a ordem de pintura continua sendo a certa. */
+  z-index: 2;
   background: var(--v2-ink);
   color: #fff;
-  padding: var(--v2-s7) var(--v2-gutter) var(--v2-s5);
+
+  min-height: 100vh;
+  min-height: 100svh;   /* no celular a barra do navegador não conta */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: clamp(56px, calc(var(--pe-u) * 9), 168px)
+           var(--v2-gutter)
+           clamp(24px, calc(var(--pe-u) * 4), 64px);
 }
 
 .v2-rodape > * {
+  width: 100%;
   max-width: var(--v2-max);
   margin-inline: auto;
 }
@@ -656,9 +697,12 @@
   align-items: start;
 }
 
+/* A chamada é o que mais escala: ela é o maior bloco de tinta do rodapé, e é
+   ela que decidia se cabia ou não. Piso de 22px porque abaixo disso deixa de
+   ser manifesto e vira parágrafo. */
 .v2-rodape-chamada {
   margin: 0;
-  font-size: var(--v2-t-manifesto);
+  font-size: clamp(22px, calc(var(--pe-u) * 3.6), 52px);
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: var(--v2-track-titulo);
@@ -667,17 +711,20 @@
 
 .v2-rodape-lista {
   list-style: none;
-  margin: var(--v2-s6) 0 0;
+  margin: clamp(24px, calc(var(--pe-u) * 5), 104px) 0 0;
   padding: 0;
   border-top: 1px solid rgba(255, 255, 255, .18);
 }
 
+/* O padding de cada linha é o segundo maior consumo de altura: quatro linhas
+   a 24px em cima e embaixo somam 192px, que numa janela de 620 é um terço
+   dela. Piso de 8px, que ainda dá alvo de toque de 40px com o texto dentro. */
 .v2-rodape-lista a {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: var(--v2-s3);
-  padding: var(--v2-s3) 0;
+  padding: clamp(8px, calc(var(--pe-u) * 1.5), 24px) 0;
   border-bottom: 1px solid rgba(255, 255, 255, .18);
   color: inherit;
   text-decoration: none;
@@ -687,20 +734,25 @@
 .v2-rodape-lista a:hover,
 .v2-rodape-lista a:focus-visible { padding-inline-start: var(--v2-s2); }
 
-.v2-rodape-canal { font-weight: 500; }
+.v2-rodape-canal { font-weight: 500; font-size: clamp(14px, calc(var(--pe-u) * 1.35), 20px); }
 .v2-rodape-valor { color: rgba(255, 255, 255, .66); font-size: var(--v2-t-label); }
 
 .v2-rodape-base {
   display: flex;
   justify-content: space-between;
   gap: var(--v2-s3);
-  margin-top: var(--v2-s4);
+  margin-top: clamp(16px, calc(var(--pe-u) * 3), 40px);
   color: rgba(255, 255, 255, .66);
   font-size: var(--v2-t-label);
 }
 
 @media (max-width: 860px) {
   .v2-rodape-topo { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  /* No celular a dobra cheia vira armadilha: teclado, barra de endereço e
+     `svh` brigam, e o rodapé é o último bloco da página — não precisa medir
+     janela nenhuma. */
+  .v2-rodape { min-height: 0; display: block; }
+  .v2-rodape > * { margin-bottom: 0; }
 }
 
 /* ---------------- foco visível ---------------- */
@@ -725,6 +777,84 @@
   position: relative;
   z-index: 1;
   background: var(--v2-paper);
+}
+
+/* A LÂMINA. Aresta de ataque da superfície que está chegando, e nada mais:
+   mesma cor dela, encostada na fronteira, invisível parada. Quem a move é
+   useLamina (motion.js), e o porquê dos números está lá.
+
+   `top: 0` e não uma posição negativa: em repouso ela COBRE os primeiros
+   `--v2-lamina-h` da própria seção, cor sobre cor. É subindo que ela passa da
+   fronteira e aparece contra a superfície oposta.
+
+   A altura tem piso porque o skew gira no centro e levanta a borda de baixo
+   (largura/2 * tan 7°); se a lâmina for curta, essa borda passa da fronteira e
+   a seção de trás aparece por um rasgo embaixo dela. 420px cobre até 2560 de
+   janela. Ver a conta em motion.js. */
+.v2-lamina {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height: var(--v2-lamina-h);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* O tom escuro sobrou de quando o rodapé também tinha lâmina. Fica: o
+   componente aceita os dois, e a próxima fronteira claro -> escuro que
+   aparecer usa este sem reabrir a conta. */
+.v2-lamina[data-tom="claro"]  { background: var(--v2-paper); }
+.v2-lamina[data-tom="escuro"] { background: var(--v2-ink); }
+
+.v2-lamina[data-borda="topo"] { top: 0; }
+.v2-lamina[data-borda="base"] { bottom: 0; }
+
+/* O conteúdo passa por cima da lâmina. Sem isto o primeiro bloco da seção
+   fica atrás dela e some. */
+.v2-corpo-claro > *:not(.v2-lamina) { position: relative; z-index: 1; }
+
+/* O respiro entre o corte do hero e a primeira dobra.
+
+   Aqui morava a `.v2-passagem` — régua com cruz de registro no meio — mais os
+   104px de padding dela. O Gabriel tirou em 29/08: "tem um espaço muito grande
+   até a segunda dobra, tira essa linha". Com a lâmina diagonal fazendo o
+   trabalho de dizer "mudei de seção", a régua virou uma segunda voz dizendo a
+   mesma coisa.
+
+   Sem nada, a primeira dobra encostava no hero (label medido em y=900, zero
+   folga). 56px é a metade do que era: sobe, mas não cola.
+
+   Vai em PADDING e não em margem na dobra porque a lâmina é `position:
+   absolute; top: 0`, e absoluto se posiciona pela caixa de PADDING — ou seja o
+   padding empurra o conteúdo e deixa a lâmina exatamente na fronteira, que é
+   onde ela precisa nascer. */
+.v2-corpo-lamina { padding-top: 56px; }
+
+/* A folga do rodapé para a lâmina mora na regra dele, junto com a escala
+   fluida — ver `.v2-rodape` na seção do rodapé. Aqui viraria um segundo valor
+   dizendo a mesma coisa, e o daqui vencia por vir depois. */
+
+/* Celular: a lâmina desliga. Numa janela de 390px a diagonal vira um triângulo
+   raso que lê como falha de render, não como gesto. */
+@media (max-width: 860px) {
+  .v2-lamina { display: none; }
+  .v2-corpo-lamina { padding-top: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-lamina { display: none; }
+}
+
+/* Celular: a lâmina desliga. Numa janela de 390px o hero tem 100vh e a
+   diagonal vira um triângulo raso que lê como falha de render, não como
+   gesto. */
+@media (max-width: 860px) {
+  .v2-lamina { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-lamina { display: none; }
 }
 
 /* Grão. Ruído próprio, gerado por feTurbulence inline: nenhuma imagem de

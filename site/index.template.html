@@ -59,23 +59,12 @@
 
 <link rel="stylesheet" href="/site.css">
 
-<!-- A tela de carregamento entra INLINE, estilo e motor, e por isso está
-     pintada no primeiro quadro — antes de /site.css, antes das fontes, antes
-     do bundle. Uma tela de carregamento que depende do carregamento chega
-     tarde justamente em quem precisa dela. Ver `inline` em build.mjs. -->
-<!--DECOLAGEM-CSS-->
+<!-- A cortina de troca de página entra INLINE, junto com a calha da barra de
+     rolagem: as duas precisam valer no primeiro quadro, antes de /site.css.
+     Ver `inline` em build.mjs. -->
+<!--CORTINA-CSS-->
 </head>
 <body>
-<!-- `data-decolando` trava a rolagem enquanto a tela está no ar, e sai junto
-     com ela. Fica escrito aqui, e não pelo script, para valer no primeiro
-     quadro: um frame de página rolável atrás do vermelho já denuncia o truque.
-     O próprio motor tira o atributo em prefers-reduced-motion. -->
-<script>document.documentElement.setAttribute("data-decolando","1")</script>
-<!--DECOLAGEM-->
-<!-- Sem JavaScript a tela nunca sairia: quem a remove é o motor dela. O site
-     inteiro depende de JS para renderizar, então aqui não se perde nada além
-     do vermelho. -->
-<noscript><style>#v2-decolagem{display:none}</style></noscript>
 
 <div id="v2-root"></div>
 

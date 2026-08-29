@@ -28,10 +28,11 @@ import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } fr
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
+  rolarPara,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
-import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo } from "./Kit.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
   casos, pieceProjects, pieceLink,
@@ -179,7 +180,7 @@ function Hero({ paraCasos }) {
               que é o passo seguinte de quem já se convenceu. */}
           <div className="v2-hero-botoes">
             <Pill onClick={paraCasos} escuro>Ver os casos</Pill>
-            <Pill href={CONTATO().email.href} escuro secundario>Falar comigo</Pill>
+            <Pill href={CONTATO().whatsapp.href} escuro secundario externo>Falar comigo</Pill>
           </div>
         </motion.div>
         </div>
@@ -194,27 +195,6 @@ function Hero({ paraCasos }) {
 }
 
 /* --------------------------------------------------------------- passagem */
-
-/* A fita de mídia do bungee SAIU. Recusada pelo Gabriel em 28/08, palavras
-   dele: "não curti essas ideias dos vídeos em círculo, acho que não combinou".
-   Ele tem razão, e o motivo está na própria ANÁLISE: a fita do bungee carrega
-   render 3D e moda, onde a coluna em arco É a arte. Com tela de sistema
-   dentro, o arco corta justo a interface e sobra forma sem conteúdo.
-
-   No lugar entra a passagem do viper, medida em ~/dev/refs/viper-template: o
-   escuro termina em corte seco e o branco abre com uma régua fina e a cruz de
-   registro no meio dela. Nada se move, e mesmo assim responde "mudei de
-   seção", que era o pedido. A cruz é a mesma `.v2-cruz` do Shell. */
-function Passagem() {
-  return (
-    <div className="v2-passagem" aria-hidden="true">
-      <span className="v2-passagem-linha" />
-      <span className="v2-cruz" />
-      <span className="v2-passagem-linha" />
-    </div>
-  );
-}
-
 
 /* ----------------------------------------------------------- 2. declaracao */
 
@@ -830,7 +810,7 @@ function Fita() {
 export default function Home({ ir }) {
   const rolar = () => {
     const alvo = document.getElementById("casos");
-    if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (alvo) rolarPara(alvo);
   };
 
   return (
@@ -838,8 +818,8 @@ export default function Home({ ir }) {
       <Hero paraCasos={rolar} />
       {/* Tudo que vem depois do hero é opaco e sobe por cima dele. Sem este
           fundo, o hero preso aparece por baixo das dobras claras. */}
-      <CampoDeVoo variante="home" classe="v2-corpo-claro" data-clara="1">
-        <Passagem />
+      <CampoDeVoo variante="home" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
+        <Lamina />
         <Declaracao />
         <Marquee />
         <Trabalho ir={ir} />
