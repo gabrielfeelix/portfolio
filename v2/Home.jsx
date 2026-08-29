@@ -27,12 +27,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
-  useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita,
+  usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
   useVoo,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
-import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador } from "./Kit.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
@@ -459,7 +459,7 @@ function Processo() {
     <Dobra id="processo" n="04" nome="Método" carimbo="©26">
       <Cabecalho
         olho="Como eu trabalho"
-        titulo="Do objetivo ao ar"
+        titulo={<DuasCores fraca="Do objetivo" forte="ao ar" />}
         lead="Três movimentos, e o do meio é o que a maioria pula."
       />
       <ol className="v2-indice">
@@ -490,32 +490,84 @@ function Processo() {
   );
 }
 
+/* A trajetória, no componente da coluna presa.
+
+   A linha do tempo com trilho vertical saiu: ela era a mesma forma da dobra
+   04 (linha, filete, texto) e não usava a única coisa visual que esta dobra
+   tem de verdade, que é a marca das empresas.
+
+   Agora a esquerda fica parada com a logo da empresa que está na altura da
+   leitura, e a direita rola. A logo troca sozinha: é a informação mudando de
+   lugar, não um enfeite entrando. Quem não tem arquivo de logo entra em
+   wordmark, que é como a V1 já resolve o mesmo caso (ver CompanyLogo em
+   volume/data.jsx).
+
+   O estado ativo NÃO é feito com cinza claro. Cinza claro sobre branco
+   reprova contraste, e a dobra inteira cairia no axe: o que muda é o preto
+   contra o cinza de texto, mais o índice em vermelho, que é grafismo. */
 function OndeEstive() {
+  const quieto = useReducedMotion();
   const rise = useRise();
-  const { ref, progresso } = useSticky();
   const lista = COMPANIES();
+  const { ativo, marcar } = useNaAltura(lista.length);
+  const atual = lista[ativo] || lista[0];
+
   return (
     <Dobra id="onde" n="05" nome="Trajetória" carimbo="©26">
-      <Cabecalho olho="Onde estive" titulo="A linha do tempo" />
-      <div className="v2-linha-tempo" ref={ref}>
-        {/* o trilho preenche conforme a dobra passa: orienta sem pedir atenção */}
-        <span className="v2-lt-trilho" aria-hidden="true">
-          <motion.span className="v2-lt-trilho-fill" style={{ scaleY: progresso }} />
-        </span>
-        {lista.map((c, i) => (
-          <motion.article key={c.id} className="v2-lt-item" {...rise(Math.min(i, 3))}>
-            <p className="v2-lt-ano">
-              {c.anos}
-              {c.atual ? <span className="v2-lt-agora">agora</span> : null}
-            </p>
-            <div className="v2-lt-corpo">
-              <h3 className="v2-lt-nome">{c.name}</h3>
-              <p className="v2-lt-papel">{c.role}<span className="v2-lt-sep"> · </span>{c.period}</p>
-              <p className="v2-corpo">{c.blurb}</p>
+      <Presa
+        esquerda={
+          <>
+            <Cabecalho
+              empilhado
+              olho="Onde estive"
+              titulo={<DuasCores fraca="A linha" forte="do tempo" />}
+            />
+            <div className="v2-tra-marca">
+              {/* a chave remonta o bloco: é a troca que anima, e não a logo
+                  que aparece do nada em cima da anterior */}
+              <motion.div
+                key={atual.id}
+                className="v2-tra-marca-in"
+                initial={quieto ? { opacity: 0 } : { opacity: 0, y: 10, filter: "blur(6px)" }}
+                animate={quieto ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: quieto ? 0.2 : 0.7, ease }}
+              >
+                {atual.logo ? (
+                  <img className="v2-tra-logo" src={atual.logo} alt={`Marca da ${atual.name}`} draggable="false" />
+                ) : (
+                  <span className="v2-tra-wordmark">{atual.name}</span>
+                )}
+                <p className="v2-tra-periodo">
+                  {atual.period}
+                  {atual.atual ? <span className="v2-tra-agora">agora</span> : null}
+                </p>
+              </motion.div>
             </div>
+            <p className="v2-tra-conta" aria-hidden="true">
+              <b>{String(ativo + 1).padStart(3, "0")}</b> / {String(lista.length).padStart(3, "0")}
+            </p>
+          </>
+        }
+      >
+        {lista.map((c, i) => (
+          <motion.article
+            key={c.id}
+            className="v2-tra-item"
+            data-vivo={i === ativo ? "1" : undefined}
+            ref={marcar(i)}
+            {...rise(Math.min(i, 3))}
+          >
+            <p className="v2-tra-topo">
+              <span className="v2-tra-n">{`( 00${i + 1} )`}</span>
+              <span className="v2-tra-anos">{c.anos}</span>
+            </p>
+            <h3 className="v2-tra-nome">{c.name}</h3>
+            <p className="v2-tra-papel">{c.role}<span className="v2-tra-sep"> · </span>{c.period}</p>
+            <p className="v2-corpo v2-tra-texto">{c.blurb}</p>
+            {c.note ? <p className="v2-tra-pe">{c.note}</p> : null}
           </motion.article>
         ))}
-      </div>
+      </Presa>
     </Dobra>
   );
 }

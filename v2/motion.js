@@ -605,6 +605,39 @@ export function useVoo(refCaixa) {
   return { caminho, distancia, quieto };
 }
 
+/* 15c. na altura
+   Qual item da lista está na altura de quem lê.
+
+   É o que faz a coluna presa mudar de informação: a lista rola à direita e o
+   bloco da esquerda troca junto. A faixa de decisão é uma tira no meio da
+   janela (`-45%` em cima e embaixo), e não a janela inteira, senão dois itens
+   contam como visíveis ao mesmo tempo e a troca fica pulando entre eles.
+
+   IntersectionObserver e não posição por rolagem: o observer não roda em cada
+   quadro da rolagem, e a troca só custa quando ela realmente acontece. */
+export function useNaAltura(total, faixa = "-45% 0px -45% 0px") {
+  const [ativo, setAtivo] = useState(0);
+  const nos = useRef([]);
+  const marcar = (i) => (el) => { nos.current[i] = el; };
+  useEffect(() => {
+    const vivos = nos.current.filter(Boolean);
+    if (!vivos.length || typeof IntersectionObserver === "undefined") return undefined;
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const i = nos.current.indexOf(e.target);
+          if (i >= 0) setAtivo(i);
+        });
+      },
+      { rootMargin: faixa, threshold: 0 },
+    );
+    vivos.forEach((n) => obs.observe(n));
+    return () => obs.disconnect();
+  }, [total, faixa]);
+  return { ativo, marcar };
+}
+
 /* 16. escrita
    A assinatura, revelada como se estivesse sendo escrita.
 

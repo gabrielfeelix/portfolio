@@ -91,6 +91,15 @@
   color: var(--v2-accent);
 }
 
+/* Titulo de duas cores: a primeira linha cinza, a segunda preta. E o
+   componente que a launchfolio usa em toda secao e a tabfolio repete tres
+   vezes. `display: block` e o que garante a quebra: sem ele as duas cores
+   ficam na mesma linha e vira palavra pintada, nao titulo de duas vozes. */
+.v2-titulo-fraco {
+  display: block;
+  color: var(--v2-muted);
+}
+
 /* --------------------------------------------------------------- cabeçalho */
 
 /* As cinco partes. Título à esquerda, apoio à direita: é a divisão do viper, e
@@ -108,6 +117,16 @@
   align-items: start;
   margin-bottom: var(--v2-s5);
 }
+/* Empilhado: uma coluna só, para quando o cabeçalho mora dentro de uma
+   coluna estreita (a coluna presa da dobra 05). A grade de 1.35 por 1 ali
+   dentro deixaria o lead com quinze caracteres por linha. */
+.v2-cabecalho.is-empilhado {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--v2-s3);
+  margin-bottom: var(--v2-s4);
+}
+.v2-cabecalho.is-empilhado .v2-cabecalho-dir { padding-top: 0; }
+
 .v2-cabecalho-dir {
   display: flex;
   flex-direction: column;
@@ -150,6 +169,35 @@
   color: var(--v2-muted);
 }
 .v2-cabecalho-prova { margin-top: var(--v2-s2); }
+
+/* ---------------------------------------------------------- coluna presa */
+
+/* O componente da launchfolio. A esquerda gruda, a direita rola.
+
+   `align-self: start` é obrigatório: numa grade o filho estica para a altura
+   da linha por padrão, e um bloco esticado de dez mil pixels não tem para
+   onde grudar, então o `position: sticky` simplesmente não faz nada.
+
+   O `top` desconta a nav, que é fixa. */
+.v2-presa {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: var(--v2-s4) var(--v2-s6);
+  align-items: start;
+}
+.v2-presa-esq {
+  position: sticky;
+  top: var(--v2-s6);
+  align-self: start;
+}
+.v2-presa-dir { display: flex; flex-direction: column; }
+
+@media (max-width: 900px) {
+  .v2-presa { grid-template-columns: minmax(0, 1fr); gap: var(--v2-s4); }
+  /* solta a coluna no celular: presa numa tela de 844px de altura ela come
+     metade do que sobrou para ler */
+  .v2-presa-esq { position: static; }
+}
 
 /* ------------------------------------------------------------------ mídia */
 

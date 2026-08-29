@@ -563,71 +563,129 @@
   .v2-fita { overflow-x: auto; }
 }
 
-/* ---------------- 8. onde estive ---------------- */
+/* ---------------- 8. onde estive: a coluna presa ---------------- */
 
-.v2-linha-tempo { position: relative; padding-left: var(--v2-s5); }
-
-.v2-lt-trilho {
-  position: absolute;
-  left: 0;
-  top: var(--v2-s1);
-  bottom: var(--v2-s1);
-  width: 2px;
-  background: var(--v2-rule);
+/* A marca da empresa que esta na altura da leitura. A caixa tem altura fixa
+   porque as logos tem proporcoes muito diferentes entre si (a da Locarmais e
+   quase quadrada, a do Oderco e 6:1): sem altura fixa a coluna presa pula de
+   tamanho a cada troca. */
+.v2-tra-marca {
+  display: flex;
+  align-items: flex-end;
+  min-height: 132px;
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
 }
+.v2-tra-marca-in { display: block; }
 
-.v2-lt-trilho-fill {
+/* Altura, nunca largura: e a altura que faz duas marcas de proporcao
+   diferente terem o mesmo peso na pagina. A faixa de marcas da dobra 04 usa a
+   mesma regra, com 22px. */
+.v2-tra-logo {
   display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--v2-accent);
-  transform-origin: 50% 0;
+  width: auto;
+  height: auto;
+  max-height: 72px;
+  max-width: 240px;
+  object-fit: contain;
+  object-position: left center;
 }
 
-.v2-lt-item {
-  display: grid;
-  grid-template-columns: 9ch minmax(0, 1fr);
-  gap: var(--v2-s4);
-  padding-block: var(--v2-s4);
-  border-bottom: 1px solid var(--v2-rule);
-  margin: 0;
-}
-
-.v2-lt-item:last-child { border-bottom: 0; }
-
-.v2-lt-ano {
-  position: sticky;
-  top: var(--v2-s6);
-  align-self: start;
-  margin: 0;
-  font-size: var(--v2-t-label);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  color: var(--v2-muted);
-}
-
-.v2-lt-agora {
+/* Quem nao tem arquivo entra em wordmark, como a V1 resolve em CompanyLogo.
+   Wordmark e logo, nao degrau de escala: por isso ele pode medir 40px sem
+   abrir o miolo tipografico que tokens.css proibe. */
+.v2-tra-wordmark {
   display: block;
-  margin-top: var(--v2-s1);
-  color: var(--v2-accent);
-  font-weight: 600;
-}
-
-.v2-lt-nome {
-  margin: 0;
-  font-size: var(--v2-t-bloco);
+  font-size: 40px;
   font-weight: 700;
-  letter-spacing: -.01em;
-  line-height: 1.2;
+  letter-spacing: -.04em;
+  line-height: 1;
 }
 
-.v2-lt-papel {
-  margin: 2px 0 var(--v2-s2);
-  font-size: var(--v2-t-label);
+.v2-tra-periodo {
+  margin: var(--v2-s3) 0 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+.v2-tra-agora {
+  display: inline-block;
+  margin-left: var(--v2-s2);
+  color: var(--v2-accent);
+}
+
+.v2-tra-conta {
+  margin: var(--v2-s4) 0 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+  font-variant-numeric: tabular-nums;
+}
+.v2-tra-conta b { color: var(--v2-ink); font-weight: 400; }
+
+/* Cada empresa. O filete de cima e o unico separador: a dobra nao ganha
+   cartao, porque cartao aqui viraria a mesma caixa que a dobra dos casos ja
+   tem. */
+.v2-tra-item {
+  padding: var(--v2-s5) 0;
+  border-top: 1px solid var(--v2-rule);
+}
+.v2-tra-item:last-child { border-bottom: 1px solid var(--v2-rule); }
+
+.v2-tra-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 0 var(--v2-s3);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+/* O item vivo troca o indice para vermelho e o nome para tinta cheia. Nao
+   existe versao "cinza claro" do item frio: cinza claro sobre branco reprova
+   contraste e derrubaria o axe da pagina inteira. */
+.v2-tra-n { color: var(--v2-muted); transition: color 300ms var(--v2-ease); }
+.v2-tra-item[data-vivo="1"] .v2-tra-n { color: var(--v2-accent); }
+
+.v2-tra-nome {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  font-weight: 600;
+  letter-spacing: var(--v2-track-titulo);
+  line-height: 1.2;
+  color: var(--v2-muted);
+  transition: color 300ms var(--v2-ease);
+}
+.v2-tra-item[data-vivo="1"] .v2-tra-nome { color: var(--v2-ink); }
+
+.v2-tra-papel {
+  margin: var(--v2-s1) 0 var(--v2-s3);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+.v2-tra-sep { color: var(--v2-rule); }
+.v2-tra-texto { max-width: 62ch; }
+
+.v2-tra-pe {
+  margin: var(--v2-s3) 0 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
   color: var(--v2-muted);
 }
 
-.v2-lt-corpo .v2-corpo { max-width: 62ch; }
+@media (prefers-reduced-motion: reduce) {
+  .v2-tra-n, .v2-tra-nome { transition: none; }
+}
 
 /* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
 
@@ -636,9 +694,9 @@
 }
 
 @media (max-width: 860px) {
-  .v2-lt-item { grid-template-columns: 1fr; gap: var(--v2-s2); }
-  .v2-lt-ano { position: static; }
-  .v2-linha-tempo { padding-left: var(--v2-s4); }
+  .v2-tra-item { padding: var(--v2-s4) 0; }
+  .v2-tra-marca { min-height: 96px; }
+  .v2-tra-logo { max-height: 52px; max-width: 180px; }
 }
 
 

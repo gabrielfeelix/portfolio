@@ -91,6 +91,24 @@ export function Titulo({ children, marca, className = "", i = 0 }) {
   );
 }
 
+/* Título de duas cores: linha 1 cinza, linha 2 preta.
+
+   É o componente que a launchfolio usa em TODA seção e que a tabfolio repete
+   três vezes na página de sobre ("What I'm into" / "right now"). Custa uma
+   span e resolve sozinho o que um título de uma cor só não faz: separa o
+   assunto da afirmação sem pedir um segundo tamanho, que a escala proíbe.
+
+   Fica no kit, e não na dobra, porque título é gramática: se cada dobra
+   inventar a sua, a página volta a ser sortido. */
+export function DuasCores({ fraca, forte }) {
+  return (
+    <>
+      <span className="v2-titulo-fraco">{fraca}</span>
+      {forte}
+    </>
+  );
+}
+
 /* M7: o cabeçalho de cinco partes que o Gabriel dissecou no viper.
  *
  *   olho pequeno → título com marca → lead de duas linhas → CTA → nota + prova
@@ -98,10 +116,10 @@ export function Titulo({ children, marca, className = "", i = 0 }) {
  * As cinco existem em toda dobra pesada da referência, e é por isso que dobras
  * de conteúdo diferente parecem a mesma página. Partes opcionais somem sem
  * deixar buraco: o `gap` do flex resolve. */
-export function Cabecalho({ olho, titulo, marca, lead, cta, nota, prova, i = 0 }) {
+export function Cabecalho({ olho, titulo, marca, lead, cta, nota, prova, empilhado = false, i = 0 }) {
   const revelar = useRevelar();
   return (
-    <header className="v2-cabecalho">
+    <header className={`v2-cabecalho${empilhado ? " is-empilhado" : ""}`}>
       <div className="v2-cabecalho-esq">
         {olho ? <p className="v2-olho">{olho}</p> : null}
         <Titulo marca={marca} i={i}>{titulo}</Titulo>
@@ -115,6 +133,24 @@ export function Cabecalho({ olho, titulo, marca, lead, cta, nota, prova, i = 0 }
         {prova ? <div className="v2-cabecalho-prova">{prova}</div> : null}
       </div>
     </header>
+  );
+}
+
+/* A coluna presa: cabeçalho parado à esquerda, conteúdo rolando à direita.
+ *
+ * É o componente da launchfolio que estava no inventário de docs/HANDOFF-V2.md
+ * e nunca tinha sido usado. Ele resolve uma coisa que lista nenhuma resolve: a
+ * esquerda pode MUDAR de informação conforme a direita passa, e é isso que dá
+ * a sensação de estar percorrendo alguma coisa em vez de rolar uma lista.
+ *
+ * O `top` da coluna presa desconta a nav, que é fixa: sem isso o bloco gruda
+ * embaixo da barra e o título fica cortado pela metade. */
+export function Presa({ esquerda, children }) {
+  return (
+    <div className="v2-presa">
+      <div className="v2-presa-esq">{esquerda}</div>
+      <div className="v2-presa-dir">{children}</div>
+    </div>
   );
 }
 
