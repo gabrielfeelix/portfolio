@@ -408,6 +408,39 @@ function suavizar(pts, continuar = false) {
    As frações são da caixa; os raios das voltas vão em pixel, porque o corpo
    tem uns dez mil pixels de altura contra 1440 de largura e volta em fração
    viraria elipse achatada. */
+/* Quantas vezes a partitura toca ao longo da queda.
+
+   Uma partitura tem um numero FIXO de travessias, e cada travessia mede uma
+   largura de tela. Numa janela estreita e alta isso quebra: a mesma partitura
+   que no desktop gasta 1440px de lado por tela de rolagem gasta 390px no
+   celular, e o aviao vira uma linha reta descendo.
+
+   Medido em 29/08, somando o deslocamento lateral entre 30 amostras de
+   rolagem e dividindo pelo que a pagina rola:
+
+     home  1440x900   0,92     home  390x844   0,24
+     sobre 1440x900   —        sobre 390x844   0,16
+     blog  1440x900   —        blog  390x844   0,64
+
+   Ou seja no celular ele andava de lado quatro a seis vezes menos por pixel
+   rolado, que e exatamente a queixa: "estava indo so pra baixo, sem brincar
+   indo pra direita, pra esquerda, sumindo da tela, voltando".
+
+   O que conserta nao e desenhar outra rota: e tocar a MESMA partitura mais
+   vezes, cada repeticao dentro da sua fatia da queda. O carater da pagina
+   continua o mesmo — as manobras sao as mesmas, na mesma ordem — e a
+   inclinacao volta ao que era no desktop.
+
+   O divisor 7 e a razao queda/largura do desktop de referencia (10.565px de
+   queda em 1440 de largura da home, medido). Onde a razao ja e essa, k = 1 e
+   nada muda: 1440, 1600, 1920 continuam com o percurso de sempre. O teto de 4
+   existe porque acima disso a manobra deixa de ser voo e vira maquina de
+   costura — em /sobre no celular a conta pede 6. */
+function densidade(w, queda) {
+  if (!(w > 0) || !(queda > 0)) return 1;
+  return Math.max(1, Math.min(4, Math.round((queda / w) / 7)));
+}
+
 function troncoDaTese(cx, cy, cw, ch) {
   const x = (f) => Math.round(cx + cw * f);
   const y = (f) => Math.round(cy + ch * f);
@@ -443,41 +476,44 @@ function rotaDoVoo(w, h, tese, alcance) {
   const sobra = fim - saidaY;
   if (sobra < 400) return tronco;
 
-  const P = [[saidaX, saidaY]];
-  const em = (fx, u) => P.push([w * fx, saidaY + sobra * u]);
-  /* aqui a volta desce enquanto gira: no meio da página uma volta que sobe
-     faria o avião andar contra a rolagem por uma tela inteira. Na dobra da
-     tese ela sobe, e pode, porque ali o trecho é curto e é a manobra que dá
-     graça na dobra. */
-  const volta = (fx, u, raio) => {
-    const bx = w * fx;
-    const by = saidaY + sobra * u;
-    P.push(
-      [bx + raio, by - raio * 0.3],
-      [bx, by - raio * 0.75],
-      [bx - raio, by],
-      [bx, by + raio * 0.75],
-      [bx + raio, by + raio * 1.1],
-    );
+  /* A costura do resto da página, agora como partitura, pelo mesmo motivo que
+     as outras rotas viraram partitura: assim ela pode tocar mais de uma vez
+     numa janela estreita (ver `densidade`).
+
+     Mudou uma coisa no desenho, e só uma: a travessia solta em 0.66 virou a
+     volta POR FORA. A home era a única rota sem ela — sai pela esquerda, dá a
+     volta na tela por fora e volta pela direita —, e é a manobra que o Gabriel
+     descreve como "sumindo da tela, voltando". As duas voltas que já existiam
+     escorregaram 0.02 para baixo para abrir espaço, e o resto dos pontos é o
+     mesmo de antes.
+
+     A volta em 0.225 sobe enquanto gira, e pode: na dobra da tese o trecho é
+     curto e é a manobra que dá graça na dobra. As do meio da página descem
+     enquanto giram, senão o avião andaria contra a rolagem por uma tela
+     inteira. */
+  const costura = ({ em, volta, porFora }) => {
+    em(0.16, 0.045);
+    em(0.72, 0.105);
+    em(0.9, 0.165);
+    volta(0.78, 0.225, 90);
+    em(0.34, 0.29);
+    em(0.1, 0.35);
+    em(0.26, 0.42);
+    em(0.8, 0.48);
+    em(0.9, 0.545);
+    em(0.55, 0.6);
+    porFora("esq", 0.655, 0.014);
+    volta(0.24, 0.735, 85);
+    em(0.62, 0.79);
+    em(0.9, 0.84);
+    em(0.55, 0.89);
+    em(0.2, 0.94);
+    em(0.6, 0.96);
+    em(1.1, 1.0);
   };
-  em(0.16, 0.045);
-  em(0.72, 0.105);
-  em(0.9, 0.165);
-  volta(0.78, 0.225, 90);
-  em(0.34, 0.29);
-  em(0.1, 0.35);
-  em(0.26, 0.42);
-  em(0.8, 0.48);
-  em(0.9, 0.545);
-  em(0.55, 0.6);
-  em(0.14, 0.66);
-  volta(0.24, 0.715, 85);
-  em(0.62, 0.78);
-  em(0.9, 0.835);
-  em(0.55, 0.89);
-  em(0.2, 0.94);
-  em(0.6, 0.96);
-  em(1.1, 1.0);
+  const k = densidade(w, sobra);
+  const P = [[saidaX, saidaY]];
+  for (let i = 0; i < k; i++) costura(manobras(P, w, saidaY, sobra, i / k, 1 / k));
   return `${tronco} ${suavizar(P, true)}`;
 }
 
@@ -504,13 +540,11 @@ function rotaDoVoo(w, h, tese, alcance) {
    a tela, mas gasta quase nenhuma rolagem. Quem apaga o rastro dela é
    `tabelaPorAltura`, que esconde o avião entre duas saídas de lados opostos.
    Ver a regra da cortina lá embaixo. */
-function tecer(w, topo, fim, partitura) {
-  const sobra = fim - topo;
-  const P = [];
-  const em = (fx, u) => P.push([w * fx, topo + sobra * u]);
+function manobras(P, w, topo, sobra, base, fatia) {
+  const em = (fx, u) => P.push([w * fx, topo + sobra * (base + u * fatia)]);
   const volta = (fx, u, raio) => {
     const bx = w * fx;
-    const by = topo + sobra * u;
+    const by = topo + sobra * (base + u * fatia);
     P.push(
       [bx + raio, by - raio * 0.3],
       [bx, by - raio * 0.75],
@@ -531,7 +565,22 @@ function tecer(w, topo, fim, partitura) {
     em(s > 0 ? -0.5 : 1.5, u + queda * 1.1);
     em(s > 0 ? -0.16 : 1.16, u + queda * 1.9);
   };
-  partitura({ em, volta, porFora });
+  return { em, volta, porFora };
+}
+
+/* `vezes` é o k de `densidade`. Cada repetição escreve dentro da sua fatia da
+   queda, então o Y continua crescendo e a tabela por altura continua valendo.
+
+   A emenda entre uma repetição e a seguinte não precisa de tratamento: toda
+   partitura termina fora da caixa de um lado e recomeça fora do outro, sem
+   queda entre as duas, que é exatamente a condição que a cortina reconhece —
+   o avião some numa borda e reaparece na outra, sem rastro atravessando a
+   tela. */
+function tecer(w, topo, fim, partitura, vezes = 1) {
+  const sobra = fim - topo;
+  const k = Math.max(1, Math.round(vezes));
+  const P = [];
+  for (let i = 0; i < k; i++) partitura(manobras(P, w, topo, sobra, i / k, 1 / k));
   return suavizar(P);
 }
 
@@ -672,7 +721,7 @@ function rotaDaPagina(variante, w, h, alcance, janela) {
   const topo = Math.round(Math.min(330, j * 0.34));
   const deriva = Math.round(Math.min(300, j * 0.3));
   const fim = alcance > 0 ? topo + alcance + deriva : Math.max(h, topo + 600);
-  return tecer(w, topo, fim, partitura);
+  return tecer(w, topo, fim, partitura, densidade(w, fim - topo));
 }
 
 
