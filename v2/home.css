@@ -498,6 +498,26 @@
 .v2-cartao-link:hover .v2-cartao-foto,
 .v2-cartao-link:focus-visible .v2-cartao-foto { transform: translateY(-8px) scale(1.015); }
 
+/* Capa cheia no hover: um zoom leve, e nada mais. A tela flutuante da chapa
+   sobe 8px porque ela e um objeto POUSADO na chapa; a capa cheia nao pousa em
+   nada, entao subir seria mostrar o vazio embaixo dela. O quadro ja tem
+   `overflow: hidden`, e e ele que recorta a sobra do zoom. */
+.v2-cartao-capa {
+  transform-origin: center;
+  transition: transform 900ms var(--v2-ease);
+}
+.v2-cartao-link:hover .v2-cartao-capa,
+.v2-cartao-link:focus-visible .v2-cartao-capa { transform: scale(1.035); }
+
+/* Quem pediu para nada se mover nao ganha zoom: a regra global de
+   tokens.css so encurta a transicao, e transicao curta continua sendo
+   movimento. Aqui o movimento sai inteiro. */
+@media (prefers-reduced-motion: reduce) {
+  .v2-cartao-capa { transition: none; }
+  .v2-cartao-link:hover .v2-cartao-capa,
+  .v2-cartao-link:focus-visible .v2-cartao-capa { transform: none; }
+}
+
 .v2-cartao-link:focus-visible { outline: 2px solid var(--v2-ink); outline-offset: 4px; }
 
 /* Celular: uma coluna, e a pilha desliga. Duas colunas em 390px daria card de
