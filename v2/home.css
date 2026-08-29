@@ -194,10 +194,11 @@
   gap: var(--v2-s3);
 }
 
-/* A camada do voo. `overflow: clip` e nao `hidden`: clip nao cria caixa de
-   rolagem, entao o aviao pode sair pelas bordas sem alargar a pagina, e sem
-   repetir a armadilha do IntersectionObserver anotada em motion.js. O clip
-   fica so nesta camada, que so tem o aviao dentro, e nunca nos paragrafos. */
+/* A camada do voo, agora do corpo claro inteiro. `overflow: clip` e nao
+   `hidden`: clip nao cria caixa de rolagem, entao o aviao pode sair pelas
+   bordas sem alargar a pagina, e sem repetir a armadilha do
+   IntersectionObserver anotada em motion.js. O clip fica so nesta camada, que
+   so tem o aviao dentro, e nunca em cima de conteudo. */
 .v2-voo {
   position: absolute;
   inset: 0;
@@ -215,6 +216,7 @@
 .v2-voo-obj svg { display: block; width: 100%; height: 100%; }
 /* o texto passa por cima: o aviao e fundo, nao ilustracao */
 .v2-declaracao { position: relative; z-index: 1; }
+.v2-declaracao-par { position: relative; }
 
 .v2-declaracao {
   margin: 0;

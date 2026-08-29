@@ -171,7 +171,6 @@ function Declaracao() {
   const palavras = DECLARACAO.split(" ");
   const corte = Math.ceil(palavras.length / 2);
   const { ref, palavras: anim, quieto } = usePalavra(palavras.length);
-  const voo = useVoo(ref);
   const trecho = (de, ate, classe) => (
     <p className={`v2-declaracao ${classe}`}>
       {palavras.slice(de, ate).map((w, k) => {
@@ -203,24 +202,6 @@ function Declaracao() {
   return (
     <Dobra id="sobre" n="01" nome="A tese" carimbo="©26">
       <div className="v2-declaracao-par" ref={ref}>
-        {/* o voo fica atrás do texto e recortado na caixa: assim ele passa por
-            baixo das frases e nunca empurra a largura da página */}
-        {voo.caminho && !voo.quieto ? (
-          <div className="v2-voo" aria-hidden="true">
-            <motion.div
-              className="v2-voo-obj"
-              style={{
-                offsetPath: `path("${voo.caminho}")`,
-                offsetDistance: voo.distancia,
-                offsetRotate: "auto",
-              }}
-            >
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
-              </svg>
-            </motion.div>
-          </div>
-        ) : null}
         {trecho(0, corte, "is-esq")}
         {trecho(corte, palavras.length, "is-dir")}
       </div>
@@ -470,6 +451,27 @@ function useCaminho(refCaixa, refsNos, refsBlocos, dependencia) {
   return caminho;
 }
 
+/* O avião. Fica atrás de tudo e recortado na caixa do corpo: assim ele passa
+   por baixo das dobras e nunca empurra a largura da página. */
+function Voo({ caminho, distancia }) {
+  return (
+    <div className="v2-voo" aria-hidden="true">
+      <motion.div
+        className="v2-voo-obj"
+        style={{
+          offsetPath: `path("${caminho}")`,
+          offsetDistance: distancia,
+          offsetRotate: "auto",
+        }}
+      >
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
 function Processo() {
   const total = PROCESSO_CURTO.length;
   const { ref, avanco, acesos, quieto } = useTrilha(total);
@@ -702,6 +704,8 @@ function Fita() {
 /* -------------------------------------------------------------------- home */
 
 export default function Home({ ir }) {
+  const corpo = useRef(null);
+  const voo = useVoo(corpo);
   const rolar = () => {
     const alvo = document.getElementById("casos");
     if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -712,7 +716,11 @@ export default function Home({ ir }) {
       <Hero paraCasos={rolar} />
       {/* Tudo que vem depois do hero é opaco e sobe por cima dele. Sem este
           fundo, o hero preso aparece por baixo das dobras claras. */}
-      <div className="v2-corpo-claro" data-clara="1">
+      <div className="v2-corpo-claro" data-clara="1" ref={corpo}>
+        {/* primeiro filho de propósito: entre posicionados de mesmo nível quem
+            vem antes no DOM pinta antes, então o avião fica atrás das dobras
+            sem precisar empilhar z-index em todas elas */}
+        {voo.caminho && !voo.quieto ? <Voo {...voo} /> : null}
         <Passagem />
         <Declaracao />
         <Marquee />

@@ -14,7 +14,7 @@ import {
   useReducedMotion, useScroll, useTransform, useSpring, useMotionValue,
   useInView, useMotionTemplate, animate,
 } from "motion/react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 /* 1. spring
    Default de tudo que responde a hover, clique ou drag.
@@ -354,13 +354,13 @@ export function usePalavra(total) {
 }
 
 /* 15b. voo
-   O aviãozinho vermelho da dobra 01.
+   O aviãozinho vermelho, atravessando o corpo claro inteiro.
 
-   A declaração é partida: a primeira metade encosta à esquerda no alto, a
-   segunda à direita embaixo. Sobram dois vazios em diagonal, um em cima à
-   direita e outro embaixo à esquerda, e o voo mora exatamente neles. Entra
-   pela direita, dá uma volta no vazio de cima, atravessa na diagonal e sai
-   embaixo à esquerda.
+   Nasceu dentro da dobra da tese, onde a declaração partida deixa dois vazios
+   em diagonal. Funcionou, e agora ele não para ali: entra pela direita no alto
+   da página e desce costurando todas as dobras até sair embaixo, sempre atrás
+   do conteúdo. Onde a dobra tem fundo próprio, como o rodapé escuro, ela cobre
+   o avião, e isso é o comportamento certo: ele é fundo, não ilustração.
 
    Usa `offset-path` em vez de keyframes de x e y por dois motivos: a curva
    fica de verdade curva, e `offset-rotate: auto` inclina o avião na direção
@@ -371,22 +371,177 @@ export function usePalavra(total) {
    O caminho é montado em pixel a partir da caixa medida: em fração ele
    deformaria junto com a proporção da dobra, e a volta viraria uma elipse
    achatada nas telas largas. */
-function rotaDoVoo(w, h) {
-  const x = (f) => Math.round(w * f);
-  const y = (f) => Math.round(h * f);
+/* Catmull-Rom convertido para bézier cúbica: dá uma curva que passa por todos
+   os pontos e ainda assim é lisa nas emendas. Escrever as curvas à mão para um
+   percurso deste tamanho seria ilegível e impossível de ajustar. */
+function suavizar(pts, continuar = false) {
+  const r = Math.round;
+  const d = continuar ? [] : [`M ${r(pts[0][0])} ${r(pts[0][1])}`];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const ax = p1[0] + (p2[0] - p0[0]) / 6;
+    const ay = p1[1] + (p2[1] - p0[1]) / 6;
+    const bx = p2[0] - (p3[0] - p1[0]) / 6;
+    const by = p2[1] - (p3[1] - p1[1]) / 6;
+    d.push(`C ${r(ax)} ${r(ay)}, ${r(bx)} ${r(by)}, ${r(p2[0])} ${r(p2[1])}`);
+  }
+  return d.join(" ");
+}
+
+/* O percurso.
+
+   Ele tem duas partes, e a divisão não é estética, é história: a primeira foi
+   desenhada para os dois vazios da dobra da tese e o Gabriel aprovou ela
+   exatamente como está, então ela não vira weave genérico. A declaração é
+   partida, a primeira metade encosta à esquerda em cima e a segunda à direita
+   embaixo, e o voo mora nesses dois vazios: entra pela direita, dá a volta no
+   de cima, atravessa na diagonal e sai no de baixo à esquerda. As curvas são
+   as originais, em fração da caixa da tese, ancoradas onde ela realmente
+   está.
+
+   A segunda parte pega o avião na saída e costura o resto da página até o pé,
+   em travessias largas de um lado ao outro com duas voltas no caminho.
+
+   As frações são da caixa; os raios das voltas vão em pixel, porque o corpo
+   tem uns dez mil pixels de altura contra 1440 de largura e volta em fração
+   viraria elipse achatada. */
+function troncoDaTese(cx, cy, cw, ch) {
+  const x = (f) => Math.round(cx + cw * f);
+  const y = (f) => Math.round(cy + ch * f);
   return [
     `M ${x(1.1)} ${y(0.04)}`,
     `C ${x(0.98)} ${y(0.08)}, ${x(0.88)} ${y(0.09)}, ${x(0.8)} ${y(0.15)}`,
-    // a volta
     `C ${x(0.7)} ${y(0.23)}, ${x(0.65)} ${y(0.33)}, ${x(0.74)} ${y(0.35)}`,
     `C ${x(0.85)} ${y(0.37)}, ${x(0.91)} ${y(0.28)}, ${x(0.86)} ${y(0.21)}`,
     `C ${x(0.82)} ${y(0.15)}, ${x(0.75)} ${y(0.16)}, ${x(0.71)} ${y(0.22)}`,
-    // a travessia na diagonal
     `C ${x(0.6)} ${y(0.36)}, ${x(0.48)} ${y(0.48)}, ${x(0.38)} ${y(0.58)}`,
     `C ${x(0.29)} ${y(0.67)}, ${x(0.2)} ${y(0.73)}, ${x(0.22)} ${y(0.81)}`,
     `C ${x(0.24)} ${y(0.89)}, ${x(0.16)} ${y(0.93)}, ${x(0.08)} ${y(0.95)}`,
     `C ${x(0.0)} ${y(0.98)}, ${x(-0.08)} ${y(1.02)}, ${x(-0.16)} ${y(1.08)}`,
   ].join(" ");
+}
+
+/* `alcance` é quanto a página ainda rola de fato: altura do corpo menos uma
+   janela. O percurso precisa cair mais ou menos isso, e não a altura inteira
+   do corpo, senão o avião ganha do leitor.
+
+   Medido antes da correção: 10.565px de queda para 9.746px de rolagem, ou seja
+   819px de vantagem, e o avião saía pelo pé da janela na segunda metade da
+   página (1104px numa janela de 900). Agora o percurso termina em `alcance`
+   mais 300, então sobra uma descida lenta de 300px ao longo da página inteira,
+   que é o suficiente para ele não parecer pregado na mesma altura da tela. */
+function rotaDoVoo(w, h, tese, alcance) {
+  /* sem a tese medida (a página de caso, por exemplo) o voo começa do alto */
+  const t = tese || { x: w * 0.05, y: 0, w: w * 0.9, h: h * 0.14 };
+  const tronco = troncoDaTese(t.x, t.y, t.w, t.h);
+  const saidaX = t.x + t.w * -0.16;
+  const saidaY = t.y + t.h * 1.08;
+  const fim = alcance > 0 ? t.y + t.h * 0.04 + alcance + 300 : h;
+  const sobra = fim - saidaY;
+  if (sobra < 400) return tronco;
+
+  const P = [[saidaX, saidaY]];
+  const em = (fx, u) => P.push([w * fx, saidaY + sobra * u]);
+  /* aqui a volta desce enquanto gira: no meio da página uma volta que sobe
+     faria o avião andar contra a rolagem por uma tela inteira. Na dobra da
+     tese ela sobe, e pode, porque ali o trecho é curto e é a manobra que dá
+     graça na dobra. */
+  const volta = (fx, u, raio) => {
+    const bx = w * fx;
+    const by = saidaY + sobra * u;
+    P.push(
+      [bx + raio, by - raio * 0.3],
+      [bx, by - raio * 0.75],
+      [bx - raio, by],
+      [bx, by + raio * 0.75],
+      [bx + raio, by + raio * 1.1],
+    );
+  };
+  em(0.16, 0.045);
+  em(0.72, 0.105);
+  em(0.9, 0.165);
+  volta(0.78, 0.225, 90);
+  em(0.34, 0.29);
+  em(0.1, 0.35);
+  em(0.26, 0.42);
+  em(0.8, 0.48);
+  em(0.9, 0.545);
+  em(0.55, 0.6);
+  em(0.14, 0.66);
+  volta(0.24, 0.715, 85);
+  em(0.62, 0.78);
+  em(0.9, 0.835);
+  em(0.55, 0.89);
+  em(0.2, 0.94);
+  em(0.6, 0.96);
+  em(1.1, 1.0);
+  return `${tronco} ${suavizar(P, true)}`;
+}
+
+/* Reparametrização do percurso pelo eixo Y.
+
+   `offset-distance` anda em comprimento de arco, e o percurso gasta muito arco
+   indo de lado. Ligando a rolagem direto na distância, o avião ficava para
+   trás do leitor: medido, ele saía da tela em quatro dos oito pontos de
+   amostragem, até 292px acima da janela.
+
+   A saída é uma tabela: amostra o path, guarda os pares (Y, comprimento) em
+   que o Y cresce, e usa isso como as duas pontas de um useTransform. Assim a
+   rolagem controla a ALTURA do avião, e o comprimento de arco vira
+   consequência, que é o que faz ele acompanhar quem está lendo.
+
+   Só funciona com Y crescente, e é por isso que as voltas descem. */
+function tabelaPorAltura(d) {
+  if (typeof document === "undefined" || !d) return null;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("style", "position:absolute;width:0;height:0;overflow:hidden");
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", d);
+  svg.appendChild(path);
+  document.body.appendChild(svg);
+  let total = 0;
+  try { total = path.getTotalLength(); } catch (_) { total = 0; }
+  const alturas = [];
+  const distancias = [];
+  if (total > 0) {
+    /* Passo mínimo em vez de descartar as amostras que descem.
+
+       Descartando, a volta da dobra 01 (que sobe) sumia da tabela inteira e o
+       avião cruzava ela num quadro só: a manobra que o Gabriel aprovou virava
+       um piscar. Forçando cada amostra a avançar pelo menos 45% do passo
+       médio, o trecho que sobe ganha uma fatia real da rolagem e a volta volta
+       a ser volta, sem quebrar o crescimento que a tabela exige. */
+    const N = 420;
+    const p0 = path.getPointAtLength(0);
+    const pf = path.getPointAtLength(total);
+    const minimo = Math.max(1, ((pf.y - p0.y) / N) * 0.45);
+    let ultimo = -Infinity;
+    for (let i = 0; i <= N; i++) {
+      const f = i / N;
+      const pt = path.getPointAtLength(f * total);
+      /* passo forcado SO quando o caminho anda para tras. Onde ele desce
+         devagar, que e a maior parte de uma travessia larga, vale o Y de
+         verdade: forcar tambem ali redistribuia a rolagem inteira e o aviao
+         saia pelo pe da janela, medido em 1104px numa janela de 900. */
+      const y = ultimo === -Infinity || pt.y > ultimo ? pt.y : ultimo + minimo;
+      ultimo = y;
+      alturas.push(y);
+      distancias.push(f);
+    }
+  }
+  document.body.removeChild(svg);
+  if (alturas.length < 2) return null;
+  const y0 = alturas[0];
+  const span = alturas[alturas.length - 1] - y0;
+  if (span <= 0) return null;
+  return {
+    entradas: alturas.map((y) => (y - y0) / span),
+    saidas: distancias.map((f) => `${(f * 100).toFixed(3)}%`),
+  };
 }
 
 export function useVoo(refCaixa) {
@@ -395,25 +550,59 @@ export function useVoo(refCaixa) {
   useLayoutEffect(() => {
     const el = refCaixa.current;
     if (!el) return undefined;
-    const medir = () => setCaixa({ w: el.offsetWidth, h: el.offsetHeight });
+    /* Mede tambem a caixa da declaracao, porque o primeiro trecho do voo e
+       ancorado nela. E por querySelector e nao por mais um ref no Home: o voo
+       e uma camada de fundo do corpo inteiro e nao deveria obrigar a dobra 01
+       a saber que ele existe. Se a classe sumir, rotaDoVoo cai num trecho
+       inicial generico e nada quebra. */
+    const dentro = (n) => {
+      let x = 0;
+      let y = 0;
+      let a = n;
+      while (a && a !== el) { x += a.offsetLeft; y += a.offsetTop; a = a.offsetParent; }
+      return [x, y];
+    };
+    const medir = () => {
+      const dec = el.querySelector(".v2-declaracao-par");
+      let tese = null;
+      if (dec && dec.offsetWidth > 0) {
+        const [dx, dy] = dentro(dec);
+        tese = { x: dx, y: dy, w: dec.offsetWidth, h: dec.offsetHeight };
+      }
+      setCaixa({
+        w: el.offsetWidth,
+        h: el.offsetHeight,
+        alcance: el.offsetHeight - window.innerHeight,
+        tese,
+      });
+    };
     medir();
     const ro = new ResizeObserver(medir);
     ro.observe(el);
     return () => ro.disconnect();
   }, [refCaixa]);
+  /* "start start" a "end end": o progresso acompanha a rolagem por dentro do
+     corpo, do topo dele até o fim. Com "start end" o voo já começava gasto,
+     porque a caixa tem dez mil pixels e entra na tela muito antes de o leitor
+     chegar nela. */
   const { scrollYProgress } = useScroll({
     target: refCaixa,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end end"],
   });
   /* mola frouxa: sem ela o avião trava e destrava junto com o passo da roda do
      mouse, e voo aos solavancos denuncia que é scroll, não voo */
   const suave = useSpring(scrollYProgress, { stiffness: 80, damping: 24, mass: 0.5 });
-  const distancia = useTransform(suave, [0, 1], ["0%", "100%"]);
-  return {
-    caminho: caixa && caixa.w > 0 ? rotaDoVoo(caixa.w, caixa.h) : null,
-    distancia,
-    quieto,
-  };
+  const caminho = useMemo(
+    () => (caixa && caixa.w > 0 ? rotaDoVoo(caixa.w, caixa.h, caixa.tese, caixa.alcance) : null),
+    [caixa],
+  );
+  const tabela = useMemo(() => tabelaPorAltura(caminho), [caminho]);
+  const distancia = useTransform(
+    suave,
+    tabela ? tabela.entradas : [0, 1],
+    tabela ? tabela.saidas : ["0%", "100%"],
+  );
+  return { caminho, distancia, quieto };
 }
 
 /* 16. trilha
