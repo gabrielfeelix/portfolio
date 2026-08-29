@@ -246,7 +246,30 @@
   object-fit: cover;
   display: block;
 }
-@media (max-width: 900px) { .v2-quebra { height: 52vh; } }
+/* O movel nao e so "a mesma coisa mais baixa". A arte e 2.14:1 e o `cover`
+   corta pelo eixo que sobra: no desktop sobra altura, no telefone sobra
+   LARGURA. Medido em 390x844 com os 52vh antigos: a janela virava 0.89:1,
+   mostrava 37% da largura, cortava o bico do aviao e perdia o brilho inteiro
+   do canto superior direito — que e o que faz o aviao estar voando PARA
+   algum lugar. Sobrava um retangulo escuro com meio aviao.
+
+   A correcao e nos dois eixos: baixar a altura devolve largura (a janela fica
+   mais deitada, mais parecida com a propria arte), e `object-position` empurra
+   o recorte para onde o assunto mora. O terco esquerdo da imagem e escuro
+   vazio, entao desloca-lo nao custa nada.
+
+   Os dois pontos de virada sao os do sistema (tokens.css: 560, 900, 1280,
+   1600), nao numeros escolhidos aqui. */
+@media (max-width: 900px) {
+  .v2-quebra { height: 52vh; }
+  .v2-quebra img,
+  .v2-quebra video { object-position: 62% 50%; }
+}
+@media (max-width: 560px) {
+  .v2-quebra { height: 40vh; }
+  .v2-quebra img,
+  .v2-quebra video { object-position: 66% 50%; }
+}
 
 /* ------------------------------------------------------------------ dados */
 

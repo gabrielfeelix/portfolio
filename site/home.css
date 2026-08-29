@@ -702,142 +702,180 @@
   .v2-linha-casos { position: relative; top: auto !important; }
 }
 
-/* ---------------- 7. peças, em grade ---------------- */
+/* ---------------- 7. peças, em fita com foco ---------------- */
 
-/* Era uma fita que corria sozinha: dezoito projetos passando como imagem sem
-   nome, sem o que era, sem para onde ir. O trabalho desta dobra e ser VARRIDA,
-   e varredura pede grade parada, nao faixa em movimento.
+/* Fita de mockup que corre sozinha. Parada ela viraria uma segunda grade de
+   casos e roubaria a dobra; correndo, e ritmo, que e o papel dela.
 
-   A hierarquia continua sendo a regra: os casos provam profundidade, estas
-   provam alcance. Por isso o card daqui e menor, tem tinta mais baixa e
-   nenhum motion proprio. */
-.v2-pecas-secao {
+   O foco no hover e o que a tira de muda sem devolver peso: em repouso nao ha
+   texto nenhum competindo com os casos, e sob o ponteiro SO a peca apontada
+   acende. As outras desfocam, o laco para, e a apontada escurece por dentro
+   para a tipografia clara aparecer. */
+.v2-fita-secao {
   display: grid;
-  gap: var(--v2-s5);
+  gap: var(--v2-s4);
   padding: var(--v2-s6) 0;
+  overflow: hidden;
 }
 
-.v2-pecas-grade {
-  list-style: none;
-  margin: 0 auto;
-  padding-inline: var(--v2-gutter);
-  max-width: var(--v2-max);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--v2-s3);
-}
+.v2-fita { overflow: hidden; }
 
-.v2-peca {
+.v2-fita-trilho {
   display: flex;
-  flex-direction: column;
-  border: 1px solid var(--v2-cartao-filete);
+  width: max-content;
+  gap: var(--v2-s2);
+  animation: v2-fita-anda 52s linear infinite;
+}
+
+/* o laco para no hover E no foco de teclado: sem isso o card que voce acabou
+   de alcancar pelo Tab foge de baixo do ponteiro */
+.v2-fita:hover .v2-fita-trilho,
+.v2-fita:focus-within .v2-fita-trilho { animation-play-state: paused; }
+
+.v2-fita-grupo { display: flex; gap: var(--v2-s2); }
+
+/* 340x212 contra os 280x176 de antes: o Gabriel pediu "um pouquinho mais
+   altos", e o raio passa a ser o mesmo dos cards de caso (--v2-cartao-raio),
+   para as duas dobras lerem como o mesmo kit. */
+.v2-fita-item {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 340px;
+  height: 212px;
   border-radius: var(--v2-cartao-raio);
+  overflow: hidden;
   background: var(--v2-card);
-  padding: 10px 10px 16px;
-  overflow: hidden;
+  transition: filter .35s ease, opacity .35s ease;
 }
 
-/* Proporcao fixa para a grade nao serrilhar: as capas vem de fontes
-   diferentes e nenhuma tem o mesmo recorte. */
-.v2-peca-midia {
-  aspect-ratio: 16 / 10;
-  border-radius: var(--v2-cartao-raio-in);
-  overflow: hidden;
-  background: var(--v2-superficie);
-  display: grid;
-  place-items: center;
+.v2-fita-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Desfoca TODAS, e a regra seguinte devolve a nitidez so para a apontada.
+   As duas tem a mesma especificidade de proposito: quem ganha e a ordem, e
+   por isso a de baixo nao pode subir. */
+.v2-fita:hover .v2-fita-item,
+.v2-fita:focus-within .v2-fita-item {
+  filter: blur(6px);
+  opacity: .45;
 }
 
-.v2-peca-midia img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* As onze sem arte. Card do mesmo tamanho, para a grade nao abrir buraco, e
-   sem mockup falso: so o descritor em caixa alta, no tom de label. Assim que
-   a foto entrar em `cover`, isto vira imagem sem tocar em codigo. */
-.v2-peca-semfoto {
-  padding: var(--v2-s3);
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  line-height: 1.5;
-  text-align: center;
-  color: var(--v2-muted);
+.v2-fita .v2-fita-item:hover,
+.v2-fita .v2-fita-item:focus-within {
+  filter: none;
+  opacity: 1;
 }
 
-.v2-peca-corpo {
+/* A camada escura por dentro do card. O degrade e mais fechado embaixo, onde
+   fica o texto, e abre em cima para o mockup nao sumir: continua sendo a
+   imagem que identifica a peca. A 92% de #0B0B0C o branco passa com folga no
+   contraste, inclusive sobre mockup claro. */
+.v2-fita-foco {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 6px;
-  flex: 1;
-  padding: 14px 6px 0;
+  padding: var(--v2-s3);
+  background: linear-gradient(to top,
+    rgba(11, 11, 12, .92) 0%,
+    rgba(11, 11, 12, .74) 52%,
+    rgba(11, 11, 12, .30) 100%);
+  color: #FFF;
+  opacity: 0;
+  /* escondida, ela nao pode interceptar o ponteiro; teclado nao depende
+     disto, entao o link segue alcancavel por Tab */
+  pointer-events: none;
+  transition: opacity .35s ease;
 }
 
-.v2-peca-tit {
+.v2-fita-item:hover .v2-fita-foco,
+.v2-fita-item:focus-within .v2-fita-foco {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.v2-fita-tit {
   margin: 0;
   font-size: var(--v2-t-label);
   font-weight: 600;
   line-height: 1.2;
-  color: var(--v2-ink);
 }
 
-/* Tres linhas: as descricoes variam de seis a quarenta palavras, e sem teto a
-   grade desalinha inteira por causa de um card. */
-.v2-peca-desc {
+/* Duas linhas: as descricoes vao de seis a quarenta palavras e o card tem
+   altura fixa. O resumo aqui e chamariz, nao leitura. */
+.v2-fita-desc {
   margin: 0;
   font-size: var(--v2-t-cromo);
-  line-height: 1.5;
-  color: var(--v2-muted);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, .78);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* `margin-top: auto` prende o pe no fundo do card, entao a linha do destino
-   fica na mesma altura em todos, independente do tamanho da descricao. */
-.v2-peca-pe {
-  margin: auto 0 0;
-  padding-top: var(--v2-s2);
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--v2-s2);
-}
-
-.v2-peca-dom {
+/* Acao em filete, nao em botao cheio: e uma peca extra, e botao solido aqui
+   pesaria mais que o CTA dos casos, que e o primario da dobra. */
+.v2-fita-acao {
+  align-self: flex-start;
+  margin-top: 4px;
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
+  color: #FFF;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, .55);
+  padding-bottom: 2px;
+  transition: border-color .2s ease;
+}
+
+.v2-fita-acao:hover { border-bottom-color: #FFF; }
+
+/* -50% e exatamente uma copia do grupo: o laco fecha sem costura. */
+@keyframes v2-fita-anda {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* As pecas sem imagem nenhuma. Fita e de mockup: sem capa nao ha o que rodar,
+   entao elas ficam numa linha de texto, no tom do label. Some da hierarquia e
+   ainda deixa o nome na pagina. */
+.v2-fita-resto {
+  margin: 0 auto;
+  max-width: var(--v2-medida);
+  padding-inline: var(--v2-gutter);
+  font-size: var(--v2-t-label);
+  line-height: 1.6;
   color: var(--v2-muted);
 }
 
-/* Pastilha secundaria, e nao botao: cinco pecas nao tem destino nenhum, e um
-   CTA grande viraria buraco nelas. O card nao e clicavel por inteiro de
-   proposito — o alvo e o link, que e a unica parte que promete alguma coisa. */
-.v2-peca-link {
-  flex: none;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
+.v2-fita-resto-r {
+  text-transform: uppercase;
+  letter-spacing: .12em;
   color: var(--v2-ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--v2-ink);
-  padding-bottom: 1px;
-  transition: opacity .2s ease;
 }
 
-.v2-peca-link:hover { opacity: .6; }
-
-@media (max-width: 1100px) {
-  .v2-pecas-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Sem ponteiro nao existe hover, e o card ficaria mudo para sempre: no dedo a
+   camada ja vem acesa e a fita vira rolagem lateral. */
+@media (hover: none) {
+  .v2-fita-foco { opacity: 1; pointer-events: auto; }
+  .v2-fita:hover .v2-fita-item { filter: none; opacity: 1; }
+  .v2-fita-trilho { animation: none; }
+  .v2-fita { overflow-x: auto; }
 }
 
 @media (max-width: 620px) {
-  .v2-pecas-grade { grid-template-columns: 1fr; }
+  .v2-fita-item { width: 268px; height: 168px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v2-peca-link { transition: none; }
+  .v2-fita-trilho { animation: none; }
+  .v2-fita { overflow-x: auto; }
+  .v2-fita-item,
+  .v2-fita-foco,
+  .v2-fita-acao { transition: none; }
 }
 
 /* ---------------- 8. onde estive: a coluna presa ---------------- */

@@ -780,78 +780,91 @@ function Assinatura({ children }) {
 
 /* Peça extra num portfólio de UX não pode ter tratamento de caso: os casos
    provam PROFUNDIDADE, e estas provam ALCANCE. Se as duas competirem, some a
-   diferença entre elas — por isso o card daqui é menor, mais quieto e sem
-   nenhum motion próprio.
+   diferença entre elas.
 
-   Era uma fita que corria sozinha, e ela não explicava nada: dezoito projetos
-   passavam como imagem sem nome, sem o que era, sem para onde ir. Virou grade
-   porque o trabalho desta dobra é ser VARRIDA — ninguém lê dezoito descrições,
-   mas todo mundo passa o olho em dezoito capas.
+   A fita corre sozinha e é só mockup — parada, ela viraria uma segunda grade
+   de casos e roubaria a dobra. O que ela não pode ser é muda: antes passava
+   imagem sem nome, sem o que era e sem para onde ir.
+
+   A saída é o foco no hover, e ele resolve os dois de uma vez. Em repouso a
+   fita é ritmo puro, sem texto competindo com os casos. Sob o ponteiro, o
+   laço para, as outras desfocam e SÓ a peça apontada acende: escurece por
+   dentro para a tipografia clara aparecer, e entrega nome, resumo e ação.
+   Um item por vez, que é o que o formato pede.
+
+   Teclado tem o mesmo caminho: `:focus-within` acende igual ao hover, então
+   quem chega pelo Tab não fica com o card mudo. A cópia de trás do laço é
+   `aria-hidden` e sai da ordem de foco, senão cada peça apareceria duas vezes.
 
    Sobre manter: a foto sai de `pieceCover` e o destino de `pieceDestino`, os
-   dois em volume/data.jsx. É de propósito que o card não saiba montar nenhum
-   dos dois sozinho — quando o painel de detalhe entrar, ele lê das mesmas duas
-   funções e a foto é literalmente a mesma. Trocar `cover` no projeto troca nos
-   dois lugares.
+   dois em volume/data.jsx. O card não monta nenhum dos dois sozinho de
+   propósito — quando o painel de detalhe entrar, ele lê das mesmas funções e
+   a foto é literalmente a mesma imagem.
 
-   Onze das dezoito não têm arte nenhuma em disco (medido em 29/08). Elas não
-   somem nem viram lista de texto: ficam como card de tipografia, com o mesmo
-   tamanho das outras, para a grade não abrir buraco. Assim que o mockup
-   entrar em `cover`, o card vira foto sem mexer em código. */
+   Onze das dezoito não têm arte em disco (medido em 29/08). Fita é de mockup:
+   sem imagem não há o que rodar, então elas seguem na linha de texto abaixo,
+   que mantém o nome na página sem inventar capa falsa. Assim que o mockup
+   entrar em `cover`, a peça sobe para a fita sozinha. */
 function Pecas() {
   const lista = pieceProjects();
-  if (!lista.length) return null;
+  const comFoto = lista.filter(pieceCover);
+  const semFoto = lista.filter((p) => !pieceCover(p));
+  if (!comFoto.length) return null;
 
-  /* Com foto primeiro. A ordem editorial do PIECE_ORDER continua valendo
-     DENTRO de cada grupo — o que ela não previa é que a maioria ainda não tem
-     arte, e abrir a dobra com quatro cards de tipografia entrega a seção pelo
-     que falta nela. Conforme as fotos entrarem, isto volta sozinho para a
-     ordem dele. Para desligar, apague o sort. */
-  const ordenada = lista.slice().sort((a, b) => !!pieceCover(b) - !!pieceCover(a));
+  const item = (p, dobra) => {
+    const destino = pieceDestino(p);
+    return (
+      <div
+        className="v2-fita-item"
+        key={(dobra ? "b" : "") + p.id}
+        aria-hidden={dobra ? "true" : undefined}
+      >
+        <img src={pieceCover(p)} alt={dobra ? "" : p.title} loading="lazy" decoding="async" draggable="false" />
+        <div className="v2-fita-foco">
+          <h3 className="v2-fita-tit">{p.title}</h3>
+          {p.desc ? <p className="v2-fita-desc">{p.desc}</p> : null}
+          {destino ? (
+            <a
+              className="v2-fita-acao"
+              href={destino.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              /* a cópia do laço não pode receber Tab: sem isto cada peça
+                 apareceria duas vezes na lista de links */
+              tabIndex={dobra ? -1 : undefined}
+              /* "Ver no ar" sozinho se repetiria em toda a fita */
+              aria-label={`${destino.rotulo}: ${p.title}, abre em nova aba`}
+            >
+              {destino.rotulo}
+            </a>
+          ) : null}
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <section className="v2-pecas-secao" id="pecas" aria-label="Outras peças">
+    <section className="v2-fita-secao" id="pecas" aria-label="Outras peças">
       <div className="v2-wrap"><Cromo n="07" nome="Fora da estante" carimbo="©26" /></div>
-      <ul className="v2-pecas-grade">
-        {ordenada.map((p) => {
-          const foto = pieceCover(p);
-          const destino = pieceDestino(p);
-          return (
-            <li className="v2-peca" key={p.id}>
-              <div className="v2-peca-midia">
-                {foto ? (
-                  <img src={foto} alt={p.title} loading="lazy" decoding="async" draggable="false" />
-                ) : (
-                  /* aria-hidden: o domínio já é lido no pé do card, e repetir
-                     aqui só faz o leitor de tela ouvir duas vezes */
-                  <span className="v2-peca-semfoto" aria-hidden="true">{p.domain || p.title}</span>
-                )}
-              </div>
-              <div className="v2-peca-corpo">
-                <h3 className="v2-peca-tit">{p.title}</h3>
-                {p.desc ? <p className="v2-peca-desc">{p.desc}</p> : null}
-                <p className="v2-peca-pe">
-                  <span className="v2-peca-dom">{p.domain}</span>
-                  {destino ? (
-                    <a
-                      className="v2-peca-link"
-                      href={destino.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      /* o nome do projeto entra no rótulo acessível porque
-                         "Ver no ar" sozinho se repete dezoito vezes na lista
-                         de links do leitor de tela */
-                      aria-label={`${destino.rotulo}: ${p.title}, abre em nova aba`}
-                    >
-                      {destino.rotulo}
-                    </a>
-                  ) : null}
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="v2-fita">
+        <div className="v2-fita-trilho">
+          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, false))}</div>
+          {/* a segunda cópia existe só para o laço não ter costura */}
+          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, true))}</div>
+        </div>
+      </div>
+
+      {semFoto.length ? (
+        <p className="v2-fita-resto">
+          <span className="v2-fita-resto-r">Também passaram por aqui</span>
+          {semFoto.map((p, i) => (
+            <span key={p.id}>
+              {i ? <span aria-hidden="true"> · </span> : " "}
+              {p.title}
+            </span>
+          ))}
+        </p>
+      ) : null}
     </section>
   );
 }
