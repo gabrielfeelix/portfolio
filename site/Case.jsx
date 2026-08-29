@@ -29,7 +29,7 @@ import { useRise, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 /* A gramática de página interna mora no kit desde 29/08, quando /processo
    passou a existir: as mesmas peças montam as duas páginas. */
-import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos } from "./Kit.jsx";
+import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
 import { chapterById } from "./content.js";
 import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
@@ -1278,7 +1278,7 @@ export default function Caso({ id, ir }) {
       <CasoHero cap={cap} />
       {/* Igual à home: o corpo claro é opaco e sobe por cima do hero preso.
           `data-clara` é o que a nav observa para saber quando inverter. */}
-      <div className="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="caso" classe="v2-corpo-claro" data-clara="1">
         {/* A abertura: quem é o projeto, antes de qualquer movimento. */}
         <Ficha cap={cap} />
         <Abertura cap={cap} />
@@ -1310,7 +1310,7 @@ export default function Caso({ id, ir }) {
         <Resultado cap={cap} />
         <Aprendi cap={cap} />
         <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
-      </div>
+      </CampoDeVoo>
     </>
   );
 }

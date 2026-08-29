@@ -253,7 +253,60 @@
   .v2-dobra-in { padding: var(--v2-s6) var(--v2-s3); }
   .v2-dobra[data-largo="1"] .v2-cromo,
   .v2-dobra[data-largo="1"] .v2-cabecalho { padding: 0 var(--v2-s3); }
-  .v2-cabecalho { grid-template-columns: 1fr; align-items: start; }
+  /* `minmax(0, 1fr)` e nao `1fr`: os dois viram uma coluna so, mas `1fr`
+     sozinho e `minmax(auto, 1fr)`, e esse `auto` faz o piso da coluna ser o
+     min-content de quem mora nela. A fileira de ferramentas da dobra 02 tem
+     um trilho de 1456px (as treze marcas, em duas copias para o laco nao ter
+     costura); o `overflow: hidden` dela corta o desenho, mas a largura
+     intrinseca continua sendo reportada para a grade. Com `1fr` a coluna
+     adotava esses 1456px, a grade seguia junto e o celular ganhava mil pixels
+     de arrasto para a direita. A coluna do desktop, logo acima, sempre teve o
+     `minmax(0, ...)` — era so aqui que ele faltava. */
+  .v2-cabecalho { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .v2-cabecalho-dir { padding-bottom: 0; }
   .v2-cromo { gap: var(--v2-s2); }
+}
+
+/* ---------------- o voo ---------------- */
+
+/* A camada do aviao, do tamanho da caixa da pagina.
+
+   `overflow: clip` e nao `hidden`: clip nao cria caixa de rolagem, entao o
+   aviao pode sair pelas bordas sem alargar a pagina, e sem repetir a
+   armadilha do IntersectionObserver anotada em motion.js. O clip fica so
+   nesta camada, que so tem o aviao dentro, e nunca em cima de conteudo.
+
+   `z-index: -1` e a mudanca de 29/08, quando o voo saiu da home e virou de
+   todas as paginas. Antes ele era `0` e ficava atras do conteudo por ordem de
+   DOM, o que so vale entre irmaos POSICIONADOS: na home todas as dobras sao
+   `position: relative`, mas no post e no blog ha bloco em fluxo normal, e
+   sobre esses o aviao passava por cima do texto. Com -1 ele pinta logo depois
+   do fundo do proprio campo e antes de tudo mais, sem obrigar cada pagina a
+   posicionar os filhos dela.
+
+   O campo precisa, entao, de contexto de empilhamento proprio (`z-index` no
+   `.v2-corpo-claro`, `0` aqui), senao o -1 escaparia para tras do fundo da
+   pagina e o aviao sumiria. */
+.v2-voo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+}
+.v2-voo-obj {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+}
+.v2-voo-obj svg { display: block; width: 100%; height: 100%; }
+
+/* O campo das paginas que nao tem corpo claro (blog e post). Sem fundo: o
+   `body` ja e papel, e pintar de novo aqui so criaria mais uma superficie
+   para manter em dia. */
+.v2-voo-campo {
+  position: relative;
+  z-index: 0;
 }

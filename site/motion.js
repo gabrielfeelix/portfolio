@@ -481,6 +481,201 @@ function rotaDoVoo(w, h, tese, alcance) {
   return `${tronco} ${suavizar(P, true)}`;
 }
 
+/* As outras páginas.
+
+   O voo da home foi desenhado em cima de um vazio concreto (a declaração
+   partida da dobra 01) e por isso ele é escrito à mão, curva por curva. As
+   demais páginas não têm esse vazio: elas são coluna de texto e dobras em
+   sequência. Então em vez de copiar o mesmo desenho cinco vezes, cada rota é
+   uma partitura curta de pontos em fração da largura e da rolagem, e a mesma
+   suavização por Catmull-Rom faz o resto.
+
+   Duas manobras compõem todas elas:
+
+   - `em(fx, u)`: passa pela largura `fx` quando a rolagem estiver em `u`. Com
+     `fx` fora de [0, 1] o avião sai da caixa, e a camada de voo tem
+     `overflow: clip` — ninguém vê.
+   - `volta(fx, u, raio)`: o parafuso. Continua descendo enquanto gira, porque
+     a tabela por altura exige Y crescente (ver o comentário dela).
+
+   E a brincadeira que o Gabriel pediu: sair por um lado, dar a volta na tela
+   POR FORA e voltar pelo outro. Isso é só uma sequência de pontos bem
+   afastados dos dois lados com pouca queda entre eles — a travessia atravessa
+   a tela, mas gasta quase nenhuma rolagem. Quem apaga o rastro dela é
+   `tabelaPorAltura`, que esconde o avião entre duas saídas de lados opostos.
+   Ver a regra da cortina lá embaixo. */
+function tecer(w, topo, fim, partitura) {
+  const sobra = fim - topo;
+  const P = [];
+  const em = (fx, u) => P.push([w * fx, topo + sobra * u]);
+  const volta = (fx, u, raio) => {
+    const bx = w * fx;
+    const by = topo + sobra * u;
+    P.push(
+      [bx + raio, by - raio * 0.3],
+      [bx, by - raio * 0.75],
+      [bx - raio, by],
+      [bx, by + raio * 0.75],
+      [bx + raio, by + raio * 1.1],
+    );
+  };
+  /* A volta por fora, em três tempos: afasta, atravessa, aproxima. Os pontos
+     de fora vão a 1,5 largura de distância para que a curva suavizada não
+     reentre na tela antes da hora — o Catmull-Rom mira no ponto seguinte, e
+     com a saída colada na borda a inclinação já dobrava para dentro. */
+  const porFora = (de, u, queda = 0.02) => {
+    const s = de === "esq" ? -1 : 1;
+    const fora = (f, k) => em(s > 0 ? f : 1 - f, u + queda * k);
+    fora(1.16, 0);
+    fora(1.5, 0.5);
+    em(s > 0 ? -0.5 : 1.5, u + queda * 1.1);
+    em(s > 0 ? -0.16 : 1.16, u + queda * 1.9);
+  };
+  partitura({ em, volta, porFora });
+  return suavizar(P);
+}
+
+/* Uma partitura por rota. Cada uma tem um caráter, e o caráter é a página:
+
+   caso      — travessias largas, duas voltas e uma volta por fora no meio da
+                investigação, porque a página é longa e precisa de fôlego;
+   processo  — degraus: pares de pontos quase na mesma largura, que fazem o
+                avião descer reto e virar em ângulo, no vocabulário da página;
+   sobre     — o mais calmo dos cinco, curvas longas e uma volta só;
+   blog      — costura a grade de cards, entra e sai pelos dois lados;
+   post      — mora nas margens da coluna de leitura e nunca cruza o texto no
+                meio: numa página feita para ler, avião no miolo é sujeira. */
+const PARTITURAS = {
+  caso: ({ em, volta, porFora }) => {
+    em(-0.26, 0);
+    em(0.24, 0.045);
+    em(0.72, 0.095);
+    volta(0.58, 0.16, 92);
+    em(0.16, 0.23);
+    porFora("esq", 0.265, 0.016);
+    em(0.84, 0.35);
+    em(0.4, 0.41);
+    em(0.1, 0.47);
+    volta(0.28, 0.535, 88);
+    em(0.74, 0.605);
+    em(0.92, 0.665);
+    em(0.46, 0.725);
+    em(0.12, 0.785);
+    em(0.5, 0.845);
+    em(0.9, 0.9);
+    em(0.42, 0.955);
+    em(-0.28, 1);
+  },
+  processo: ({ em, volta, porFora }) => {
+    em(1.26, 0);
+    em(0.7, 0.04);
+    em(0.66, 0.1);
+    em(0.28, 0.145);
+    em(0.24, 0.205);
+    em(0.72, 0.25);
+    volta(0.6, 0.315, 86);
+    em(0.16, 0.385);
+    em(0.12, 0.445);
+    em(0.6, 0.49);
+    em(0.9, 0.545);
+    porFora("dir", 0.575, 0.016);
+    em(0.2, 0.68);
+    em(0.24, 0.74);
+    em(0.7, 0.785);
+    volta(0.76, 0.85, 80);
+    em(0.3, 0.92);
+    em(0.62, 0.965);
+    em(1.24, 1);
+  },
+  sobre: ({ em, volta, porFora }) => {
+    em(-0.24, 0);
+    em(0.34, 0.06);
+    em(0.86, 0.13);
+    em(0.94, 0.21);
+    em(0.4, 0.28);
+    em(0.1, 0.35);
+    volta(0.22, 0.425, 96);
+    em(0.68, 0.5);
+    em(0.92, 0.565);
+    porFora("dir", 0.6, 0.015);
+    em(0.28, 0.7);
+    em(0.66, 0.77);
+    em(0.88, 0.84);
+    em(0.36, 0.91);
+    em(0.14, 0.96);
+    em(-0.26, 1);
+  },
+  blog: ({ em, volta, porFora }) => {
+    em(1.24, 0);
+    em(0.64, 0.05);
+    em(0.2, 0.11);
+    volta(0.34, 0.185, 84);
+    em(0.8, 0.26);
+    em(0.94, 0.32);
+    porFora("dir", 0.35, 0.014);
+    em(0.32, 0.46);
+    em(0.78, 0.53);
+    em(0.9, 0.6);
+    em(0.44, 0.665);
+    em(0.12, 0.725);
+    volta(0.26, 0.79, 80);
+    em(0.72, 0.86);
+    em(0.9, 0.915);
+    em(0.44, 0.965);
+    em(1.24, 1);
+  },
+  /* Margem esquerda 0.06–0.16, margem direita 0.84–0.94: a coluna de leitura
+     do post fica entre as duas e o avião não passa por baixo dela. */
+  post: ({ em, volta, porFora }) => {
+    em(1.2, 0);
+    em(0.9, 0.06);
+    em(0.86, 0.14);
+    em(0.93, 0.22);
+    em(0.87, 0.3);
+    porFora("dir", 0.335, 0.012);
+    em(0.1, 0.44);
+    em(0.14, 0.52);
+    em(0.07, 0.6);
+    volta(0.12, 0.68, 62);
+    em(0.11, 0.76);
+    em(0.16, 0.84);
+    em(0.09, 0.91);
+    em(0.4, 0.96);
+    em(1.2, 1);
+  },
+};
+
+/* O percurso de uma página que não é a home.
+
+   Duas medidas, e as duas são sobre a ALTURA DE TELA em que o avião voa, não
+   sobre o desenho: `topo` é onde ele entra na janela, e `deriva` é quanto ele
+   escorrega para baixo dela ao longo da página inteira. Como o percurso cai
+   `alcance + deriva` enquanto a página rola `alcance`, a altura dele na tela
+   vai de `topo` a `topo + deriva` e nada mais.
+
+   Elas nasceram de um bug que o Gabriel viu antes de mim: "só está
+   funcionando quando eu scrollo pra trás". A primeira versão entrava a 40px
+   do topo, e voar colado na borda de cima não perdoa atraso — entre o
+   amortecimento da rolagem (useScrollSuave) e a mola do próprio voo, descer
+   depressa atrasa o avião em algumas centenas de pixels, e a página inteira
+   ele passava ACIMA da janela. Só reaparecia na volta, quando o atraso passa
+   a jogar a favor. Medido em 1440x900: -655px na descida do /processo.
+
+   A home nunca teve isso porque o percurso dela nasce ancorado na dobra da
+   tese, que cai no meio da tela (medido: entre 320 e 615). É essa faixa que
+   as outras páginas passam a usar — um terço da janela para cada lado, com
+   teto em pixel para telas muito altas não empurrarem o voo para o rodapé. */
+function rotaDaPagina(variante, w, h, alcance, janela) {
+  const partitura = PARTITURAS[variante];
+  if (!partitura || !(w > 0)) return null;
+  const j = janela > 0 ? janela : 800;
+  const topo = Math.round(Math.min(330, j * 0.34));
+  const deriva = Math.round(Math.min(300, j * 0.3));
+  const fim = alcance > 0 ? topo + alcance + deriva : Math.max(h, topo + 600);
+  return tecer(w, topo, fim, partitura);
+}
+
+
 /* Reparametrização do percurso pelo eixo Y.
 
    `offset-distance` anda em comprimento de arco, e o percurso gasta muito arco
@@ -494,7 +689,7 @@ function rotaDoVoo(w, h, tese, alcance) {
    consequência, que é o que faz ele acompanhar quem está lendo.
 
    Só funciona com Y crescente, e é por isso que as voltas descem. */
-function tabelaPorAltura(d) {
+function tabelaPorAltura(d, w) {
   if (typeof document === "undefined" || !d) return null;
   const NS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(NS, "svg");
@@ -507,6 +702,8 @@ function tabelaPorAltura(d) {
   try { total = path.getTotalLength(); } catch (_) { total = 0; }
   const alturas = [];
   const distancias = [];
+  /* -1 saiu pela esquerda, +1 pela direita, 0 dentro da caixa. */
+  const lados = [];
   if (total > 0) {
     /* Passo mínimo em vez de descartar as amostras que descem.
 
@@ -519,6 +716,7 @@ function tabelaPorAltura(d) {
     const p0 = path.getPointAtLength(0);
     const pf = path.getPointAtLength(total);
     const minimo = Math.max(1, ((pf.y - p0.y) / N) * 0.45);
+    const borda = 24;
     let ultimo = -Infinity;
     for (let i = 0; i <= N; i++) {
       const f = i / N;
@@ -531,6 +729,7 @@ function tabelaPorAltura(d) {
       ultimo = y;
       alturas.push(y);
       distancias.push(f);
+      lados.push(w > 0 && pt.x > w + borda ? 1 : pt.x < -borda ? -1 : 0);
     }
   }
   document.body.removeChild(svg);
@@ -541,10 +740,56 @@ function tabelaPorAltura(d) {
   return {
     entradas: alturas.map((y) => (y - y0) / span),
     saidas: distancias.map((f) => `${(f * 100).toFixed(3)}%`),
+    opacidades: cortina(alturas, lados),
   };
 }
 
-export function useVoo(refCaixa) {
+/* A cortina.
+
+   Fora da caixa o avião já está recortado, então esconder ali não muda nada.
+   O que precisa de cortina é o pedaço do meio: quando ele sai por um lado e
+   volta pelo outro, a travessia passa por cima da tela inteira. Ela é rápida
+   (quase não desce, então quase não gasta rolagem), mas rápida não é
+   invisível — do jeito que estava, o avião piscava atravessando a página.
+
+   A regra tem duas condições, e as duas juntas descrevem exatamente a manobra:
+   os dois trechos fora da caixa estão em lados OPOSTOS, e entre eles o
+   percurso desceu menos que meia janela. Uma travessia de verdade, das que
+   cruzam a página de propósito, desce muito mais que isso e continua visível.
+
+   O corte acontece com o avião já fora da caixa dos dois lados, então não há
+   fade a fazer: ninguém vê ele apagar nem acender. */
+function cortina(alturas, lados) {
+  const op = lados.map((l) => (l === 0 ? 1 : 0));
+  const janela = typeof window !== "undefined" ? window.innerHeight : 800;
+  /* Duas medidas, e vale a menor. Meia janela sozinha bastaria numa pagina
+     longa; numa curta ela e maior que a distancia entre duas manobras
+     legitimas, e a cortina fechava em cima do voo inteiro. 6% do percurso
+     cobre esse caso, porque a travessia por fora sempre custa menos de 2%. */
+  const span = alturas[alturas.length - 1] - alturas[0];
+  const limite = Math.max(40, Math.min(janela * 0.55, span * 0.06));
+  let fimAnterior = -1;
+  let ladoAnterior = 0;
+  for (let i = 0; i < lados.length; i++) {
+    if (lados[i] === 0) continue;
+    const inicio = i;
+    const lado = lados[i];
+    while (i + 1 < lados.length && lados[i + 1] !== 0) i++;
+    if (
+      fimAnterior >= 0 &&
+      ladoAnterior !== 0 &&
+      ladoAnterior !== lado &&
+      alturas[inicio] - alturas[fimAnterior] < limite
+    ) {
+      for (let k = fimAnterior; k <= inicio; k++) op[k] = 0;
+    }
+    fimAnterior = i;
+    ladoAnterior = lados[i];
+  }
+  return op;
+}
+
+export function useVoo(refCaixa, variante = "home") {
   const quieto = useReducedMotion();
   const [caixa, setCaixa] = useState(null);
   useLayoutEffect(() => {
@@ -573,6 +818,7 @@ export function useVoo(refCaixa) {
         w: el.offsetWidth,
         h: el.offsetHeight,
         alcance: el.offsetHeight - window.innerHeight,
+        janela: window.innerHeight,
         tese,
       });
     };
@@ -592,17 +838,27 @@ export function useVoo(refCaixa) {
   /* mola frouxa: sem ela o avião trava e destrava junto com o passo da roda do
      mouse, e voo aos solavancos denuncia que é scroll, não voo */
   const suave = useSpring(scrollYProgress, { stiffness: 80, damping: 24, mass: 0.5 });
-  const caminho = useMemo(
-    () => (caixa && caixa.w > 0 ? rotaDoVoo(caixa.w, caixa.h, caixa.tese, caixa.alcance) : null),
-    [caixa],
+  const caminho = useMemo(() => {
+    if (!caixa || !(caixa.w > 0)) return null;
+    return variante === "home"
+      ? rotaDoVoo(caixa.w, caixa.h, caixa.tese, caixa.alcance)
+      : rotaDaPagina(variante, caixa.w, caixa.h, caixa.alcance, caixa.janela);
+  }, [caixa, variante]);
+  const tabela = useMemo(
+    () => tabelaPorAltura(caminho, caixa ? caixa.w : 0),
+    [caminho, caixa],
   );
-  const tabela = useMemo(() => tabelaPorAltura(caminho), [caminho]);
   const distancia = useTransform(
     suave,
     tabela ? tabela.entradas : [0, 1],
     tabela ? tabela.saidas : ["0%", "100%"],
   );
-  return { caminho, distancia, quieto };
+  const opacidade = useTransform(
+    suave,
+    tabela ? tabela.entradas : [0, 1],
+    tabela ? tabela.opacidades : [1, 1],
+  );
+  return { caminho, distancia, opacidade, quieto };
 }
 
 /* 15c. na altura

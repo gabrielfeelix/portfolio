@@ -28,11 +28,10 @@ import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } fr
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
-  useVoo,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
-import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa } from "./Kit.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
@@ -518,27 +517,6 @@ function Numeros() {
 
 /* --------------------------------------------------------------- 7. processo */
 
-/* O avião. Fica atrás de tudo e recortado na caixa do corpo: assim ele passa
-   por baixo das dobras e nunca empurra a largura da página. */
-function Voo({ caminho, distancia }) {
-  return (
-    <div className="v2-voo" aria-hidden="true">
-      <motion.div
-        className="v2-voo-obj"
-        style={{
-          offsetPath: `path("${caminho}")`,
-          offsetDistance: distancia,
-          offsetRotate: "auto",
-        }}
-      >
-        <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
-        </svg>
-      </motion.div>
-    </div>
-  );
-}
-
 /* A dobra do método, agora um índice.
 
    O que tinha antes eram três colunas em escada com uma ilustração de 320x200
@@ -816,8 +794,6 @@ function Fita() {
 /* -------------------------------------------------------------------- home */
 
 export default function Home({ ir }) {
-  const corpo = useRef(null);
-  const voo = useVoo(corpo);
   const rolar = () => {
     const alvo = document.getElementById("casos");
     if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -828,11 +804,7 @@ export default function Home({ ir }) {
       <Hero paraCasos={rolar} />
       {/* Tudo que vem depois do hero é opaco e sobe por cima dele. Sem este
           fundo, o hero preso aparece por baixo das dobras claras. */}
-      <div className="v2-corpo-claro" data-clara="1" ref={corpo}>
-        {/* primeiro filho de propósito: entre posicionados de mesmo nível quem
-            vem antes no DOM pinta antes, então o avião fica atrás das dobras
-            sem precisar empilhar z-index em todas elas */}
-        {voo.caminho && !voo.quieto ? <Voo {...voo} /> : null}
+      <CampoDeVoo variante="home" classe="v2-corpo-claro" data-clara="1">
         <Passagem />
         <Declaracao />
         <Marquee />
@@ -847,7 +819,7 @@ export default function Home({ ir }) {
         <OndeEstive />
         <Sobre />
         <Fita />
-      </div>
+      </CampoDeVoo>
     </>
   );
 }

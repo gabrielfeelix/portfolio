@@ -12,7 +12,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir } from "./motion.js";
+import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir, useVoo } from "./motion.js";
 import { Label, Regua } from "./Shell.jsx";
 import { casos } from "./content.js";
 import { CAPAS_CHEIAS } from "./copy.js";
@@ -55,6 +55,58 @@ export function Relogio({ cidade = "MARINGÁ" }) {
       {"  "}
       {cidade} )
     </p>
+  );
+}
+
+/* -------------------------------------------------------------------- voo */
+
+/* O aviãozinho vermelho.
+
+   Fica atrás de tudo e recortado na caixa da página: assim ele passa por
+   baixo das dobras, nunca empurra a largura e some quando sai pela borda.
+
+   Nasceu na home, dentro da dobra da tese, e desde 29/08 é de todas as
+   páginas — cada uma com o seu percurso. O que muda por página é só a
+   `variante`; o desenho de cada uma mora em motion.js, em PARTITURAS. */
+export function Voo({ caminho, distancia, opacidade }) {
+  return (
+    <div className="v2-voo" aria-hidden="true">
+      <motion.div
+        className="v2-voo-obj"
+        style={{
+          offsetPath: `path("${caminho}")`,
+          offsetDistance: distancia,
+          offsetRotate: "auto",
+          opacity: opacidade,
+        }}
+      >
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
+/* A caixa que o voo mede e por onde ele é recortado.
+
+   Cada página embrulha o corpo dela aqui, e não ganha nível de DOM por isso:
+   quem já tinha um corpo claro (home, caso, processo, sobre) passa
+   `classe="v2-corpo-claro"` e continua sendo exatamente o mesmo elemento de
+   antes, agora com o avião como primeiro filho. Blog e post, que não têm
+   corpo claro, ficam com `.v2-voo-campo` — só posição e contexto de
+   empilhamento, sem fundo e sem `data-clara`, para a nav não mudar de ideia
+   sobre quando inverter. */
+export function CampoDeVoo({ variante, classe = "v2-voo-campo", children, ...resto }) {
+  const caixa = React.useRef(null);
+  const voo = useVoo(caixa, variante);
+  return (
+    <div className={classe} ref={caixa} {...resto}>
+      {/* primeiro filho de propósito: junto com `z-index: -1` na camada, é o
+          que garante que ele pinte por baixo de todo o conteúdo da página */}
+      {voo.caminho && !voo.quieto ? <Voo {...voo} /> : null}
+      {children}
+    </div>
   );
 }
 

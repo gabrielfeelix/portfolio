@@ -37,6 +37,7 @@ import {
 import { Pill, Label } from "./Shell.jsx";
 import {
   Relogio, Dobra, Cabecalho, DuasCores, Presa, Linha, CapaCapitulo, GradeCasos,
+  CampoDeVoo,
 } from "./Kit.jsx";
 import { COMPANIES, CERTS, CONTATO, AUTOR, VOL } from "./content.js";
 import { FERRAMENTAS } from "./ferramentas.js";
@@ -554,7 +555,7 @@ export default function Sobre({ ir }) {
       <SobreHero />
       {/* O corpo claro é opaco e sobe por cima do hero preso. `data-clara` é o
           que a nav observa para saber quando voltar ao preto. */}
-      <div className="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="sobre" classe="v2-corpo-claro" data-clara="1">
         <Ficha />
         <Metodo />
         <Citacao />
@@ -569,7 +570,7 @@ export default function Sobre({ ir }) {
         <Adiante />
 
         <GradeCasos cromo="O trabalho" titulo="Os casos" ir={ir} />
-      </div>
+      </CampoDeVoo>
     </>
   );
 }

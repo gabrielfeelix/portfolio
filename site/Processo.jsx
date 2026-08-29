@@ -30,7 +30,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { useRise, useMaskLine, useCobertura } from "./motion.js";
 import { Label, Pill } from "./Shell.jsx";
-import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos } from "./Kit.jsx";
+import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
 import { PROCESSO, casos, CONTATO } from "./content.js";
 import { PROCESSO_CURTO } from "./copy.js";
 
@@ -249,7 +249,7 @@ export default function Processo({ ir }) {
   return (
     <>
       <ProcessoHero />
-      <div className="v2-corpo-claro" data-clara="1">
+      <CampoDeVoo variante="processo" classe="v2-corpo-claro" data-clara="1">
         <Ficha />
 
         <Dobra
@@ -287,7 +287,7 @@ export default function Processo({ ir }) {
 
         <Fecho />
         <GradeCasos cromo="Continue" titulo="Os casos" ir={ir} />
-      </div>
+      </CampoDeVoo>
     </>
   );
 }
