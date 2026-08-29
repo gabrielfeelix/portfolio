@@ -28,7 +28,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { useRise, useSubir, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import { chapterById, proximoCaso } from "./content.js";
-import { CAPAS_CHEIAS } from "./copy.js";
+import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
 /* ============================================================ utilidades */
 
@@ -227,8 +227,9 @@ function CasoHero({ cap }) {
   const capa = useCobertura();
   const quieto = useReducedMotion();
   const links = cap.links || {};
-  /* a mesma arte que abre o caso na home. Ver CAPAS_CHEIAS em v2/copy.js. */
-  const fundo = CAPAS_CHEIAS[cap.id];
+  /* A arte dedicada do hero, quando existe; na falta dela, a mesma capa que
+     abre o caso na home. Ver CAPAS_CASO e CAPAS_CHEIAS em v2/copy.js. */
+  const fundo = CAPAS_CASO[cap.id] || CAPAS_CHEIAS[cap.id];
 
   /* Parallax da capa.
 

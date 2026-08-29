@@ -102,6 +102,22 @@ export const CAPAS_CHEIAS = {
   "oderco-revenda": "/volume/assets/projetos/oderco-revenda/capa-home.webp",
 };
 
+/* A capa do hero da página de caso.
+
+   O cartão da home e o hero do caso pedem arte diferente. O cartão é 16/11 e
+   pequeno, então quer aparelho grande e cena curta; o hero é a tela inteira em
+   16/9, e a mesma arte ampliada vira aparelho gigante com a cena espremida.
+
+   Quem estiver aqui manda no hero. Quem não estiver cai em CAPAS_CHEIAS, que
+   é como as quatro páginas funcionavam até agora.
+
+   Formato: 16/9, zona segura entre 20% e 85% na horizontal e 8% e 80% na
+   vertical, e o canto inferior esquerdo (45% x 40%) livre de aparelho, que é
+   onde o título gigante entra. */
+export const CAPAS_CASO = {
+  pcyes: "/volume/assets/projetos/pcyes/capa-caso.webp",
+};
+
 /* As marcas das empresas, em cor, para a dobra 05.
 
    volume/data.jsx aponta COMPANIES[].logo para a versão monocromática, que é
