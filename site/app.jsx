@@ -31,8 +31,8 @@ import { Cursor } from "./Cursor.jsx";
    Era tudo sob /v2 até 29/08, quando esta versão virou o site — a antiga
    saiu do ar e ficou no repositório, em legado-v1/. Os endereços que ela
    tinha indexados são redirecionados pelo vercel.json, não aqui. */
-function rotaAtual() {
-  const p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+function rotaDe(caminho) {
+  const p = String(caminho || "").replace(/^\/+/, "").replace(/\/+$/, "");
   if (!p || p === "index.html") return { tipo: "home" };
   if (p === "processo") return { tipo: "processo" };
   if (p === "sobre") return { tipo: "sobre" };
@@ -42,6 +42,31 @@ function rotaAtual() {
   const m = p.match(/^case\/([\w-]+)$/);
   if (m) return { tipo: "caso", id: m[1] };
   return { tipo: "404", path: p };
+}
+
+function rotaAtual() {
+  return rotaDe(window.location.pathname);
+}
+
+/* O nome que a lâmina da travessia mostra na parada.
+
+   É o nome da SEÇÃO, e não o título da página: quem clicou já sabe o que
+   clicou, e o que a parada precisa dizer é "chegou". Por isso o caso mostra o
+   nome do caso — que é a única troca de página em que o destino não estava
+   escrito no link — e o post mostra só `TEXTO`, porque o título de um post não
+   cabe numa linha de 12px em caixa alta. */
+function nomeDaRota(rota) {
+  if (!rota) return null;
+  if (rota.tipo === "home") return "INÍCIO";
+  if (rota.tipo === "processo") return "PROCESSO";
+  if (rota.tipo === "sobre") return "SOBRE";
+  if (rota.tipo === "blog") return "NOTAS";
+  if (rota.tipo === "post") return "TEXTO";
+  if (rota.tipo === "caso") {
+    const c = chapterById(rota.id);
+    return String((c && c.title) || "CASO").toUpperCase();
+  }
+  return null;
 }
 
 /* Link antigo da V1 com hash de rota (#/cap/pcyes) continua chegando de
@@ -64,7 +89,7 @@ function useRota(atravessar) {
        popstate chega, então por 390ms a barra de endereço aponta para a página
        nova enquanto a antiga ainda está na tela — atrás da cortina, onde
        ninguém vê. */
-    const onPop = () => atravessar(() => setRota(rotaAtual()));
+    const onPop = () => atravessar(() => setRota(rotaAtual()), nomeDaRota(rotaAtual()));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [atravessar]);
@@ -121,7 +146,7 @@ function useRota(atravessar) {
         if (++quadros < 12) requestAnimationFrame(busca);
       };
       requestAnimationFrame(busca);
-    });
+    }, nomeDaRota(rotaDe(caminho)));
   }, [atravessar]);
 
   return [rota, ir];
@@ -175,7 +200,7 @@ function useSobreEscuro(rota) {
 }
 
 function App() {
-  const { fase, atravessar } = useTravessia();
+  const { fase, rotulo, atravessar } = useTravessia();
   const [rota, ir] = useRota(atravessar);
   const [erro, setErro] = useState(null);
   const sobreEscuro = useSobreEscuro(rota);
@@ -284,7 +309,7 @@ function App() {
   try {
     return (
       <div className="v2-shell">
-        <Cortina fase={fase} />
+        <Cortina fase={fase} rotulo={rotulo} />
         <Cursor />
         <Nav sobreEscuro={sobreEscuro} ir={ir} />
         <main>

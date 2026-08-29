@@ -119,18 +119,39 @@ html[data-decolando] { overflow: hidden; }
 
 /* --- a saída, em dois tempos ---
 
-   1. `fim`: a noite cresce até engolir a tela. O vermelho some por baixo dela e
-      o cromo apaga, então o que sobra é uma tela preta — que é exatamente a cor
-      do hero, e por isso a emenda com a home não pisca.
-   2. `fora`: essa tela preta sai para cima com o corte na diagonal, e por baixo
-      dela aparece o site. É o "corte vermelho de baixo para cima" que o Gabriel
-      pediu, tocado ao contrário: quem sobe é a tela, e o vermelho fica sendo a
-      borda que passa. */
-#v2-decolagem[data-fase="fim"] .v2-dec-palco {
+   1. `fim`: a noite cresce até engolir a tela. O cromo apaga e o fundo vira
+      ink, então o que sobra é uma tela preta — que é a cor do hero, e por isso
+      a emenda com a home não pisca.
+   2. `fora`: a ÍRIS. Um buraco redondo abre no meio dessa tela preta e cresce
+      até passar das bordas, e o site aparece por dentro dele.
+
+   A primeira versão do segundo tempo era outra: a tela preta subia inteira com
+   o corte na diagonal. Ela morreu por dois defeitos que o Gabriel viu de
+   primeira ("ao invés de abrir a página ele volta pra uma tela meio que de
+   100%, e aí tem um corte seco").
+
+   O primeiro era bug, e é a razão do bloco abaixo listar `fim` E `fora` em toda
+   regra: as animações do primeiro tempo estavam presas ao seletor
+   `[data-fase="fim"]`, então na troca para `fora` o seletor deixava de casar e
+   o `forwards` ia junto. Resultado: o disco voltava de scale(9) para scale(1) e
+   o contador reaparecia mostrando 100. A tela "de 100%" era literalmente o
+   contador ressuscitando.
+
+   O segundo é de desenho, e sobrevive à correção do primeiro: uma placa que
+   sobe é a MESMA figura da cortina de troca de página. Repetida na abertura ela
+   deixa de ser assinatura e vira transição padrão, e depois de um zoom radial
+   ela lê como emenda, não como continuação. A íris continua o gesto que já
+   estava em curso — o círculo cresce e não para de crescer, só que a partir do
+   meio o que cresce é o site. O anel vermelho corre na borda do buraco, e é a
+   última coisa vermelha da decolagem. */
+#v2-decolagem[data-fase="fim"] .v2-dec-palco,
+#v2-decolagem[data-fase="fora"] .v2-dec-palco {
   animation: v2-dec-engole 520ms cubic-bezier(.65, 0, .35, 1) forwards;
 }
 #v2-decolagem[data-fase="fim"] .v2-dec-num,
-#v2-decolagem[data-fase="fim"] .v2-dec-rot {
+#v2-decolagem[data-fase="fim"] .v2-dec-rot,
+#v2-decolagem[data-fase="fora"] .v2-dec-num,
+#v2-decolagem[data-fase="fora"] .v2-dec-rot {
   animation: v2-dec-apaga 200ms linear forwards;
 }
 @keyframes v2-dec-engole {
@@ -140,43 +161,88 @@ html[data-decolando] { overflow: hidden; }
   to { opacity: 0; }
 }
 
-/* A tela inteira vira ink no fim do primeiro tempo, para o segundo tempo ter o
-   que levantar. O atraso é o da própria animação de engolir. */
+/* A tela inteira vira ink no fim do primeiro tempo. O atraso é o da própria
+   animação de engolir: antes disso o vermelho ainda está aparecendo pelas
+   quinas que o disco não cobriu. */
 #v2-decolagem[data-fase="fim"],
 #v2-decolagem[data-fase="fora"] {
   background: var(--v2-dec-ink);
   transition: background 1ms 300ms;
 }
 
+/* A íris é uma máscara: transparente por dentro do círculo, opaca por fora, e
+   o que anima é o TAMANHO da caixa da máscara. Com `closest-side` numa caixa
+   quadrada de lado S, o raio do buraco é S/2 — é essa conta que casa a máscara
+   com o anel, que mede 100vmax de raio e escala junto (S = 200vmax x escala).
+
+   150vmax de lado dá 75vmax de raio. A metade da diagonal de uma janela é
+   sempre menos que isso: em 1440x900 são 849px contra 1080, e em 2560x1440 são
+   1468 contra 1920. O buraco sempre termina fora da tela.
+
+   Se a máscara não existir no navegador, a decolagem só não abre em círculo: o
+   JS remove o elemento no mesmo instante de qualquer jeito, então o pior caso é
+   o corte seco, e não uma tela vermelha presa. */
 #v2-decolagem[data-fase="fora"] {
-  animation: v2-dec-sobe 640ms cubic-bezier(.76, 0, .24, 1) forwards;
+  -webkit-mask-image: radial-gradient(circle closest-side, transparent 99%, #000 100%);
+          mask-image: radial-gradient(circle closest-side, transparent 99%, #000 100%);
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  animation: v2-dec-iris 780ms cubic-bezier(.62, 0, .3, 1) forwards;
 }
-/* A borda vermelha que acompanha a subida. Ela é a peça que faz a saída ler
-   como corte e não como página deslizando. */
-#v2-decolagem[data-fase="fora"]::after {
-  content: "";
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -2px;
-  height: 10px;
-  background: var(--v2-dec-accent);
+@keyframes v2-dec-iris {
+  from { -webkit-mask-size: 0 0;              mask-size: 0 0; }
+  to   { -webkit-mask-size: 150vmax 150vmax;  mask-size: 150vmax 150vmax; }
 }
-@keyframes v2-dec-sobe {
-  from { transform: translateY(0) skewY(0deg); }
-  to   { transform: translateY(-118%) skewY(-5deg); visibility: hidden; }
+
+/* O anel que corre na borda do buraco.
+
+   É irmão da decolagem, e não filho, porque um elemento com máscara recorta os
+   descendentes junto: filho, o anel seria cortado ao meio pela própria borda em
+   que ele deveria correr.
+
+   `vector-effect: non-scaling-stroke` é o que segura o traço em 3px enquanto o
+   círculo escala de 0 a 0.75. Com borda de CSS a espessura escalaria junto, e
+   no começo da animação o anel teria décimos de pixel — ou seja não existiria
+   justamente no quadro em que o buraco nasce. */
+#v2-dec-aro {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 200vmax;
+  height: 200vmax;
+  margin: -100vmax 0 0 -100vmax;
+  z-index: 1000;
+  pointer-events: none;
+  transform: scale(0);
+  opacity: 0;
+}
+#v2-dec-aro svg { display: block; width: 100%; height: 100%; overflow: visible; }
+#v2-dec-aro circle { fill: none; stroke: var(--v2-dec-accent); stroke-width: 3; }
+
+#v2-decolagem[data-fase="fora"] ~ #v2-dec-aro {
+  animation: v2-dec-aro 780ms cubic-bezier(.62, 0, .3, 1) forwards;
+}
+@keyframes v2-dec-aro {
+  0%   { transform: scale(0);    opacity: 1; }
+  72%  { opacity: 1; }
+  100% { transform: scale(.75);  opacity: 0; }
 }
 
 /* ---------------- a cortina de troca de página ---------------- */
 
-/* Duas placas na diagonal, uma atrás da outra, com 90ms entre elas.
+/* UMA lâmina vermelha na diagonal, subindo e nunca voltando.
 
-   Fechar: sobe a vermelha, sobe a preta logo atrás — a tela acaba preta.
-   Abrir:  sai a preta, sai a vermelha logo atrás — o último quadro antes do
-           site é uma faixa vermelha saindo por cima.
+   Ela cobre a tela, para 220ms e continua subindo até sair. O `skewY` é o que
+   corta em diagonal, e o `inset: -20% -12%` é a sobra que impede a ponta do
+   skew de descobrir o canto da janela.
 
-   O skew é o que faz a placa cortar em diagonal, e o `inset: -20% -12%` é a
-   sobra que impede a ponta do skew de descobrir o canto da janela. */
+   O porquê de ser uma e não três está em Travessia.jsx.
+
+   As duas fases usam o MESMO sentido de translate — 115% para 0, e de 0 para
+   -118%. É esse detalhe que faz a lâmina ler como um objeto que passou pela
+   tela, e não como uma cortina que fechou e reabriu. */
 .v2-cortina {
   position: fixed;
   inset: -20% -12%;
@@ -187,61 +253,75 @@ html[data-decolando] { overflow: hidden; }
 .v2-cortina-placa {
   position: absolute;
   inset: 0;
+  background: var(--v2-dec-accent);
   transform: translateY(115%) skewY(-5deg);
   will-change: transform;
 }
-.v2-cortina-placa.is-accent { background: var(--v2-dec-accent); }
-.v2-cortina-placa.is-ink { background: var(--v2-dec-ink); }
 
-/* O avião atravessa enquanto a tela está coberta. É o mesmo bicho da rolagem e
-   da decolagem: se a troca de página tivesse mascote própria, seriam três. */
-.v2-cortina-aviao {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 34px;
-  height: 34px;
-  margin-top: -17px;
-  opacity: 0;
+.v2-cortina[data-fase="fecha"] .v2-cortina-placa,
+.v2-cortina[data-fase="parada"] .v2-cortina-placa {
+  transform: translateY(0) skewY(-5deg);
+  transition: transform 340ms cubic-bezier(.66, 0, .28, 1);
 }
-.v2-cortina-aviao svg { display: block; width: 100%; height: 100%; }
+.v2-cortina[data-fase="abre"] .v2-cortina-placa {
+  transform: translateY(-118%) skewY(-5deg);
+  transition: transform 380ms cubic-bezier(.72, 0, .26, 1);
+}
+
+/* O nome de onde se está indo, na parada.
+
+   Geist Mono em caixa alta e entre parênteses é a voz de cromo do site — a
+   mesma do `( _01 )` de toda dobra e do `( DECOLANDO )` da tela de
+   carregamento. Branco sobre accent mede 4.51:1, que passa AA.
+
+   Ele entra subindo 10px e sai subindo mais 10: o texto anda no mesmo sentido
+   da lâmina, então a parada não interrompe o movimento, só o desacelera. */
+.v2-cortina-rot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin: 0;
+  text-align: center;
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(10px);
+}
+/* O nome toca na PARADA, e não num atraso contado do clique. É a mesma razão
+   dos relógios encadeados em Travessia.jsx: se ele tocasse por atraso fixo,
+   numa página pesada ele tocaria inteiro durante o congelamento da montagem —
+   ou seja, ninguém veria. */
+.v2-cortina[data-fase="parada"] .v2-cortina-rot {
+  animation: v2-cortina-nome-entra 160ms var(--v2-ease) forwards;
+}
+@keyframes v2-cortina-nome-entra {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* E sai JUNTO com a lâmina, não depois dela.
+
+   Medido na versão anterior: com uma saída própria de 420ms contados da
+   parada, o nome ainda marcava opacity 0,99 quando a lâmina já estava em
+   translateY(-989px) — ou seja, texto branco flutuando sobre a página nova já
+   revelada. Ele é mais rápido que a saída (160 contra 400) e sobe junto, então
+   some antes de a borda da lâmina passar por ele. */
+.v2-cortina[data-fase="abre"] .v2-cortina-rot {
+  animation: v2-cortina-nome-sai 160ms var(--v2-ease) forwards;
+}
+@keyframes v2-cortina-nome-sai {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-18px); }
+}
 
 /* Quem pediu para nada se mover não ganha exceção por ser bonito: a troca é
    seca, como sempre foi. Vale para as duas peças. */
 @media (prefers-reduced-motion: reduce) {
   #v2-decolagem { display: none; }
+  #v2-dec-aro { display: none; }
   .v2-cortina { display: none; }
-}
-
-/* --- os dois tempos da cortina ---
-
-   Fechar: a vermelha sai na frente, a preta entra 90ms atrás. Como a preta é o
-   segundo filho, ela pinta por cima, e a tela acaba preta.
-   Abrir: a ordem inverte. A preta sai primeiro e descobre a vermelha, que sai
-   logo depois — o último quadro antes da página nova é uma faixa vermelha
-   subindo. */
-.v2-cortina[data-fase="fecha"] .v2-cortina-placa {
-  transform: translateY(0) skewY(-5deg);
-  transition: transform 300ms cubic-bezier(.65, 0, .35, 1);
-}
-.v2-cortina[data-fase="fecha"] .is-ink { transition-delay: 90ms; }
-
-.v2-cortina[data-fase="abre"] .v2-cortina-placa {
-  transform: translateY(-118%) skewY(-5deg);
-  transition: transform 320ms cubic-bezier(.65, 0, .35, 1);
-}
-.v2-cortina[data-fase="abre"] .is-accent { transition-delay: 90ms; }
-
-/* O avião é BRANCO aqui, e é a única vez no site em que ele não é vermelho.
-   Ele atravessa por cima das duas placas, e vermelho sobre a placa vermelha é
-   um avião invisível — foi a primeira coisa que o Gabriel levantou sobre esta
-   tela. Branco lê nas duas: 4.51:1 sobre o accent, 19.67:1 sobre o ink. */
-.v2-cortina[data-fase="fecha"] .v2-cortina-aviao {
-  animation: v2-cortina-voo 640ms 150ms cubic-bezier(.34, 0, .5, 1) forwards;
-}
-@keyframes v2-cortina-voo {
-  0%   { opacity: 0; transform: translate3d(-14vw, 18px, 0) rotate(-7deg); }
-  18%  { opacity: 1; }
-  82%  { opacity: 1; }
-  100% { opacity: 0; transform: translate3d(114vw, -18px, 0) rotate(-7deg); }
 }

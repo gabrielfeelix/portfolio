@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AVIAO_D } from "./motion.js";
 
 /* A TRAVESSIA: o corte entre uma página e outra.
 
@@ -8,47 +7,67 @@ import { AVIAO_D } from "./motion.js";
    aparece, e não há nenhum momento em que alguém entenda que ATRAVESSOU. Era
    isso que o Gabriel descrevia como "jogar a tela do nada".
 
-   O desenho é o mesmo da decolagem, e de propósito: duas placas na diagonal
-   subindo de baixo para cima, a vermelha na frente e a preta 90ms atrás, e o
-   avião de papel atravessando enquanto a tela está coberta. Quem viu o site
-   carregar já viu esse corte uma vez; ao trocar de página ele reconhece.
+   O desenho é UMA lâmina vermelha na diagonal, subindo de baixo para cima e
+   sem nunca voltar: ela cobre a tela, para um instante, e continua subindo até
+   sair. Um gesto só, numa direção só.
+
+   A primeira versão tinha três peças — uma placa vermelha, uma preta 90ms
+   atrás, e o avião de papel atravessando por cima. O Gabriel reprovou por
+   descrição, e a descrição é o diagnóstico: "uma lâmina vermelha em diagonal,
+   aí aparece o mouse indo e aí aparece outra lâmina". Três coisas em menos de
+   um segundo não lêem como um gesto, lêem como uma fila; e o avião branco
+   passando reto foi lido como PONTEIRO, não como avião — o que é justo, porque
+   é o que um triângulo claro atravessando a tela parece.
+
+   Ficou a lâmina. O que acontece na parada é o nome de onde se está indo, em
+   Geist Mono, que é a voz de cromo do site inteiro: a pausa deixa de ser espera
+   e passa a informar. Nenhuma peça nova de vocabulário — nem mascote, nem
+   segunda cor, nem outro movimento.
 
    A rota só troca com a tela COBERTA. É por isso que a troca passa a ser
    assíncrona e que este arquivo existe em vez de duas linhas de CSS: sem esse
    sincronismo o leitor vê a página nova nascer por trás de uma cortina que
    ainda está subindo, que é pior que não ter cortina.
 
-   Os tempos, em ms a partir do clique:
+   Os quatro tempos, e o segundo deles NÃO tem duração fixa:
 
-       0   a vermelha começa a subir      (300ms)
-      90   a preta começa a subir         (300ms)
-     150   o avião entra pela esquerda    (640ms)
-     390   TELA COBERTA — a rota troca e o scroll volta ao topo
-     520   a preta sai para cima          (320ms)
-     610   a vermelha sai atrás dela      (320ms)
-     980   a cortina sai do DOM
+     fecha   a lâmina sobe até cobrir                      340ms
+     (troca) a rota muda, o scroll volta ao topo, e o React monta a página
+             nova — o que trava a linha principal por quanto tempo essa página
+             precisar
+     parada  a lâmina fica, e o nome do destino entra e sai  200ms, contados
+             DEPOIS de a página nova ter pintado
+     abre    a lâmina continua subindo até sair             380ms
 
-   Um segundo é longo para um clique de menu, e é intencional: o corte é o
-   único momento do site em que a pessoa não está lendo nada, e encurtar para
-   400ms transformaria o corte num piscão — o efeito que ele existe para
-   evitar. Quem pediu para nada se mover não vê nada disso (ver o final). */
+   A primeira versão marcava os quatro no relógio, todos a partir do clique, e
+   é por isso que o Gabriel via um corte seco no fim. Medido quadro a quadro:
+   entre cobrir e voltar a andar a página congela 490ms montando o destino, os
+   três relógios seguintes vencem TODOS dentro desse congelamento, e quando a
+   linha principal volta o `abre` e a limpeza acontecem quase juntos — a lâmina
+   saía do DOM em translateY(-132px) de -1487, ou seja com 9% da saída feita.
+   O resto era corte.
 
-const FECHA = 390;   // tela coberta
-const ABRE = 520;    // a cortina começa a sair
-const LIMPA = 980;   // e some do DOM
+   Agora eles são encadeados: a parada só começa a contar quando a página nova
+   pintou (dois requestAnimationFrame depois da troca), e a limpeza só é
+   marcada quando a saída começa. Travar mais atrasa o conjunto e nunca corta
+   nenhum tempo pela metade.
 
-export function Cortina({ fase }) {
+   O efeito colateral é o certo: numa página pesada a lâmina fica parada mais
+   tempo, e é exatamente para cobrir isso que uma cortina de troca de página
+   existe.
+
+   Quem pediu para nada se mover não vê nada disso (ver o final). */
+
+const FECHA = 340;    // a subida até cobrir
+const PARADA = 200;   // o mínimo de parada, contado depois da pintura
+const SAI = 380;      // a saída
+
+export function Cortina({ fase, rotulo }) {
   if (!fase) return null;
   return (
     <div className="v2-cortina" data-fase={fase} aria-hidden="true">
-      {/* a ordem importa: a preta é a segunda e por isso pinta por cima */}
-      <span className="v2-cortina-placa is-accent" />
-      <span className="v2-cortina-placa is-ink" />
-      <span className="v2-cortina-aviao">
-        <svg viewBox="0 0 24 24" focusable="false">
-          <path d={AVIAO_D} fill="#fff" />
-        </svg>
-      </span>
+      <span className="v2-cortina-placa" />
+      {rotulo ? <p className="v2-cortina-rot">( {rotulo} )</p> : null}
     </div>
   );
 }
@@ -58,12 +77,13 @@ export function Cortina({ fase }) {
    travessia, ele é ignorado: dois cortes empilhados viram tremeliques. */
 export function useTravessia() {
   const [fase, setFase] = useState(null);
+  const [rotulo, setRotulo] = useState(null);
   const ocupado = useRef(false);
   const relogios = useRef([]);
 
   useEffect(() => () => relogios.current.forEach(clearTimeout), []);
 
-  const atravessar = useCallback((troca) => {
+  const atravessar = useCallback((troca, nome) => {
     if (typeof troca !== "function") return;
 
     /* Sem cortina para quem pediu para nada se mover, e sem cortina se o
@@ -89,14 +109,37 @@ export function useTravessia() {
        seguinte vira `fecha`. Dois requestAnimationFrame e não um porque o
        React ainda precisa pintar entre os dois. */
     const marca = (fn, ms) => relogios.current.push(setTimeout(fn, ms));
+    /* Dois quadros de folga, e a razão é a mesma nas três vezes em que este
+       par aparece aqui: pedir ao React que pinte um estado antes de mudar para
+       o próximo. */
+    const doisQuadros = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+
+    setRotulo(nome || null);
     setFase("pronta");
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    doisQuadros(() => {
       setFase("fecha");
-      marca(troca, FECHA);
-      marca(() => setFase("abre"), ABRE);
-      marca(() => { setFase(null); ocupado.current = false; }, LIMPA);
-    }));
+      marca(() => {
+        troca();
+        /* Daqui em diante o relógio é encadeado, e não absoluto: a parada só
+           começa quando a página nova apareceu. */
+        doisQuadros(() => {
+          setFase("parada");
+          /* e mais dois: a parada tem que estar NA TELA para os 220ms serem
+             220ms de parada vista. Medido sem isto: a parada pintada durou
+             80ms, porque o relógio começava junto com o setState e o React
+             gastava o resto pintando. */
+          doisQuadros(() => marca(() => {
+            setFase("abre");
+            marca(() => {
+              setFase(null);
+              setRotulo(null);
+              ocupado.current = false;
+            }, SAI + 60);
+          }, PARADA));
+        });
+      }, FECHA);
+    });
   }, []);
 
-  return { fase, atravessar };
+  return { fase, rotulo, atravessar };
 }

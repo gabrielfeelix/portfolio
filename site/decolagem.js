@@ -30,9 +30,11 @@
   var tela = document.getElementById("v2-decolagem");
   if (!tela) return;
 
+  var aro = document.getElementById("v2-dec-aro");
   var solta = function () {
     raiz.removeAttribute("data-decolando");
     if (tela && tela.parentNode) tela.parentNode.removeChild(tela);
+    if (aro && aro.parentNode) aro.parentNode.removeChild(aro);
   };
 
   /* Rede de segurança, registrada ANTES de qualquer coisa que possa falhar.
@@ -115,7 +117,8 @@
       tela.setAttribute("data-fase", "fora");
       raiz.setAttribute("data-pronto", "1");
       raiz.removeAttribute("data-decolando");
-      setTimeout(solta, 700);
+      /* 780ms é a íris; a folga de 60 é para o último quadro dela existir */
+      setTimeout(solta, 840);
     }, 520);
   };
 

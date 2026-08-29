@@ -875,12 +875,31 @@ export function useVoo(refCaixa, variante = "home") {
         const [dx, dy] = dentro(dec);
         tese = { x: dx, y: dy, w: dec.offsetWidth, h: dec.offsetHeight };
       }
-      setCaixa({
+      const nova = {
         w: el.offsetWidth,
         h: el.offsetHeight,
         alcance: el.offsetHeight - window.innerHeight,
         janela: window.innerHeight,
         tese,
+      };
+      /* Só troca de caixa se algum NÚMERO mudou.
+
+         O ResizeObserver dispara várias vezes durante o carregamento (imagem
+         que chega, fonte que troca, dobra que revela), e quase sempre com as
+         mesmas medidas. Sem esta comparação cada disparo criava um objeto novo,
+         o que refazia o percurso e, atrás dele, a amostragem de 420 pontos —
+         166ms cada, por nada. Comparar por valor é o que faz o custo acontecer
+         uma vez por medida de verdade. */
+      setCaixa((velha) => {
+        if (
+          velha &&
+          velha.w === nova.w && velha.h === nova.h &&
+          velha.alcance === nova.alcance && velha.janela === nova.janela &&
+          !velha.tese === !nova.tese &&
+          (!nova.tese || (velha.tese.x === nova.tese.x && velha.tese.y === nova.tese.y &&
+                          velha.tese.w === nova.tese.w && velha.tese.h === nova.tese.h))
+        ) return velha;
+        return nova;
       });
     };
     medir();
@@ -905,10 +924,28 @@ export function useVoo(refCaixa, variante = "home") {
       ? rotaDoVoo(caixa.w, caixa.h, caixa.tese, caixa.alcance)
       : rotaDaPagina(variante, caixa.w, caixa.h, caixa.alcance, caixa.janela);
   }, [caixa, variante]);
-  const tabela = useMemo(
-    () => tabelaPorAltura(caminho, caixa ? caixa.w : 0),
-    [caminho, caixa],
-  );
+  /* A tabela sai do render e vai para um efeito, um quadro depois.
+
+     Ela amostra 420 pontos de um percurso de vinte mil pixels, e isso custa
+     166ms medidos numa janela de 1440x900. Dentro do `useMemo` esse custo caía
+     no MESMO quadro em que a página nova monta, e era ele — não o React — o
+     maior quadro travado da troca de rota: 169ms medidos. Numa página com
+     cortina isso aparece como a lâmina congelando no meio do gesto.
+
+     Fora do render, a página nova pinta primeiro e a tabela chega no quadro
+     seguinte. O preço é um quadro sem avião, e ele é invisível: o avião é
+     fundo, mora atrás de todo o conteúdo, e no primeiro quadro de uma página
+     nova ninguém rolou nada ainda — ele estaria no começo do percurso de
+     qualquer forma. */
+  const [tabela, setTabela] = useState(null);
+  useEffect(() => {
+    if (!caminho) { setTabela(null); return undefined; }
+    let vivo = true;
+    const id = requestAnimationFrame(() => {
+      if (vivo) setTabela(tabelaPorAltura(caminho, caixa ? caixa.w : 0));
+    });
+    return () => { vivo = false; cancelAnimationFrame(id); };
+  }, [caminho, caixa]);
   const distancia = useTransform(
     suave,
     tabela ? tabela.entradas : [0, 1],
