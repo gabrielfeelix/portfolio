@@ -15,6 +15,7 @@ import Sobre from "./Sobre.jsx";
 import Blog from "./Blog.jsx";
 import Post from "./Post.jsx";
 import { porSlug } from "./blog.js";
+import { Cortina, useTravessia } from "./Travessia.jsx";
 
 /* --- roteamento ---
    /            → home
@@ -54,14 +55,18 @@ function traduzirHashLegado() {
 }
 traduzirHashLegado();
 
-function useRota() {
+function useRota(atravessar) {
   const [rota, setRota] = useState(rotaAtual);
 
   useEffect(() => {
-    const onPop = () => setRota(rotaAtual());
+    /* Voltar e avançar também passam pela cortina. A URL já mudou quando o
+       popstate chega, então por 390ms a barra de endereço aponta para a página
+       nova enquanto a antiga ainda está na tela — atrás da cortina, onde
+       ninguém vê. */
+    const onPop = () => atravessar(() => setRota(rotaAtual()));
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
-  }, []);
+  }, [atravessar]);
 
   /* `href` pode trazer âncora: "/#casos" é a home parando na dobra dos
      casos, que é o que a nav pede em "Casos".
@@ -84,32 +89,39 @@ function useRota() {
     const mesmaPagina = window.location.pathname === caminho;
     if (mesmaPagina && !ancora) return;
 
+    /* Âncora dentro da própria página não é travessia: ninguém troca de
+       página, e cobrir a tela para rolar 2000px seria mentir sobre o que
+       aconteceu. Continua sendo rolagem suave, como sempre foi. */
     if (mesmaPagina) {
       window.history.replaceState(null, "", href);
-    } else {
-      window.history.pushState(null, "", href);
-      setRota(rotaAtual());
-    }
-
-    if (!ancora) {
-      window.scrollTo({ top: 0, behavior: "instant" });
+      const alvo = document.getElementById(ancora);
+      if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
-    let quadros = 0;
-    const busca = () => {
-      const alvo = document.getElementById(ancora);
-      if (alvo) {
-        alvo.scrollIntoView({
-          behavior: mesmaPagina ? "smooth" : "instant",
-          block: "start",
-        });
+    /* Trocar de página, sim. A troca roda com a tela já coberta pela cortina;
+       ver os tempos em Travessia.jsx. */
+    atravessar(() => {
+      window.history.pushState(null, "", href);
+      setRota(rotaAtual());
+
+      if (!ancora) {
+        window.scrollTo({ top: 0, behavior: "instant" });
         return;
       }
-      if (++quadros < 12) requestAnimationFrame(busca);
-    };
-    requestAnimationFrame(busca);
-  }, []);
+
+      let quadros = 0;
+      const busca = () => {
+        const alvo = document.getElementById(ancora);
+        if (alvo) {
+          alvo.scrollIntoView({ behavior: "instant", block: "start" });
+          return;
+        }
+        if (++quadros < 12) requestAnimationFrame(busca);
+      };
+      requestAnimationFrame(busca);
+    });
+  }, [atravessar]);
 
   return [rota, ir];
 }
@@ -162,7 +174,8 @@ function useSobreEscuro(rota) {
 }
 
 function App() {
-  const [rota, ir] = useRota();
+  const { fase, atravessar } = useTravessia();
+  const [rota, ir] = useRota(atravessar);
   const [erro, setErro] = useState(null);
   const sobreEscuro = useSobreEscuro(rota);
   // Amortecimento do scroll da página inteira. Ver a primitiva 7 em motion.js.
@@ -270,6 +283,7 @@ function App() {
   try {
     return (
       <div className="v2-shell">
+        <Cortina fase={fase} />
         <Nav sobreEscuro={sobreEscuro} ir={ir} />
         <main>
           {rota.tipo === "home" ? <Home ir={ir} />
@@ -292,3 +306,13 @@ function App() {
 
 const alvo = document.getElementById("v2-root");
 if (alvo) createRoot(alvo).render(<App />);
+
+/* O marco mais pesado da tela de carregamento (0.55) é este: o app montou.
+   Um quadro depois do render, para o aviso sair quando a primeira pintura já
+   aconteceu e não quando o React só prometeu que vai acontecer. Ver
+   site/decolagem.js. */
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    if (typeof window.__v2Pronto === "function") window.__v2Pronto();
+  });
+});

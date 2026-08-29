@@ -268,8 +268,37 @@ async function buildCss() {
   await writeFile(path.join(DIST, "site.css"), out.code);
 }
 
+/* A decolagem entra INLINE no HTML, e não como arquivo externo.
+
+   Ela é a tela de carregamento: desenho (decolagem.html), estilo
+   (carregando.css) e motor (decolagem.js). Se qualquer uma das três peças
+   viesse por <link> ou <script src>, a tela de carregamento só apareceria
+   depois de um round-trip de rede — ou seja, ela chegaria tarde exatamente na
+   conexão lenta em que ela é útil, e não apareceria nada na conexão rápida em
+   que ela é dispensável. Inline, ela está pintada no primeiro quadro.
+
+   O CSS carrega junto a cortina de troca de página, que é do bundle. Vale o
+   mesmo motivo por tabela: são poucos KB e a cortina não pode chegar depois do
+   primeiro clique. */
+async function inline() {
+  const ler = (n) => readFile(path.join(ROOT, "site", n), "utf8");
+  const [css, js, html] = await Promise.all([
+    ler("carregando.css"),
+    ler("decolagem.js"),
+    ler("decolagem.html"),
+  ]);
+  const cssMin = (await esbuild.transform(css, { loader: "css", minify: true })).code;
+  const jsMin = (await esbuild.transform(js, { loader: "js", minify: true, target: ["es2015"] })).code;
+  return {
+    estilo: `<style>${cssMin}</style>`,
+    // o motor vai DEPOIS do desenho: ele procura #v2-decolagem no DOM
+    corpo: `${html}<script>${jsMin}</script>`,
+  };
+}
+
 async function buildHtml() {
   const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
+  const dec = await inline();
   // A ordem é o contrato: React global, depois i18n e data (que publicam em
   // window), só então o app, que lê window.CHAPTERS. `defer` preserva a ordem
   // entre eles e não trava o parser.
@@ -281,6 +310,8 @@ async function buildHtml() {
     `<script defer src="/app.js"></script>`,
   ].join("\n");
   const html = tpl
+    .replace("<!--DECOLAGEM-CSS-->", dec.estilo)
+    .replace("<!--DECOLAGEM-->", dec.corpo)
     .replace("<!--SCRIPTS-->", tags)
     .replace("<!--ANALYTICS-->", analyticsSnippet());
   await writeFile(path.join(DIST, "index.html"), html);
@@ -330,12 +361,20 @@ if (process.argv.includes("--serve")) {
   // engano caro de depurar: o JS recarrega, o CSS fica velho.
   {
     const dir = path.join(ROOT, "site");
+    // As três peças da decolagem entram inline no index.html (ver `inline`),
+    // então editar qualquer uma delas pede um HTML novo, não um CSS novo.
+    const daDecolagem = new Set(["carregando.css", "decolagem.js", "decolagem.html"]);
     let pendente = null;
     watch(dir, (_ev, arquivo) => {
-      if (!arquivo || !arquivo.endsWith(".css")) return;
+      if (!arquivo) return;
+      const dec = daDecolagem.has(arquivo);
+      if (!dec && !arquivo.endsWith(".css")) return;
       clearTimeout(pendente);
       pendente = setTimeout(() => {
-        buildCss().then(() => console.log("[watch] site.css atualizado")).catch((e) => console.error(e));
+        const tarefa = dec
+          ? buildHtml().then(() => console.log("[watch] index.html atualizado"))
+          : buildCss().then(() => console.log("[watch] site.css atualizado"));
+        tarefa.catch((e) => console.error(e));
       }, 60);
     });
   }

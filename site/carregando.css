@@ -1,0 +1,247 @@
+/* A decolagem e a cortina: o que o site mostra ENTRE duas coisas.
+
+   Duas peças, um vocabulário só. A decolagem é a tela de carregamento da
+   primeira visita; a cortina é o corte diagonal que troca de página. As duas
+   usam o mesmo par de cores (accent e ink), o mesmo corte na diagonal e o
+   mesmo avião, porque senão seriam dois efeitos e não uma linguagem.
+
+   Este arquivo é INJETADO no <head> do HTML, não concatenado em site.css. A
+   razão é a decolagem: uma tela de carregamento que só pinta depois de baixar
+   uma folha de estilo externa chega tarde exatamente na conexão em que ela
+   seria útil. Ver buildHtml em build.mjs. */
+
+/* Os tokens são repetidos aqui em valor cru, e é a única exceção do site à
+   regra "nenhum valor cru fora de tokens.css". O motivo é o mesmo: este bloco
+   precisa funcionar antes de /site.css existir, e portanto antes de :root ter
+   sido definido. Os três valores são copiados de tokens.css e nada mais. */
+:root {
+  --v2-dec-accent: #E4231B;
+  --v2-dec-ink: #0B0B0C;
+}
+
+/* Enquanto a decolagem está no ar a página não rola: a barra de rolagem
+   aparecendo por trás de uma tela cheia de vermelho é a única coisa que
+   denuncia que tem site atrás. */
+html[data-decolando] { overflow: hidden; }
+
+#v2-decolagem {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: var(--v2-dec-accent);
+  /* a mono é a voz do cromo no site inteiro, e o contador é cromo */
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #fff;
+  /* nada de transição aqui: quem anima a saída é `data-fase` */
+  will-change: transform;
+}
+
+.v2-dec-palco {
+  position: relative;
+  width: min(58vmin, 420px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.v2-dec-orbe { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.v2-dec-noite { fill: var(--v2-dec-ink); }
+
+.v2-dec-estrelas circle { fill: #fff; animation: v2-dec-pisca var(--d, 4s) ease-in-out var(--a, 0s) infinite; }
+/* Só o 50% está escrito: sem o 0% e o 100%, o navegador usa o valor que o
+   elemento já tem, que é o `opacity` de cada estrela no HTML. Escrever
+   `0% { opacity: inherit }` herdaria do grupo e apagaria a variação. */
+@keyframes v2-dec-pisca {
+  50% { opacity: .1; }
+}
+
+/* O trilho existe só para o rastro ler como arco. Se ele some, o rastro vira
+   um risco solto no escuro e o progresso deixa de ter um "quanto falta". */
+.v2-dec-trilho {
+  fill: none;
+  stroke: rgba(255, 255, 255, .11);
+  stroke-width: 1;
+}
+
+/* O rastro do avião É a barra de progresso. Não há outra: o número embaixo diz
+   o mesmo em dígito, e o arco diz em desenho. */
+.v2-dec-rastro {
+  fill: none;
+  stroke: var(--v2-dec-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transform: rotate(-90deg);       /* dasharray começa às 3h; a órbita, às 12h */
+  transform-origin: 120px 120px;
+  transition: stroke-dashoffset 240ms linear;
+}
+
+.v2-dec-nave {
+  transform-origin: 120px 120px;
+  transition: transform 240ms linear;
+}
+
+/* O vento. Os riscos nascem colados na cauda e escorrem para trás, o que dá
+   velocidade a um avião que, no quadro dele, está parado. */
+.v2-dec-vento line {
+  opacity: .5;
+  animation: v2-dec-vento 1.05s var(--a, 0s) linear infinite;
+}
+@keyframes v2-dec-vento {
+  0%   { opacity: 0;  transform: translateX(4px); }
+  25%  { opacity: .6; }
+  100% { opacity: 0;  transform: translateX(-16px); }
+}
+
+/* O contador, no centro da noite. Branco sobre ink, não sobre o vermelho:
+   branco/accent mede 4.51:1 e passaria raspando; branco/ink mede 19.67:1. */
+.v2-dec-num {
+  position: relative;
+  margin: 0;
+  font-size: clamp(20px, 4.4vmin, 32px);
+  font-weight: 500;
+  letter-spacing: .14em;
+  font-variant-numeric: tabular-nums;   /* senão o número treme ao contar */
+}
+
+.v2-dec-rot {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  color: rgba(255, 255, 255, .78);
+}
+
+/* --- a saída, em dois tempos ---
+
+   1. `fim`: a noite cresce até engolir a tela. O vermelho some por baixo dela e
+      o cromo apaga, então o que sobra é uma tela preta — que é exatamente a cor
+      do hero, e por isso a emenda com a home não pisca.
+   2. `fora`: essa tela preta sai para cima com o corte na diagonal, e por baixo
+      dela aparece o site. É o "corte vermelho de baixo para cima" que o Gabriel
+      pediu, tocado ao contrário: quem sobe é a tela, e o vermelho fica sendo a
+      borda que passa. */
+#v2-decolagem[data-fase="fim"] .v2-dec-palco {
+  animation: v2-dec-engole 520ms cubic-bezier(.65, 0, .35, 1) forwards;
+}
+#v2-decolagem[data-fase="fim"] .v2-dec-num,
+#v2-decolagem[data-fase="fim"] .v2-dec-rot {
+  animation: v2-dec-apaga 200ms linear forwards;
+}
+@keyframes v2-dec-engole {
+  to { transform: scale(9); }
+}
+@keyframes v2-dec-apaga {
+  to { opacity: 0; }
+}
+
+/* A tela inteira vira ink no fim do primeiro tempo, para o segundo tempo ter o
+   que levantar. O atraso é o da própria animação de engolir. */
+#v2-decolagem[data-fase="fim"],
+#v2-decolagem[data-fase="fora"] {
+  background: var(--v2-dec-ink);
+  transition: background 1ms 300ms;
+}
+
+#v2-decolagem[data-fase="fora"] {
+  animation: v2-dec-sobe 640ms cubic-bezier(.76, 0, .24, 1) forwards;
+}
+/* A borda vermelha que acompanha a subida. Ela é a peça que faz a saída ler
+   como corte e não como página deslizando. */
+#v2-decolagem[data-fase="fora"]::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -2px;
+  height: 10px;
+  background: var(--v2-dec-accent);
+}
+@keyframes v2-dec-sobe {
+  from { transform: translateY(0) skewY(0deg); }
+  to   { transform: translateY(-118%) skewY(-5deg); visibility: hidden; }
+}
+
+/* ---------------- a cortina de troca de página ---------------- */
+
+/* Duas placas na diagonal, uma atrás da outra, com 90ms entre elas.
+
+   Fechar: sobe a vermelha, sobe a preta logo atrás — a tela acaba preta.
+   Abrir:  sai a preta, sai a vermelha logo atrás — o último quadro antes do
+           site é uma faixa vermelha saindo por cima.
+
+   O skew é o que faz a placa cortar em diagonal, e o `inset: -20% -12%` é a
+   sobra que impede a ponta do skew de descobrir o canto da janela. */
+.v2-cortina {
+  position: fixed;
+  inset: -20% -12%;
+  z-index: 900;
+  pointer-events: none;
+}
+
+.v2-cortina-placa {
+  position: absolute;
+  inset: 0;
+  transform: translateY(115%) skewY(-5deg);
+  will-change: transform;
+}
+.v2-cortina-placa.is-accent { background: var(--v2-dec-accent); }
+.v2-cortina-placa.is-ink { background: var(--v2-dec-ink); }
+
+/* O avião atravessa enquanto a tela está coberta. É o mesmo bicho da rolagem e
+   da decolagem: se a troca de página tivesse mascote própria, seriam três. */
+.v2-cortina-aviao {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin-top: -17px;
+  opacity: 0;
+}
+.v2-cortina-aviao svg { display: block; width: 100%; height: 100%; }
+
+/* Quem pediu para nada se mover não ganha exceção por ser bonito: a troca é
+   seca, como sempre foi. Vale para as duas peças. */
+@media (prefers-reduced-motion: reduce) {
+  #v2-decolagem { display: none; }
+  .v2-cortina { display: none; }
+}
+
+/* --- os dois tempos da cortina ---
+
+   Fechar: a vermelha sai na frente, a preta entra 90ms atrás. Como a preta é o
+   segundo filho, ela pinta por cima, e a tela acaba preta.
+   Abrir: a ordem inverte. A preta sai primeiro e descobre a vermelha, que sai
+   logo depois — o último quadro antes da página nova é uma faixa vermelha
+   subindo. */
+.v2-cortina[data-fase="fecha"] .v2-cortina-placa {
+  transform: translateY(0) skewY(-5deg);
+  transition: transform 300ms cubic-bezier(.65, 0, .35, 1);
+}
+.v2-cortina[data-fase="fecha"] .is-ink { transition-delay: 90ms; }
+
+.v2-cortina[data-fase="abre"] .v2-cortina-placa {
+  transform: translateY(-118%) skewY(-5deg);
+  transition: transform 320ms cubic-bezier(.65, 0, .35, 1);
+}
+.v2-cortina[data-fase="abre"] .is-accent { transition-delay: 90ms; }
+
+/* O avião é BRANCO aqui, e é a única vez no site em que ele não é vermelho.
+   Ele atravessa por cima das duas placas, e vermelho sobre a placa vermelha é
+   um avião invisível — foi a primeira coisa que o Gabriel levantou sobre esta
+   tela. Branco lê nas duas: 4.51:1 sobre o accent, 19.67:1 sobre o ink. */
+.v2-cortina[data-fase="fecha"] .v2-cortina-aviao {
+  animation: v2-cortina-voo 640ms 150ms cubic-bezier(.34, 0, .5, 1) forwards;
+}
+@keyframes v2-cortina-voo {
+  0%   { opacity: 0; transform: translate3d(-14vw, 18px, 0) rotate(-7deg); }
+  18%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(114vw, -18px, 0) rotate(-7deg); }
+}

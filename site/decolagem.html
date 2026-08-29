@@ -1,0 +1,85 @@
+<!-- A DECOLAGEM: a tela de carregamento.
+
+     Ela mora aqui, em HTML servido, e nao no bundle de propósito. Uma tela de
+     carregamento que so aparece depois que o JavaScript carregou chega tarde
+     justamente na conexao em que ela seria util. Assim ela esta pintada no
+     primeiro quadro, antes de React, antes de data.js, antes das fontes.
+
+     O desenho: fundo vermelho chapado, e no meio a noite — um disco preto com
+     estrelas. Dentro dele o aviao de papel do site da UMA volta, deixando um
+     rastro vermelho atras de si. Quando o rastro fecha o circulo, o site
+     chegou. E essa a barra de progresso: nao ha outra.
+
+     O vermelho e o mesmo --v2-accent do aviao que cruza a rolagem, e o disco e
+     o mesmo --v2-ink do hero. Nada de cor nova entra por aqui. -->
+<div id="v2-decolagem" aria-hidden="true" data-fase="voo">
+  <div class="v2-dec-palco">
+    <svg class="v2-dec-orbe" viewBox="0 0 240 240" focusable="false" aria-hidden="true">
+      <!-- a noite -->
+      <circle class="v2-dec-noite" cx="120" cy="120" r="96"/>
+      <g class="v2-dec-estrelas">
+      <circle cx="49.6" cy="99.0" r="0.8" opacity="0.45" style="--d:4.6s;--a:1.2s"/>
+      <circle cx="195.9" cy="82.9" r="0.6" opacity="0.49" style="--d:3.1s;--a:3.8s"/>
+      <circle cx="127.8" cy="34.5" r="1.0" opacity="0.85" style="--d:4.9s;--a:0.1s"/>
+      <circle cx="112.8" cy="93.2" r="0.9" opacity="0.29" style="--d:2.8s;--a:3.0s"/>
+      <circle cx="129.4" cy="197.0" r="1.2" opacity="0.74" style="--d:2.7s;--a:3.4s"/>
+      <circle cx="122.7" cy="57.6" r="0.8" opacity="0.8" style="--d:2.8s;--a:2.7s"/>
+      <circle cx="152.8" cy="194.1" r="1.4" opacity="0.73" style="--d:3.2s;--a:1.7s"/>
+      <circle cx="126.0" cy="82.7" r="0.7" opacity="0.68" style="--d:3.4s;--a:1.6s"/>
+      <circle cx="90.8" cy="55.8" r="1.3" opacity="0.68" style="--d:4.4s;--a:1.3s"/>
+      <circle cx="149.0" cy="83.3" r="0.6" opacity="0.57" style="--d:3.5s;--a:2.4s"/>
+      <circle cx="84.3" cy="160.0" r="1.5" opacity="0.49" style="--d:5.5s;--a:4.0s"/>
+      <circle cx="154.3" cy="195.6" r="1.3" opacity="0.37" style="--d:3.9s;--a:0.7s"/>
+      <circle cx="115.2" cy="36.2" r="1.3" opacity="0.7" style="--d:5.2s;--a:3.3s"/>
+      <circle cx="125.6" cy="67.8" r="1.2" opacity="0.24" style="--d:3.1s;--a:1.9s"/>
+      <circle cx="119.4" cy="66.2" r="1.7" opacity="0.49" style="--d:3.7s;--a:2.3s"/>
+      <circle cx="92.4" cy="201.0" r="1.1" opacity="0.3" style="--d:3.5s;--a:2.1s"/>
+      <circle cx="137.9" cy="175.9" r="1.4" opacity="0.35" style="--d:5.1s;--a:0.3s"/>
+      <circle cx="113.6" cy="145.6" r="1.1" opacity="0.69" style="--d:4.7s;--a:3.8s"/>
+      <circle cx="141.6" cy="181.0" r="1.4" opacity="0.55" style="--d:5.0s;--a:0.8s"/>
+      <circle cx="51.2" cy="101.3" r="1.1" opacity="0.67" style="--d:4.1s;--a:3.9s"/>
+      <circle cx="127.7" cy="77.2" r="1.6" opacity="0.46" style="--d:3.9s;--a:3.7s"/>
+      <circle cx="73.1" cy="164.2" r="0.9" opacity="0.45" style="--d:4.9s;--a:1.8s"/>
+      <circle cx="140.5" cy="202.0" r="0.8" opacity="0.38" style="--d:3.2s;--a:1.2s"/>
+      <circle cx="78.4" cy="145.5" r="1.5" opacity="0.52" style="--d:4.6s;--a:0.9s"/>
+      <circle cx="144.4" cy="190.7" r="1.0" opacity="0.51" style="--d:4.8s;--a:3.1s"/>
+      <circle cx="115.3" cy="191.8" r="1.6" opacity="0.41" style="--d:3.5s;--a:0.5s"/>
+      <circle cx="83.6" cy="155.6" r="1.5" opacity="0.3" style="--d:2.5s;--a:0.3s"/>
+      <circle cx="68.3" cy="143.5" r="1.4" opacity="0.28" style="--d:3.4s;--a:0.1s"/>
+      <circle cx="94.5" cy="194.1" r="0.6" opacity="0.74" style="--d:5.2s;--a:2.7s"/>
+      <circle cx="76.4" cy="133.2" r="1.3" opacity="0.5" style="--d:5.2s;--a:1.9s"/>
+      <circle cx="136.4" cy="153.4" r="1.7" opacity="0.51" style="--d:4.9s;--a:1.4s"/>
+      <circle cx="183.2" cy="126.7" r="1.0" opacity="0.23" style="--d:4.4s;--a:1.7s"/>
+      <circle cx="96.3" cy="41.6" r="1.6" opacity="0.34" style="--d:5.0s;--a:0.2s"/>
+      <circle cx="188.6" cy="120.3" r="0.9" opacity="0.71" style="--d:4.1s;--a:2.4s"/>
+      <circle cx="79.1" cy="154.6" r="0.9" opacity="0.82" style="--d:2.8s;--a:2.1s"/>
+      <circle cx="69.2" cy="143.0" r="1.3" opacity="0.49" style="--d:5.3s;--a:3.9s"/>
+      <circle cx="54.0" cy="100.0" r="1.6" opacity="0.43" style="--d:2.8s;--a:3.3s"/>
+      <circle cx="106.8" cy="62.8" r="1.2" opacity="0.45" style="--d:4.1s;--a:1.5s"/>
+      </g>
+      <!-- o trilho da orbita, quase invisivel: ele so existe para o rastro
+           ter onde ser lido como arco e nao como risco solto -->
+      <circle class="v2-dec-trilho" cx="120" cy="120" r="74"/>
+      <!-- o rastro. stroke-dasharray e a circunferencia (2*pi*74 = 464.96) e
+           o dashoffset e o que o JS anda. Girado -90 para comecar no topo. -->
+      <circle class="v2-dec-rastro" cx="120" cy="120" r="74"
+              stroke-dasharray="464.96" stroke-dashoffset="464.96"/>
+      <!-- o aviao, no topo da orbita. Quem gira e este grupo, em torno do
+           centro; o aviao ja nasce apontando para a direita, que e a tangente
+           no topo de uma orbita horaria. -->
+      <g class="v2-dec-nave">
+        <g transform="translate(120 46) scale(.85) translate(-12 -12)">
+          <!-- o vento: tres riscos curtos atras da cauda -->
+          <g class="v2-dec-vento" stroke="#fff" stroke-width="1.4" stroke-linecap="round" fill="none">
+            <line x1="-2" y1="7"  x2="-13" y2="7"  style="--a:0s"/>
+            <line x1="-1" y1="12" x2="-17" y2="12" style="--a:.18s"/>
+            <line x1="-2" y1="17" x2="-12" y2="17" style="--a:.36s"/>
+          </g>
+          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="#E4231B"/>
+        </g>
+      </g>
+    </svg>
+    <p class="v2-dec-num"><span id="v2-dec-n">000</span></p>
+  </div>
+  <p class="v2-dec-rot">( DECOLANDO )</p>
+</div>

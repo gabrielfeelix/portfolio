@@ -58,8 +58,25 @@
       href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Geist+Mono:wght@400;500&display=swap">
 
 <link rel="stylesheet" href="/site.css">
+
+<!-- A tela de carregamento entra INLINE, estilo e motor, e por isso está
+     pintada no primeiro quadro — antes de /site.css, antes das fontes, antes
+     do bundle. Uma tela de carregamento que depende do carregamento chega
+     tarde justamente em quem precisa dela. Ver `inline` em build.mjs. -->
+<!--DECOLAGEM-CSS-->
 </head>
 <body>
+<!-- `data-decolando` trava a rolagem enquanto a tela está no ar, e sai junto
+     com ela. Fica escrito aqui, e não pelo script, para valer no primeiro
+     quadro: um frame de página rolável atrás do vermelho já denuncia o truque.
+     O próprio motor tira o atributo em prefers-reduced-motion. -->
+<script>document.documentElement.setAttribute("data-decolando","1")</script>
+<!--DECOLAGEM-->
+<!-- Sem JavaScript a tela nunca sairia: quem a remove é o motor dela. O site
+     inteiro depende de JS para renderizar, então aqui não se perde nada além
+     do vermelho. -->
+<noscript><style>#v2-decolagem{display:none}</style></noscript>
+
 <div id="v2-root"></div>
 
 <!-- Ordem obrigatória: React global, depois i18n e data (que publicam em
