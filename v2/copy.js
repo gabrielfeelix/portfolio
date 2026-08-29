@@ -99,4 +99,5 @@ export const CAPAS_CHEIAS = {
   pcyes: "/volume/assets/projetos/pcyes/capa-home.webp",
   "locarmais-conciliacao": "/volume/assets/projetos/locarmais/capa-home.webp",
   odex: "/volume/assets/projetos/odex/capa-home.webp",
+  "oderco-revenda": "/volume/assets/projetos/oderco-revenda/capa-home.webp",
 };
