@@ -663,6 +663,32 @@ const CHAPTERS = [
         "Quando o time forçava uma conciliação manual, o motivo se perdia. Ninguém depois sabia por que aquele lançamento tinha sido fechado com diferença.",
       ],
     },
+    /* As telas do fluxo de conciliação. Cada uma declara a própria
+       proporção, medida no arquivo, porque o painel nasce em retrato e
+       forçar 16/9 aqui cortaria a tabela. */
+    figuras: {
+      conciliacao: { src: "/volume/assets/projetos/locarmais/s1-conciliacao.webp", ar: "1610/1257",
+        alt: "Tela de conciliação com os totais no topo e a fila de lançamentos abaixo",
+        legenda: "O módulo abre na fila de divergentes, com a diferença acumulada em destaque logo acima dela." },
+      origem: { src: "/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp", ar: "717/987",
+        alt: "Painel de origem dos dados, com o registro da plataforma ao lado do registro do gateway",
+        legenda: "O registro da plataforma e o do gateway lado a lado, com contrato, taxa esperada, valor líquido previsto e data prevista de repasse. A conferência acontece na tela, sem abrir dois sistemas." },
+      detalhe: { src: "/volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", ar: "717/805",
+        alt: "Detalhe de um lançamento conciliado, com histórico de autor e horário",
+        legenda: "O histórico guarda autor e horário de cada conciliação automática, importação de extrato e ajuste manual." },
+      importar: { src: "/volume/assets/projetos/locarmais/importar-1-origens.webp", ar: "550/805",
+        alt: "Modal de importação de extrato com período, duas origens e o upload de cada arquivo",
+        legenda: "O usuário sobe os extratos de vários adquirentes numa operação só, cada origem com o seu arquivo." },
+      auto: { src: "/volume/assets/projetos/locarmais/importar-2-resultado.webp", ar: "550/805",
+        alt: "Resultado da conciliação automática, separado em conciliados, divergentes e não conciliados",
+        legenda: "O consolidado que a importação devolve: quantos conciliaram sozinhos, quantos divergiram e quantos ficaram pendentes, com exportação em CSV de cada grupo." },
+      lote: { src: "/volume/assets/projetos/locarmais/lote-1-selecao.webp", ar: "884/1006",
+        alt: "Conciliação em lote na etapa de seleção, com a lista de movimentos e a escolha de gateway e extrato",
+        legenda: "A conciliação em lote pega o que a automática não fechou: a pessoa marca os movimentos e aponta o gateway e o extrato de origem." },
+      forcar: { src: "/volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp", ar: "925/1112",
+        alt: "Tela de forçar conciliação, com o campo de motivo em lista fechada",
+        legenda: "Fechar com diferença pede justificativa em lista fechada: taxa ou tarifa, pagamento fracionado, diferença de data, arredondamento do adquirente, outros." },
+    },
     decisoes: [
       { d: "Cinco status, uma linguagem comum", r: "porque o time já usava essas ideias com nomes diferentes entre as pessoas. Conciliado, não conciliado, divergente, em disputa e ignorado: fixar o vocabulário na interface acabou com a ambiguidade nas conversas do dia a dia." },
       { d: "O topo responde antes de a pessoa perguntar", r: "porque previsto, valor líquido, diferença acumulada e percentual conciliado são o que se olha primeiro. A diferença acumulada aparece em destaque junto da contagem de divergentes, porque é ela que dispara a ação." },
@@ -672,20 +698,39 @@ const CHAPTERS = [
       { d: "Histórico com rastro completo", r: "porque em módulo financeiro responder 'quem mexeu nisso e por quê' é requisito: conciliação automática, importação de extrato e ajuste manual guardam autor e horário." },
       { d: "Importação com múltiplas origens", r: "porque o usuário sobe os extratos de vários adquirentes numa operação só e recebe o consolidado: quantos conciliaram sozinhos, quantos divergiram e quantos ficaram pendentes, com exportação em CSV de cada grupo." },
     ],
+    /* A progressão que a decisão 03 descreve em uma linha e a página nunca
+       mostrou. Cada caminho só recebe o que o anterior não fechou, então
+       ela se lê de cima para baixo como o esforço humano subindo. */
+    ponte: {
+      k: "Os três caminhos", t: "Do mais barato ao mais caro em esforço humano",
+      buraco: "A maior parte dos lançamentos fecha sozinha, e o tempo do time ia embora procurando a minoria divergente no meio da maioria correta.",
+      p: ["O esforço da pessoa fica reservado para onde ele é realmente necessário. Cada etapa abaixo só recebe o que a anterior não conseguiu fechar."],
+      passos: [
+        { k: "A entrada", t: "Todos os adquirentes na mesma operação",
+          p: "Cada adquirente informa no seu próprio formato de extrato. A importação aceita várias origens na mesma operação, com período e arquivo por origem.",
+          fig: "importar" },
+        { k: "Caminho 01", t: "Conciliação automática ao importar",
+          p: "O sistema compara o extrato com os lançamentos e devolve o consolidado já separado: o que fechou sozinho, o que divergiu e o que ficou pendente. Cada grupo sai em CSV.",
+          fig: "auto" },
+        { k: "Caminho 02", t: "Em lote, para o que sobra",
+          p: "O que a automática não fechou vai para a seleção em lote, onde a pessoa trata vários movimentos de uma vez apontando o gateway e o extrato de origem.",
+          fig: "lote" },
+        { k: "Caminho 03", t: "Individual forçada, com motivo obrigatório",
+          p: "O que exige julgamento humano fecha um a um, e fechar com diferença pede justificativa em lista fechada. É a decisão de que mais me orgulho no módulo: a exceção era um buraco no processo e virou dado.",
+          fig: "forcar" },
+      ],
+    },
     solucao: {
       t: "Conciliar é achar o que não bate",
       p: ["O módulo abre na fila de divergentes, com a diferença acumulada em destaque logo acima dela.",
           "No mesmo sistema desenhei os painéis de monitoramento usados pela operação e pela diretoria: carteira classificada por comportamento, aproveitamento de contratos aprovados contra pagos, metas por representante e churn do período. A mesma lógica se aplica: o painel abre no estado crítico, com filtro rápido, e a tabela detalhada fica logo abaixo para quem precisa investigar."],
-      slots: 2,
-      /* Telas reais do módulo. Cada uma declara a PRÓPRIA proporção: o
-         painel nasce no formato do arquivo, então print em retrato cabe
-         inteiro sem tarja e sem corte. `meia` põe dois lado a lado. */
-      shots: [
-        { src: "/volume/assets/projetos/locarmais/s1-conciliacao.webp",        ar: "1610/1257" },
-        { src: "/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp",   ar: "717/987",  meia: true },
-        { src: "/volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", ar: "717/805",  meia: true },
-        { src: "/volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp", ar: "925/1112" },
-      ],
+      slots: 3,
+      /* Referência de figura, não caminho de arquivo: `Solucao` resolve
+         `{ fig }` contra `cap.figuras` e descarta qualquer outra forma. Com
+         `{ src, ar }` as quatro telas eram filtradas e a dobra da solução
+         saía sem imagem nenhuma. A quarta (forçar conciliação) mudou de
+         casa: ela é o fim da progressão dos caminhos, e vive lá. */
+      shots: [{ fig: "conciliacao" }, { fig: "origem" }, { fig: "detalhe" }],
     },
     vocabulario: {
       t: "Cinco status, uma linguagem",
@@ -730,6 +775,17 @@ const CHAPTERS = [
       oque: "Plataforma de gestão com anos de uso, aplicativo e site institucional.",
       resultado: "Sistema legado atualizado sem alterar o percurso de quem já usava",
     },
+    /* As telas entram por referência e não por caminho solto: string vira
+       `{ src, alt: "" }` no `Solucao`, e print de produto com alt vazio é
+       imagem informativa sem alternativa, que é falha de WCAG 1.1.1. */
+    figuras: {
+      plataforma: { src: "/volume/assets/projetos/odex/s1.webp", ar: "1600/1000",
+        alt: "Home da plataforma ODEX, com o resumo do mês, a navegação por categoria e o destaque de armazenamento de energia",
+        legenda: "A home da plataforma abre no resumo do mês e nas categorias de produto. Mesma primeira parada de antes, superfície inteira redesenhada." },
+      catalogo: { src: "/volume/assets/projetos/odex/s2.webp", ar: "1600/1000",
+        alt: "Ofertas da semana na plataforma, com cards de painel e inversor, e as tabelas de orçamentos e pedidos recentes",
+        legenda: "Ofertas da semana, orçamentos recentes e pedidos recentes na mesma rolagem: quem opera todo dia continua achando cada coisa onde ela estava." },
+    },
     problema: {
       t: "A interface envelheceu junto com o produto",
       p: ["A plataforma funcionava, e funcionava havia anos. O que tinha envelhecido era a interface, um layout antigo que passou a prometer menos do que o negócio já entrega hoje.",
@@ -753,8 +809,8 @@ const CHAPTERS = [
     solucao: {
       t: "A superfície inteira, sem reaprender nada",
       p: ["Plataforma redesenhada com protótipo navegável, telas principais do app em protótipo, e a página de armazenamento de energia criada para a nova linha de baterias, explicando o funcionamento do produto para um público que ainda não conhece a tecnologia."],
-      slots: 3,
-      shots: ["/volume/assets/projetos/odex/s1.webp", "/volume/assets/projetos/odex/s2.webp"],
+      slots: 2,
+      shots: [{ fig: "plataforma" }, { fig: "catalogo" }],
     },
     antesDepois: {
       antes: "/volume/assets/projetos/odex/antes.webp",
@@ -789,6 +845,19 @@ const CHAPTERS = [
       oque: "Landing page de cadastro de revenda, com formulário em etapas e automação.",
       resultado: "Reduziu de três para dois os sistemas usados pelo comercial",
     },
+    /* As três seções que respondem a pergunta do visitante antes de ele
+       chegar ao formulário, na ordem em que a página as apresenta. */
+    figuras: {
+      catalogo: { src: "/volume/assets/projetos/oderco-revenda/s1.webp", ar: "1600/1000",
+        alt: "Seção de catálogo da página, com a chamada Responsabilidade de ponta a ponta sobre uma grade de produtos",
+        legenda: "O que a empresa distribui, na mesma tela do cadastro." },
+      marcas: { src: "/volume/assets/projetos/oderco-revenda/s2.webp", ar: "1600/1000",
+        alt: "Seção das marcas próprias do grupo, com PCYES, Vinik, Skul, Tonante e Odex lado a lado",
+        legenda: "As cinco marcas próprias do grupo. Para quem chega de anúncio sem nunca ter ouvido falar da empresa, é aqui que o nome ganha lastro." },
+      app: { src: "/volume/assets/projetos/oderco-revenda/s3.webp", ar: "1600/1000",
+        alt: "Seção do aplicativo de revenda, com quatro benefícios numerados ao lado da tela do aplicativo",
+        legenda: "O que o revendedor ganha: catálogo com o seu preço, filial que entrega mais rápido, condições por quantidade e pedido pelo aplicativo." },
+    },
     problema: {
       t: "Por que eu deveria responder tudo isso?",
       p: ["O tráfego chegava de anúncio direto na página de cadastro, e a página só tinha o formulário. Isso funciona quando a pessoa já conhece a empresa, mas fora da região quase ninguém conhece.",
@@ -805,7 +874,7 @@ const CHAPTERS = [
       t: "A página responde antes do formulário",
       p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso, de modo que quem chega ao cadastro já sabe o que está aceitando."],
       slots: 3,
-      shots: ["/volume/assets/projetos/oderco-revenda/s1.webp", "/volume/assets/projetos/oderco-revenda/s2.webp", "/volume/assets/projetos/oderco-revenda/s3.webp"],
+      shots: [{ fig: "catalogo" }, { fig: "marcas" }, { fig: "app" }],
     },
     resultado: {
       t: "Um sistema a menos no comercial",

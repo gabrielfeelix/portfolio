@@ -693,6 +693,70 @@
    perde a cronologia se as tres chegam do mesmo tamanho. */
 .v2-sol-grade > .v2-fig:first-child { grid-column: 1 / -1; }
 
+/* ---------------- lexico ---------------- */
+
+/* O verbete não é a decisão com outra roupa, então não pode parecer com ela.
+ * `.v2-dec-i` põe um ordinal de 40px na frente do título, porque lá o número
+ * é a ordem do argumento. Aqui a ordem não significa nada: são cinco status
+ * que convivem, e um número gigante daria a eles uma hierarquia que o módulo
+ * não tem. Então o ordinal encolhe para o degrau de label e vira endereço,
+ * e quem carrega a linha é o termo.
+ *
+ * Duas colunas em vez das duas do `.v2-dec`: aqui a da esquerda é medida em
+ * px e não `ch`: `ch` aqui resolveria contra os 16px da linha, e o termo
+ * corre a 20px em negrito, então 21ch mediam 168px e "Não conciliado"
+ * quebrava em duas linhas. 240px cabem o termo mais longo, o ordinal e o
+ * vão entre eles, para as
+ * cinco definições começarem na mesma vertical. É leitura de glossário: o
+ * olho desce pela coluna de termos e só entra na definição que interessa. */
+.v2-lex {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--v2-rule);
+  max-width: var(--v2-caso-larga);
+}
+
+.v2-lex-i {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: baseline;
+  padding-block: var(--v2-s3);
+  border-bottom: 1px solid var(--v2-rule);
+}
+
+.v2-lex-t {
+  margin: 0;
+  display: flex;
+  gap: var(--v2-s2);
+  align-items: baseline;
+  font-size: var(--v2-t-bloco);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.v2-lex-n {
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  color: var(--v2-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-lex-d {
+  margin: 0;
+  max-width: var(--v2-medida-caso);
+}
+
+/* Uma coluna só: com 17ch de termo e o que sobra de definição, a linha fica
+   com quatro palavras por linha e o glossário vira escada. */
+@media (max-width: 800px) {
+  .v2-lex-i {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--v2-s2);
+  }
+}
+
 /* ---------------- sistema ---------------- */
 
 .v2-escada { list-style: none; margin: var(--v2-s3) 0 0; padding: 0; }

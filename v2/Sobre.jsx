@@ -53,10 +53,12 @@ import {
    1290, centrado no rosto. */
 const RETRATO = "/volume/assets/gabriel-foto.webp";
 
-/* O recorte ilustrado, o mesmo da dobra 06 da home. Ele volta aqui e só
-   aqui, na dobra pessoal, porque é onde ele significa alguma coisa: camisa
-   vermelha sobre papel branco é a paleta inteira do site numa figura só. */
-const ILUSTRADO = "/volume/assets/gabriel-recorte.webp";
+/* A capa do volume: a capa mangá oficial do portfólio, a mesma que a V1 serve
+   como og:image. Ela entra aqui, e não o recorte ilustrado, porque a dobra
+   fala de mangá com todas as letras ("leio mangá e manhwa numa quantidade
+   difícil de justificar") e a capa É o objeto de que o texto fala.
+   Reamostrada de 1200x630 para 1800x945 com a receita de nitidez do repo. */
+const CAPA_MANGA = "/volume/assets/capa-volume.webp";
 
 /* ==================================================================== hero */
 
@@ -502,9 +504,14 @@ function ForaDaTela() {
             )
           )}
         </div>
-        <div className="v2-sb-fora-fig" aria-hidden="true">
-          <img src={ILUSTRADO} alt="" loading="lazy" draggable="false" />
-        </div>
+        <figure className="v2-sb-fora-fig">
+          <img
+            src={CAPA_MANGA}
+            alt="Capa do volume: Portfólio de Gabriel Felix Barbosa, do protótipo ao produto no ar, vol. 2026"
+            loading="lazy"
+            draggable="false"
+          />
+        </figure>
       </div>
     </Dobra>
   );

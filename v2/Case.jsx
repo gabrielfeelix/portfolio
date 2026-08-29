@@ -185,10 +185,31 @@ function CasoHero({ cap }) {
     <section className="v2-hero v2-caso-hero v2-grao v2-halo" data-escuro="1" ref={capa.ref}>
       {fundo ? (
         <div className="v2-caso-fundo" aria-hidden="true">
+          {/* A troca de arte entre um caso e outro.
+           *
+             O que se vê ao trocar de caso é o hero sem arte enquanto a nova
+             baixa: são de 98KB a 232KB por capa. Medido em 1440 com a rede
+             estrangulada, o vão foi de 192ms sem pré-carga e 140ms com ela,
+             e quem paga a diferença é o `Cartao` da home, que puxa ESTA arte
+             no hover e no toque. Ver `puxaCapa` em Home.jsx.
+
+             `fetchPriority` alto porque esta é a única imagem acima da dobra:
+             ela não precisa disputar fila com print de figura que está a três
+             telas daqui.
+
+             `key` no src: o React reaproveitaria o mesmo <img> entre as rotas
+             e trocaria só o atributo. No Chromium isso já basta, o frame
+             antigo é descartado na troca do src (conferido por comparação de
+             pixel, com e sem a key: mesma chapa escura aos 150ms). A key fica
+             porque nem todo motor descarta, e porque o nó morrer junto com a
+             rota é o que o código diz que acontece. Não é ela que encurta o
+             vão; quem encurta é a pré-carga. */}
           <motion.img
+            key={fundo}
             src={fundo}
             alt=""
             decoding="async"
+            fetchPriority="high"
             style={quieto ? undefined : { y: desloca }}
           />
           {/* o veu: sem ele o titulo branco cai em cima de uma foto clara e
@@ -561,6 +582,50 @@ function Solucao({ cap }) {
           />
         ))}
       </div>
+    </Dobra>
+  );
+}
+
+/* =========================================================== vocabulário */
+
+/* O léxico do módulo.
+ *
+ * Cinco palavras que o time passou a usar do mesmo jeito na tela e na
+ * conversa. Estavam escritas em `volume/data.jsx` desde sempre e nunca
+ * chegaram à página: a V1 renderizava, a V2 não tinha o componente.
+ *
+ * Não é a lista de decisões com outra roupa. Decisão é escolha com razão,
+ * e o "porque" carrega a linha; verbete é significado fixado, e quem carrega
+ * é o termo. Por isso aqui o termo vem no display, sozinho na sua linha, e a
+ * definição desce embaixo, em vez do par lado a lado que `v2-dec` usa.
+ *
+ * `dl` e não `ol`: são definições, e o par dt/dd é o que um leitor de tela
+ * precisa para anunciar "termo, definição" em vez de "item 1 de 5". */
+function Vocabulario({ cap }) {
+  const rise = useRise();
+  const v = cap.vocabulario;
+  if (!v) return null;
+  const termos = v.termos || [];
+  if (!termos.length) return null;
+
+  return (
+    <Dobra
+      label="O léxico"
+      larga
+      topo={<Ato titulo={v.t} />}
+      aside={<NotaMargem k={v.kicker}>{v.nota}</NotaMargem>}
+    >
+      <dl className="v2-lex">
+        {termos.map((t, i) => (
+          <motion.div className="v2-lex-i" key={t.n} {...rise(Math.min(i, 3))}>
+            <dt className="v2-lex-t">
+              <span className="v2-lex-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              {t.n}
+            </dt>
+            <dd className="v2-lex-d v2-corpo">{t.d}</dd>
+          </motion.div>
+        ))}
+      </dl>
     </Dobra>
   );
 }
@@ -1236,6 +1301,7 @@ export default function Caso({ id, ir }) {
         <Ponte cap={cap} />
         <Solucao cap={cap} />
         <Sistema cap={cap} />
+        <Vocabulario cap={cap} />
         <Modulos cap={cap} />
         <Calendario cap={cap} />
 

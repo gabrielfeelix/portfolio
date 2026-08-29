@@ -37,7 +37,7 @@ import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, LOGOS_COR } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -329,11 +329,33 @@ function Cartao({ caso, i, ir }) {
      flutuante saem: tudo isso já está dentro do arquivo. */
   const cheia = CAPAS_CHEIAS[caso.id];
   const href = `/v2/case/${caso.id}`;
+
+  /* Pré-carrega a arte do HERO do caso, que é outro arquivo do que este
+     cartão mostra: o cartão usa `capa-home` (16/11) e o hero usa `capa-caso`
+     (16/9). Sem isso a pessoa clica e o hero fica sem arte enquanto baixa
+     entre 98KB e 232KB.
+
+     No ponteiro entrando, no toque e no foco: o hover cobre o mouse, o
+     `pointerdown` cobre o dedo, que nunca passa por cima antes, e o foco
+     cobre quem anda de teclado. Uma vez só por cartão: o navegador guarda a resposta no cache
+     de imagem, e disparar de novo a cada hover não baixaria nada mas criaria
+     um objeto Image por passagem do mouse. */
+  const pedida = useRef(false);
+  const puxaCapa = () => {
+    if (pedida.current) return;
+    pedida.current = true;
+    const alvo = CAPAS_CASO[caso.id] || CAPAS_CHEIAS[caso.id];
+    if (alvo) new Image().src = alvo;
+  };
+
   return (
     <article className="v2-cartao">
       <a
         className="v2-cartao-link"
         href={href}
+        onPointerEnter={puxaCapa}
+        onPointerDown={puxaCapa}
+        onFocus={puxaCapa}
         onClick={(e) => { e.preventDefault(); ir(href); }}
       >
         <span

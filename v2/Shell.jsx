@@ -8,10 +8,21 @@ import { motion } from "motion/react";
 import { spring } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
 
+/* Todo link passa pelo roteador (`ir`), inclusive "Casos".
+ *
+   "Casos" continua sendo âncora e não página, porque a dobra 03 da home É a
+   lista de casos: uma página só para repetir a mesma grade não existe. O que
+   mudou é quem trata a âncora. Como <a> puro, o clique recarregava o app e o
+   navegador procurava #casos antes de o React montar a home, então vindo de
+   uma página de caso a nav largava a pessoa no topo da home. Agora `ir`
+   troca a rota e só depois procura o alvo; ver o comentário dele em app.jsx.
+
+   O `href` continua real, então abrir em nova aba e copiar o link seguem
+   funcionando: o `preventDefault` só vale para o clique comum. */
 const LINKS = [
-  { id: "casos",    rot: "Casos",    href: "/v2#casos" },
-  { id: "processo", rot: "Processo", href: "/v2#processo" },
-  { id: "sobre",    rot: "Sobre",    href: "/v2#sobre" },
+  { id: "casos",    rot: "Casos",    href: "/v2#casos",     rota: true },
+  { id: "processo", rot: "Processo", href: "/v2/processo",  rota: true },
+  { id: "sobre",    rot: "Sobre",    href: "/v2/sobre",     rota: true },
 ];
 
 /* A seta do pill. Duas cópias empilhadas dentro de uma janela de 12px: no
@@ -112,7 +123,12 @@ export function Nav({ sobreEscuro, ir }) {
           é espaço, peso e o traço que cresce no hover. */}
       <nav className="v2-nav-links" aria-label="Seções">
         {LINKS.map((l) => (
-          <a key={l.id} href={l.href} className="v2-nav-link">
+          <a
+            key={l.id}
+            href={l.href}
+            className="v2-nav-link"
+            onClick={l.rota && ir ? (e) => { e.preventDefault(); ir(l.href); } : undefined}
+          >
             <span className="v2-nav-link-rot">{l.rot}</span>
             <span className="v2-nav-link-traco" aria-hidden="true" />
           </a>

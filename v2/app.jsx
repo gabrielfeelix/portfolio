@@ -38,11 +38,52 @@ function useRota() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  /* `href` pode trazer âncora: "/v2#casos" é a home parando na dobra dos
+     casos, que é o que a nav pede em "Casos".
+   *
+     Hash puro não resolvia. O link era um <a> comum, então o clique
+     recarregava o app inteiro e o navegador procurava #casos antes de o React
+     montar a home: a página caía no topo com a dobra 2408px abaixo (medido em
+     1440, vindo de /v2/case/odex).
+   *
+     Por isso o alvo é procurado DEPOIS da troca de rota, e por tentativa: a
+     home monta em um quadro, mas o hero é sticky e a altura só assenta no
+     seguinte. Doze quadros é o teto; passou disso, some sem rolar, que é
+     melhor que pular para um lugar errado.
+   *
+     Rolagem suave só quando já se está na página. Vindo de outra rota, suave
+     significaria atravessar o hero inteiro em animação para chegar a uma
+     dobra que a pessoa pediu direto. */
   const ir = useCallback((href) => {
-    if (window.location.pathname === href) return;
-    window.history.pushState(null, "", href);
-    setRota(rotaAtual());
-    window.scrollTo({ top: 0, behavior: "instant" });
+    const [caminho, ancora] = String(href).split("#");
+    const mesmaPagina = window.location.pathname === caminho;
+    if (mesmaPagina && !ancora) return;
+
+    if (mesmaPagina) {
+      window.history.replaceState(null, "", href);
+    } else {
+      window.history.pushState(null, "", href);
+      setRota(rotaAtual());
+    }
+
+    if (!ancora) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      return;
+    }
+
+    let quadros = 0;
+    const busca = () => {
+      const alvo = document.getElementById(ancora);
+      if (alvo) {
+        alvo.scrollIntoView({
+          behavior: mesmaPagina ? "smooth" : "instant",
+          block: "start",
+        });
+        return;
+      }
+      if (++quadros < 12) requestAnimationFrame(busca);
+    };
+    requestAnimationFrame(busca);
   }, []);
 
   return [rota, ir];
