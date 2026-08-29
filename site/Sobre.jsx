@@ -53,12 +53,11 @@ import {
    1290, centrado no rosto. */
 const RETRATO = "/volume/assets/gabriel-foto.webp";
 
-/* A capa do volume: a capa mangá oficial do portfólio, a mesma que a V1 serve
-   como og:image. Ela entra aqui, e não o recorte ilustrado, porque a dobra
-   fala de mangá com todas as letras ("leio mangá e manhwa numa quantidade
-   difícil de justificar") e a capa É o objeto de que o texto fala.
-   Reamostrada de 1200x630 para 1800x945 com a receita de nitidez do repo. */
-const CAPA_MANGA = "/volume/assets/capa-volume.webp";
+/* A marca do Mangudos, o canal de anime dele. Ela entra no lugar do recorte
+   ilustrado porque o parágrafo ao lado fala exatamente disso ("mantenho um
+   canal sobre anime") e linka para o TikTok: a figura é o assunto do texto,
+   não decoração. Arquivo do Gabriel, reamostrado de 1254 para 1400. */
+const MANGUDOS = "/volume/assets/mangudos.webp";
 
 /* ==================================================================== hero */
 
@@ -421,16 +420,19 @@ function VitrineCerts({ lista }) {
   );
 }
 
-/* Um quadrado por ferramenta.
+/* Um quadrado por ferramenta, com a marca de verdade dentro.
  *
- * A regra é o quadrado, não o que está dentro: quem tem marca vetorial entra
- * com a marca, quem não tem entra com o monograma na mono. Quatro das sete
- * foram removidas do simple-icons por pedido de marca registrada, e inventar
- * um desenho para elas seria pior que assumir a letra. Ver v2/ferramentas.js.
+ * A regra é o quadrado, não o que está dentro: ele é constante, e a marca
+ * varia. Cada arquivo veio da fonte mais oficial que existia publicamente e
+ * mora em volume/assets/ferramentas/ — ver v2/ferramentas.js.
  *
- * Em repouso tudo é tinta sobre cinza, que é a paleta. A cor oficial só
- * aparece no hover, e é a mesma troca do `.nc-thumb` da V1: preto e branco
- * parado, cor quando a pessoa chega perto. */
+ * Em repouso tudo é preto e branco, que é a paleta. A cor oficial só aparece
+ * no hover, e é a mesma troca do `.nc-thumb` da V1: parado é cinza, perto do
+ * cursor é a marca. Quem toca em vez de apontar não tem hover nenhum, então
+ * em `(hover: none)` a cor é o estado padrão — ver sobre.css.
+ *
+ * O `alt` é vazio de propósito: o nome já está escrito no `.v2-sb-ferr-nome`
+ * logo abaixo, e repetir faria o leitor de tela anunciar duas vezes. */
 function Ferramentas() {
   const rise = useRise();
   return (
@@ -440,13 +442,7 @@ function Ferramentas() {
         {FERRAMENTAS.map((f) => (
           <li className="v2-sb-ferr-item" key={f.id}>
             <span className="v2-sb-quadro" style={f.hex ? { "--marca": f.hex } : undefined}>
-              {f.d ? (
-                <svg viewBox="0 0 24 24" role="img" aria-label={f.nome} focusable="false">
-                  <path d={f.d} fill="currentColor" />
-                </svg>
-              ) : (
-                <span className="v2-sb-mono" aria-label={f.nome}>{f.mono}</span>
-              )}
+              <img src={f.arquivo} alt="" loading="lazy" decoding="async" draggable="false" />
             </span>
             <span className="v2-sb-ferr-nome">{f.nome}</span>
           </li>
@@ -506,8 +502,8 @@ function ForaDaTela() {
         </div>
         <figure className="v2-sb-fora-fig">
           <img
-            src={CAPA_MANGA}
-            alt="Capa do volume: Portfólio de Gabriel Felix Barbosa, do protótipo ao produto no ar, vol. 2026"
+            src={MANGUDOS}
+            alt="Mangudos, o canal de anime do Gabriel"
             loading="lazy"
             draggable="false"
           />
