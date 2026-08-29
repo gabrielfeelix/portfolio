@@ -26,7 +26,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
-  spring, ease, useTardio, useRise, useMaskLine, useCobertura,
+  spring, ease, easeRevela, dur, passo, useTardio, useRise, useMaskLine, useCobertura,
   usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
   rolarPara,
 } from "./motion.js";
@@ -537,12 +537,22 @@ function Numeros() {
    que é o que docs/ANALISE-REFS.md cobra. */
 function Processo({ ir }) {
   const quieto = useReducedMotion();
+  /* Estas duas curvas eram locais e escaparam do acerto de velocidade de
+     bf26a57, que levou o resto do site de 1,2s para dur=0,6s. Ficaram em 0,9s,
+     50% mais lentas que qualquer outra revelação da página — era a queixa de
+     "pesado" desta dobra. Agora leem dur/passo/easeRevela de motion.js, então
+     o próximo acerto global pega estas junto.
+
+     O blur(6px) saiu por inteiro, e não encurtado: com y+opacity ele não
+     acrescenta leitura, e é a única propriedade aqui que o compositor não
+     resolve sozinho — cada quadro repinta a linha. O gesto continua sendo
+     subir e acender. */
   const regua = quieto
     ? { initial: { opacity: 0 }, whileInView: { opacity: 1 }, transition: { duration: 0.2 } }
     : {
         initial: { scaleX: 0 },
         whileInView: { scaleX: 1 },
-        transition: { duration: 0.9, ease },
+        transition: { duration: dur, ease: easeRevela },
       };
   const linha = (i) =>
     quieto
@@ -553,10 +563,10 @@ function Processo({ ir }) {
           transition: { duration: 0.2 },
         }
       : {
-          initial: { opacity: 0, y: 16, filter: "blur(6px)" },
-          whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+          initial: { opacity: 0, y: 12 },
+          whileInView: { opacity: 1, y: 0 },
           viewport: { once: true, amount: 0.4 },
-          transition: { duration: 0.9, ease, delay: 0.1 + i * 0.05 },
+          transition: { duration: dur, ease: easeRevela, delay: 0.1 + i * passo },
         };
 
   return (
