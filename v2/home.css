@@ -696,107 +696,83 @@
 
 /* Numeral na mono a esquerda, frase a direita: a lista de servicos do bungee.
    Sem tamanho de tipo novo, so posicao. */
-/* ---------------- 04. metodo: a diagonal ---------------- */
+/* ---------------- 04. metodo: o indice ---------------- */
 
-/* Tres blocos em escada: cada um desce uma linha e anda quatro colunas para a
-   direita. A linha corre rente a borda esquerda de cada bloco e salta na
-   diagonal para o proximo, entao ela vive so na margem e nunca cruza texto.
-   O recuo de s4 no bloco existe para isso: o no tem 28px, centro em 14, e o
-   texto so comeca em 40. */
-.v2-metodo {
-  position: relative;
-  margin-top: var(--v2-s5);
-}
-.v2-diag {
-  position: absolute;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-.v2-diag-tr { stroke: var(--v2-rule); stroke-width: 1; }
-.v2-diag-ln { stroke: var(--v2-accent); stroke-width: 1; }
-
-.v2-fases {
-  position: relative;
-  z-index: 1;
+/* Tres linhas em largura cheia, filete entre elas, do jeito do viper. Sem
+   cartao, sem chapa, sem escada: a dobra e tipografia e regua. A grade e
+   numero | frase | marca, e a frase leva a medida de texto para nao virar
+   linha de 1400px de largura. */
+.v2-indice {
   list-style: none;
-  margin: 0;
+  margin: var(--v2-s5) 0 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  row-gap: var(--v2-s4);
 }
-.v2-fase {
+.v2-linha {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--v2-s2);
-  padding-left: var(--v2-s4);
+  display: grid;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr) 64px;
+  align-items: start;
+  gap: var(--v2-s4);
+  padding: var(--v2-s4) 0;
 }
-.v2-fase:nth-child(1) { grid-column: 1 / span 5; grid-row: 1; }
-.v2-fase:nth-child(2) { grid-column: 5 / span 5; grid-row: 2; }
-.v2-fase:nth-child(3) { grid-column: 9 / span 4; grid-row: 3; }
-
-.v2-fase-no {
+/* a regua e um span proprio, e nao border-top, porque border nao anima por
+   scaleX: e ela que se desenha da esquerda para a direita quando a linha entra */
+.v2-linha-regua {
   position: absolute;
   left: 0;
   top: 0;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  background: var(--v2-paper);
-  border: 1px solid var(--v2-rule);
+  width: 100%;
+  height: 1px;
+  background: var(--v2-rule);
+  transform-origin: left center;
+}
+.v2-linha:last-child { border-bottom: 1px solid var(--v2-rule); }
+.v2-linha-n {
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-accent);
+  padding-top: .35em;
+}
+.v2-linha-p {
+  margin: 0;
+  max-width: var(--v2-medida);
+  font-size: var(--v2-t-lead);
+  line-height: 1.4;
+  letter-spacing: var(--v2-track-titulo);
   color: var(--v2-muted);
-  transition: background-color .35s var(--v2-ease),
-              border-color .35s var(--v2-ease),
-              color .35s var(--v2-ease);
 }
-.v2-fase-no.is-aceso {
-  background: var(--v2-accent);
-  border-color: var(--v2-accent);
-  color: #fff;
-}
+/* o nome do passo em negrito na frente da propria frase: e o componente da
+   launchfolio, e evita pedir um sexto degrau na escala */
+.v2-linha-t { font-weight: 600; color: var(--v2-ink); }
+.v2-linha-m { display: block; }
 
-/* a faixa de ilustracao. viewBox igual nas tres, entao a altura bate.
-   `display: block` porque svg inline herda baseline e sobra filete embaixo. */
-.v2-ilu {
+/* O selo: 64x64, traco, o mesmo objeto em tres estados.
+
+   Chama-se selo e nao marca porque `.v2-marca` ja existe: e a celula de logo
+   da faixa de marcas, com padding-inline de 64px e border-right. Reusando o
+   nome, o padding dela vazava e o svg media 129px em vez de 64, com a marca
+   pintando 65px fora da goteira. */
+/* `overflow: visible` e obrigatorio aqui, e nao e estetica: o disparo das
+   marcas e whileInView, e overflow diferente de visible no proprio <svg> zera
+   o retangulo do IntersectionObserver para os filhos. Com `hidden` as tres
+   marcas simplesmente nao apareciam, sem erro nenhum no console. E a mesma
+   armadilha anotada em motion.js. */
+.v2-selo {
   display: block;
-  width: 100%;
-  /* sem teto a ilustracao acompanha a coluna e a dobra passava de 1500px de
-     altura so com tres passos. 360 mantem ela legivel e devolve ~400px. */
-  max-width: 360px;
-  height: auto;
-  aspect-ratio: 320 / 200;
-  margin: var(--v2-s2) 0 var(--v2-s1);
+  width: 64px;
+  height: 64px;
   overflow: visible;
 }
 
-.v2-fase-t {
-  margin: 0;
-  font-size: var(--v2-t-lead);
-  font-weight: 600;
-  letter-spacing: var(--v2-track-titulo);
-}
-.v2-fase-p {
-  margin: 0;
-  font-size: var(--v2-t-corpo);
-  line-height: 1.45;
-  color: var(--v2-muted);
-}
-
-/* No empilhado a escada nao existe: tudo vai para a coluna 1 e a linha vira
-   uma vertical unica, que continua dizendo a mesma coisa. */
-@media (max-width: 900px) {
-  .v2-fases { grid-template-columns: 1fr; row-gap: var(--v2-s5); }
-  .v2-fase:nth-child(1),
-  .v2-fase:nth-child(2),
-  .v2-fase:nth-child(3) { grid-column: 1; grid-row: auto; }
+@media (max-width: 760px) {
+  .v2-linha {
+    grid-template-columns: 1fr 64px;
+    gap: var(--v2-s2) var(--v2-s3);
+  }
+  .v2-linha-n { grid-column: 1; padding-top: 0; }
+  .v2-linha-m { grid-column: 2; grid-row: 1 / span 2; }
+  .v2-linha-p { grid-column: 1; }
 }
 
 /* ---- sobre ---- */

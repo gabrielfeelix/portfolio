@@ -23,12 +23,12 @@
  *   peças       extra, fora da hierarquia principal, de propósito
  */
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita,
-  useTrilha, useVoo,
+  useVoo,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
@@ -395,62 +395,6 @@ function Numeros() {
 
 /* --------------------------------------------------------------- 7. processo */
 
-/* A trilha, agora diagonal.
-
-   Ela desce pela borda esquerda de cada bloco e dá um salto na diagonal para o
-   bloco seguinte, que está deslocado para a direita e para baixo. O caminho
-   inteiro vive na margem: nunca cruza texto, porque corre rente à esquerda e
-   os blocos têm recuo maior que o nó.
-
-   Por que medido em pixel e não em porcentagem: a altura de cada bloco depende
-   do texto e da largura da tela, então qualquer coordenada fixa desalinha a
-   linha do nó em algum viewport. O ResizeObserver remede a cada mudança de
-   caixa e o path sai em pixel de verdade, exato em qualquer largura. */
-function useCaminho(refCaixa, refsNos, refsBlocos, dependencia) {
-  const [caminho, setCaminho] = useState(null);
-  useLayoutEffect(() => {
-    const caixa = refCaixa.current;
-    if (!caixa) return undefined;
-    /* offsetLeft/offsetTop e nao getBoundingClientRect de proposito: o bloco
-       entra na tela com translate(-34px, -26px), e o rect ja vem com o
-       transform aplicado. Medindo assim a linha nascia deslocada 34px para a
-       esquerda e ficava presa lá, porque a medicao acontece uma vez e a
-       animacao roda depois. offset* devolve a posicao de layout, sem
-       transform, que e a posicao onde o bloco vai parar. */
-    const desloc = (el) => {
-      let x = 0;
-      let y = 0;
-      let n = el;
-      while (n && n !== caixa) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-      return [x, y];
-    };
-    const medir = () => {
-      const pts = [];
-      for (let i = 0; i < refsNos.current.length; i++) {
-        const no = refsNos.current[i];
-        const bl = refsBlocos.current[i];
-        if (!no || !bl) return;
-        const [nx, ny] = desloc(no);
-        const [, by] = desloc(bl);
-        const x = Math.round(nx + no.offsetWidth / 2);
-        pts.push([x, Math.round(ny + no.offsetHeight / 2)]);
-        pts.push([x, Math.round(by + bl.offsetHeight)]);
-      }
-      if (!pts.length) return;
-      setCaminho({
-        w: caixa.offsetWidth,
-        h: caixa.offsetHeight,
-        d: "M " + pts.map((p) => p.join(" ")).join(" L "),
-      });
-    };
-    medir();
-    const ro = new ResizeObserver(medir);
-    ro.observe(caixa);
-    return () => ro.disconnect();
-  }, [refCaixa, refsNos, refsBlocos, dependencia]);
-  return caminho;
-}
-
 /* O avião. Fica atrás de tudo e recortado na caixa do corpo: assim ele passa
    por baixo das dobras e nunca empurra a largura da página. */
 function Voo({ caminho, distancia }) {
@@ -472,31 +416,43 @@ function Voo({ caminho, distancia }) {
   );
 }
 
-function Processo() {
-  const total = PROCESSO_CURTO.length;
-  const { ref, avanco, acesos, quieto } = useTrilha(total);
-  const nos = useRef([]);
-  const blocos = useRef([]);
-  const caminho = useCaminho(ref, nos, blocos, total);
+/* A dobra do método, agora um índice.
 
-  /* Os blocos entram vindo de cima e da esquerda, que é de onde a linha vem.
-     Todo o movimento da dobra aponta para o mesmo lado, que é o vocabulário
-     repetido que docs/ANALISE-REFS.md cobra: a diagonal não é só o arranjo, é
-     também a direção de tudo que se mexe aqui. O desfoque é o mesmo da dobra
-     01, para o olho reconhecer o sotaque. */
-  const entrada = (i) =>
+   O que tinha antes eram três colunas em escada com uma ilustração de 320x200
+   cada. Gabriel: "achei muito forçado", e ele tem razão. A dobra inventava
+   arte para justificar três frases, e nenhuma das seis referências faz isso:
+   quando não têm material, elas resolvem com régua, número e tipografia. Este
+   é o índice do viper, três linhas em largura cheia separadas por filete.
+
+   O nome do passo entra em negrito na frente da própria frase, que é o
+   componente da launchfolio (primeira sentença forte, resto normal). Assim ele
+   não pede um sexto degrau na escala, que a gramática proíbe.
+
+   A régua de cada linha se desenha da esquerda para a direita quando a linha
+   entra, e o número acende. É o mesmo gesto três vezes: vocabulário repetido,
+   que é o que docs/ANALISE-REFS.md cobra. */
+function Processo() {
+  const quieto = useReducedMotion();
+  const regua = quieto
+    ? { initial: { opacity: 0 }, whileInView: { opacity: 1 }, transition: { duration: 0.2 } }
+    : {
+        initial: { scaleX: 0 },
+        whileInView: { scaleX: 1 },
+        transition: { duration: 0.9, ease },
+      };
+  const linha = (i) =>
     quieto
       ? {
           initial: { opacity: 0 },
           whileInView: { opacity: 1 },
-          viewport: { once: true, amount: 0.25 },
+          viewport: { once: true, amount: 0.4 },
           transition: { duration: 0.2 },
         }
       : {
-          initial: { opacity: 0, x: -34, y: -26, filter: "blur(7px)" },
-          whileInView: { opacity: 1, x: 0, y: 0, filter: "blur(0px)" },
-          viewport: { once: true, amount: 0.35 },
-          transition: { duration: 1.1, ease, delay: i * 0.06 },
+          initial: { opacity: 0, y: 16, filter: "blur(6px)" },
+          whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+          viewport: { once: true, amount: 0.4 },
+          transition: { duration: 0.9, ease, delay: 0.1 + i * 0.05 },
         };
 
   return (
@@ -506,51 +462,30 @@ function Processo() {
         titulo="Do objetivo ao ar"
         lead="Três movimentos, e o do meio é o que a maioria pula."
       />
-      <div className="v2-metodo" ref={ref}>
-        {caminho ? (
-          <svg
-            className="v2-diag"
-            viewBox={`0 0 ${caminho.w} ${caminho.h}`}
-            width={caminho.w}
-            height={caminho.h}
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path className="v2-diag-tr" d={caminho.d} fill="none" />
-            <motion.path
-              className="v2-diag-ln"
-              d={caminho.d}
-              fill="none"
-              style={{ pathLength: quieto ? 1 : avanco }}
-            />
-          </svg>
-        ) : null}
-
-        <ol className="v2-fases">
-          {PROCESSO_CURTO.map((f, i) => {
-            const Ilustra = ILUSTRACOES[i];
-            return (
-              <motion.li
-                key={f.titulo}
-                className="v2-fase"
-                ref={(el) => { blocos.current[i] = el; }}
-                {...entrada(i)}
-              >
-                <span
-                  className={`v2-fase-no${i < acesos ? " is-aceso" : ""}`}
-                  ref={(el) => { nos.current[i] = el; }}
-                  aria-hidden="true"
-                >
-                  {`0${i + 1}`}
-                </span>
-                <Ilustra />
-                <h3 className="v2-fase-t">{f.titulo}</h3>
-                <p className="v2-fase-p">{f.frase}</p>
-              </motion.li>
-            );
-          })}
-        </ol>
-      </div>
+      <ol className="v2-indice">
+        {PROCESSO_CURTO.map((f, i) => {
+          const Marca = ILUSTRACOES[i];
+          return (
+            <li className="v2-linha" key={f.titulo}>
+              <motion.span
+                className="v2-linha-regua"
+                aria-hidden="true"
+                viewport={{ once: true, amount: 0.4 }}
+                {...regua}
+              />
+              <motion.span className="v2-linha-n" aria-hidden="true" {...linha(i)}>
+                {`( 00${i + 1} )`}
+              </motion.span>
+              <motion.p className="v2-linha-p" {...linha(i)}>
+                <b className="v2-linha-t">{f.titulo}.</b> {f.frase}
+              </motion.p>
+              <motion.span className="v2-linha-m" aria-hidden="true" {...linha(i)}>
+                <Marca />
+              </motion.span>
+            </li>
+          );
+        })}
+      </ol>
     </Dobra>
   );
 }

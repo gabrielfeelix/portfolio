@@ -605,40 +605,6 @@ export function useVoo(refCaixa) {
   return { caminho, distancia, quieto };
 }
 
-/* 16. trilha
-   O trilho do porto: 01 —— 02 —— 03, com a linha se desenhando da esquerda
-   para a direita conforme a dobra passa, e o nó acendendo quando a ponta da
-   linha chega nele.
-
-   `avanco` é o progresso já amortecido, para a linha não tremer junto com a
-   roda do mouse. `acesos` é quantos nós já foram passados, e vira estado de
-   React porque o número dentro do nó troca de cor, o que não é transform nem
-   opacidade e portanto não dá para deixar num motion value.
-
-   O estado só muda quando o inteiro muda, não a cada quadro: sem essa guarda
-   a dobra re-renderiza 60 vezes por segundo durante a rolagem inteira. */
-export function useTrilha(total) {
-  const ref = useRef(null);
-  const quieto = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 0.78", "end 0.82"],
-  });
-  const avanco = useSpring(scrollYProgress, {
-    stiffness: 120, damping: 30, mass: 0.6,
-  });
-  const [acesos, setAcesos] = useState(quieto ? total : 1);
-  useEffect(() => {
-    if (quieto) { setAcesos(total); return undefined; }
-    const degrau = total > 1 ? 1 / (total - 1) : 1;
-    return avanco.on("change", (v) => {
-      const n = Math.max(1, Math.min(total, Math.floor(v / degrau + 1e-6) + 1));
-      setAcesos((atual) => (atual === n ? atual : n));
-    });
-  }, [avanco, total, quieto]);
-  return { ref, avanco, acesos, quieto };
-}
-
 /* 16. escrita
    A assinatura, revelada como se estivesse sendo escrita.
 
