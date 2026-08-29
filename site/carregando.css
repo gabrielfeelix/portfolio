@@ -53,14 +53,6 @@ html[data-decolando] { overflow: hidden; }
 
 .v2-dec-noite { fill: var(--v2-dec-ink); }
 
-.v2-dec-estrelas circle { fill: #fff; animation: v2-dec-pisca var(--d, 4s) ease-in-out var(--a, 0s) infinite; }
-/* Só o 50% está escrito: sem o 0% e o 100%, o navegador usa o valor que o
-   elemento já tem, que é o `opacity` de cada estrela no HTML. Escrever
-   `0% { opacity: inherit }` herdaria do grupo e apagaria a variação. */
-@keyframes v2-dec-pisca {
-  50% { opacity: .1; }
-}
-
 /* O trilho existe só para o rastro ler como arco. Se ele some, o rastro vira
    um risco solto no escuro e o progresso deixa de ter um "quanto falta". */
 .v2-dec-trilho {
@@ -170,64 +162,35 @@ html[data-decolando] { overflow: hidden; }
   transition: background 1ms 300ms;
 }
 
-/* A íris é uma máscara: transparente por dentro do círculo, opaca por fora, e
-   o que anima é o TAMANHO da caixa da máscara. Com `closest-side` numa caixa
-   quadrada de lado S, o raio do buraco é S/2 — é essa conta que casa a máscara
-   com o anel, que mede 100vmax de raio e escala junto (S = 200vmax x escala).
+/* A saída. É o MESMO gesto da lâmina que troca de página: a tela preta sobe na
+   diagonal e leva uma borda vermelha na frente, nos mesmos 380ms e no mesmo
+   easing. Boot e troca de página passam a ter um corte só.
 
-   150vmax de lado dá 75vmax de raio. A metade da diagonal de uma janela é
-   sempre menos que isso: em 1440x900 são 849px contra 1080, e em 2560x1440 são
-   1468 contra 1920. O buraco sempre termina fora da tela.
-
-   Se a máscara não existir no navegador, a decolagem só não abre em círculo: o
-   JS remove o elemento no mesmo instante de qualquer jeito, então o pior caso é
-   o corte seco, e não uma tela vermelha presa. */
+   Antes disto era uma íris: um buraco redondo abrindo no meio. Ela morreu por
+   dois motivos do Gabriel, e os dois procedem. O de execução: `mask-repeat:
+   no-repeat` esconde o elemento FORA da caixa da máscara, então em vez de "tudo
+   preto com um furo" o que aparecia era um quadrado preto furado, encolhido no
+   meio da página já revelada — "um efeito de mira/vinheta estranho, fora de
+   timing". O de conceito: círculo abrindo com anel correndo na borda é
+   linguagem de mira, e mira é espaço. Este site tem branco, vermelho, preto e
+   um avião de papel no vento. */
 #v2-decolagem[data-fase="fora"] {
-  -webkit-mask-image: radial-gradient(circle closest-side, transparent 99%, #000 100%);
-          mask-image: radial-gradient(circle closest-side, transparent 99%, #000 100%);
-  -webkit-mask-position: center;
-          mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-  animation: v2-dec-iris 780ms cubic-bezier(.62, 0, .3, 1) forwards;
+  animation: v2-dec-sai 380ms cubic-bezier(.72, 0, .26, 1) forwards;
 }
-@keyframes v2-dec-iris {
-  from { -webkit-mask-size: 0 0;              mask-size: 0 0; }
-  to   { -webkit-mask-size: 150vmax 150vmax;  mask-size: 150vmax 150vmax; }
+@keyframes v2-dec-sai {
+  from { transform: translateY(0) skewY(0deg); }
+  to   { transform: translateY(-118%) skewY(-5deg); }
 }
-
-/* O anel que corre na borda do buraco.
-
-   É irmão da decolagem, e não filho, porque um elemento com máscara recorta os
-   descendentes junto: filho, o anel seria cortado ao meio pela própria borda em
-   que ele deveria correr.
-
-   `vector-effect: non-scaling-stroke` é o que segura o traço em 3px enquanto o
-   círculo escala de 0 a 0.75. Com borda de CSS a espessura escalaria junto, e
-   no começo da animação o anel teria décimos de pixel — ou seja não existiria
-   justamente no quadro em que o buraco nasce. */
-#v2-dec-aro {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  width: 200vmax;
-  height: 200vmax;
-  margin: -100vmax 0 0 -100vmax;
-  z-index: 1000;
-  pointer-events: none;
-  transform: scale(0);
-  opacity: 0;
-}
-#v2-dec-aro svg { display: block; width: 100%; height: 100%; overflow: visible; }
-#v2-dec-aro circle { fill: none; stroke: var(--v2-dec-accent); stroke-width: 3; }
-
-#v2-decolagem[data-fase="fora"] ~ #v2-dec-aro {
-  animation: v2-dec-aro 780ms cubic-bezier(.62, 0, .3, 1) forwards;
-}
-@keyframes v2-dec-aro {
-  0%   { transform: scale(0);    opacity: 1; }
-  72%  { opacity: 1; }
-  100% { transform: scale(.75);  opacity: 0; }
+/* A borda vermelha corre na frente da subida — é ela que faz a saída ler como
+   corte, e é o mesmo vermelho da lâmina. */
+#v2-decolagem[data-fase="fora"]::after {
+  content: "";
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: -6px;
+  height: 8px;
+  background: var(--v2-dec-accent);
 }
 
 /* ---------------- a cortina de troca de página ---------------- */
@@ -322,6 +285,5 @@ html[data-decolando] { overflow: hidden; }
    seca, como sempre foi. Vale para as duas peças. */
 @media (prefers-reduced-motion: reduce) {
   #v2-decolagem { display: none; }
-  #v2-dec-aro { display: none; }
   .v2-cortina { display: none; }
 }

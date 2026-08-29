@@ -148,7 +148,7 @@ function Hamburguer({ aberto, onClick }) {
   );
 }
 
-function Menu({ aberto, fechar, ir }) {
+function Menu({ aberto, fechar, ir, rota }) {
   const painel = useRef(null);
   const c = CONTATO();
   const sociais = ["linkedin", "instagram", "whatsapp"].filter((k) => c[k]);
@@ -194,6 +194,8 @@ function Menu({ aberto, fechar, ir }) {
                 key={l.id}
                 href={l.href}
                 className="v2-menu-link"
+                data-aqui={linkDaRota(l.id, rota) ? "1" : undefined}
+                aria-current={linkDaRota(l.id, rota) ? "page" : undefined}
                 initial={{ y: 26, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ ...spring, delay: 0.16 + i * 0.06 }}
@@ -233,7 +235,25 @@ function Menu({ aberto, fechar, ir }) {
   );
 }
 
-export function Nav({ sobreEscuro, ir }) {
+/* Qual link da nav corresponde à rota aberta.
+
+   A home NÃO acende nenhum: "Casos" é âncora para a dobra 03 e não uma página,
+   então acendê-lo na home diria que a home é a lista de casos, que ela não é.
+   Quem leva de volta para a home é a marca, à esquerda. Numa PÁGINA de caso,
+   sim: aí "Casos" é onde a pessoa está.
+
+   O post acende "Blog" pelo mesmo motivo que o caso acende "Casos": ler um
+   texto é estar no blog. */
+function linkDaRota(id, rota) {
+  if (!rota) return false;
+  if (id === "casos") return rota.tipo === "caso";
+  if (id === "processo") return rota.tipo === "processo";
+  if (id === "sobre") return rota.tipo === "sobre";
+  if (id === "blog") return rota.tipo === "blog" || rota.tipo === "post";
+  return false;
+}
+
+export function Nav({ sobreEscuro, ir, rota }) {
   const [encolhida, setEncolhida] = useState(false);
   const [menu, setMenu] = useState(false);
   const fechar = useCallback(() => setMenu(false), []);
@@ -274,17 +294,24 @@ export function Nav({ sobreEscuro, ir }) {
       {/* Os sobrescritos ⁰¹ ⁰² ⁰³ também saíram. O que separa os três agora
           é espaço, peso e o traço que cresce no hover. */}
       <nav className="v2-nav-links" aria-label="Seções">
-        {LINKS.map((l) => (
+        {LINKS.map((l) => {
+          const aqui = linkDaRota(l.id, rota);
+          return (
           <a
             key={l.id}
             href={l.href}
             className="v2-nav-link"
+            /* `data-aqui` é o desenho e `aria-current` é o mesmo fato dito para
+               quem não vê o desenho. Os dois, sempre juntos. */
+            data-aqui={aqui ? "1" : undefined}
+            aria-current={aqui ? "page" : undefined}
             onClick={l.rota && ir ? (e) => { e.preventDefault(); ir(l.href); } : undefined}
           >
             <span className="v2-nav-link-rot">{l.rot}</span>
             <span className="v2-nav-link-traco" aria-hidden="true" />
           </a>
-        ))}
+          );
+        })}
       </nav>
 
       <div className="v2-nav-cta">
@@ -292,7 +319,7 @@ export function Nav({ sobreEscuro, ir }) {
       </div>
 
       <Hamburguer aberto={menu} onClick={() => setMenu((v) => !v)} />
-      <Menu aberto={menu} fechar={fechar} ir={ir} />
+      <Menu aberto={menu} fechar={fechar} ir={ir} rota={rota} />
     </header>
   );
 }

@@ -433,8 +433,21 @@
   transition: opacity 400ms var(--v2-ease);
 }
 
+/* Três estados, e o terceiro é o de estar lá.
+
+   Pedido do Gabriel em 29/08: "quando eu clico em outra aba e estou lá, o
+   header deveria ficar em estado de pressed — a linhazinha embaixo do nome e a
+   cor preta na fonte, igualzinho no hover, mas pra mostrar em que página
+   estou".
+
+   É o MESMO desenho do hover de propósito. Um quarto tratamento só para dizer
+   "você está aqui" seria vocabulário novo para uma informação que o hover já
+   sabe escrever; e como o link da página aberta não é clicável para lugar
+   nenhum, os dois estados nunca disputam a mesma peça. O que os separa é o
+   tempo: o hover entra e sai, este fica. */
 .v2-nav-link:hover,
-.v2-nav-link:focus-visible { opacity: 1; }
+.v2-nav-link:focus-visible,
+.v2-nav-link[data-aqui] { opacity: 1; }
 
 /* O traço que cresce da esquerda no lugar do sobrescrito. */
 .v2-nav-link-traco {
@@ -450,7 +463,8 @@
 }
 
 .v2-nav-link:hover .v2-nav-link-traco,
-.v2-nav-link:focus-visible .v2-nav-link-traco { transform: scaleX(1); }
+.v2-nav-link:focus-visible .v2-nav-link-traco,
+.v2-nav-link[data-aqui] .v2-nav-link-traco { transform: scaleX(1); }
 
 .v2-nav-cta { justify-self: end; }
 
@@ -563,6 +577,21 @@
   background: currentColor;
   opacity: .16;
 }
+
+/* "Você está aqui", no menu do celular.
+
+   Aqui o traço não é o indicador de hover que a barra larga tem — ele é o
+   divisor entre uma linha e outra, e já existe em todas. Então o que muda é a
+   COR dele, não a presença: o divisor da página aberta vira accent.
+
+   O número ao lado ganha opacidade cheia e continua branco. Accent nele mediria
+   4.27:1 num texto de 12px, que reprova AA; como régua de 1px o mesmo vermelho
+   é grafismo e passa com folga. */
+.v2-menu-link[data-aqui] .v2-menu-traco {
+  background: var(--v2-accent);
+  opacity: 1;
+}
+.v2-menu-link[data-aqui] .v2-menu-n { opacity: 1; }
 
 .v2-menu-pe { display: grid; gap: var(--v2-s3); }
 

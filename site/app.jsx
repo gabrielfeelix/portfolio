@@ -311,7 +311,7 @@ function App() {
       <div className="v2-shell">
         <Cortina fase={fase} rotulo={rotulo} />
         <Cursor />
-        <Nav sobreEscuro={sobreEscuro} ir={ir} />
+        <Nav sobreEscuro={sobreEscuro} ir={ir} rota={rota} />
         <main>
           {rota.tipo === "home" ? <Home ir={ir} />
             : rota.tipo === "processo" ? <Processo ir={ir} />

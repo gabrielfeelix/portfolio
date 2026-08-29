@@ -1,35 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 
-/* A MIRA. O cursor do site.
+/* O VENTO. O cursor do site.
 
-   Pedido do Gabriel em 29/08, com uma restrição dele que é a decisão de design
-   inteira: "acho que o aviãozinho não, porque já tem um descendo pela página
-   toda e vai confundir". Ele tem razão — dois aviões vermelhos na tela, um
-   obedecendo à rolagem e outro ao mouse, e ninguém entende qual é qual.
+   Duas restrições do Gabriel, e juntas elas são o desenho inteiro.
 
-   Então o cursor é a OUTRA marca que o site já usa: a cruz de registro. Ela
-   está na régua entre dobras (`.v2-cruz`), no `( _01 )` de todo cromo, no
-   carimbo de ano. É a gramática de prova de impressão que o site inteiro fala,
-   e transformá-la em cursor é dizer a mesma coisa com o ponteiro: você está
-   mirando alguma coisa nesta página.
+   A primeira: nada de avião. "Já tem um descendo pela página toda e vai
+   confundir" — dois aviões vermelhos na tela, um obedecendo à rolagem e outro
+   ao mouse, e ninguém entende qual é qual.
 
-   Duas peças, e a diferença entre elas é o que dá vida:
+   A segunda veio depois, olhando a primeira tentativa: ela era uma cruz de
+   registro, um anel com quatro marcas que crescia e engrossava em cima dos
+   links. No papel era a marca de prova de impressão que o site já usa; na tela
+   virou mira de nave, e ele cortou na hora — "a gente NÃO pode ir pro espaço, a
+   gente só tem o conceito de branco/vermelho/preto, avião de papel vermelho
+   voando pelo vento, é só isso". Tinha razão: anel com marcas em cruz seguindo
+   o ponteiro é retícula de jogo, não importa de onde a forma tenha vindo.
 
-   - o PONTO segue o mouse exato, sem mola. Ele é a verdade da posição: sem
-     ele, qualquer atraso vira imprecisão e clicar fica ruim.
-   - a MIRA segue com mola frouxa e chega depois. Ela é o peso, e é a peça que
-     faz o cursor parecer um objeto em vez de um desenho colado no ponteiro.
+   Sobrou a única metáfora que o conceito autoriza e que ainda não estava em
+   nenhum lugar da tela: o VENTO. Três pontos vermelhos, do maior ao menor, com
+   molas cada vez mais frouxas. Parado, eles se encontram e viram um ponto só.
+   Em movimento, eles se abrem numa esteira atrás do ponteiro — que é
+   literalmente o que o vento faz atrás de uma coisa que voa, e é o mesmo rastro
+   que o avião deixa na tela de carregamento.
 
-   Sobre link e botão a mira cresce e enche de accent, e o ponto some por
-   dentro dela: o alvo foi travado.
+   Não há estado "travado" com forma nova: sobre link e botão o ponto só CRESCE
+   e a esteira some. Qualquer coisa que abrisse, girasse ou ganhasse marcas
+   voltaria a ser mira.
 
-   Por que accent nas duas: o site tem fundo branco e fundo ink, e um cursor
-   que precisa saber em qual dos dois está precisaria de detecção por dobra —
-   que é a mesma engenharia que a nav faz por uma faixa de 72px e que aqui
-   custaria uma leitura de DOM por quadro. O vermelho mede 4.61:1 sobre o papel
-   e 4.27:1 sobre o ink, e como grafismo (mínimo 3:1) passa nos dois. Um só
-   desenho, nenhuma detecção.
+   Por que accent nos três: o site tem fundo branco e fundo ink, e um cursor que
+   precisasse saber em qual dos dois está pediria leitura de DOM por quadro. O
+   vermelho mede 4.61:1 sobre o papel e 4.27:1 sobre o ink, e como grafismo
+   (mínimo 3:1) passa nos dois. O terceiro fundo, o botão primário cheio de
+   accent, é resolvido pelo halo branco em cursor.css.
 
    Quem NÃO vê nada disto, e continua com o cursor do sistema:
    - quem está no toque ou na caneta (`pointer: fine` no CSS e aqui);
@@ -38,10 +41,15 @@ import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/reac
 
 const INTERATIVO = 'a, button, [role="button"], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])';
 
+/* Do mais preso ao mais solto. A diferença entre eles é o comprimento da
+   esteira: molas iguais dariam três pontos empilhados e nenhum vento. */
+const MOLA_A = { stiffness: 520, damping: 40, mass: 0.5 };
+const MOLA_B = { stiffness: 240, damping: 32, mass: 0.6 };
+
 export function Cursor() {
   const quieto = useReducedMotion();
   const [fino, setFino] = useState(false);
-  /* `vivo` só liga no primeiro movimento. Sem isso a mira nasce em 0,0 e a
+  /* `vivo` só liga no primeiro movimento. Sem isso o cursor nasce em 0,0 e a
      primeira mexida no mouse é um risco vermelho atravessando a tela desde o
      canto superior esquerdo. */
   const [vivo, setVivo] = useState(false);
@@ -50,10 +58,10 @@ export function Cursor() {
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  /* frouxa de propósito: rígida demais e a mira cola no ponto, e as duas peças
-     viram uma. Estes números são os mesmos do voo, pela mesma razão. */
-  const mx = useSpring(x, { stiffness: 420, damping: 34, mass: 0.6 });
-  const my = useSpring(y, { stiffness: 420, damping: 34, mass: 0.6 });
+  const ax = useSpring(x, MOLA_A);
+  const ay = useSpring(y, MOLA_A);
+  const bx = useSpring(x, MOLA_B);
+  const by = useSpring(y, MOLA_B);
 
   useEffect(() => {
     let mq;
@@ -72,7 +80,11 @@ export function Cursor() {
     const move = (e) => {
       x.set(e.clientX);
       y.set(e.clientY);
-      if (!vivo) { mx.jump(e.clientX); my.jump(e.clientY); setVivo(true); }
+      if (!vivo) {
+        ax.jump(e.clientX); ay.jump(e.clientY);
+        bx.jump(e.clientX); by.jump(e.clientY);
+        setVivo(true);
+      }
       /* `closest` a cada movimento é barato — é uma subida de DOM curta — e é
          muito mais confiável que pendurar listener em cada link: o site monta e
          desmonta seções o tempo todo, e listener por elemento perderia tudo o
@@ -80,8 +92,8 @@ export function Cursor() {
       const alvo = e.target && e.target.closest ? e.target.closest(INTERATIVO) : null;
       setPreso(!!alvo);
     };
-    /* Sair da janela apaga a mira. Sem isto ela fica pendurada na borda quando
-       a pessoa vai para a barra de endereço, o que parece um bug. */
+    /* Sair da janela apaga o cursor. Sem isto ele fica pendurado na borda
+       quando a pessoa vai para a barra de endereço, o que parece um bug. */
     const sai = () => setDentro(false);
     const entra = () => setDentro(true);
 
@@ -95,35 +107,27 @@ export function Cursor() {
       document.removeEventListener("pointerenter", entra);
       window.removeEventListener("blur", sai);
     };
-  }, [fino, quieto, vivo, x, y, mx, my]);
+  }, [fino, quieto, vivo, x, y, ax, ay, bx, by]);
 
   /* O atributo no <html> é quem esconde o cursor do sistema, e ele só entra
-     quando a mira REALMENTE está no ar. Escondê-lo no CSS e depois descobrir
+     quando o nosso REALMENTE está no ar. Escondê-lo no CSS e depois descobrir
      no JS que não devia deixaria a página sem ponteiro nenhum. */
   useEffect(() => {
     const raiz = document.documentElement;
     const ligado = fino && !quieto && vivo;
-    if (ligado) raiz.setAttribute("data-mira", "1");
-    else raiz.removeAttribute("data-mira");
-    return () => raiz.removeAttribute("data-mira");
+    if (ligado) raiz.setAttribute("data-vento", "1");
+    else raiz.removeAttribute("data-vento");
+    return () => raiz.removeAttribute("data-vento");
   }, [fino, quieto, vivo]);
 
   if (!fino || quieto || !vivo) return null;
 
   return (
-    <div className="v2-mira" data-preso={preso ? "1" : undefined} data-fora={dentro ? undefined : "1"} aria-hidden="true">
-      <motion.span className="v2-mira-anel" style={{ x: mx, y: my }}>
-        <svg viewBox="0 0 44 44" focusable="false">
-          <circle className="v2-mira-disco" cx="22" cy="22" r="12" />
-          <g className="v2-mira-cruz">
-            <line x1="22" y1="1"  x2="22" y2="7" />
-            <line x1="22" y1="37" x2="22" y2="43" />
-            <line x1="1"  y1="22" x2="7"  y2="22" />
-            <line x1="37" y1="22" x2="43" y2="22" />
-          </g>
-        </svg>
-      </motion.span>
-      <motion.span className="v2-mira-ponto" style={{ x, y }} />
+    <div className="v2-vento" data-preso={preso ? "1" : undefined} data-fora={dentro ? undefined : "1"} aria-hidden="true">
+      {/* de trás para a frente: o mais solto pinta embaixo */}
+      <motion.span className="v2-vento-p is-c" style={{ x: bx, y: by }} />
+      <motion.span className="v2-vento-p is-b" style={{ x: ax, y: ay }} />
+      <motion.span className="v2-vento-p is-a" style={{ x, y }} />
     </div>
   );
 }
