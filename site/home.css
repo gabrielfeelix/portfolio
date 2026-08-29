@@ -477,9 +477,23 @@
 /* Moldura clara com a midia embutida, medida na ref: 658x526 com 10px de
    respiro em volta da foto e 20px embaixo, para a legenda. Card opaco de
    proposito: e a opacidade dele que cobre a linha anterior. */
-/* A ultima linha nao e coberta por ninguem, e o curso agora vive no padding da
-   .v2-pilha: margem aqui so somaria vao morto depois da pilha pronta. */
-.v2-linha-casos:last-child { margin-bottom: 0; }
+/* ESTE E O BOTAO DA ULTRAPASSAGEM. Medido em 1440x900 (29/08): a margem depois
+   da ultima linha decide onde as duas param, linear e exato:
+
+     lombada = 16px - margin-bottom
+
+   margem  0 -> lombada  16px (a de baixo para ANTES, e o travamento)
+     "    16 -> lombada   0px (cobertura exata, que e o que a viper faz)
+     "    48 -> a de baixo ULTRAPASSA a de cima em 32px
+
+   A viper para em 0: medida quadro a quadro, a lombada dela fecha em 0 e nunca
+   fica negativa, e as duas linhas saem juntas. Confirmado tambem que ela nao
+   usa transform nenhum — sticky puro, `transform: none` na linha que cobre e
+   matriz identidade na coberta.
+
+   48px passa um pouco do ponto dela de proposito: sem ultrapassar, o encontro
+   le como batida em parede. */
+.v2-linha-casos:last-child { margin-bottom: 48px; }
 
 /* A MOLDURA, medida na ref da viper (29/08, pedido do Gabriel).
 
@@ -989,34 +1003,20 @@
   margin-right: var(--v2-s2);
 }
 
-/* O CURSO DA PILHA mora aqui, e nao no vao entre as linhas. Medido em 1440x900
-   (29/08): a linha 0 so continua grudada enquanto a .v2-pilha ainda se estende
-   abaixo dela, entao e o padding daqui que paga o tempo de grude. O vao entre
-   as linhas faz o contrario — atrasa a chegada da linha 1 e gasta o orcamento
-   da linha 0 antes dela chegar.
+/* O curso que mantem a linha 0 grudada enquanto a linha 1 sobe.
 
-   Era `margin-bottom: 30vh` na linha e `var(--v2-s6)` aqui: a linha 0 fugia
-   para top=-33 enquanto a linha 1 ainda estava em 125, sobrepondo 52px (10% do
-   card) em 1 quadro de 220. Na viper, que e a ref, a linha 0 fica em top=70
-   com a linha 1 chegando em 82 — lombada de 12px.
+   CORRECAO de uma afirmacao anterior deste arquivo: nao e o vao entre as
+   linhas que paga esse tempo, e tambem nao e so o padding. Medido, o que
+   prende a linha grudada e a caixa de CONTEUDO da .v2-pilha — o padding fica
+   de fora dela. Por isso a ultima linha nao tem curso de sticky nenhum: a
+   caixa de conteudo acaba junto com ela. E a mesma geometria da viper.
 
-   A metrica que decide e a LOMBADA NO INSTANTE EM QUE A LINHA 0 LARGA O GRUDE.
-   Pequena = a linha 1 subiu e cobriu, que e o gesto. Grande = a linha 0 fugiu
-   para cima, que e o bug. Varredura em 1440x900, com o vao morto que sobra
-   depois da pilha como custo:
+   O vao entre as linhas voltou a ser o mesmo das colunas (--v2-s3). Era
+   `margin-bottom: 30vh`, e com ele a linha 0 fugia para top=-33 enquanto a
+   linha 1 ainda estava em 125: 478px de lombada, 10% de cobertura, e as duas
+   nunca grudadas ao mesmo tempo em 200 quadros.
 
-     curso     lombada no solte    vao morto
-     0         306px               0
-     20vh      173px               180px
-     30vh       99px               270px
-     40vh       19px               360px
-     50vh       18px               450px
-     60vh       29px               540px
-
-   Satura em 40vh. Acima disso so paga vao morto: 60vh custa 180px a mais de
-   scroll parado e nao fecha a lombada melhor. A lombada minima e 16px em todos
-   (contra 2px da viper, que chega la sem curso nenhum porque o fundo do
-   container dela E o fundo da ultima linha). */
+   Quem regula ONDE as duas param e a margem da ultima linha, logo acima. */
 .v2-pilha { padding: 0 0 40vh; }
 
 /* Os dois resets do curso precisam vir DEPOIS da regra acima: mesma
