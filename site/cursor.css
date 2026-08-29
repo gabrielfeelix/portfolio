@@ -1,0 +1,124 @@
+/* A mira. O desenho mora aqui; o porquê e as regras de quem vê estão em
+   site/Cursor.jsx, e não se repetem. */
+
+/* Esconder o ponteiro do sistema é a única coisa desta folha que pode
+   atrapalhar alguém, e por isso ela é a mais amarrada do arquivo: só entra com
+   `data-mira` no <html>, que o React só escreve quando a mira já está no ar,
+   num ponteiro fino e sem prefers-reduced-motion.
+
+   `!important` no botão e no link porque `.v2-pill` traz `cursor: pointer`
+   próprio: sem isto a mãozinha do sistema volta exatamente em cima de todo
+   alvo, que é o único lugar em que ela seria visível. */
+html[data-mira], html[data-mira] * { cursor: none !important; }
+
+.v2-mira {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;      /* acima da cortina (900) e da decolagem (999) */
+  pointer-events: none;
+  color: var(--v2-accent);
+  transition: opacity 180ms linear;
+  /* O halo branco.
+
+     O accent lê sobre o papel e sobre o ink, mas há uma terceira superfície e
+     ela é justamente a mais importante: o PRÓPRIO botão primário, que enche de
+     accent no hover. Vermelho sobre vermelho é a mira invisível exatamente
+     quando ela está mirando — e é a mesma armadilha que o Gabriel apontou no
+     avião da travessia.
+
+     Meio pixel de branco em volta resolve os três casos de uma vez: sobre o
+     papel ele é branco no branco e ninguém vê, sobre o ink e sobre o accent ele
+     é o contorno que separa. A segunda sombra é o inverso, para a mira não
+     sumir quando passa sobre uma foto clara. */
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, .85))
+          drop-shadow(0 0 2px rgba(11, 11, 12, .25));
+}
+.v2-mira[data-fora] { opacity: 0; }
+
+.v2-mira-anel,
+.v2-mira-ponto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  will-change: transform;
+}
+
+/* As duas peças são centradas no ponteiro pelo `margin` negativo, e não por
+   `translate(-50%)`: o `x`/`y` do motion já ocupa o `transform`, e somar
+   translate ali brigaria com a mola.
+
+   Pela mesma razão quem CRESCE no estado travado é o <svg>, e não o <span>:
+   o span tem o transform da mola escrito inline, e style inline ganha de
+   folha — medido, o `scale(1.34)` daqui simplesmente não aparecia na matriz. */
+.v2-mira-anel {
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+}
+.v2-mira-anel svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 300ms var(--v2-ease);
+}
+
+.v2-mira-disco {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  transition: fill 260ms var(--v2-ease), stroke-width 260ms var(--v2-ease);
+}
+
+.v2-mira-cruz line {
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  transition: opacity 260ms var(--v2-ease);
+}
+
+/* O ponto tem o `x`/`y` do motion no transform, então o `scale` do estado
+   travado vai no filho, pelo mesmo motivo que o do anel vai no <svg>. */
+.v2-mira-ponto {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+}
+.v2-mira-ponto::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  transition: transform 220ms var(--v2-ease);
+}
+
+/* Alvo travado: o anel ABRE e engrossa, as marcas de registro recuam, e o
+   ponto encolhe sem sumir.
+
+   A primeira versão enchia o disco de accent. Ela morreu por medição: cheio e
+   em escala 1.34 o disco mede 32px, e num print sobre o botão primário ele
+   cobria as duas primeiras palavras do rótulo. Um cursor que apaga o texto do
+   alvo que ele está mirando é um cursor errado, por bonito que seja.
+
+   Vazio, ele circunda o alvo em vez de tapar. E o ponto continua no centro
+   porque em botão pequeno, com o anel aberto, ele é a única peça que ainda diz
+   onde o clique vai cair. */
+.v2-mira[data-preso] .v2-mira-anel svg { transform: scale(1.34); }
+.v2-mira[data-preso] .v2-mira-disco { stroke-width: 2; }
+.v2-mira[data-preso] .v2-mira-cruz line { opacity: .4; }
+.v2-mira[data-preso] .v2-mira-ponto::after { transform: scale(.6); }
+
+/* Redundância barata: se o CSS chegar sem o JS, nada disto existe de qualquer
+   forma, mas quem estiver no toque ou tiver pedido para nada se mover não paga
+   nem o custo de a folha declarar o elemento. */
+@media (pointer: coarse) {
+  .v2-mira { display: none; }
+  html[data-mira], html[data-mira] * { cursor: auto !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v2-mira { display: none; }
+  html[data-mira], html[data-mira] * { cursor: auto !important; }
+}

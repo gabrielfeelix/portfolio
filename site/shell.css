@@ -244,23 +244,25 @@
   flex: none;
 }
 
-/* A janela de 12px com a fita de duas setas. No hover a fita anda meia
-   largura: uma seta sai, a outra entra. */
+/* A janela de 13px com a fita de dois aviões. No hover a fita anda meia
+   largura: um avião sai, o outro entra. 13 e não 12 porque o avião é uma
+   silhueta cheia e a seta era um traço: no mesmo tamanho de caixa ele lia
+   um degrau menor que a seta que substituiu. */
 .v2-pill-janela {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 13px;
+  height: 13px;
   overflow: hidden;
 }
 
 .v2-pill-fita {
   display: flex;
-  width: 24px;
+  width: 26px;
   transition: transform 620ms var(--v2-ease);
 }
 
 .v2-pill:hover .v2-pill-fita,
-.v2-pill:focus-visible .v2-pill-fita { transform: translateX(-12px); }
+.v2-pill:focus-visible .v2-pill-fita { transform: translateX(-13px); }
 
 /* Quando o filler cobre o botão, o rótulo fica sobre o accent: branco sobre
    #E4231B mede 4.51:1, que passa AA em texto normal. */
@@ -276,6 +278,86 @@
 /* Sobre hero escuro o pill inverte: fundo claro continua, mas a sombra some
    (sombra sobre preto vira sujeira). */
 .v2-pill-wrap.is-escuro .v2-pill { box-shadow: none; }
+
+/* ---------------- pill secundário ---------------- */
+
+/* O segundo botão do sistema, pedido pelo Gabriel em 29/08: "na hero seria
+   legal um primário e um secundário, mantendo cores e personalidade mas com as
+   características de um secundário".
+
+   Mantém tudo o que faz o botão ser deste site — a pílula, o disco com o
+   avião, a fita que troca no hover, o tap de 0.98 — e tira as duas coisas que
+   fazem um botão gritar: a CHAPA (fundo e sombra viram contorno) e o
+   PREENCHIMENTO (o filler accent não existe; se existisse, os dois botões
+   terminariam o hover idênticos e a hierarquia sumiria no momento em que ela
+   mais importa).
+
+   A personalidade fica no disco: em repouso o avião é vermelho dentro de um
+   anel vazio; no hover o disco enche de accent e o avião fica branco. É o
+   mesmo gesto do primário, num quinto da área — a promessa do primário, não a
+   cópia dele.
+
+   Estados, e os três existem separados de propósito:
+     repouso   contorno --v2-rule, rótulo ink, avião accent
+     hover     contorno ink, disco cheio de accent, avião branco
+     pressed   uma chapa de 5% de ink, que é o único momento em que ele tem
+               fundo — sem isso o clique não tem retorno nenhum, porque não há
+               sombra para afundar.
+
+   O rótulo NÃO vira branco no hover, ao contrário do primário: aqui nada
+   cresce por baixo dele, então branco sobre papel seria texto invisível. */
+.v2-pill-wrap.is-secundario .v2-pill {
+  /* 6 e não 7: a borda de 1px entra na conta e as duas variantes precisam ter
+     exatamente a mesma altura quando estão lado a lado na hero. */
+  padding: 6px calc(var(--v2-s3) - 1px) 6px 6px;
+  border: 1px solid var(--v2-rule);
+  background: transparent;
+  box-shadow: none;
+  transition: border-color 300ms var(--v2-ease), background-color 160ms linear;
+}
+.v2-pill-wrap.is-secundario .v2-pill-filler { display: none; }
+
+.v2-pill-wrap.is-secundario .v2-pill-dot {
+  border: 1px solid var(--v2-rule);
+  border-radius: var(--v2-r-pill);
+  color: var(--v2-accent);
+  transition: background-color 300ms var(--v2-ease),
+              border-color 300ms var(--v2-ease),
+              color 300ms var(--v2-ease);
+}
+
+.v2-pill-wrap.is-secundario .v2-pill:hover,
+.v2-pill-wrap.is-secundario .v2-pill:focus-visible { border-color: var(--v2-ink); }
+
+.v2-pill-wrap.is-secundario .v2-pill:hover .v2-pill-dot,
+.v2-pill-wrap.is-secundario .v2-pill:focus-visible .v2-pill-dot {
+  background: var(--v2-accent);
+  border-color: var(--v2-accent);
+  color: #fff;
+}
+
+.v2-pill-wrap.is-secundario .v2-pill:hover .v2-pill-rot,
+.v2-pill-wrap.is-secundario .v2-pill:focus-visible .v2-pill-rot { color: var(--v2-ink); }
+
+.v2-pill-wrap.is-secundario .v2-pill:active { background: rgba(11, 11, 12, .05); }
+
+/* O secundário sobre o hero escuro. Mesma peça, tudo invertido: contorno e
+   rótulo em branco, e o avião em branco também — accent sobre ink mede 4.27:1
+   e passa como grafismo, mas num bico de 13px o vermelho escuro sobre preto
+   some, e este é o único botão do site que fica sobre a arte do vídeo. */
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill {
+  border-color: rgba(255, 255, 255, .34);
+}
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill-rot { color: #fff; }
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill-dot {
+  border-color: rgba(255, 255, 255, .34);
+  color: #fff;
+}
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill:hover,
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill:focus-visible { border-color: #fff; }
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill:hover .v2-pill-rot,
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill:focus-visible .v2-pill-rot { color: #fff; }
+.v2-pill-wrap.is-secundario.is-escuro .v2-pill:active { background: rgba(255, 255, 255, .1); }
 
 /* ---------------- nav ---------------- */
 

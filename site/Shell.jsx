@@ -5,7 +5,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ease, spring } from "./motion.js";
+import { ease, spring, AVIAO_D } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
 
 /* Todo link passa pelo roteador (`ir`), inclusive "Casos".
@@ -26,28 +26,42 @@ const LINKS = [
   { id: "sobre",    rot: "Sobre",    href: "/sobre",     rota: true },
 ];
 
-/* A seta do pill. Duas cópias empilhadas dentro de uma janela de 12px: no
+/* O ícone do pill. Duas cópias empilhadas dentro de uma janela de 13px: no
    hover a fita anda meia largura, uma sai pela esquerda e a outra entra pela
-   direita. É melhor que a seta que só desliza, porque o gesto termina no
-   mesmo lugar em que começou. */
-function Seta() {
+   direita. É melhor que o ícone que só desliza, porque o gesto termina no
+   mesmo lugar em que começou.
+
+   Era uma seta e virou o AVIÃO, em 29/08, a pedido do Gabriel: "em tudo que
+   tiver setinha no site". E é literalmente o mesmo caminho do avião que cruza
+   a rolagem, da decolagem e da travessia — quatro lugares, um desenho só, um
+   `d` só. Se ele mudar, muda em todos de uma vez.
+
+   O único arredondamento é `stroke-linejoin`: em 13px, a ponta viva do bico
+   vira serrilhado, e meio pixel de junta arredondada resolve sem tirar a
+   forma. Vai com `stroke` da mesma cor do `fill` porque o traço engorda a
+   silhueta o suficiente para o avião não sumir nesse tamanho. */
+function Aviao() {
   return (
-    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
-      <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.6"
-            strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+      <path d={AVIAO_D} fill="currentColor" stroke="currentColor" strokeWidth="1.2"
+            strokeLinejoin="round" />
     </svg>
   );
 }
 
 /* Pill padrão da V2: bolinha accent à esquerda, rótulo à direita.
-   É o único botão do sistema. Variante `escuro` para uso sobre hero.
+   É o único botão do sistema, em duas variantes de peso e duas de fundo.
+
+   `escuro`     sobre hero: a sombra sai, porque sombra sobre preto vira sujeira.
+   `secundario` o mesmo botão sem chapa e sem preenchimento — ver a nota longa
+                em shell.css, que é onde ele é desenhado.
 
    Fase 6: os dois efeitos medidos na referência entram aqui. O `filler` é o
    círculo accent que cresce até virar a pílula inteira; a fita de setas
    troca de seta no mesmo tempo. O rótulo vira branco quando o filler passa
    por baixo dele: branco sobre #E4231B mede 4.51:1, que passa AA em texto
    normal. Se o accent mudar, esse par volta para medição. */
-export function Pill({ children, href, onClick, escuro = false, seta = true, externo = false }) {
+export function Pill({ children, href, onClick, escuro = false, seta = true, externo = false, secundario = false }) {
   const Tag = href ? "a" : "button";
   // Link para fora abre em aba nova, e `noopener` impede que a página de
   // destino alcance esta por window.opener.
@@ -56,7 +70,7 @@ export function Pill({ children, href, onClick, escuro = false, seta = true, ext
     : null;
   return (
     <motion.div
-      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "")}
+      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "") + (secundario ? " is-secundario" : "")}
       whileTap={{ scale: 0.98 }}
       transition={spring}
     >
@@ -65,7 +79,7 @@ export function Pill({ children, href, onClick, escuro = false, seta = true, ext
         <span className="v2-pill-dot" aria-hidden="true">
           {seta ? (
             <span className="v2-pill-janela">
-              <span className="v2-pill-fita"><Seta /><Seta /></span>
+              <span className="v2-pill-fita"><Aviao /><Aviao /></span>
             </span>
           ) : null}
         </span>

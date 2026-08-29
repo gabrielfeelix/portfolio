@@ -200,6 +200,15 @@
   margin-top: var(--v2-s4);
 }
 
+/* Os dois botões da hero. `wrap` porque em 360px eles não cabem lado a lado:
+   o secundário desce e a linha vira coluna, sem nenhum dos dois encolher. */
+.v2-hero-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s2);
+}
+
 .v2-hero-sub {
   margin: 0;
   max-width: 42ch;

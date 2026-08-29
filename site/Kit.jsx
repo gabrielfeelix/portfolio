@@ -12,7 +12,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir, useVoo } from "./motion.js";
+import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir, useVoo, AVIAO_D } from "./motion.js";
 import { Label, Regua } from "./Shell.jsx";
 import { casos } from "./content.js";
 import { CAPAS_CHEIAS } from "./copy.js";
@@ -81,7 +81,7 @@ export function Voo({ caminho, distancia, opacidade }) {
         }}
       >
         <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
+          <path d={AVIAO_D} fill="var(--v2-accent)" />
         </svg>
       </motion.div>
     </div>

@@ -353,6 +353,18 @@ export function usePalavra(total) {
   return { ref, palavras, quieto };
 }
 
+/* 15a-bis. o avião
+
+   O contorno do avião de papel, em caixa 24x24, bico para a direita.
+
+   Ele aparece em quatro lugares — cruzando a rolagem (Kit.jsx), dentro do
+   botão (Shell.jsx), atravessando a cortina de página (Travessia.jsx) e
+   orbitando a tela de carregamento — e nos três primeiros é literalmente esta
+   constante. O quarto é HTML servido, inline no <head>, e não pode importar
+   nada: lá o mesmo `d` está escrito à mão em site/decolagem.html, e é o único
+   lugar em que ele se repete. Se este mudar, aquele muda junto. */
+export const AVIAO_D = "M23 12 L3 3 L9 12 L3 21 Z";
+
 /* 15b. voo
    O aviãozinho vermelho, atravessando o corpo claro inteiro.
 

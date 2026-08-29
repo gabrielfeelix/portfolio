@@ -33,7 +33,7 @@ import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo } from "./Kit.jsx";
 import {
-  ALL_MARKS, VOL, COMPANIES,
+  ALL_MARKS, VOL, COMPANIES, CONTATO,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
@@ -57,6 +57,21 @@ const QUEBRA = "/volume/assets/stock/capa-quebra.webp";
 /* A palavra rotativa da V1, refeita com mola no lugar do CSS por caractere.
    Ela ocupa a linha inteira: assim a troca nunca muda onde a headline quebra,
    que era o problema que a V1 resolvia medindo a caixa a cada troca. */
+/* Um link que é rota, não recarga.
+
+   O `href` continua real — abrir em nova aba, copiar o endereço e o preview de
+   link seguem funcionando —, e o preventDefault só vale para o clique comum.
+   Com tecla modificadora ou botão do meio o navegador leva, que é o que a
+   pessoa pediu ao segurar a tecla. É o mesmo contrato da nav, em Shell.jsx. */
+function rota(ir, href) {
+  if (!ir) return undefined;
+  return (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+    e.preventDefault();
+    ir(href);
+  };
+}
+
 function Rotativa({ itens, intervalo = 2800 }) {
   const [i, setI] = useState(0);
   const quieto = useReducedMotion();
@@ -157,7 +172,15 @@ function Hero({ paraCasos }) {
             <span className="v2-marca-texto">{HERO.sub[1]}</span>
             {HERO.sub[2]}
           </p>
-          <Pill onClick={paraCasos} escuro>Ver os casos</Pill>
+          {/* Dois botões, e a hierarquia é a razão de existirem dois: a home
+              tinha só primário, e um botão sozinho não diz que é o principal —
+              ele só é o único. O primário leva para o trabalho, que é o que a
+              página inteira existe para mostrar; o secundário abre a conversa,
+              que é o passo seguinte de quem já se convenceu. */}
+          <div className="v2-hero-botoes">
+            <Pill onClick={paraCasos} escuro>Ver os casos</Pill>
+            <Pill href={CONTATO().email.href} escuro secundario>Falar comigo</Pill>
+          </div>
         </motion.div>
         </div>
 
@@ -532,7 +555,7 @@ function Numeros() {
    A régua de cada linha se desenha da esquerda para a direita quando a linha
    entra, e o número acende. É o mesmo gesto três vezes: vocabulário repetido,
    que é o que docs/ANALISE-REFS.md cobra. */
-function Processo() {
+function Processo({ ir }) {
   const quieto = useReducedMotion();
   const regua = quieto
     ? { initial: { opacity: 0 }, whileInView: { opacity: 1 }, transition: { duration: 0.2 } }
@@ -562,6 +585,11 @@ function Processo() {
         olho="Como eu trabalho"
         titulo={<DuasCores fraca="Do objetivo" forte="ao ar" />}
         lead="Três movimentos, e o do meio é o que a maioria pula."
+        /* A dobra mostra três frases de um método que tem uma página inteira.
+           Quem quis saber mais aqui tinha que voltar à nav para descobrir que a
+           página existe. Secundário e não primário: a home tem UM primário, e
+           ele está na hero. */
+        cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>Ver o método inteiro</Pill>}
       />
       <ol className="v2-indice">
         {PROCESSO_CURTO.map((f, i) => {
@@ -606,7 +634,7 @@ function Processo() {
    O estado ativo NÃO é feito com cinza claro. Cinza claro sobre branco
    reprova contraste, e a dobra inteira cairia no axe: o que muda é o preto
    contra o cinza de texto, mais o índice em vermelho, que é grafismo. */
-function OndeEstive() {
+function OndeEstive({ ir }) {
   const quieto = useReducedMotion();
   const rise = useRise();
   const lista = COMPANIES();
@@ -624,6 +652,12 @@ function OndeEstive() {
               empilhado
               olho="Onde estive"
               titulo={<DuasCores fraca="A linha" forte="do tempo" />}
+              /* A trajetória lista empresa e período; quem quer a pessoa por
+                 trás da lista continua na /sobre, e daqui até agora não havia
+                 caminho. A dobra 06, que é a da ilustração, NÃO ganha CTA: ela
+                 é a assinatura da home e fechar com um botão a transformaria em
+                 mais uma seção de conversão. */
+              cta={<Pill href="/sobre" onClick={rota(ir, "/sobre")} secundario>Quem eu sou</Pill>}
             />
             <div className="v2-tra-marca">
               {/* a chave remonta o bloco: é a troca que anima, e não a logo
@@ -815,8 +849,8 @@ export default function Home({ ir }) {
             docs/ANALISE-REFS.md prescreve para print de sistema. */}
         <Quebra src={QUEBRA} alt="" aria-hidden="true" />
         <Numeros />
-        <Processo />
-        <OndeEstive />
+        <Processo ir={ir} />
+        <OndeEstive ir={ir} />
         <Sobre />
         <Fita />
       </CampoDeVoo>

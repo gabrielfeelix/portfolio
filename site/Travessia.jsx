@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AVIAO_D } from "./motion.js";
 
 /* A TRAVESSIA: o corte entre uma página e outra.
 
@@ -45,7 +46,7 @@ export function Cortina({ fase }) {
       <span className="v2-cortina-placa is-ink" />
       <span className="v2-cortina-aviao">
         <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="#fff" />
+          <path d={AVIAO_D} fill="#fff" />
         </svg>
       </span>
     </div>

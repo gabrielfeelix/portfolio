@@ -16,6 +16,7 @@ import Blog from "./Blog.jsx";
 import Post from "./Post.jsx";
 import { porSlug } from "./blog.js";
 import { Cortina, useTravessia } from "./Travessia.jsx";
+import { Cursor } from "./Cursor.jsx";
 
 /* --- roteamento ---
    /            → home
@@ -284,6 +285,7 @@ function App() {
     return (
       <div className="v2-shell">
         <Cortina fase={fase} />
+        <Cursor />
         <Nav sobreEscuro={sobreEscuro} ir={ir} />
         <main>
           {rota.tipo === "home" ? <Home ir={ir} />

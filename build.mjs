@@ -258,7 +258,7 @@ const appOpcoes = (dev) => ({
 
 async function buildCss() {
   // Um arquivo só, na ordem em que os tokens precisam existir antes do resto.
-  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css"];
+  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css", "cursor.css"];
   const partes = [];
   for (const css of ordem) {
     const src = path.join(ROOT, "site", css);
