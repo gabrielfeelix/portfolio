@@ -1,6 +1,6 @@
 # O que falta no volume
 
-> Atualizado em 2026-08-29 (noite) sobre `bf26a57`. Este é **o** arquivo de
+> Atualizado em 2026-08-29 (noite) sobre `faa772e`. Este é **o** arquivo de
 > pendência. Arquitetura, regras duras, como medir e armadilhas estão em
 > `docs/HANDOFF.md`: não duplique aqui.
 >
@@ -130,33 +130,6 @@ Ele quer uma, e **ainda não sabe qual**. Depende de B0c. Não inventar.
 
 # B · Aberto de verdade · pode andar sem ele
 
-### B0 · Aliviar o motion da seção PROCESSO na home
-
-Pedido do Gabriel em 29/08: "tá com motion muito lento, pesado, quero
-relaxar/diminuir".
-
-Já localizado. `site/Home.jsx:547-559` define um `linha(i)` **local** que
-escapou do acerto global de `bf26a57` (que levou o resto do site de 1.2s para
-0.6s):
-
-```js
-initial: { opacity: 0, y: 16, filter: "blur(6px)" },
-transition: { duration: 0.9, ease, delay: 0.1 + i * 0.05 },
-```
-
-Dois problemas: `0.9s` contra os `0.6s` do resto, e o `blur(6px)`, que além de
-caro para o compositor é o que faz o movimento ler como pesado. A régua em
-`Home.jsx:543` também está em `0.9`. Há um segundo blur igual em
-`Home.jsx:648-649` — conferir se é a mesma seção antes de mexer.
-
-Usar `easeRevela`, `dur` e `passo` de `motion.js` como o resto, e avaliar
-**tirar** o blur em vez de só encurtá-lo.
-
-### B0b · Apagar `volume/assets/lua.webp`
-
-Untracked, sem uso: era a lua da tela de carregamento, que saiu em `bf26a57`.
-O `preload` já foi removido do template. Só apagar.
-
 ### B0c · A página PROCESSO com componentes melhores
 
 Pedido do Gabriel em 29/08: "tá muito simples hoje". Quer **componentes mais
@@ -200,6 +173,16 @@ sequência e segue aberta. O lado de **espaço** já foi resolvido (ver C3).
 
 # C · Feito · não reabrir
 
+- ~~**O motion da seção PROCESSO na home**~~ · `faa772e`. O `linha(i)` e a régua
+  locais de `Home.jsx` escaparam do acerto de `bf26a57` e ficaram em `0.9s`,
+  50% acima do `dur=0.6s` do resto — era a queixa de "pesado". Agora leem
+  `dur`/`passo`/`easeRevela` de `motion.js`, então o próximo acerto global
+  pega estas junto. O `blur(6px)` **saiu inteiro**, não encurtado: com
+  `y`+`opacity` não acrescenta leitura, e era a única propriedade ali que o
+  compositor não resolvia sozinho. O blur de `Home.jsx:648` **não é a mesma
+  seção** — é a troca de marca da trajetória, e continua lá de propósito.
+- ~~**`volume/assets/lua.webp`**~~ · `faa772e`. Apagado. Era a lua da tela de
+  carregamento, que saiu em `bf26a57`.
 - ~~**As páginas de empresa**~~ · `f1fd504`. Viraram narrativa: abertura,
   atos com parágrafo, balão de mangá na virada, setas de nanquim, linha do
   tempo e fecho com selo. Conteúdo real das três, espelho EN junto.
