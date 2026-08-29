@@ -1245,8 +1245,7 @@ const PROJECTS = [
     desc: "Site da fiadora digital, um pitch para três públicos",
     marca: "/volume/assets/marcas/mono/locarmais.png",
     sobre: "Fiança digital tem três públicos com desejos opostos: o inquilino quer alugar sem depósito, o proprietário quer garantia e a imobiliária quer fechar rápido. O site conta a mesma história três vezes, cada uma pela dor de quem lê.", destino: "ar",
-    cover: "/volume/assets/projetos/locarmais/cover.webp",
-    links: { vercel: "https://site.locarmais.com/", figma: null } },
+    cover: "/volume/assets/projetos/locarmais/cover.webp" },
   { id: "signamais", title: "Signamais", cat: "saas", domain: "SaaS · Assinaturas", fav: false, chapterId: null,
     desc: "Plataforma de assinaturas",
     marca: "/volume/assets/marcas/mono/signamais.svg",
@@ -1328,7 +1327,12 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    escolha do Gabriel; o resto segue a ordem em que está em PROJECTS. */
 const PIECE_ORDER = ["signamais", "dropchina", "4yu", "kitamo-app", "remoctrl", "traxium"];
 function pieceProjects() {
-  const lista = PROJECTS.filter((p) => !p.hidden && !isCase(p) && pieceLink(p));
+  /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
+     solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
+     pedido do Gabriel). Peça sem link continua entrando na fita — o item
+     vira <span> em vez de <a>, que a Fita já resolve. O que decide se ela
+     aparece é ter imagem, não ter para onde apontar. */
+  const lista = PROJECTS.filter((p) => !p.hidden && !isCase(p));
   const rank = (p) => { const i = PIECE_ORDER.indexOf(p.id); return i < 0 ? PIECE_ORDER.length : i; };
   return lista.slice().sort((a, b) => rank(a) - rank(b) || lista.indexOf(a) - lista.indexOf(b));
 }
