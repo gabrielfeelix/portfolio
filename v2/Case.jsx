@@ -27,7 +27,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRise, useSubir, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
-import { chapterById, proximoCaso } from "./content.js";
+import { chapterById, casos } from "./content.js";
 import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
 /* ============================================================ utilidades */
@@ -1265,30 +1265,55 @@ function Aprendi({ cap }) {
 
 /* ============================================================== próximo */
 
-function Proximo({ cap, ir }) {
+/* Os outros casos, no fim da página.
+ *
+ * Era `Proximo`, um link de texto para o caso seguinte na ordem. Quem termina
+ * de ler um caso está pronto para ver outro, e um nome sem imagem não
+ * convida: a home mostra os quatro em arte e a página de caso mostrava um em
+ * texto.
+ *
+ * São os outros três, com a mesma capa e o mesmo quadro 16/11 da home, então
+ * a página de caso fecha na gramática que a home abriu. O hover repete o zoom
+ * de 3,5% que a home já usa; quem mexer num tem que mexer no outro.
+ */
+function OutrosCasos({ cap, ir }) {
   const rise = useRise();
-  const id = proximoCaso(cap.id);
-  const alvo = id ? chapterById(id) : null;
-  if (!alvo) return null;
-  const href = `/v2/case/${alvo.id}`;
+  const outros = casos().filter((c) => c.id !== cap.id);
+  if (!outros.length) return null;
+
   return (
-    <section className="v2-wrap">
-      <Regua />
-      <motion.a
-        className="v2-proximo"
-        href={href}
-        onClick={(e) => { e.preventDefault(); ir(href); }}
-        {...rise(0)}
-      >
-        <span className="v2-proximo-k">Próximo caso</span>
-        <span className="v2-proximo-t">{alvo.title}</span>
-        <span className="v2-proximo-d">{alvo.descriptor}</span>
-      </motion.a>
+    <section className="v2-wrap v2-outros" aria-labelledby="outros-t">
+      <div className="v2-outros-topo">
+        <p className="v2-outros-cromo">Continue</p>
+        <h2 className="v2-outros-t" id="outros-t">Os outros casos</h2>
+      </div>
+      <ul className="v2-outros-grade">
+        {outros.map((c, i) => {
+          const href = `/v2/case/${c.id}`;
+          const capa = CAPAS_CHEIAS[c.id];
+          return (
+            <motion.li key={c.id} {...rise(Math.min(i, 3))}>
+              <a
+                className="v2-outro"
+                href={href}
+                onClick={(e) => { e.preventDefault(); ir(href); }}
+              >
+                <span className="v2-outro-quadro">
+                  {capa ? (
+                    <img className="v2-outro-capa" src={capa} alt="" loading="lazy" decoding="async" />
+                  ) : null}
+                </span>
+                <span className="v2-outro-n">{String(i + 1).padStart(2, "0")}</span>
+                <span className="v2-outro-t">{c.chap.title}</span>
+                <span className="v2-outro-d">{c.chap.descriptor}</span>
+              </a>
+            </motion.li>
+          );
+        })}
+      </ul>
     </section>
   );
 }
-
-/* ================================================================ folha */
 
 function NaoAchou({ id, ir }) {
   return (
@@ -1346,10 +1371,8 @@ export default function Caso({ id, ir }) {
         <CapaCapitulo n="04" t="O resultado" />
         <AntesDepois cap={cap} />
         <Resultado cap={cap} />
-      </div>
-      <Aprendi cap={cap} />
-      <div className="v2-corpo-claro">
-        <Proximo cap={cap} ir={ir} />
+        <Aprendi cap={cap} />
+        <OutrosCasos cap={cap} ir={ir} />
       </div>
     </>
   );

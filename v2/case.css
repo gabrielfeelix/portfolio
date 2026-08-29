@@ -606,21 +606,33 @@
   max-width: var(--v2-caso-larga);
 }
 
+/* A lista de decisões.
+ *
+ * A grade declarava três colunas e o `li` tem dois filhos: o texto caía na
+ * coluna do meio, de 26ch, e a terceira ficava vazia. Junto disso o número
+ * usava `--v2-t-num` (112px em 1440) numa coluna de 8ch, que na fonte do
+ * item dá cerca de 70px: o número transbordava e passava por cima do título.
+ *
+ * Agora são duas colunas, a do número medida a partir do próprio tamanho do
+ * número, e o texto na medida de leitura da página. O número desce para o
+ * degrau da capa de capítulo: aqui ele é ordinal, não é dado, e a 112px
+ * competia com os números que são argumento. */
 .v2-dec-i {
   display: grid;
-  grid-template-columns: minmax(0, 8ch) minmax(0, 26ch) minmax(0, 1fr);
+  grid-template-columns: calc(var(--v2-t-movimento) * 1.6) minmax(0, 1fr);
   gap: var(--v2-s4);
-  align-items: baseline;
-  padding-block: var(--v2-s4);
+  align-items: start;
+  padding-block: var(--v2-s5);
   border-bottom: 1px solid var(--v2-rule);
 }
 
 .v2-dec-n {
   margin: 0;
-  font-size: var(--v2-t-num);
+  font-size: var(--v2-t-movimento);
   font-weight: 700;
-  line-height: .9;
-  letter-spacing: -.04em;
+  /* alinha a caixa alta do número com a do título, e não a linha de base */
+  line-height: .82;
+  letter-spacing: var(--v2-track-display);
   font-variant-numeric: tabular-nums;
 }
 
@@ -634,7 +646,10 @@
   letter-spacing: -.01em;
 }
 
-.v2-dec-r { max-width: none; }
+.v2-dec-r {
+  max-width: var(--v2-medida-caso);
+  margin-top: var(--v2-s2);
+}
 
 /* ---------------- recusei ---------------- */
 
@@ -693,27 +708,33 @@
 
 .v2-escada-f { color: var(--v2-muted); font-size: var(--v2-t-label); }
 
-.v2-escada-par { display: inline-flex; align-items: center; gap: var(--v2-s1); }
+/* O par amostra + valor da escada de cor. Três correções em 29/08. O raio era
+   6px no quadrado e 999px na chapa: raio médio é o que a regra do site proíbe,
+   e a chapa arredondada com um quadrado dentro fazia a amostra bater na curva
+   da lateral. O padding de 4px contra uma amostra de 26px colava a cor na
+   borda. E a mono era uma pilha escrita à mão, sem Geist Mono. */
+.v2-escada-par { display: inline-flex; align-items: center; gap: var(--v2-s2); }
 
 .v2-escada-v {
-  font-size: var(--v2-t-label);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--v2-t-cromo);
+  font-family: var(--v2-mono);
+  letter-spacing: .02em;
   color: var(--v2-muted);
   overflow-wrap: anywhere;
 }
 
 .v2-swatch {
-  width: 26px; height: 26px;
+  width: 24px; height: 24px;
   flex: none;
-  border-radius: 6px;
+  border-radius: 0;
   border: 1px solid var(--v2-rule);
 }
 
 /* O swatch do tema escuro precisa de fundo escuro atras, senao um cinza
    #323232 sobre papel branco parece so um cinza. */
 .v2-escada-par.is-escuro {
-  padding: 4px var(--v2-s1) 4px 4px;
-  border-radius: var(--v2-r-pill);
+  padding: var(--v2-s1) var(--v2-s3) var(--v2-s1) var(--v2-s1);
+  border-radius: 0;
   background: var(--v2-ink);
 }
 
@@ -936,8 +957,11 @@
   border-bottom: 1px solid var(--v2-rule);
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 48px), transparent 100%);
+          mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 48px), transparent 100%);
 }
+.v2-abas-trilho::-webkit-scrollbar { display: none; }
 
 .v2-aba {
   flex: 0 0 auto;
@@ -1222,37 +1246,124 @@
 
 .v2-aprendi-p + .v2-aprendi-p { margin-top: var(--v2-s4); }
 
-/* ---------------- proximo caso ---------------- */
+/* ---------------- outros casos ---------------- */
 
-.v2-proximo {
-  display: block;
+/* O fecho da página. Três quadros 16/11 com a mesma capa da home, então a
+   página de caso termina na gramática que a home abriu. Se o quadro da home
+   mudar de razão, este muda junto: são a mesma peça em dois lugares. */
+.v2-outros {
+  padding-block: var(--v2-s7);
+  border-top: 1px solid var(--v2-rule);
+  margin-top: var(--v2-s7);
+}
+
+.v2-outros-topo {
+  display: grid;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
+  gap: var(--v2-s4);
+  align-items: baseline;
   max-width: var(--v2-caso-larga);
-  margin-inline: auto;
-  padding-block: var(--v2-s5);
-  color: inherit;
-  text-decoration: none;
-  transition: padding-inline-start 420ms var(--v2-ease);
+  margin: 0 auto var(--v2-s6);
 }
 
-.v2-proximo:hover,
-.v2-proximo:focus-visible { padding-inline-start: var(--v2-s3); }
-
-.v2-proximo-k {
-  display: block;
-  font-size: var(--v2-t-label);
+.v2-outros-cromo {
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
   color: var(--v2-muted);
-  margin-bottom: var(--v2-s2);
 }
 
-.v2-proximo-t {
-  display: block;
+.v2-outros-t {
+  margin: 0;
   font-size: var(--v2-t-movimento);
   font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -.025em;
+  line-height: .98;
+  letter-spacing: var(--v2-track-display);
 }
 
-.v2-proximo-d { display: block; margin-top: var(--v2-s1); color: var(--v2-muted); }
+.v2-outros-grade {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: var(--v2-caso-larga);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+}
+
+.v2-outro {
+  display: grid;
+  gap: var(--v2-s2);
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 16/11 e não 16/10, igual ao cartão da home: a razão mais alta é o que dá ar
+   em cima e embaixo da arte. */
+.v2-outro-quadro {
+  display: block;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  background: var(--v2-ink);
+  margin-bottom: var(--v2-s1);
+}
+
+/* O mesmo zoom de 3,5% em 900ms do cartão da home. A arte só escala: ela é a
+   superfície inteira, e superfície não sobe. */
+.v2-outro-capa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1);
+  transition: transform 900ms var(--v2-ease);
+}
+.v2-outro:hover .v2-outro-capa,
+.v2-outro:focus-visible .v2-outro-capa { transform: scale(1.035); }
+
+.v2-outro-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-outro-t {
+  font-size: var(--v2-t-bloco);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: var(--v2-track-titulo);
+}
+/* O sublinhado nasce da esquerda no hover, que é o gesto de link do site. */
+.v2-outro-t {
+  background-image: linear-gradient(var(--v2-accent), var(--v2-accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 2px;
+  transition: background-size 420ms var(--v2-ease);
+  justify-self: start;
+}
+.v2-outro:hover .v2-outro-t,
+.v2-outro:focus-visible .v2-outro-t { background-size: 100% 2px; }
+
+.v2-outro-d {
+  font-size: var(--v2-t-corpo);
+  color: var(--v2-muted);
+  line-height: 1.4;
+}
+
+.v2-outro:focus-visible {
+  outline: 2px solid var(--v2-accent);
+  outline-offset: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-outro-capa,
+  .v2-outro-t { transition: none; }
+}
 
 /* ---------------- respiro ---------------- */
 
@@ -1271,8 +1382,7 @@
   /* Cinco colunas de funil abaixo de 1100 dão 180px cada e o rótulo quebra
      em palavra por linha. Três é o último degrau que ainda lê como fileira. */
   .v2-dados.is-funil { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .v2-dec-i { grid-template-columns: minmax(0, 6ch) minmax(0, 1fr); }
-  .v2-dec-r { grid-column: 2; margin-top: var(--v2-s2); }
+  .v2-dec-i { grid-template-columns: calc(var(--v2-t-movimento) * 1.6) minmax(0, 1fr); }
 }
 
 @media (max-width: 860px) {
@@ -1282,6 +1392,10 @@
   .v2-caso-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
   .v2-caso-abre { padding-top: var(--v2-s5); }
   .v2-dobra { margin-top: var(--v2-s5); }
+  /* Três quadros lado a lado não cabem: viram um por linha, na mesma ordem. */
+  .v2-outros-grade { grid-template-columns: 1fr; gap: var(--v2-s5); }
+  .v2-outros-topo { grid-template-columns: 1fr; gap: var(--v2-s1); margin-bottom: var(--v2-s5); }
+  .v2-outros { padding-block: var(--v2-s6); margin-top: var(--v2-s6); }
   .v2-fig.is-sangra .v2-fig-leg { padding-inline: var(--v2-gutter); max-width: none; }
   /* A capa encolhe mas continua sendo a tela inteira: é o corte, e um corte
      de 46svh num celular já é meia tela. */
