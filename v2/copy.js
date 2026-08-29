@@ -101,3 +101,19 @@ export const CAPAS_CHEIAS = {
   odex: "/volume/assets/projetos/odex/capa-home.webp",
   "oderco-revenda": "/volume/assets/projetos/oderco-revenda/capa-home.webp",
 };
+
+/* As marcas das empresas, em cor, para a dobra 05.
+
+   volume/data.jsx aponta COMPANIES[].logo para a versão monocromática, que é
+   o que a V1 usa. Aqui a marca é o único elemento visual da dobra, e em preto
+   ela lê como ícone de lista; em cor ela lê como empresa. Os arquivos já
+   existem em volume/assets/logos/, com fundo branco, que é o mesmo branco do
+   papel da página.
+
+   Fica na V2 pelo mesmo motivo de CAPAS_CHEIAS: data.jsx é o arquivo que a V1
+   publica, e a V2 não pode obrigá-lo a mudar. Quem não estiver aqui cai no
+   logo mono e, na falta dele, no wordmark. */
+export const LOGOS_COR = {
+  locar: "/volume/assets/logos/locarmais.png",
+  oderco: "/volume/assets/logos/oderco.png",
+};

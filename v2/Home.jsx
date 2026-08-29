@@ -37,7 +37,7 @@ import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, LOGOS_COR } from "./copy.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -525,6 +525,8 @@ function OndeEstive() {
   const lista = COMPANIES();
   const { ativo, marcar } = useNaAltura(lista.length);
   const atual = lista[ativo] || lista[0];
+  /* a marca em cor, se existir; senão a mono da V1; senão o wordmark */
+  const marca = LOGOS_COR[atual.id] || atual.logo;
 
   return (
     <Dobra id="onde" n="05" nome="Trajetória" carimbo="©26">
@@ -546,8 +548,8 @@ function OndeEstive() {
                 animate={quieto ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: quieto ? 0.2 : 0.7, ease }}
               >
-                {atual.logo ? (
-                  <img className="v2-tra-logo" src={atual.logo} alt={`Marca da ${atual.name}`} draggable="false" />
+                {marca ? (
+                  <img className="v2-tra-logo" src={marca} alt={`Marca da ${atual.name}`} draggable="false" />
                 ) : (
                   <span className="v2-tra-wordmark">{atual.name}</span>
                 )}
