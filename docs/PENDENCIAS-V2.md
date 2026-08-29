@@ -32,14 +32,39 @@ Arquivo: `v2/copy.js`, `DECLARACAO`.
 ### 3. A quebra de imagem antes de "O que já saiu da mesa" · ABERTA
 
 A capa grande que separa os casos dos números "ainda não faz muito sentido".
-Ela é foto de banco (macro de lanterna de carro, StockSnap CC0) e está em
-upscale de 960 para 1600.
+A foto de banco (macro de lanterna de carro, StockSnap CC0, em upscale de 960
+para 1600) saiu em 29/08. O arquivo foi apagado.
 
-O que ele quer: criar uma capa própria, com texto no meio e algum efeito
-dentro dela, funcionando como passagem para a dobra seguinte, e não como
-banner mudo.
+No lugar entrou arte própria: o aviãozinho de papel vermelho do próprio site,
+sozinho no escuro, voando para uma luz distante. Arquivo:
+`volume/assets/stock/capa-quebra-aviao.webp`, 2400x1120.
 
-Arquivo: `volume/assets/stock/capa-quebra.webp`, usado em `v2/Home.jsx`.
+O formato é 2.14:1 e não 2.4:1 de propósito — 2.4 é a janela (`.v2-quebra`,
+74vh) e `.v2-quebra-in` tem 112% de altura, então a folga vertical é o curso
+do `useParallax(12)`. O fundo da janela virou `--v2-ink`, senão pisca um cinza
+claro de 74vh antes da imagem `lazy` entrar. No móvel o `cover` corta pela
+largura e não pela altura: em 390x844 os 52vh antigos mostravam 37% da largura
+e comiam o bico do avião, então há regras em 560 e 900 que baixam a altura e
+deslocam o `object-position`.
+
+**Ainda aberta**, e por dois motivos que o Gabriel levantou em 29/08:
+
+1. O avião apontando para a direita, no centro-superior, subindo na diagonal,
+   é o mesmo desenho do `AVIAO_D` que o `CampoDeVoo` já repete em todas as
+   páginas. Vira enjoativo.
+2. Falta o texto e a passagem. Esta entrada sempre pediu "capa própria, com
+   texto no meio, funcionando como passagem para a dobra seguinte, e não como
+   banner mudo" — e a arte atual ainda é banner mudo.
+
+Direção nova, dele: um campo de noite, com morros de grama, em duas ou mais
+camadas com velocidades de parallax diferentes (profundidade real, não
+translação de uma foto chapada), o avião pequeno dentro da paisagem, e uma
+frase.
+
+Atenção ao montar: isto contradiz `docs/ANALISE-REFS.md`, que prescreve
+"04 quebra de imagem pura, sem texto". Esta entrada é de 29/08 e a ANALISE-REFS
+é de 28/08, então esta manda; mas a ANALISE-REFS precisa ser corrigida junto,
+senão as duas ficam brigando.
 
 ### 4. Método, a dobra 04 · ABERTA, terceira recusa
 
