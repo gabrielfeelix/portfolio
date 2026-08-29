@@ -38,9 +38,19 @@
   will-change: transform;
 }
 /* O veu. Duas camadas somadas: uma diagonal, que escurece o canto de baixo a
-   esquerda, onde o titulo mora, e uma chapa fraca no geral, que segura o texto
-   quando a arte e clara no meio. Medido: sobre o ponto mais claro da capa do
-   ODEX, o branco do titulo fica em 8,4:1. */
+   esquerda, onde o titulo mora, e uma vertical, que era chapa fraca e uniforme
+   ate 29/08.
+
+   A vertical virou degrade porque a chapa uniforme cobrava o mesmo preco no
+   alto e embaixo: no pe ela ajudava o titulo, no topo ela so apagava a arte
+   justamente onde a cena esta (o aparelho, o fundo, a luz). Agora ela nasce
+   transparente no topo e fecha em .16 no pe, entao o alto clareia e o chao do
+   titulo fica ate um pouco mais firme que antes.
+
+   A diagonal tambem abriu a ponta clara: .30/.14 viraram .24/.04.
+
+   Medido depois da mudanca, com o texto escondido, no ponto mais claro sob
+   cada bloco de texto da capa do PCYES. Ver o numero no commit. */
 .v2-caso-fundo-veu {
   position: absolute;
   inset: 0;
@@ -48,10 +58,13 @@
   background:
     linear-gradient(to top right,
       rgba(11, 11, 12, .92) 0%,
-      rgba(11, 11, 12, .72) 32%,
-      rgba(11, 11, 12, .30) 64%,
-      rgba(11, 11, 12, .14) 100%),
-    linear-gradient(rgba(11, 11, 12, .12), rgba(11, 11, 12, .12));
+      rgba(11, 11, 12, .70) 30%,
+      rgba(11, 11, 12, .24) 62%,
+      rgba(11, 11, 12, .04) 100%),
+    linear-gradient(to bottom,
+      rgba(11, 11, 12, 0) 0%,
+      rgba(11, 11, 12, .04) 34%,
+      rgba(11, 11, 12, .16) 100%);
 }
 
 /* No celular a capa deixa de ser fundo e vira faixa.
@@ -74,8 +87,8 @@
   .v2-caso-fundo-veu {
     background: linear-gradient(
       to bottom,
-      rgba(11, 11, 12, .32) 0%,
-      rgba(11, 11, 12, .48) 26%,
+      rgba(11, 11, 12, .16) 0%,
+      rgba(11, 11, 12, .40) 26%,
       rgba(11, 11, 12, .92) 44%,
       var(--v2-ink) 54%);
   }
