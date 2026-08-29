@@ -838,26 +838,93 @@
 
 /* ================= dobras novas, montadas sobre o kit ================= */
 
-/* A prova social ao lado do lead, como o "Also work with these international
-   partners:" do viper. Logos pequenas, nunca do tamanho das da marquee. */
-.v2-prova-logos {
+/* As ferramentas ao lado do lead dos casos, no lugar das logos de empresa que
+   ficavam aqui: a marquee uma dobra acima ja faz esse trabalho, e ao lado do
+   caso o que responde e com o que ele foi feito.
+
+   E a mesma grade da dobra 04 da /sobre (ver .v2-sb-ferr-grade em sobre.css),
+   reduzida a legenda: quadrado em vez de coluna e sem nome embaixo.
+
+   Ela nao quebra mais em duas fileiras: as treze marcas andam em laco numa
+   fileira so, com a mecanica da .v2-marquee la de cima — duas copias do
+   trilho e -50%, o que faz a costura cair fora da tela. Por isso o
+   espacamento e `margin-right` no item e nao `gap` no trilho: com gap entre
+   as duas copias a metade da largura total nao coincide com o comeco da
+   segunda copia, e o laco pula. */
+.v2-prova-ferr {
+  overflow: hidden;
+  /* o desvanecer nas pontas diz que a fileira continua, em vez de parecer
+     cortada pela coluna do lead */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+
+.v2-prova-ferr-trilho {
   display: flex;
-  align-items: center;
-  gap: var(--v2-s3);
-  flex-wrap: wrap;
-  opacity: .55;
+  width: max-content;
+  animation: v2-prova-ferr-anda 26s linear infinite;
 }
-/* A prova reusa <Marca>, que nasce como celula de marquee: 112px de altura,
-   64px de padding lateral e um filete a direita. Fora do trilho isso vira
-   grade com borda solta e celula vazia. Aqui a celula deixa de existir e
-   sobra so o logo. */
-.v2-prova-logos .v2-marca {
-  height: auto;
+
+.v2-prova-ferr:hover .v2-prova-ferr-trilho,
+.v2-prova-ferr:focus-within .v2-prova-ferr-trilho { animation-play-state: paused; }
+
+@keyframes v2-prova-ferr-anda {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.v2-prova-ferr-fita {
+  display: flex;
+  margin: 0;
   padding: 0;
-  border-right: 0;
+  list-style: none;
 }
-.v2-prova-logos .v2-marca-logo { height: 16px; opacity: .8; }
-.v2-prova-logos .v2-marca-nome { font-size: var(--v2-t-cromo); opacity: .8; }
+
+.v2-prova-ferr-item { display: block; margin-right: 10px; }
+
+/* Mesmo quadrado da /sobre, so que em medida fixa: aqui ele nao e coluna de
+   grade, entao nao tem 1fr de onde tirar largura. */
+.v2-prova-quadro {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  background: var(--v2-superficie);
+  border: 1px solid var(--v2-rule);
+  transition:
+    background 400ms var(--v2-ease),
+    border-color 400ms var(--v2-ease);
+}
+
+/* 52% e nao os 42% da /sobre: mesmo a 46px o 42% deixaria a marca com 19px,
+   que e pequeno demais para a mais detalhada da lista ser reconhecida.
+   `contain` continua pelo mesmo motivo de la — as marcas nao tem a mesma
+   proporcao. */
+.v2-prova-quadro img {
+  display: block;
+  width: 52%;
+  height: 52%;
+  object-fit: contain;
+}
+
+/* Aqui a cor e o estado parado, diferente da grade da /sobre. La o quadrado
+   e grande, tem nome embaixo e fica quieto: o cinza le como escolha. Nesta
+   fileira a marca mede 24px, nao tem nome e ainda passa andando — em cinza
+   ela vira um borrao de icone morto ao lado do lead. A marca so e
+   reconhecida se estiver na cor dela. O hover continua existindo, mas agora
+   ele acende o quadrado, nao a marca. */
+.v2-prova-ferr-item:hover .v2-prova-quadro {
+  background: color-mix(in srgb, var(--marca, var(--v2-ink)) 8%, var(--v2-superficie));
+  border-color: var(--marca, var(--v2-ink));
+}
+
+/* Sem movimento o laco para e a fileira vira rolagem de dedo/trackpad, que e
+   a mesma saida que a .v2-fita das pecas usa. */
+@media (prefers-reduced-motion: reduce) {
+  .v2-prova-quadro { transition: none; }
+  .v2-prova-ferr-trilho { animation: none; }
+  .v2-prova-ferr { overflow-x: auto; }
+}
 
 /* O indice do caso em cima do dominio, como o `THINGS® _ 07.25` do bungee. */
 /* Tinta, nao accent: a 12px sobre --v2-superficie o accent mede 4.2:1 e

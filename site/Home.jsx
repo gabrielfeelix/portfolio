@@ -38,6 +38,7 @@ import {
   casos, pieceProjects, pieceLink,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
+import { FERRAMENTAS } from "./ferramentas.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -328,7 +329,7 @@ function Cartao({ caso, i, ir }) {
      v2/copy.js. Quando existe, a chapa de cor, o degradê, a marca e a tela
      flutuante saem: tudo isso já está dentro do arquivo. */
   const cheia = CAPAS_CHEIAS[caso.id];
-  const href = `/v2/case/${caso.id}`;
+  const href = `/case/${caso.id}`;
 
   /* Pré-carrega a arte do HERO do caso, que é outro arquivo do que este
      cartão mostra: o cartão usa `capa-home` (16/11) e o hero usa `capa-caso`
@@ -419,12 +420,49 @@ function LinhaCasos({ itens, i, total, progresso, ir }) {
   );
 }
 
+/* A fileira de ferramentas ao lado do lead dos casos.
+ *
+ * Aqui estavam cinco logos de empresa, e elas já passam inteiras na marquee
+ * uma dobra acima: repetir a mesma prova duas vezes na mesma rolagem não
+ * prova nada de novo. Ao lado dos casos o que responde é COM O QUE eles
+ * foram feitos.
+ *
+ * É a mesma grade da dobra 04 da /sobre, e de propósito a mesma fonte de
+ * dados (v2/ferramentas.js) — só que sem nome embaixo e no tamanho de
+ * cromo, porque aqui ela é legenda do lead, não conteúdo da dobra. O nome
+ * volta no `title`, para quem aponta, e no `alt`, para quem ouve.
+ *
+ * Ela anda em laço, com a mesma mecânica da marquee de marcas: duas cópias
+ * do trilho e -50% de translate, para a costura cair fora da tela. As treze
+ * marcas não caberiam na coluna do lead paradas — antes elas quebravam em
+ * duas fileiras, agora a fileira é uma só e o que não cabe entra rolando. A
+ * cópia de trás é `aria-hidden`, e o hover para o laço para o ponteiro
+ * conseguir alcançar um quadrado. */
+function ProvaFerramentas() {
+  const fita = (dup) =>
+    FERRAMENTAS.map((f) => (
+      <li className="v2-prova-ferr-item" key={(dup ? "b" : "a") + f.id} title={f.nome}>
+        <span className="v2-prova-quadro" style={f.hex ? { "--marca": f.hex } : undefined}>
+          <img src={f.arquivo} alt={dup ? "" : f.nome} loading="lazy" decoding="async" draggable="false" />
+        </span>
+      </li>
+    ));
+  return (
+    <div className="v2-prova-ferr">
+      <div className="v2-prova-ferr-trilho">
+        <ul className="v2-prova-ferr-fita" aria-label="Ferramentas de trabalho">{fita(false)}</ul>
+        {/* a segunda cópia existe só para o laço não ter costura */}
+        <ul className="v2-prova-ferr-fita" aria-hidden="true">{fita(true)}</ul>
+      </div>
+    </div>
+  );
+}
+
 function Trabalho({ ir }) {
   const lista = casos();
   const linhas = [];
   for (let k = 0; k < lista.length; k += 2) linhas.push(lista.slice(k, k + 2));
   const { ref, progresso } = usePilhaTrilho();
-  const marcas = ALL_MARKS().slice(0, 5);
   return (
     <Dobra id="casos" n="02" nome="Trabalho" carimbo="©26" aria-label="Casos">
       {/* As cinco partes do viper. É a dobra que o Gabriel dissecou. */}
@@ -434,12 +472,8 @@ function Trabalho({ ir }) {
         marca="®"
         lead="Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar."
         cta={<Pill href="#pecas">Ver tudo</Pill>}
-        nota="Também passei por"
-        prova={
-          <span className="v2-prova-logos" aria-hidden="true">
-            {marcas.map((m) => <Marca key={m.id} m={m} />)}
-          </span>
-        }
+        nota="Feito com"
+        prova={<ProvaFerramentas />}
       />
       <div className="v2-pilha" ref={ref}>
         {linhas.map((itens, i) => (
