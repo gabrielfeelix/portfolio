@@ -718,7 +718,13 @@
   overflow: hidden;
 }
 
-.v2-fita { overflow: hidden; }
+/* O padding e o espaco que a peca ampliada ocupa: `overflow: hidden` segura o
+   laco na horizontal e cortaria os 10px que o scale acrescenta em cima e
+   embaixo. */
+.v2-fita {
+  overflow: hidden;
+  padding-block: 14px;
+}
 
 .v2-fita-trilho {
   display: flex;
@@ -746,25 +752,37 @@
   border-radius: var(--v2-cartao-raio);
   overflow: hidden;
   background: var(--v2-card);
-  transition: filter .35s ease, opacity .35s ease;
+  transition: transform .4s cubic-bezier(.4, 0, .2, 1);
 }
 
-.v2-fita-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* Desfoca TODAS, e a regra seguinte devolve a nitidez so para a apontada.
-   As duas tem a mesma especificidade de proposito: quem ganha e a ordem, e
-   por isso a de baixo nao pode subir. */
-.v2-fita:hover .v2-fita-item,
-.v2-fita:focus-within .v2-fita-item {
-  filter: blur(6px);
-  opacity: .45;
+.v2-fita-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1);
 }
 
-.v2-fita .v2-fita-item:hover,
-.v2-fita .v2-fita-item:focus-within {
-  filter: none;
-  opacity: 1;
+/* O destaque e SO na peca apontada: ela cresce e sobe, e as vizinhas ficam
+   exatamente como estavam. Mexer nas outras (desfoque, opacidade) foi tentado
+   e recusado — punia a fita inteira para premiar um card.
+
+   `transform` e nao largura: mudar a caixa reflui o trilho e a fita inteira
+   pula. O scale nao toca no layout. Como o card e mais largo que alto, os
+   mesmos 5% dao 17px na horizontal contra 10px na vertical, entao o
+   crescimento ja le como lateral sem distorcer a imagem.
+
+   z-index para ela passar por cima das vizinhas em vez de ser cortada. */
+.v2-fita-item:hover,
+.v2-fita-item:focus-within {
+  transform: scale(1.05);
+  z-index: 2;
 }
+
+/* A imagem aproxima um pouco mais que o card: e o que da a sensacao de foco
+   para dentro, em vez de so um card maior. */
+.v2-fita-item:hover img,
+.v2-fita-item:focus-within img { transform: scale(1.06); }
 
 /* A camada escura por dentro do card. O degrade e mais fechado embaixo, onde
    fica o texto, e abre em cima para o mockup nao sumir: continua sendo a
@@ -861,7 +879,6 @@
    camada ja vem acesa e a fita vira rolagem lateral. */
 @media (hover: none) {
   .v2-fita-foco { opacity: 1; pointer-events: auto; }
-  .v2-fita:hover .v2-fita-item { filter: none; opacity: 1; }
   .v2-fita-trilho { animation: none; }
   .v2-fita { overflow-x: auto; }
 }
@@ -876,6 +893,11 @@
   .v2-fita-item,
   .v2-fita-foco,
   .v2-fita-acao { transition: none; }
+  /* a camada ainda acende; o que sai e o movimento */
+  .v2-fita-item:hover,
+  .v2-fita-item:focus-within { transform: none; }
+  .v2-fita-item:hover img,
+  .v2-fita-item:focus-within img { transform: none; }
 }
 
 /* ---------------- 8. onde estive: a coluna presa ---------------- */
