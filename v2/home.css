@@ -278,7 +278,7 @@
 }
 
 .v2-marca-nome {
-  font-size: 1.0625rem;
+  font-size: var(--v2-t-corpo);
   font-weight: 600;
   letter-spacing: -.01em;
   color: var(--v2-ink);
@@ -883,7 +883,7 @@
 }
 .v2-sobre-nome {
   margin: 0;
-  font-size: clamp(4rem, 19vw, 17rem);
+  font-size: var(--v2-t-agua);
   font-weight: 700;
   line-height: .8;
   letter-spacing: var(--v2-track-display);
@@ -935,7 +935,9 @@
   /* Bad Script no lugar da Ephesis: a Ephesis tinha laco e contraste de
      caligrafia e lia como floreio, nao como assinatura. Esta e monolinear e
      sem enfeite. Roda maior para o mesmo px, entao 1.9x e nao 2.6x. */
-  font-size: calc(var(--v2-t-lead) * 1.9);
+  /* 48 = 24 x 2, e continua na grade. Era 1.9x do lead, que dava 45,6px:
+     multiplicador quebra a regra tanto quanto valor cru. */
+  font-size: calc(var(--v2-t-lead) * 2);
   line-height: 1.35;
   color: var(--v2-ink);
   /* a cursiva inclina para a direita: sem isso a ultima letra encosta no ar */

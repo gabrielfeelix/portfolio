@@ -114,7 +114,9 @@
   white-space: nowrap;
 }
 
-.v2-dado-sufixo { font-size: .42em; letter-spacing: -.02em; margin-left: .08em; }
+/* meio corpo do numero: como todo tamanho de numero e multiplo de 8, a metade
+   cai na grade sozinha. Com os .42em de antes, 112px davam 47,04. */
+.v2-dado-sufixo { font-size: .5em; letter-spacing: -.02em; margin-left: .08em; }
 
 .v2-dado-regua {
   position: relative;
@@ -158,7 +160,7 @@
 
 /* Meio degrau abaixo, para linha de dado que se repete muitas vezes. */
 .v2-dado.is-mini { gap: var(--v2-s2); }
-.v2-dado.is-mini .v2-dado-v { font-size: clamp(1.75rem, 3.4vw, 3rem); letter-spacing: -.04em; }
+.v2-dado.is-mini .v2-dado-v { font-size: var(--v2-t-caso-ato); letter-spacing: -.04em; }
 
 /* Fileira de dados. `auto-fit` porque cinco etapas a 1440 cabem em fileira e
    a 1100 não: em vez de um breakpoint, a fileira quebra sozinha. */
@@ -324,7 +326,7 @@
    trabalho que o truque fazia. */
 .v2-nav-marca {
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: var(--v2-t-corpo);
   letter-spacing: -.015em;
   color: inherit;
   text-decoration: none;

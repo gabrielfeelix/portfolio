@@ -84,6 +84,9 @@
    corpo acima da linha de base e um terço do tamanho, senão vira caractere de
    texto em vez de grafismo. */
 .v2-titulo-marca {
+  /* a marca colada e o unico tamanho relativo que fica: ela e um sobrescrito
+     do proprio titulo, entao ela acompanha o titulo e nao a escala. Sendo
+     grafismo de uma letra so, nao lê como degrau de texto. */
   font-size: .3em;
   vertical-align: .95em;
   margin-left: .06em;

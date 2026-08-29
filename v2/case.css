@@ -131,7 +131,7 @@
 
 .v2-margem-p {
   margin: 0;
-  font-size: .8125rem;
+  font-size: var(--v2-t-label);
   line-height: 1.6;
   color: var(--v2-muted);
 }
@@ -363,7 +363,7 @@
   gap: var(--v2-s3);
 }
 
-.v2-dados.is-funil .v2-dado-v { font-size: clamp(1.5rem, 2.6vw, 2.5rem); }
+.v2-dados.is-funil .v2-dado-v { font-size: var(--v2-t-caso-ato); }
 
 .v2-dados.is-apertada {
   /* 140px é o menor degrau em que os seis raios cabem numa fileira só a
@@ -721,6 +721,9 @@
   border-top: 1px solid var(--v2-rule);
 }
 
+/* Exceção declarada à grade: aqui o tamanho é CONTEÚDO. Esta lista mostra a
+   escala tipográfica DO CASE, no tamanho que ela tem de verdade, e arredondar
+   para a grade do portfolio seria mentir sobre o sistema do cliente. */
 .v2-escala-am { line-height: 1; letter-spacing: -.02em; }
 
 .v2-escala-m {

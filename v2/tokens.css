@@ -51,12 +51,28 @@
   --v2-track-titulo:  -0.03em;
   --v2-track-cromo:    0.14em;   /* a mono so existe em caixa alta e aberta */
 
-  /* Os cinco degraus. */
-  --v2-t-hero:   clamp(2.75rem, 9.4vw, 8.75rem);   /* 140 a partir de ~1490 */
-  --v2-t-secao:  clamp(2.25rem, 6.8vw, 6.5rem);    /* 104, titulo de dobra */
-  --v2-t-dado:   clamp(3.25rem, 7.5vw, 8rem);      /* 128, contador */
-  --v2-t-lead:   clamp(1.125rem, 1.5vw, 1.375rem); /* 22, descricao de 2 linhas */
-  --v2-t-cromo:  0.6875rem;                        /* 11, como o 11px do viper */
+  /* Os cinco degraus, na grade.
+
+     Regra do site, pedida pelo Gabriel em 28/08: nenhum tamanho impar, e
+     nenhum fora da grade. Espaco e display andam de 8 em 8; texto pequeno usa
+     o meio-degrau de 4 (12, 16, 20, 24), porque 8 seria ilegivel e 16 e o
+     corpo. Divida por 4 e da inteiro, sempre.
+
+     Por que em DEGRAUS e nao em clamp com vw: clamp interpola. Entre as duas
+     pontas ele serve 97,92px e 21,6px, que sao exatamente os numeros quebrados
+     que a regra proibe. Medido em 28/08, antes desta troca. Com degraus o
+     tamanho e sempre um valor escolhido, em qualquer largura de janela; o
+     preco e que o texto muda de tamanho em salto no ponto de virada, e nao
+     continuamente.
+
+     Os pontos de virada sao 560, 900, 1280 e 1600, e valem para a escala
+     inteira: se um token virar em outro lugar, dois textos da mesma dobra
+     mudam de tamanho em momentos diferentes. */
+  --v2-t-hero:   2.5rem;   /* 40 */
+  --v2-t-secao:  2.5rem;   /* 40 */
+  --v2-t-dado:   3.5rem;   /* 56 */
+  --v2-t-lead:   1.25rem;  /* 20 */
+  --v2-t-cromo:  0.75rem;  /* 12 */
 
   /* Apelidos, nao degraus novos: a pagina de caso e o Shell ainda pedem
      estes nomes. Nenhum deles introduz um tamanho que a escala nao tenha. */
@@ -65,20 +81,21 @@
   --v2-t-frase:     var(--v2-t-lead);
   --v2-t-num:       var(--v2-t-dado);
 
+  /* Pagina de caso. A escala cai: leitura longa em coluna de 640px nao
+     aguenta o hero da home. */
+  --v2-t-caso-hero:      2.5rem;   /* 40 */
+  --v2-t-caso-manifesto: 1.5rem;   /* 24 */
+  --v2-t-caso-ato:       1.5rem;   /* 24 */
+  /* A virada de movimento. Maior que o titulo de ato e menor que o hero: ela e
+     a unica tipografia da pagina que nao divide a dobra com nada. */
+  --v2-t-movimento:      2.5rem;   /* 40 */
+  /* A marca d'agua do rodape e do "GABRIEL" da dobra 06: e grafismo, e por
+     isso pode passar do maior degrau de texto. */
+  --v2-t-agua:           4rem;     /* 64 */
 
-  /* Pagina de caso. A escala cai: leitura longa em coluna de 900px nao
-     aguenta os 124px do hero da home nem os 72px do manifesto. Medido no
-     tabfolio: h1 40px, h2 28px, corpo ~17px. A V2 fica um degrau acima,
-     porque o hero dela e full-bleed e o titulo divide a dobra com a capa. */
-  --v2-t-caso-hero:      clamp(2.5rem, 6.4vw, 6rem);
-  --v2-t-caso-manifesto: clamp(1.25rem, 2.2vw, 2rem);
-  --v2-t-caso-ato:       clamp(1.5rem, 2.6vw, 2.5rem);
-  /* A virada de movimento. Maior que o título de ato e menor que o hero:
-     ela é a única tipografia da página que não divide a dobra com nada. */
-  --v2-t-movimento:      clamp(2.25rem, 5.2vw, 4.5rem);
   --v2-t-bloco:     var(--v2-t-lead);
-  --v2-t-corpo:     1.0625rem;
-  --v2-t-label:     0.75rem;   /* 12px: a faixa 10-12 das referencias */
+  --v2-t-corpo:     1rem;      /* 16 */
+  --v2-t-label:     0.75rem;   /* 12 */
 
   /* --- forma ---
      M3: as referencias escolhem um extremo. viper serve border-radius 0 em 28
@@ -128,6 +145,50 @@
      referência: ela vive DENTRO do painel de mídia, com opacidade baixa, e
      nunca na página. Nada da referência entra no repositório. */
   --v2-textura: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Crect width='1' height='1' fill='%230b0b0c'/%3E%3C/svg%3E");
+}
+
+/* Os degraus da escala. Um bloco por ponto de virada, e todos os tokens de
+   tipo viram juntos: escada compartilhada, nao escada por componente. */
+@media (min-width: 561px) {
+  :root {
+    --v2-t-hero: 4rem;          /* 64 */
+    --v2-t-secao: 3.5rem;       /* 56 */
+    --v2-t-dado: 4.5rem;        /* 72 */
+    --v2-t-caso-hero: 3.5rem;   /* 56 */
+    --v2-t-caso-ato: 2rem;      /* 32 */
+    --v2-t-movimento: 3rem;     /* 48 */
+    --v2-t-agua: 8rem;          /* 128 */
+  }
+}
+@media (min-width: 901px) {
+  :root {
+    --v2-t-hero: 6rem;          /* 96 */
+    --v2-t-secao: 4.5rem;       /* 72 */
+    --v2-t-dado: 6rem;          /* 96 */
+    --v2-t-lead: 1.5rem;        /* 24 */
+    --v2-t-caso-hero: 4.5rem;   /* 72 */
+    --v2-t-caso-manifesto: 2rem;/* 32 */
+    --v2-t-caso-ato: 2.5rem;    /* 40 */
+    --v2-t-movimento: 3.5rem;   /* 56 */
+    --v2-t-agua: 12.5rem;       /* 200 */
+  }
+}
+@media (min-width: 1281px) {
+  :root {
+    --v2-t-hero: 7.5rem;        /* 120 */
+    --v2-t-secao: 5.5rem;       /* 88 */
+    --v2-t-dado: 7rem;          /* 112 */
+    --v2-t-caso-hero: 6rem;     /* 96 */
+    --v2-t-movimento: 4.5rem;   /* 72 */
+    --v2-t-agua: 17rem;         /* 272 */
+  }
+}
+@media (min-width: 1601px) {
+  :root {
+    --v2-t-hero: 9rem;          /* 144 */
+    --v2-t-secao: 6.5rem;       /* 104 */
+    --v2-t-dado: 8rem;          /* 128 */
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
