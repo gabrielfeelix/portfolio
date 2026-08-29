@@ -200,42 +200,63 @@ function Passagem() {
    direita conforme a dobra passa. A revelação palavra a palavra continua, mas
    agora tem duas âncoras em vez de um bloco só. */
 function Declaracao() {
-  const palavras = DECLARACAO.split(" ");
-  const corte = Math.ceil(palavras.length / 2);
-  const { ref, palavras: anim, quieto } = usePalavra(palavras.length);
-  const trecho = (de, ate, classe) => (
-    <p className={`v2-declaracao ${classe}`}>
-      {palavras.slice(de, ate).map((w, k) => {
-        const i = de + k;
-        return (
-          <React.Fragment key={i}>
-            {/* o espaço fica FORA do span: espaço no fim de um inline-block é
-                descartado na hora de renderizar, e a frase saía sem separação */}
-            <motion.span
-              className="v2-declaracao-w"
-              style={
-                quieto
-                  ? undefined
-                  : {
-                      opacity: anim[i].opacidade,
-                      filter: anim[i].filtro,
-                      y: anim[i].y,
-                    }
-              }
-            >
-              {w}
-            </motion.span>
-            {i < ate - 1 ? " " : null}
-          </React.Fragment>
-        );
-      })}
-    </p>
+  /* Uma lista só de palavras, com as duas frases em display emendadas, para a
+     revelação continuar contando de um bloco para o outro: cortar o contador
+     no meio fazia o segundo bloco abrir do zero e o par piscava duas vezes. */
+  const frases = DECLARACAO.map((b) => b.frase.split(" "));
+  const bases = [0, frases[0].length];
+  const total = frases[0].length + frases[1].length;
+  const { ref, palavras: anim, quieto } = usePalavra(total);
+  const revelar = useRevelar();
+  const bloco = (b, n, classe) => (
+    <div className={`v2-tese-bloco ${classe}`}>
+      <p className="v2-olho">{b.olho}</p>
+      <p className="v2-declaracao">
+        {frases[n].map((w, k) => {
+          const i = bases[n] + k;
+          /* o asterisco de copy.js marca o acento e sai do texto aqui */
+          const acento = w.includes("*");
+          return (
+            <React.Fragment key={i}>
+              {/* o espaço fica FORA do span: espaço no fim de um inline-block é
+                  descartado na hora de renderizar, e a frase saía sem separação */}
+              <motion.span
+                className="v2-declaracao-w"
+                style={
+                  quieto
+                    ? undefined
+                    : {
+                        opacity: anim[i].opacidade,
+                        filter: anim[i].filtro,
+                        y: anim[i].y,
+                      }
+                }
+              >
+                {/* só o que está entre asteriscos vai ao vermelho: com a
+                    palavra inteira o ponto final ia junto e virava um pingo
+                    vermelho solto no fim da linha */}
+                {acento
+                  ? w.split(/(\*[^*]+\*)/).filter(Boolean).map((f, j) =>
+                      f.startsWith("*")
+                        ? <span key={j} className="v2-acento">{f.slice(1, -1)}</span>
+                        : f)
+                  : w}
+              </motion.span>
+              {k < frases[n].length - 1 ? " " : null}
+            </React.Fragment>
+          );
+        })}
+      </p>
+      {/* o parágrafo não entra palavra a palavra: em 16 palavras de 24px a
+          revelação vira ruído, e a dobra já tem a do display */}
+      <motion.p className="v2-lead v2-tese-nota" {...revelar(n)}>{b.nota}</motion.p>
+    </div>
   );
   return (
     <Dobra id="sobre" n="01" nome="A tese" carimbo="©26">
       <div className="v2-declaracao-par" ref={ref}>
-        {trecho(0, corte, "is-esq")}
-        {trecho(corte, palavras.length, "is-dir")}
+        {bloco(DECLARACAO[0], 0, "is-esq")}
+        {bloco(DECLARACAO[1], 1, "is-dir")}
       </div>
     </Dobra>
   );

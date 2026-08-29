@@ -124,6 +124,12 @@
   --v2-gutter: var(--v2-s4);
   --v2-label-col: 220px;
   --v2-medida: 809px;    /* medido no viper: max-width 809px no texto grande */
+  /* O parágrafo de leitura que mora embaixo de uma linha em display. Medido
+     no viper, na seção de intro que o Gabriel mandou como referência: a frase
+     grande atravessa a página e a coluna de texto embaixo dela para em pouco
+     mais de meia medida. É o contraste largo/estreito, não uma medida nova
+     de leitura. */
+  --v2-medida-lead: 560px;
 
   /* Fase 6. A coluna de leitura do caso caiu de 900 para 640 e a página
      ganhou uma grade só: label + leitura + nota marginal, centrada. 900px

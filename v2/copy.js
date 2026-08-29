@@ -47,10 +47,35 @@ export const HERO = {
    julgamento de design. A menção ao build sobrevive uma vez só, na frase de
    assinatura da dobra 06. O que sobrou É um argumento de julgamento, e ainda
    encolhe a dobra de 1896px para o tamanho de uma frase. */
-export const DECLARACAO =
-  "Coloco uma tela clicável na mão das pessoas cedo, porque opinião sobre " +
-  "imagem estática é gosto, e opinião sobre uma coisa que a pessoa tentou " +
-  "usar é informação.";
+/* Corte de 29/08, segunda volta: era uma frase só, e o par esquerda/direita a
+   partia no meio ("...porque opinião sobre" | "imagem estática é gosto..."),
+   então a metade da direita começava sem sujeito. Cortar em duas sentenças
+   curtas resolveu a leitura e criou outro problema, medido em print: duas
+   linhas soltas num display de 88px deixam a dobra apertada e sem corpo.
+
+   A forma agora é a do viper na seção de intro, que o Gabriel mandou como
+   referência em 29/08: um bloco fechado por lado, cada um com cromo, uma
+   linha em display e um parágrafo de leitura embaixo. O da esquerda é o
+   protótipo, o da direita é o ajuste. Um não continua o outro: são as duas
+   metades do mesmo trabalho, e cada uma pode ser lida sozinha.
+
+   O texto continua saindo inteiro de volume/Posfacio.jsx, só recortado e
+   redistribuído: nenhuma palavra é nova. O asterisco marca a palavra que sai
+   no vermelho do avião (--v2-accent) e nunca chega ao DOM. */
+export const DECLARACAO = [
+  {
+    olho: "O protótipo",
+    frase: "Coloco uma tela clicável na mão das pessoas *cedo*.",
+    nota:
+      "Opinião sobre imagem estática costuma ser gosto, e opinião sobre uma " +
+      "coisa que a pessoa tentou usar costuma ser informação.",
+  },
+  {
+    olho: "O ajuste",
+    frase: "A parte demorada do meu trabalho é o *ajuste*.",
+    nota: "É ajuste, e mais ajuste, e é a parte que eu não abro mão.",
+  },
+];
 
 export const MANIFESTO = {
   lead:

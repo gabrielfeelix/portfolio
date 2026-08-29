@@ -136,6 +136,17 @@
 
 /* Cada linha é a janela do clip-path do maskLine. O filho é quem anima. */
 .v2-hero-linha { display: block; overflow: hidden; }
+
+/* A janela cortava o rabo do "g" de Designer e do "q" de que: com entrelinha
+   .88 o descendente cai FORA da caixa da linha, e o `overflow: hidden` do
+   clip come ele. A folga entra por baixo e volta por margem negativa, então a
+   janela cresce e o ritmo da pilha continua igual. Não vale para a linha
+   rotativa: lá a janela é a própria máscara da troca de palavra, e alargar
+   deixaria a frase seguinte aparecer pela borda. */
+.v2-hero-linha:not(.is-rot) {
+  padding-bottom: .18em;
+  margin-bottom: -.18em;
+}
 .v2-hero-linha > span { display: block; }
 
 /* A rotativa é a única coisa em accent na tela, e só pode ser porque é
@@ -260,7 +271,25 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  /* s6 e nao s3: os dois blocos agora tem tres pecas cada um, e a 24px eles
+     liam como uma pilha so. O respiro e o que separa "sao dois assuntos" de
+     "e um paragrafo quebrado". */
+  gap: var(--v2-s6);
+}
+
+.v2-tese-bloco {
+  display: flex;
+  flex-direction: column;
   gap: var(--v2-s3);
+  max-width: var(--v2-medida);
+}
+.v2-tese-bloco.is-esq { align-self: flex-start; }
+.v2-tese-bloco.is-dir { align-self: flex-end; text-align: right; }
+.v2-tese-bloco.is-dir .v2-tese-nota { margin-left: auto; }
+.v2-tese-nota {
+  max-width: var(--v2-medida-lead);
+  /* sem isto a nota da direita deixava "mão." sozinho na segunda linha */
+  text-wrap: pretty;
 }
 
 /* A camada do voo, agora do corpo claro inteiro. `overflow: clip` e nao
@@ -289,18 +318,20 @@
 
 .v2-declaracao {
   margin: 0;
-  max-width: var(--v2-medida);
   font-size: var(--v2-t-secao);
   font-weight: 500;
   line-height: 1.02;
   letter-spacing: var(--v2-track-display);
   text-wrap: balance;
 }
-.v2-declaracao.is-esq { align-self: flex-start; }
-.v2-declaracao.is-dir { align-self: flex-end; text-align: right; }
 
 /* inline-block para a opacidade por palavra nao quebrar a quebra de linha */
 .v2-declaracao-w { display: inline-block; }
+
+/* O acento e o mesmo vermelho do aviao que cruza o corpo claro. Contraste
+   medido: accent/paper 4.61:1, e a declaracao nunca desce de 40px, entao vale
+   o limite de texto grande (3:1). */
+.v2-acento { color: var(--v2-accent); }
 
 /* ---------------- 4. marcas ---------------- */
 
@@ -1017,5 +1048,10 @@
   .v2-sobre { height: 60vh; }
   /* 62vw cobria o nome inteiro e sobrava G...L */
   .v2-sobre-foto { width: 44vw; }
-  .v2-declaracao-par { gap: var(--v2-s3); }
+  .v2-declaracao-par { gap: var(--v2-s4); }
+  /* Alinhar a direita no celular deixa o paragrafo com a borda esquerda
+     serrilhada e a leitura sofre. A coluna e uma so: o bloco da direita
+     mantem a posicao na pilha e volta a ler pela esquerda. */
+  .v2-tese-bloco.is-dir { text-align: left; }
+  .v2-tese-bloco.is-dir .v2-tese-nota { margin-left: 0; }
 }
