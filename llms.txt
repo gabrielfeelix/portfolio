@@ -1,21 +1,23 @@
 # Gabriel Felix Barbosa · UX / Product Designer
 
-> Portfólio de Gabriel Felix Barbosa, UX/Product Designer brasileiro. Quatro casos de e-commerce, SaaS, desktop e web abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar. O site é uma SPA estática em React, sem backend, e o conteúdo dos casos vive no próprio código.
+> Portfólio de Gabriel Felix Barbosa, UX/Product Designer brasileiro. Quatro casos — e-commerce, SaaS, desktop e web — abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar. O site é uma SPA estática em React, sem backend, e o conteúdo dos casos vive no próprio código.
 
-Gabriel desenha e constrói: cada caso mostra o problema, o dado que sustentou a decisão, o que foi recusado e o resultado. Números aparecem com procedência (fonte e nota sobre o que a amostra sustenta), e as telas são prova do argumento, não ilustração.
+Gabriel desenha e constrói: cada caso mostra o problema, o dado que sustentou a decisão, o que foi recusado e o resultado. Números aparecem com procedência — fonte declarada e nota sobre o que a amostra sustenta — e as telas são prova do argumento, não ilustração.
+
+Hoje é o designer único do Grupo Oderço, distribuidora nacional de eletrônicos com cinco marcas próprias (PCYES no gamer, Vinik no multissegmento, Skul na industrialização de PC, Odex na energia solar, Tonante no musical), tocando e-commerce, plataforma e sistema interno ao mesmo tempo.
 
 O conteúdo é servido por JavaScript no cliente. Para ler o texto de um caso, execute o JS da página ou leia os dados em `volume/data.jsx` no repositório.
 
 ## Casos
 
-- [PCYES V2 · Redesign de e-commerce](https://gabrielfelix-ux.4yu.com.br/case/pcyes): loja de hardware que ficou bonita e ficou lenta de comprar. Funil de 1.705 visitas na home para 27 no checkout, busca que exigia ortografia exata, e a V2 com design system, pré-venda e busca tolerante a erro.
-- [Locarmais · Conciliação](https://gabrielfelix-ux.4yu.com.br/case/locarmais-conciliacao): SaaS de locação, o fluxo de conciliação financeira.
-- [Odex · Desktop e web](https://gabrielfelix-ux.4yu.com.br/case/odex): produto de desktop e web do Grupo Oderço.
-- [Oderço Revenda · Web](https://gabrielfelix-ux.4yu.com.br/case/oderco-revenda): canal de revenda.
+- [PCYES V2 · Redesign do e-commerce](https://gabrielfelix-ux.4yu.com.br/case/pcyes): e-commerce da PCYES, a marca gamer do Grupo Oderço, em Magento. Uma vitrine que ficou bonita e ficou lenta de comprar. O funil de eventos do GA4 no trimestre (166.267 sessões) mostrou que o gargalo não era o checkout: de cada 62 pessoas que abrem uma página de produto, 1 põe no carrinho, e quem chega ao checkout compra a 25%. A V2 ataca o topo do funil, com design system, compra pelo card da vitrine, pré-venda e busca tolerante a erro de digitação. É o capítulo mais longo e o único com dado de comportamento; Gabriel contrariou o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada.
+- [Locar Mais · Módulo de conciliação financeira](https://gabrielfelix-ux.4yu.com.br/case/locarmais-conciliacao): SaaS de gestão de locação. O financeiro não conseguia responder se o valor que chegou era o valor certo, porque a empresa recebia por vários adquirentes ao mesmo tempo, cada um com sua taxa, seu imposto, seu prazo e seu formato de extrato. O módulo substituiu uma ferramenta externa e eliminou as planilhas paralelas do time.
+- [ODEX · Redesign de interface](https://gabrielfelix-ux.4yu.com.br/case/odex): plataforma de gestão da Odex, a marca de energia solar do Grupo Oderço, mais aplicativo e site institucional. A plataforma funcionava havia anos — o que tinha envelhecido era a interface. Sistema legado atualizado sem alterar o percurso de quem já usava.
+- [Oderço · Página de cadastro de revenda](https://gabrielfelix-ux.4yu.com.br/case/oderco-revenda): landing page e formulário de cadastro de revenda, com etapas e automação no RD Station. Um formulário longo, de uma marca que o visitante nunca tinha ouvido falar. Reduziu de três para dois os sistemas usados pelo comercial.
 
 ## Páginas
 
-- [Início](https://gabrielfelix-ux.4yu.com.br/): a tese, os casos, os números e as outras peças.
+- [Início](https://gabrielfelix-ux.4yu.com.br/): a tese, os quatro casos, os números e as outras peças.
 - [Processo](https://gabrielfelix-ux.4yu.com.br/processo): como ele conduz um projeto, da investigação à entrega.
 - [Sobre](https://gabrielfelix-ux.4yu.com.br/sobre): quem é Gabriel, trajetória, formação e ferramentas.
 

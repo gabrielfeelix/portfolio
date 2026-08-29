@@ -372,9 +372,149 @@
 
 .v2-nav-cta { justify-self: end; }
 
+/* ---------------- menu do celular ----------------
+   Ver o comentário longo em Shell.jsx. Aqui só a forma.
+
+   Marca e botão sobem para z-index 1 porque o painel é filho do mesmo
+   <header> e ocupa a tela inteira: sem isso a chapa cobriria o próprio botão
+   que a fecha. O painel fica em 0, dentro do contexto de empilhamento que a
+   nav já cria (position: fixed + z-index: 30), então ele passa por cima da
+   página e por baixo da barra sem precisar de z-index alto solto. */
+
+.v2-burger { display: none; }
+
+.v2-nav-marca,
+.v2-burger { z-index: 1; }
+
 @media (max-width: 860px) {
   .v2-nav { grid-template-columns: 1fr auto; }
   .v2-nav-links { display: none; }
+
+  /* O pill de contato sai da barra e vira o e-mail no pé do menu. Dois
+     caminhos para a mesma coisa dentro de 390px era o que fazia a barra
+     parecer cheia sem oferecer navegação nenhuma. */
+  .v2-nav-cta { display: none; }
+
+  .v2-burger {
+    display: grid;
+    gap: 5px;
+    justify-self: end;
+    width: 24px;
+    padding: 6px 0;
+    background: none;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* Ponta reta, não arredondada: M3 de docs/ANALISE-REFS.md. Cap redondo num
+     traço de 24px é um dos detalhes que entrega template. */
+  .v2-burger-linha {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    border-radius: 0;
+    background: currentColor;
+    transition: transform 380ms var(--v2-ease);
+  }
+
+  /* 3.25px = (1.5 da linha + 5 do gap) / 2: cada linha anda até o meio exato
+     do par antes de girar, então o X fecha sem sobra. */
+  .v2-burger.is-aberto .v2-burger-linha:first-child { transform: translateY(3.25px) rotate(45deg); }
+  .v2-burger.is-aberto .v2-burger-linha:last-child  { transform: translateY(-3.25px) rotate(-45deg); }
+}
+
+.v2-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--v2-s5);
+  padding: var(--v2-s6) var(--v2-gutter) var(--v2-s5);
+  background: var(--v2-ink);
+  color: #fff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.v2-menu:focus { outline: none; }
+
+.v2-menu-links { display: flex; flex-direction: column; }
+
+.v2-menu-link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s3);
+  padding-block: var(--v2-s3);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-menu-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  opacity: .45;
+}
+
+/* O degrau de seção, sem inventar tamanho: 40px em 390px de largura. */
+.v2-menu-rot {
+  font-size: var(--v2-t-secao);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: var(--v2-track-titulo);
+}
+
+.v2-menu-traco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: .16;
+}
+
+.v2-menu-pe { display: grid; gap: var(--v2-s3); }
+
+.v2-menu-email {
+  justify-self: start;
+  padding-bottom: 4px;
+  border-bottom: 1px solid color-mix(in srgb, #fff 30%, transparent);
+  font-size: var(--v2-t-lead);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-menu-social {
+  display: flex;
+  gap: var(--v2-s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v2-menu-social a,
+.v2-menu-carimbo {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-menu-social a { opacity: .6; }
+.v2-menu-carimbo { margin: 0; opacity: .35; }
+
+/* Acima de 860px o botão não existe; se o menu ficou aberto e a janela
+   cresceu, o JS fecha. Isto é o cinto: nada de chapa escura no desktop
+   mesmo que o estado escape. */
+@media (min-width: 861px) {
+  .v2-menu { display: none; }
 }
 
 /* ---------------- rodapé ---------------- */

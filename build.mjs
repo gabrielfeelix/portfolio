@@ -5,6 +5,7 @@ import { existsSync, watch } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { lerPosts, escreverBlog, DIR_POSTS } from "./blog.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
@@ -146,18 +147,30 @@ async function copyAssets() {
  * sozinha. */
 const SITE = "https://gabrielfelix-ux.4yu.com.br";
 
-async function buildSitemap() {
+async function buildSitemap(posts = []) {
   const fonte = await readFile(path.join(ROOT, "volume", "data.jsx"), "utf8");
   const m = fonte.match(/const CASE_ORDER = \[([^\]]*)\]/);
   const casos = m ? Array.from(m[1].matchAll(/"([\w-]+)"/g)).map((x) => x[1]) : [];
-  const rotas = ["/", "/processo", "/sobre", ...casos.map((id) => `/case/${id}`)];
   const hoje = new Date().toISOString().slice(0, 10);
+
+  /* Cada rota leva o lastmod que ela tem de verdade: o post traz a data dele,
+     o resto traz a data do build. Post com lastmod de hoje toda vez que o
+     site sobe é o que ensina o buscador a ignorar o campo. */
+  const rotas = [
+    { loc: "/", pri: "1.0", mod: hoje },
+    { loc: "/processo", pri: "0.8", mod: hoje },
+    { loc: "/sobre", pri: "0.8", mod: hoje },
+    ...casos.map((id) => ({ loc: `/case/${id}`, pri: "0.8", mod: hoje })),
+    ...(posts.length ? [{ loc: "/blog", pri: "0.8", mod: posts[0].data }] : []),
+    ...posts.map((p) => ({ loc: `/blog/${p.slug}`, pri: "0.7", mod: p.data })),
+  ];
+
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     rotas.map((r) =>
-      `  <url><loc>${SITE}${r}</loc><lastmod>${hoje}</lastmod>` +
-      `<priority>${r === "/" ? "1.0" : "0.8"}</priority></url>`).join("\n") +
+      `  <url><loc>${SITE}${r.loc}</loc><lastmod>${r.mod}</lastmod>` +
+      `<priority>${r.pri}</priority></url>`).join("\n") +
     `\n</urlset>\n`;
   await writeFile(path.join(DIST, "sitemap.xml"), xml);
   if (!casos.length) console.warn("! sitemap sem casos: CASE_ORDER não foi lido de volume/data.jsx");
@@ -245,7 +258,7 @@ const appOpcoes = (dev) => ({
 
 async function buildCss() {
   // Um arquivo só, na ordem em que os tokens precisam existir antes do resto.
-  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css"];
+  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css"];
   const partes = [];
   for (const css of ordem) {
     const src = path.join(ROOT, "site", css);
@@ -273,21 +286,34 @@ async function buildHtml() {
   await writeFile(path.join(DIST, "index.html"), html);
 }
 
-async function buildOnce() {
+/* O blog roda ANTES do bundle: `escreverBlog` grava site/posts.gerado.js, que
+   site/blog.js importa e o esbuild embute. Invertida, a ordem produziria um
+   app.js com o índice do build anterior — erro que só aparece no segundo
+   build depois de publicar um post, que é o pior momento para descobrir. */
+async function buildBlog(dev) {
+  const posts = await lerPosts(ROOT, { dev });
+  const indice = await escreverBlog(ROOT, DIST, posts);
+  const rascunhos = posts.length - posts.filter((p) => p.publicado).length;
+  console.log(`  blog: ${indice.length} post(s)` + (rascunhos ? `, ${rascunhos} em rascunho` : ""));
+  return indice;
+}
+
+async function buildOnce(dev = false) {
   await clean();
   await transpileConteudo();
   await bundleAnalytics();
   await copyVendor();
   await copyAssets();
-  await buildSitemap();
-  await esbuild.build(appOpcoes(false));
+  const posts = await buildBlog(dev);
+  await buildSitemap(posts);
+  await esbuild.build(appOpcoes(dev));
   await buildCss();
   await buildHtml();
   console.log("✓ build → dist/");
 }
 
 if (process.argv.includes("--serve")) {
-  await buildOnce();
+  await buildOnce(true);
   // O conteúdo continua transpilado um a um, fora do bundle.
   const ctxConteudo = await esbuild.context({
     entryPoints: CONTEUDO.map((f) => path.join(ROOT, "volume", f)),
@@ -312,6 +338,25 @@ if (process.argv.includes("--serve")) {
         buildCss().then(() => console.log("[watch] site.css atualizado")).catch((e) => console.error(e));
       }, 60);
     });
+  }
+  /* Os .md também ficam fora do grafo do esbuild: quem os lê é o blog.mjs, no
+     build. Sem este watch, escrever um post no dev não muda nada na tela — e
+     como o erro é silencioso (a página velha continua lá), é engano caro.
+     Regravar posts.gerado.js faz o esbuild reconstruir o app sozinho. */
+  {
+    const dir = path.join(ROOT, DIR_POSTS);
+    if (existsSync(dir)) {
+      let pendente = null;
+      watch(dir, () => {
+        clearTimeout(pendente);
+        pendente = setTimeout(() => {
+          buildBlog(true)
+            .then((posts) => buildSitemap(posts))
+            .then(() => console.log("[watch] blog atualizado"))
+            .catch((e) => console.error("! blog:", e.message));
+        }, 80);
+      });
+    }
   }
   // esbuild serve numa porta interna; o proxy na frente devolve index.html
   // para path que não é arquivo, que é o mesmo fallback do vercel.json. Sem
