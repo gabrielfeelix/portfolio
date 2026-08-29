@@ -801,14 +801,14 @@ function Assinatura({ children }) {
    propósito — quando o painel de detalhe entrar, ele lê das mesmas funções e
    a foto é literalmente a mesma imagem.
 
-   Onze das dezoito não têm arte em disco (medido em 29/08). Fita é de mockup:
-   sem imagem não há o que rodar, então elas seguem na linha de texto abaixo,
-   que mantém o nome na página sem inventar capa falsa. Assim que o mockup
-   entrar em `cover`, a peça sobe para a fita sozinha. */
+   Onze das dezoito não têm arte em disco (medido em 29/08) e simplesmente não
+   aparecem. Havia uma linha de texto listando os nomes delas, e ela saiu a
+   pedido do Gabriel: nome solto sem capa não prova nada e ainda entregava a
+   dobra pelo que falta. Fita é de mockup — assim que a arte entrar em `cover`,
+   a peça sobe para a fita sozinha. */
 function Pecas() {
   const lista = pieceProjects();
   const comFoto = lista.filter(pieceCover);
-  const semFoto = lista.filter((p) => !pieceCover(p));
   if (!comFoto.length) return null;
 
   const item = (p, dobra) => {
@@ -853,18 +853,6 @@ function Pecas() {
           <div className="v2-fita-grupo">{comFoto.map((p) => item(p, true))}</div>
         </div>
       </div>
-
-      {semFoto.length ? (
-        <p className="v2-fita-resto">
-          <span className="v2-fita-resto-r">Também passaram por aqui</span>
-          {semFoto.map((p, i) => (
-            <span key={p.id}>
-              {i ? <span aria-hidden="true"> · </span> : " "}
-              {p.title}
-            </span>
-          ))}
-        </p>
-      ) : null}
     </section>
   );
 }

@@ -857,24 +857,6 @@
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-/* As pecas sem imagem nenhuma. Fita e de mockup: sem capa nao ha o que rodar,
-   entao elas ficam numa linha de texto, no tom do label. Some da hierarquia e
-   ainda deixa o nome na pagina. */
-.v2-fita-resto {
-  margin: 0 auto;
-  max-width: var(--v2-medida);
-  padding-inline: var(--v2-gutter);
-  font-size: var(--v2-t-label);
-  line-height: 1.6;
-  color: var(--v2-muted);
-}
-
-.v2-fita-resto-r {
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: var(--v2-ink);
-}
-
 /* Sem ponteiro nao existe hover, e o card ficaria mudo para sempre: no dedo a
    camada ja vem acesa e a fita vira rolagem lateral. */
 @media (hover: none) {
