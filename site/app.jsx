@@ -14,20 +14,37 @@ import Processo from "./Processo.jsx";
 import Sobre from "./Sobre.jsx";
 
 /* --- roteamento ---
-   /v2            → home
-   /v2/processo   → o método
-   /v2/case/<id>  → caso
-   Path real, sem hash: o dev server devolve /v2/index.html para qualquer path
-   sob /v2, então a URL é compartilhável e o back/forward funciona. */
+   /            → home
+   /processo    → o método
+   /sobre       → quem é
+   /case/<id>   → caso
+   Path real, sem hash: o servidor devolve index.html para qualquer path que
+   não seja arquivo, então a URL é compartilhável e o back/forward funciona.
+
+   Era tudo sob /v2 até 29/08, quando esta versão virou o site — a antiga
+   saiu do ar e ficou no repositório, em legado-v1/. Os endereços que ela
+   tinha indexados são redirecionados pelo vercel.json, não aqui. */
 function rotaAtual() {
-  const p = window.location.pathname.replace(/^\/v2\/?/, "").replace(/\/+$/, "");
-  if (!p) return { tipo: "home" };
+  const p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (!p || p === "index.html") return { tipo: "home" };
   if (p === "processo") return { tipo: "processo" };
   if (p === "sobre") return { tipo: "sobre" };
   const m = p.match(/^case\/([\w-]+)$/);
   if (m) return { tipo: "caso", id: m[1] };
   return { tipo: "404", path: p };
 }
+
+/* Link antigo da V1 com hash de rota (#/cap/pcyes) continua chegando de
+   mensagem e de candidatura enviada. O `#` nunca sobe para o servidor, então
+   redirect de vercel.json não alcança esse caso — quem traduz é o boot, uma
+   vez, antes do primeiro render. Âncora de página (#casos) passa direto. */
+function traduzirHashLegado() {
+  const h = window.location.hash || "";
+  if (h.indexOf("#/") !== 0) return;
+  const alvo = h.slice(1).replace(/^\/cap\//, "/case/");
+  try { window.history.replaceState(null, "", alvo === "/" ? "/" : alvo); } catch (e) {}
+}
+traduzirHashLegado();
 
 function useRota() {
   const [rota, setRota] = useState(rotaAtual);
@@ -38,13 +55,13 @@ function useRota() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  /* `href` pode trazer âncora: "/v2#casos" é a home parando na dobra dos
+  /* `href` pode trazer âncora: "/#casos" é a home parando na dobra dos
      casos, que é o que a nav pede em "Casos".
    *
      Hash puro não resolvia. O link era um <a> comum, então o clique
      recarregava o app inteiro e o navegador procurava #casos antes de o React
      montar a home: a página caía no topo com a dobra 2408px abaixo (medido em
-     1440, vindo de /v2/case/odex).
+     1440, vindo de /case/odex).
    *
      Por isso o alvo é procurado DEPOIS da troca de rota, e por tentativa: a
      home monta em um quadro, mas o hero é sticky e a altura só assenta no
@@ -168,16 +185,32 @@ function App() {
     return () => window.removeEventListener("resize", mede);
   }, []);
 
+  /* Título e endereço canônico acompanham a rota.
+   *
+   * O HTML servido é o mesmo em qualquer path — é uma SPA estática — então
+   * sem isto todo caso se anuncia para buscador e para preview de link como
+   * se fosse a home. A V1 já fazia isso e a regra não muda por a V2 ter
+   * virado o site. */
   useEffect(() => {
+    const base = "Gabriel Felix Barbosa";
+    let titulo = `${base} · UX / Product Designer`;
+    let caminho = "/";
     if (rota.tipo === "caso") {
-      document.title = `${(chapterById(rota.id) || {}).title || rota.id} · Gabriel Felix Barbosa`;
+      titulo = `${(chapterById(rota.id) || {}).title || rota.id} · ${base}`;
+      caminho = `/case/${rota.id}`;
     } else if (rota.tipo === "processo") {
-      document.title = "Processo · Gabriel Felix Barbosa";
+      titulo = `Processo · ${base}`;
+      caminho = "/processo";
     } else if (rota.tipo === "sobre") {
-      document.title = "Sobre · Gabriel Felix Barbosa";
-    } else {
-      document.title = "Gabriel Felix Barbosa · UX / Product Designer";
+      titulo = `Sobre · ${base}`;
+      caminho = "/sobre";
     }
+    document.title = titulo;
+    const url = window.location.origin + caminho;
+    const can = document.querySelector('link[rel="canonical"]');
+    if (can) can.setAttribute("href", url);
+    const og = document.querySelector('meta[property="og:url"]');
+    if (og) og.setAttribute("content", url);
   }, [rota]);
 
   if (erro) {

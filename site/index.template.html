@@ -4,14 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gabriel Felix Barbosa · UX / Product Designer</title>
-<meta name="description" content="Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Cases de e-commerce, SaaS, desktop e web.">
+<meta name="description" content="Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro casos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.">
 
-<!-- V2 roda só em localhost até aprovação. Enquanto isto estiver aqui, e
-     enquanto buildV2() não rodar no build de produção, não há URL pública. -->
-<meta name="robots" content="noindex,nofollow">
+<!-- O canonical e o og:url são reescritos a cada troca de rota, em
+     site/app.jsx: é uma SPA estática e o HTML servido é o mesmo em todo
+     endereço, então sem isso todo caso se anunciaria como se fosse a home. -->
+<link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/">
 <meta name="theme-color" content="#0B0B0C">
 
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gabriel Felix Barbosa">
+<meta property="og:title" content="Gabriel Felix Barbosa · UX / Product Designer">
+<meta property="og:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado.">
+<meta property="og:url" content="https://gabrielfelix-ux.4yu.com.br/">
+<meta property="og:image" content="https://gabrielfelix-ux.4yu.com.br/volume/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="O portfólio de Gabriel Felix Barbosa">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gabriel Felix Barbosa · UX / Product Designer">
+<meta name="twitter:description" content="UX/Product Designer que desenha e constrói: do protótipo navegável ao produto publicado.">
+<meta name="twitter:image" content="https://gabrielfelix-ux.4yu.com.br/volume/assets/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Gabriel Felix Barbosa",
+  "jobTitle": "UX / Product Designer",
+  "url": "https://gabrielfelix-ux.4yu.com.br/",
+  "email": "mailto:gab.feelix@gmail.com",
+  "sameAs": [
+    "https://www.linkedin.com/in/gabrielfeelix/",
+    "https://www.instagram.com/gaabriel.feelix/"
+  ]
+}
+</script>
+
 <link rel="icon" type="image/png" href="/uploads/favicon.png">
+<link rel="apple-touch-icon" href="/uploads/favicon.png">
 
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="stylesheet"
@@ -24,13 +57,14 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Geist+Mono:wght@400;500&display=swap">
 
-<link rel="stylesheet" href="/v2/v2.css">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
 <div id="v2-root"></div>
 
-<!-- Ordem obrigatória: React global, depois i18n e data da V1 (que publicam
-     em window), depois o app da V2, que lê window.CHAPTERS. -->
-<!--V2_SCRIPTS-->
+<!-- Ordem obrigatória: React global, depois i18n e data (que publicam em
+     window), depois o app, que lê window.CHAPTERS. -->
+<!--SCRIPTS-->
+<!--ANALYTICS-->
 </body>
 </html>

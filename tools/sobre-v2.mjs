@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /* Verificação da página /sobre da V2.
 
-     BUILD_V2=1 npm run build
+     npm run build
      cd dist && setsid python3 -m http.server 8793 --bind 127.0.0.1 &
      node tools/sobre-v2.mjs prints
      node tools/sobre-v2.mjs axe
 
-   O servidor não faz fallback de rota: /v2/sobre dá 404 direto. Abre /v2/ e
-   navega por pushState mais popstate, que é o que o roteador da V2 escuta. */
+   O python -m http.server não faz fallback de rota: /sobre dá 404 direto.
+   Abre a raiz e navega por pushState mais popstate, que é o que o roteador
+   escuta. (`npm run dev` faz o fallback e aceita a URL direta.) */
 
 import { mkdirSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -47,9 +48,9 @@ async function abrir(browser, w, h) {
   const erros = [];
   pg.on("pageerror", (e) => erros.push(String(e)));
   pg.on("console", (m) => { if (m.type() === "error") erros.push(m.text()); });
-  await pg.goto(`${BASE}/v2/`, { waitUntil: "networkidle" });
+  await pg.goto(`${BASE}/`, { waitUntil: "networkidle" });
   await pg.evaluate(() => {
-    window.history.pushState(null, "", "/v2/sobre");
+    window.history.pushState(null, "", "/sobre");
     window.dispatchEvent(new PopStateEvent("popstate"));
   });
   await pg.waitForTimeout(1200);

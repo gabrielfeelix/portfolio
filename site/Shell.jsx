@@ -20,9 +20,9 @@ import { CONTATO, AUTOR } from "./content.js";
    O `href` continua real, então abrir em nova aba e copiar o link seguem
    funcionando: o `preventDefault` só vale para o clique comum. */
 const LINKS = [
-  { id: "casos",    rot: "Casos",    href: "/v2#casos",     rota: true },
-  { id: "processo", rot: "Processo", href: "/v2/processo",  rota: true },
-  { id: "sobre",    rot: "Sobre",    href: "/v2/sobre",     rota: true },
+  { id: "casos",    rot: "Casos",    href: "/#casos",     rota: true },
+  { id: "processo", rot: "Processo", href: "/processo",  rota: true },
+  { id: "sobre",    rot: "Sobre",    href: "/sobre",     rota: true },
 ];
 
 /* A seta do pill. Duas cópias empilhadas dentro de uma janela de 12px: no
@@ -115,7 +115,7 @@ export function Nav({ sobreEscuro, ir }) {
     <header className={"v2-nav" + (sobreEscuro ? " is-escuro" : "") + (encolhida ? " is-encolhida" : "")}>
       {/* Fase 7: o ponto accent depois do nome saiu. Era maneirismo, e
           nenhuma das cinco referências faz isso. */}
-      <a className="v2-nav-marca" href="/v2" onClick={ir ? (e) => { e.preventDefault(); ir("/v2"); } : undefined}>
+      <a className="v2-nav-marca" href="/" onClick={ir ? (e) => { e.preventDefault(); ir("/"); } : undefined}>
         Gabriel Felix
       </a>
 

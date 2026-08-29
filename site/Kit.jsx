@@ -302,7 +302,7 @@ export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os casos", i
       </div>
       <ul className={"v2-outros-grade" + (lista.length === 4 ? " is-quatro" : "")}>
         {lista.map((c, i) => {
-          const href = `/v2/case/${c.id}`;
+          const href = `/case/${c.id}`;
           const capa = CAPAS_CHEIAS[c.id];
           return (
             <motion.li key={c.id} {...rise(Math.min(i, 3))}>

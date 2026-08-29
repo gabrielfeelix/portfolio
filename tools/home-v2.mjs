@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Verificação da home da V2. Complementa tools/medir.mjs, que mede a V1.
 
-     BUILD_V2=1 npm run build
+     npm run build
      cd dist && python3 -m http.server 8793 --bind 127.0.0.1
      node tools/home-v2.mjs medidas
      node tools/home-v2.mjs prints
@@ -39,7 +39,7 @@ async function achaChromium() {
 const chromium = await achaChromium();
 
 const [, , CMD = "medidas", PORTA = "8793"] = process.argv;
-const URL = `http://127.0.0.1:${PORTA}/v2/`;
+const URL = `http://127.0.0.1:${PORTA}/`;
 const SAIDA = "/tmp/home-v2";
 const VIEWPORTS = [
   { nome: "desktop", width: 1440, height: 900 },

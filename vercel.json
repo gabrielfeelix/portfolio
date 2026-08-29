@@ -1,17 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "BUILD_V2=1 npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
+  "redirects": [
+    { "source": "/cap/pcyes", "destination": "/case/pcyes", "permanent": true },
+    { "source": "/cap/locarmais-conciliacao", "destination": "/case/locarmais-conciliacao", "permanent": true },
+    { "source": "/cap/odex", "destination": "/case/odex", "permanent": true },
+    { "source": "/cap/oderco-revenda", "destination": "/case/oderco-revenda", "permanent": true },
+    { "source": "/cap/:id", "destination": "/", "permanent": true },
+    { "source": "/empresa/:id", "destination": "/", "permanent": true },
+    { "source": "/rapido", "destination": "/", "permanent": true },
+    { "source": "/v2", "destination": "/", "permanent": true },
+    { "source": "/v2/case/:id", "destination": "/case/:id", "permanent": true },
+    { "source": "/v2/:path*", "destination": "/:path*", "permanent": true }
+  ],
   "rewrites": [
-    {
-      "source": "/v2",
-      "destination": "/v2/index.html"
-    },
-    {
-      "source": "/v2/(.*)",
-      "destination": "/v2/index.html"
-    },
     {
       "source": "/((?!llms\\.txt|robots\\.txt|sitemap\\.xml).*)",
       "destination": "/index.html"

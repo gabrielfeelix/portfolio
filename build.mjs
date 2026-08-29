@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm, cp, readdir, stat, unlink } from "node:fs/promises";
 import http from "node:http";
 import { existsSync, watch } from "node:fs";
 import path from "node:path";
@@ -9,56 +9,94 @@ import { createRequire } from "node:module";
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
 
-// Load order MUST match the original HTML. These share state via window.
-const SCRIPTS = [
-  "tweaks-panel.jsx",
-  "data.jsx",
-  "i18n.jsx",
-  "organic.jsx",
-  "cursor.jsx",
-  "RevealMask.jsx",
-  "BookSlider.jsx",
-  "Capa.jsx",
-  "Capitulo.jsx",
-  "Processo.jsx",
-  "Posfacio.jsx",
-  "EmpresaPage.jsx",
-  "app.jsx",
-];
+/* O build do site.
+ *
+ * Até 29/08 este arquivo montava DOIS sites: a V1 (volume/) na raiz e a V2
+ * (v2/) sob /v2. Desde então a V2 é o site, mora em site/ e responde em `/`,
+ * e a V1 saiu do ar — ficou no repositório, em legado-v1/, sem entrar em
+ * build nenhum. Ver legado-v1/README.md.
+ *
+ * O que sobrou de volume/ NÃO é legado: é o conteúdo e a mídia.
+ * `volume/data.jsx` e `volume/i18n.jsx` continuam sendo scripts CLÁSSICOS que
+ * publicam tudo em `window` (CHAPTERS, PROJECTS, COMPANIES, ...), e o app lê
+ * de lá por site/content.js. As imagens continuam em `/volume/assets/...`,
+ * que é o endereço público que já está em preview de link e em print enviado
+ * por aí — mexer nisso seria quebrar coisa que está fora do meu alcance.
+ */
 
-// Estes sao transpilados igual aos outros, mas NAO entram no HTML inicial:
-// o app carrega sob demanda quando a rota precisa (ver `garantirRota` em
-// app.jsx). Sao 86 KB que a home nunca usa -- o Lighthouse media 74 KB de
-// Capitulo.js sem uso na primeira tela.
-// A ordem aqui e a ordem de insercao: RevealMask antes de Capitulo, porque
-// Capitulo usa RevealMask no escopo global.
-const SCRIPTS_SOB_DEMANDA = ["Capitulo.jsx", "EmpresaPage.jsx"];
+// Os dois arquivos de conteúdo, transpilados individualmente (bundle:false)
+// para continuarem scripts clássicos de escopo global. A ORDEM importa no
+// HTML: i18n define LANG e t(), data usa os dois.
+const CONTEUDO = ["i18n.jsx", "data.jsx"];
 
-// A V2 (v2/) e um app separado, com import/export de verdade e bundle proprio.
-// Desde 28/08 ela TAMBEM sai em producao: vercel.json roda o build com
-// BUILD_V2=1 e reescreve /v2 e /v2/* para dist/v2/index.html, entao o endereco
-// publico e 4yu.com.br/v2. A V1 continua sendo a home de /, e nada no bundle
-// dela muda por causa disso: a V2 so acrescenta arquivos dentro de dist/v2/.
-// Ver docs/superpowers/specs/2026-08-28-portfolio-v2-design.md (D6).
-const V2_LIGADO = process.argv.includes("--serve") || process.env.BUILD_V2 === "1";
-
+/* A limpeza NÃO leva a mídia junto.
+ *
+ * Era `rm -rf dist` inteiro, e isso abria uma janela de alguns segundos em que
+ * o site existia sem uma única imagem: quem estivesse com a página aberta
+ * durante um build via a página inteira quebrada, e as de lazy-load quebravam
+ * ao rolar mesmo depois. Foi exatamente o print que o Gabriel mandou em 29/08.
+ *
+ * Agora o que é gerado morre a cada build (HTML, bundles, CSS) e o que é
+ * mídia é SINCRONIZADO: copia o que mudou, apaga o que saiu da origem. São
+ * 157 arquivos que raramente mudam — recopiar todos a cada build era o custo
+ * que pagava por esse buraco. */
 async function clean() {
-  await rm(DIST, { recursive: true, force: true });
+  const preservar = new Set(["volume"]);
+  if (existsSync(DIST)) {
+    for (const nome of await readdir(DIST)) {
+      if (!preservar.has(nome)) await rm(path.join(DIST, nome), { recursive: true, force: true });
+    }
+    // de dentro de volume/ só a mídia fica; os .js de conteúdo são gerados.
+    const vol = path.join(DIST, "volume");
+    if (existsSync(vol)) {
+      for (const nome of await readdir(vol)) {
+        if (nome !== "assets" && nome !== "fonts") {
+          await rm(path.join(vol, nome), { recursive: true, force: true });
+        }
+      }
+    }
+  }
   await mkdir(path.join(DIST, "volume"), { recursive: true });
   await mkdir(path.join(DIST, "vendor"), { recursive: true });
-  if (V2_LIGADO) await mkdir(path.join(DIST, "v2"), { recursive: true });
 }
 
-async function transpileScripts() {
-  // Each file transpiled INDIVIDUALLY (bundle:false) → classic script output.
-  // No import/export in sources, so output is plain global-scope JS, matching
-  // the original separate-<script type=text/babel> model exactly.
+/* Espelha `origem` em `destino`: copia arquivo novo ou mudado (tamanho ou
+   mtime), e apaga do destino o que não existe mais na origem. */
+async function sincronizar(origem, destino) {
+  await mkdir(destino, { recursive: true });
+  const naOrigem = new Set();
+  for (const e of await readdir(origem, { withFileTypes: true })) {
+    const de = path.join(origem, e.name);
+    const para = path.join(destino, e.name);
+    naOrigem.add(e.name);
+    if (e.isDirectory()) {
+      await sincronizar(de, para);
+      continue;
+    }
+    let precisa = true;
+    if (existsSync(para)) {
+      const [a, b] = [await stat(de), await stat(para)];
+      precisa = a.size !== b.size || a.mtimeMs > b.mtimeMs;
+    }
+    if (precisa) await cp(de, para);
+  }
+  if (existsSync(destino)) {
+    for (const e of await readdir(destino, { withFileTypes: true })) {
+      if (naOrigem.has(e.name)) continue;
+      const sobra = path.join(destino, e.name);
+      if (e.isDirectory()) await rm(sobra, { recursive: true, force: true });
+      else await unlink(sobra);
+    }
+  }
+}
+
+async function transpileConteudo() {
   await esbuild.build({
-    entryPoints: SCRIPTS.map((f) => path.join(ROOT, "volume", f)),
+    entryPoints: CONTEUDO.map((f) => path.join(ROOT, "volume", f)),
     outdir: path.join(DIST, "volume"),
     bundle: false,
-    // NOT minifyIdentifiers: top-level names (Capa, CHAPTERS, ...) are shared
-    // across files via window/global scope; renaming them breaks the app.
+    // NOT minifyIdentifiers: os nomes de topo (CHAPTERS, PROJECTS, t, ...) são
+    // o contrato com o app, publicados via window. Renomear quebra tudo.
     minifyWhitespace: true,
     minifySyntax: true,
     minifyIdentifiers: false,
@@ -82,38 +120,47 @@ async function copyVendor() {
 }
 
 async function copyAssets() {
-  // CSS + fonts + assets live under volume/ and are referenced as volume/...
+  // Imagens e fontes continuam servidas de /volume/, que é o endereço que o
+  // conteúdo escreve e que já circula em preview de link.
   for (const dir of ["assets", "fonts"]) {
     const src = path.join(ROOT, "volume", dir);
-    if (existsSync(src)) await cp(src, path.join(DIST, "volume", dir), { recursive: true });
+    if (existsSync(src)) await sincronizar(src, path.join(DIST, "volume", dir));
   }
-  // CSS: os cinco arquivos viram UM, minificado. Eram cinco requisicoes
-  // que bloqueavam a renderizacao e iam sem minificar (241 KB); o Lighthouse
-  // cobrava isso em "solicitacoes que bloquearam a renderizacao".
-  // A ORDEM importa: colors_and_type define os tokens que os outros usam,
-  // e app.css/organic.css sobrescrevem chapter.css em varios pontos.
-  // As urls de fonte sao relativas a volume/, e o arquivo final tambem
-  // mora em volume/, entao `fonts/...` continua resolvendo.
-  const cssOrder = ["colors_and_type.css", "kit.css", "chapter.css", "app.css", "organic.css"];
-  const cssParts = [];
-  for (const css of cssOrder) {
-    const src = path.join(ROOT, "volume", css);
-    if (existsSync(src)) cssParts.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
-  }
-  const cssOut = await esbuild.transform(cssParts.join("\n"), {
-    loader: "css", minify: true,
-  });
-  await writeFile(path.join(DIST, "volume", "volume.css"), cssOut.code);
-  // llms.txt e robots.txt vao para a raiz do site. Sem isso o rewrite do
-  // vercel.json devolve o index.html para /llms.txt, e o validador le HTML
+  // llms.txt e robots.txt vão para a raiz do site. Sem isso o rewrite do
+  // vercel.json devolve o index.html para /llms.txt, e o validador lê HTML
   // onde esperava markdown.
   for (const f of ["llms.txt", "robots.txt"]) {
     const src = path.join(ROOT, f);
     if (existsSync(src)) await cp(src, path.join(DIST, f));
   }
   if (existsSync(path.join(ROOT, "uploads"))) {
-    await cp(path.join(ROOT, "uploads"), path.join(DIST, "uploads"), { recursive: true });
+    await sincronizar(path.join(ROOT, "uploads"), path.join(DIST, "uploads"));
   }
+}
+
+/* O sitemap.
+ *
+ * robots.txt aponta para ele desde sempre e o arquivo nunca existiu — dava
+ * 404. Agora ele é gerado com as rotas que existem de verdade, lidas do mesmo
+ * CASE_ORDER que o app usa, para não virar lista escrita à mão que envelhece
+ * sozinha. */
+const SITE = "https://gabrielfelix-ux.4yu.com.br";
+
+async function buildSitemap() {
+  const fonte = await readFile(path.join(ROOT, "volume", "data.jsx"), "utf8");
+  const m = fonte.match(/const CASE_ORDER = \[([^\]]*)\]/);
+  const casos = m ? Array.from(m[1].matchAll(/"([\w-]+)"/g)).map((x) => x[1]) : [];
+  const rotas = ["/", "/processo", "/sobre", ...casos.map((id) => `/case/${id}`)];
+  const hoje = new Date().toISOString().slice(0, 10);
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    rotas.map((r) =>
+      `  <url><loc>${SITE}${r}</loc><lastmod>${hoje}</lastmod>` +
+      `<priority>${r === "/" ? "1.0" : "0.8"}</priority></url>`).join("\n") +
+    `\n</urlset>\n`;
+  await writeFile(path.join(DIST, "sitemap.xml"), xml);
+  if (!casos.length) console.warn("! sitemap sem casos: CASE_ORDER não foi lido de volume/data.jsx");
 }
 
 async function bundleAnalytics() {
@@ -143,34 +190,16 @@ function analyticsSnippet() {
   return vercel + "\n" + clarity;
 }
 
-async function generateHtml() {
-  const tpl = await readFile(path.join(ROOT, "index.template.html"), "utf8");
-  // `defer` em TODOS: eram 14 scripts sincronos que travavam o parser antes
-  // do primeiro paint. defer preserva a ordem de execucao entre eles, que e
-  // exatamente o contrato desta base (os arquivos compartilham estado via
-  // window e nao ha import/export), e so roda depois do HTML pronto.
-  const tags = [
-    `<script defer src="/vendor/react.production.min.js"></script>`,
-    `<script defer src="/vendor/react-dom.production.min.js"></script>`,
-    ...SCRIPTS.filter((f) => !SCRIPTS_SOB_DEMANDA.includes(f))
-      .map((f) => `<script defer src="/volume/${f.replace(/\.jsx$/, ".js")}"></script>`),
-  ].join("\n");
-  const html = tpl
-    .replace("<!--VENDOR_AND_APP_SCRIPTS-->", tags)
-    .replace("<!--ANALYTICS-->", analyticsSnippet());
-  await writeFile(path.join(DIST, "index.html"), html);
-}
+/* ------------------------------ o site ------------------------------ */
 
-/* ------------------------------ V2 ------------------------------ */
-
-// A V2 usa o MESMO React que a V1 ja vendoriza como UMD. Sem isto, o bundle
-// da V2 traria uma segunda copia do React (~45 KB gz) e, pior, `data.js` roda
-// contra window.React enquanto os componentes da V2 rodariam contra outra
-// instancia. Aqui `react` e `react-dom` resolvem para os globais.
-// A lista de exports NAO e escrita a mao: uma lista curta quebra assim que uma
-// dependencia importa algo fora dela (motion importa Component e
-// useInsertionEffect, por exemplo). Aqui os nomes vem do proprio pacote
-// instalado, entao o shim acompanha a versao do React sem manutencao.
+// O app usa o MESMO React que já é vendorizado como UMD. Sem isto o bundle
+// traria uma segunda cópia do React (~45 KB gz) e, pior, `data.js` rodaria
+// contra window.React enquanto os componentes rodariam contra outra
+// instância. Aqui `react` e `react-dom` resolvem para os globais.
+// A lista de exports NÃO é escrita à mão: uma lista curta quebra assim que uma
+// dependência importa algo fora dela (motion importa Component e
+// useInsertionEffect, por exemplo). Aqui os nomes vêm do próprio pacote
+// instalado, então o shim acompanha a versão do React sem manutenção.
 const exigir = createRequire(import.meta.url);
 const nomesExportados = (mod) =>
   Object.keys(exigir(mod)).filter((k) => /^[A-Za-z_$][\w$]*$/.test(k) && k !== "default");
@@ -190,7 +219,7 @@ const reactGlobais = {
       return {
         contents:
           `const G = window.${glob};\n` +
-          `if (!G) throw new Error('V2: window.${glob} ausente. O vendor UMD carregou depois do app?');\n` +
+          `if (!G) throw new Error('window.${glob} ausente. O vendor UMD carregou depois do app?');\n` +
           `export default G;\n` +
           linhas + "\n",
       };
@@ -198,9 +227,9 @@ const reactGlobais = {
   },
 };
 
-const v2Opcoes = (dev) => ({
-  entryPoints: [path.join(ROOT, "v2", "app.jsx")],
-  outfile: path.join(DIST, "v2", "app.js"),
+const appOpcoes = (dev) => ({
+  entryPoints: [path.join(ROOT, "site", "app.jsx")],
+  outfile: path.join(DIST, "app.js"),
   bundle: true,
   format: "iife",
   plugins: [reactGlobais],
@@ -214,82 +243,80 @@ const v2Opcoes = (dev) => ({
   logLevel: "info",
 });
 
-async function buildV2Css() {
-  // Um arquivo so, na ordem em que os tokens precisam existir antes do resto.
+async function buildCss() {
+  // Um arquivo só, na ordem em que os tokens precisam existir antes do resto.
   const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css"];
   const partes = [];
   for (const css of ordem) {
-    const src = path.join(ROOT, "v2", css);
+    const src = path.join(ROOT, "site", css);
     if (existsSync(src)) partes.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
   }
   const out = await esbuild.transform(partes.join("\n"), { loader: "css", minify: true });
-  await writeFile(path.join(DIST, "v2", "v2.css"), out.code);
+  await writeFile(path.join(DIST, "site.css"), out.code);
 }
 
-async function buildV2Html() {
-  const tpl = await readFile(path.join(ROOT, "v2", "index.template.html"), "utf8");
-  // A ordem e o contrato: React global, depois i18n e data da V1 (que publicam
-  // em window), so entao o app da V2, que le window.CHAPTERS. `defer` preserva
-  // a ordem entre eles e nao trava o parser.
+async function buildHtml() {
+  const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
+  // A ordem é o contrato: React global, depois i18n e data (que publicam em
+  // window), só então o app, que lê window.CHAPTERS. `defer` preserva a ordem
+  // entre eles e não trava o parser.
   const tags = [
     `<script defer src="/vendor/react.production.min.js"></script>`,
     `<script defer src="/vendor/react-dom.production.min.js"></script>`,
     `<script defer src="/volume/i18n.js"></script>`,
     `<script defer src="/volume/data.js"></script>`,
-    `<script defer src="/v2/app.js"></script>`,
+    `<script defer src="/app.js"></script>`,
   ].join("\n");
-  await writeFile(path.join(DIST, "v2", "index.html"), tpl.replace("<!--V2_SCRIPTS-->", tags));
-}
-
-async function buildV2() {
-  await esbuild.build(v2Opcoes(false));
-  await buildV2Css();
-  await buildV2Html();
-  console.log("✓ v2 → dist/v2/  (local apenas; producao nao emite)");
+  const html = tpl
+    .replace("<!--SCRIPTS-->", tags)
+    .replace("<!--ANALYTICS-->", analyticsSnippet());
+  await writeFile(path.join(DIST, "index.html"), html);
 }
 
 async function buildOnce() {
   await clean();
-  await transpileScripts();
+  await transpileConteudo();
   await bundleAnalytics();
   await copyVendor();
   await copyAssets();
-  await generateHtml();
-  if (V2_LIGADO) await buildV2();
+  await buildSitemap();
+  await esbuild.build(appOpcoes(false));
+  await buildCss();
+  await buildHtml();
   console.log("✓ build → dist/");
 }
 
 if (process.argv.includes("--serve")) {
   await buildOnce();
-  const ctx = await esbuild.context({
-    entryPoints: SCRIPTS.map((f) => path.join(ROOT, "volume", f)),
+  // O conteúdo continua transpilado um a um, fora do bundle.
+  const ctxConteudo = await esbuild.context({
+    entryPoints: CONTEUDO.map((f) => path.join(ROOT, "volume", f)),
     outdir: path.join(DIST, "volume"),
     bundle: false, minifyWhitespace: false, minifySyntax: false, minifyIdentifiers: false,
     jsx: "transform", jsxFactory: "React.createElement", jsxFragment: "React.Fragment",
     loader: { ".jsx": "jsx" }, target: ["es2018"],
   });
-  await ctx.watch();
-  // A V2 tem bundle proprio, entao ganha o seu proprio contexto de watch.
-  const ctxV2 = await esbuild.context(v2Opcoes(true));
-  await ctxV2.watch();
-  // O esbuild so' vigia o grafo do bundle, e o CSS da V2 e' concatenado a mao.
-  // Sem este watch, editar tokens/shell/home.css nao muda nada no dev e' um
+  await ctxConteudo.watch();
+  const ctxApp = await esbuild.context(appOpcoes(true));
+  await ctxApp.watch();
+  // O esbuild só vigia o grafo do bundle, e o CSS é concatenado à mão.
+  // Sem este watch, editar tokens/shell/home.css não muda nada no dev e é um
   // engano caro de depurar: o JS recarrega, o CSS fica velho.
   {
-    const dir = path.join(ROOT, "v2");
+    const dir = path.join(ROOT, "site");
     let pendente = null;
     watch(dir, (_ev, arquivo) => {
       if (!arquivo || !arquivo.endsWith(".css")) return;
       clearTimeout(pendente);
       pendente = setTimeout(() => {
-        buildV2Css().then(() => console.log("[watch] v2.css atualizado")).catch((e) => console.error(e));
+        buildCss().then(() => console.log("[watch] site.css atualizado")).catch((e) => console.error(e));
       }, 60);
     });
   }
   // esbuild serve numa porta interna; o proxy na frente devolve index.html
-  // para path que nao e arquivo, que e o mesmo fallback do vercel.json. Sem
-  // isso /cap/pcyes da 404 no dev e so funciona em producao.
-  const { host: iHost, port: iPort } = await ctx.serve({ servedir: DIST, port: 0 });
+  // para path que não é arquivo, que é o mesmo fallback do vercel.json. Sem
+  // isso /case/pcyes dá 404 no dev e só funciona em produção.
+  const { host: iHost, port: iPort } = await ctxConteudo.serve({ servedir: DIST, port: 0 });
   const wanted = Number(process.env.PORT) || 5173;
   const proxy = http.createServer((req, res) => {
     const enc = (p) => http.request(
@@ -297,11 +324,7 @@ if (process.argv.includes("--serve")) {
       (up) => {
         if (up.statusCode === 404 && !path.extname(req.url.split("?")[0])) {
           // rota do SPA: serve o index e deixa o app decidir a view.
-          // /v2 e /v2/case/<id> pertencem ao app da V2, que tem index proprio;
-          // sem esta bifurcacao a V2 cairia na home da V1.
-          const alvo = req.url.split("?")[0].replace(/\/+$/, "");
-          const daV2 = alvo === "/v2" || alvo.startsWith("/v2/");
-          return enc(daV2 ? "/v2/index.html" : "/index.html").end();
+          return enc("/index.html").end();
         }
         res.writeHead(up.statusCode, up.headers);
         up.pipe(res, { end: true });

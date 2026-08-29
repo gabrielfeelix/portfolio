@@ -1260,7 +1260,7 @@ function NaoAchou({ id, ir }) {
           <div className="v2-caso-coluna">
             <h1 className="v2-caso-ato">{`O capítulo "${id}" não existe.`}</h1>
             <div className="v2-caso-pills">
-              <Pill onClick={() => ir("/v2")}>Voltar para a home</Pill>
+              <Pill onClick={() => ir("/")}>Voltar para a home</Pill>
             </div>
           </div>
         </div>
