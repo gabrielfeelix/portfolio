@@ -136,6 +136,13 @@
      deixavam 500px de vazio à direita porque o parágrafo media 600 dentro
      dela: a coluna era larga e o texto não. Agora a coluna É a medida. */
   --v2-medida-caso: 640px;
+  /* A coluna de leitura do BLOG. 720 e nao os 640 do caso: a pagina de caso
+     tem coluna de rotulo a esquerda e nota a direita disputando a largura, e
+     o post nao tem — ele e so texto. A 720px, com 16px de corpo, o paragrafo
+     fica em ~78 caracteres por linha, que e o topo da faixa confortavel.
+     Medido em 29/08, depois de o post nascer com 640 encostado na margem
+     esquerda de uma pagina de 1360 e o Gabriel reprovar por print. */
+  --v2-medida-post: 720px;
   --v2-margem-caso: 300px;   /* a coluna de nota marginal das dobras de dado */
   /* 220 + 40 + 640 + 40 + 300 */
   --v2-caso-larga: 1240px;

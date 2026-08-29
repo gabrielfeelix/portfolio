@@ -1,0 +1,888 @@
+/* ================================ blog ================================
+ *
+ * Listagem e post. Nenhum token novo: tudo aqui usa a escala, o espaço e a
+ * forma que tokens.css já define. Se um número cru aparecer neste arquivo,
+ * ou ele virou token, ou o degrau escolhido está errado.
+ *
+ * As três medidas que vieram das referências (~/dev/refs):
+ *   grade      3 colunas → 2 → 1, igual às três
+ *   proporção  1 / 0.7 / 1.778, os valores medidos no CSS do bungee
+ *   leitura    640px, que é a medida da página de caso, não os 809 do viper
+ */
+
+/* ------------------------------------------------------ meta, a linha mono
+   A ficha de todo post, em qualquer lugar que ele apareça: data, assunto e
+   tempo. Um componente só, porque três lugares inventando a própria linha é
+   como a página vira sortido. O separador é um <i> para o leitor de tela não
+   soletrar "ponto" três vezes. */
+.v2-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s1);
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-post-meta i { font-style: normal; opacity: .4; }
+.v2-post-meta.is-grande { color: var(--v2-ink); }
+
+.v2-dobra[data-escuro="1"] .v2-post-meta { color: rgba(255, 255, 255, .6); }
+
+/* ------------------------------------------------------------------- capa
+   Dois estados, um componente. O vazio NÃO é placeholder: é chapa escura com
+   o assunto na mono e o número em display, que é a mesma resposta que a
+   página /processo dá para passo sem print honesto. Blog nasce sem banco de
+   imagem, então este é o estado comum, não a exceção. */
+.v2-post-capa {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--v2-card);
+  border-radius: var(--v2-r-media);   /* 0 */
+}
+
+.v2-post-capa img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* O zoom lento do hover. Escala e não translate: a capa tem que crescer
+     dentro da janela, não deslizar dentro dela. */
+  transition: transform 1200ms var(--v2-ease);
+}
+
+.v2-post-capa.is-vazia {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--v2-s3);
+  background-color: var(--v2-ink);
+  background-image: var(--v2-textura);
+  background-size: 5px 5px;
+  color: #fff;
+}
+
+.v2-post-capa-tag {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+.v2-post-capa-n {
+  font-size: var(--v2-t-dado);
+  font-weight: 500;
+  line-height: .82;
+  letter-spacing: var(--v2-track-display);
+  opacity: .18;
+}
+
+/* ------------------------------------------------------- cabeça da listagem
+   O mesmo desenho de duas colunas do `Cabecalho` do kit: título grande à
+   esquerda, lead estreito à direita. O contraste largo/estreito é o que faz
+   o branco parecer decisão em vez de sobra (viper: container 1800, texto
+   809). */
+.v2-blog-cabeca {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--v2-s4);
+  margin-top: var(--v2-s4);
+}
+
+.v2-blog-cabeca-dir { display: grid; gap: var(--v2-s3); }
+.v2-blog-cabeca .v2-lead { max-width: var(--v2-medida-lead); }
+
+.v2-blog-conta-topo,
+.v2-blog-vazio {
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-blog-vazio { margin-top: var(--v2-s5); }
+
+@media (min-width: 901px) {
+  .v2-blog-cabeca {
+    grid-template-columns: 1fr minmax(0, var(--v2-medida-lead));
+    align-items: end;
+    gap: var(--v2-s5);
+  }
+}
+
+/* --------------------------------------------------------------- destaque
+   O post mais recente ocupa a largura da janela e sangra. É a peça que
+   viper, bungee e launchfolio NÃO têm no blog, e é o que faz a página abrir
+   com peso — sobretudo enquanto o blog tem poucos textos, quando ela é
+   praticamente a página inteira.
+
+   `--v2-barra` desconta a largura da barra de rolagem: 100vw a conta e 50%
+   não, e a diferença vira overflow horizontal. Ver o comentário em app.jsx. */
+.v2-post-destaque-capa {
+  position: relative;
+  display: block;
+  width: calc(100vw - var(--v2-barra, 0px));
+  margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
+  color: #fff;
+  text-decoration: none;
+}
+
+.v2-post-destaque-capa .v2-post-capa {
+  aspect-ratio: 1.2;
+  width: 100%;
+}
+
+/* O véu existe para o título ler sobre qualquer foto. Gradiente e não chapa
+   plana: chapa apaga a imagem inteira, gradiente escurece só onde o texto
+   está. Preto a 78% sob texto branco passa AA com folga. */
+/* O véu foi reforçado em 29/08, depois que a capa deixou de ser chapa escura e
+   passou a ser foto clara: com a rampa antiga (.42 aos 38%) a linha em mono
+   ficava branca sobre post-it amarelo e sumia. O axe não acusa isso — ele não
+   sabe medir texto sobre imagem — então a verificação aqui é a vista.
+
+   A rampa cobre mais e sobe mais alto, e ainda deixa os 25% do topo limpos
+   para a foto respirar. */
+.v2-post-destaque-capa::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(11, 11, 12, .94) 0%,
+    rgba(11, 11, 12, .74) 30%,
+    rgba(11, 11, 12, .34) 58%,
+    rgba(11, 11, 12, 0) 88%
+  );
+  pointer-events: none;
+}
+
+.v2-post-destaque-texto {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: var(--v2-s2);
+  max-width: var(--v2-max);
+  margin: 0 auto;
+  padding: var(--v2-s4) var(--v2-gutter);
+}
+
+.v2-post-destaque-capa .v2-post-meta { color: rgba(255, 255, 255, .92); }
+
+.v2-post-destaque-titulo {
+  display: block;
+  max-width: 16ch;
+  font-size: var(--v2-t-secao);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: var(--v2-track-display);
+}
+
+.v2-post-destaque-resumo {
+  display: block;
+  max-width: var(--v2-medida-lead);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .88);
+}
+
+.v2-post-destaque-capa:hover .v2-post-capa img { transform: scale(1.03); }
+
+@media (min-width: 901px) {
+  /* 2.0, e não os 2.4 da primeira versão.
+   *
+   * A capa é servida em 3:2, que é a única proporção que sobrevive aos três
+   * recortes que o site aplica no MESMO arquivo: 1:1 no card, 2.1 no card
+   * largo e este aqui. Num frame de 2.4 o corte come 37% da altura da foto e
+   * o assunto começa a sair pela borda. Em 2.0 come 25%, e o centro do quadro
+   * continua inteiro.
+   *
+   * Faixa larga só compensa quando a imagem foi feita para ela. Servir 3:2
+   * dentro de 2.4 é pedir para a foto quebrar, e foi o que aconteceu. */
+  .v2-post-destaque-capa .v2-post-capa { aspect-ratio: 2; }
+  .v2-post-destaque-texto { padding-bottom: var(--v2-s5); }
+}
+
+/* ------------------------------------------------------------------ barra
+   Filtro e busca. Grudada abaixo da nav: além de filtrar, ela responde
+   "ainda estou no blog" enquanto a grade rola — a mesma função que o cromo
+   cumpre nas outras páginas.
+
+   Sem pill e sem caixa de input: raio médio em chip e campo é a assinatura
+   número um de template (M3 de docs/ANALISE-REFS.md). Quem marca o ativo é a
+   régua de 1px, que a página de caso já usa. */
+.v2-blog-barra {
+  position: sticky;
+  isolation: isolate;
+  top: 72px;                 /* a altura da nav; ver NAV_H em app.jsx */
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v2-s3);
+  margin: var(--v2-s5) 0 var(--v2-s4);
+  padding: var(--v2-s2) 0;
+  border-bottom: 1px solid var(--v2-rule);
+}
+
+/* A grade passa POR BAIXO da barra enquanto rola, então ela precisa de chão
+   OPACO e de borda a borda.
+ *
+ * Translúcido a 92% foi tentado e reprovado por print em 29/08: capa escura
+ * atravessando por trás deixava "TODOS (5)" ilegível, e a barra parecia
+ * flutuar no meio de um card em vez de separar. A faixa é 100vw pelo mesmo
+ * motivo que a da nav: a barra é centrada e limitada a --v2-max, então sem
+ * ela o chão acaba antes da borda da tela. */
+.v2-blog-barra::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--v2-paper);
+  border-bottom: 1px solid var(--v2-rule);
+  pointer-events: none;
+}
+
+.v2-blog-barra > * { position: relative; }
+
+.v2-blog-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s3);
+}
+
+.v2-blog-tag {
+  position: relative;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--v2-muted);
+  cursor: pointer;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  transition: color 320ms var(--v2-ease);
+}
+
+.v2-blog-tag i { font-style: normal; opacity: .5; }
+
+.v2-blog-tag::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 420ms var(--v2-ease);
+}
+
+.v2-blog-tag:hover,
+.v2-blog-tag:focus-visible { color: var(--v2-ink); }
+.v2-blog-tag.is-ativa { color: var(--v2-ink); }
+.v2-blog-tag.is-ativa::after,
+.v2-blog-tag:hover::after { transform: scaleX(1); }
+
+.v2-blog-busca {
+  display: flex;
+  align-items: center;
+  gap: var(--v2-s2);
+}
+
+.v2-blog-busca-rot {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+/* Régua, não caixa: a busca é uma linha que se escreve em cima, do mesmo
+   jeito que o resto do site marca o que está ativo. */
+.v2-blog-busca-campo {
+  width: 180px;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid var(--v2-rule);
+  border-radius: 0;
+  background: none;
+  color: var(--v2-ink);
+  font-family: var(--v2-font);
+  font-size: var(--v2-t-corpo);
+  transition: border-color 320ms var(--v2-ease);
+}
+
+.v2-blog-busca-campo::placeholder { color: var(--v2-muted); opacity: .7; }
+.v2-blog-busca-campo:focus { outline: none; border-bottom-color: var(--v2-ink); }
+.v2-blog-busca-campo::-webkit-search-cancel-button { cursor: pointer; }
+
+.v2-blog-conta {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ grade
+   3 → 2 → 1, como as três referências. O `align-items: start` é o que faz a
+   grade ler como composição: cada card termina onde a capa dele termina, e
+   capas de proporções diferentes deixam de se alinhar num rodapé só. É o que
+   o bungee faz servindo aspect-ratio 1, 0.699 e 1.152 na mesma página. */
+.v2-blog-grade {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: var(--v2-s5) var(--v2-s4);
+  /* `dense` deixa um card normal voltar e preencher a coluna que o card
+     largo não coube. Sem isto, medido em 29/08 a 1440: um `largo` no meio da
+     lista abria duas colunas vazias na linha anterior, e a grade lia como
+     linha interrompida. O preço é a ordem visual poder trocar de lugar com a
+     cronológica em uma posição — e numa listagem que já tem data em todo
+     card, isso custa menos que o buraco. */
+  grid-auto-flow: dense;
+}
+
+@media (min-width: 561px) { .v2-blog-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1281px) { .v2-blog-grade { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ------------------------------------------------------------------- card
+   Sem caixa, sem sombra, raio 0. Imagem, meta, título — a ordem do bungee,
+   com o resumo guardado para o hover como a launchfolio mostra sempre. */
+.v2-post-card {
+  display: grid;
+  gap: var(--v2-s2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-post-card-janela {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+/* Quadrada, como o viper serve os cards dele (aspect-ratio: 1, quatro vezes
+   no CSS). Proporção variando POR CARD foi tentado e medido em 29/08: numa
+   grade de três colunas a linha tem a altura do item mais alto, e um retrato
+   ao lado de dois quadrados deixa dois buracos de ~180px. A variação mora no
+   `largo`, abaixo, que é a que a grade sabe fazer sem buraco. */
+.v2-post-card .v2-post-capa { aspect-ratio: 1; }
+
+/* `largo`: a linha inteira, capa de um lado e título do outro. É a quebra de
+   ritmo que impede a grade de virar catálogo — o mesmo papel da imagem sem
+   texto que o viper enfia entre duas seções. */
+/* Duas colunas das três, e não a linha inteira: assim ele emparelha com um
+   card normal e a linha fecha. Ocupando `1 / -1` ele empurrava tudo para a
+   linha seguinte e deixava o buraco que o `dense` agora não precisa consertar
+   sozinho. Em duas colunas (561 a 1280) `span 2` já é a largura toda. */
+.v2-post-card[data-formato="largo"] { grid-column: span 2; }
+/* A capa larga ocupa a largura CHEIA do card e o texto fica embaixo, igual
+   ao card normal. A primeira versão punha a capa de um lado e o título do
+   outro, e ela nasceu torta: a capa ficava com 1,6fr dos 2,6 do vão, então a
+   511px de largura por 2.1 ela media 243px de altura contra os 427px dos
+   quadrados ao lado. 184px de buraco na linha, medido a 1440 em 29/08.
+
+   Cheia, a conta fecha sozinha: duas colunas de 427 mais o vão de 40 dão 894
+   de largura, e 894 / 2.1 = 426px de altura — a mesma dos quadrados, sem
+   depender de acerto de proporção interna. */
+.v2-post-card[data-formato="largo"] .v2-post-capa { aspect-ratio: 2.1; }
+
+@media (min-width: 901px) {
+  .v2-post-card[data-formato="largo"] .v2-post-card-titulo {
+    font-size: var(--v2-t-caso-ato);
+    line-height: 1.1;
+    max-width: 24ch;
+  }
+}
+
+/* Hover: a capa escurece e o resumo entra por cima. É a MESMA primitiva que
+   a dobra de peças da home pede (pendência 5) — um vocabulário, dois
+   lugares. */
+.v2-post-card-veu {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 11, 12, .72);
+  opacity: 0;
+  transition: opacity 520ms var(--v2-ease);
+  pointer-events: none;
+}
+
+.v2-post-card-resumo {
+  position: absolute;
+  inset: auto var(--v2-s3) var(--v2-s3) var(--v2-s3);
+  color: #fff;
+  font-size: var(--v2-t-corpo);
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 520ms var(--v2-ease), transform 520ms var(--v2-ease);
+  pointer-events: none;
+}
+
+.v2-post-card:hover .v2-post-card-veu,
+.v2-post-card:focus-visible .v2-post-card-veu { opacity: 1; }
+
+.v2-post-card:hover .v2-post-card-resumo,
+.v2-post-card:focus-visible .v2-post-card-resumo { opacity: 1; transform: none; }
+
+.v2-post-card:hover .v2-post-capa img { transform: scale(1.04); }
+
+.v2-post-card-titulo {
+  display: block;
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: var(--v2-track-titulo);
+  text-wrap: balance;
+}
+
+/* Toque não tem hover: no celular o resumo volta para baixo do título, onde
+   ele é lido em vez de adivinhado. */
+@media (hover: none) {
+  .v2-post-card-veu { display: none; }
+  .v2-post-card-resumo {
+    position: static;
+    opacity: 1;
+    transform: none;
+    color: var(--v2-muted);
+  }
+}
+
+/* ------------------------------------------------------------ nada achado */
+.v2-blog-nada {
+  display: grid;
+  justify-items: start;
+  gap: var(--v2-s2);
+  padding: var(--v2-s6) 0;
+}
+
+.v2-blog-nada p { margin: 0; font-size: var(--v2-t-lead); }
+
+.v2-blog-limpar {
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+  background: none;
+  color: var(--v2-ink);
+  cursor: pointer;
+  font-family: var(--v2-font);
+  font-size: var(--v2-t-corpo);
+}
+
+/* =============================== o post =============================== */
+
+.v2-post { display: block; }
+
+/* A ABERTURA E CENTRADA, o corpo tambem, e a coluna e mais larga.
+ *
+ * A primeira versao deixava a coluna de 640px encostada na goteira esquerda de
+ * uma pagina de 1360, com 680px de branco morto a direita. Reprovado por print
+ * em 29/08, e com razao: aquilo nao lia como decisao de espaco, lia como
+ * componente que ninguem posicionou.
+ *
+ * Agora a coluna e centrada e mede 720. A nota de margem continua saindo para
+ * a direita, e como a coluna esta no meio, ela cabe na folga sem empurrar
+ * nada. */
+.v2-post-cabeca {
+  display: grid;
+  justify-items: center;
+  gap: var(--v2-s3);
+  max-width: var(--v2-medida);       /* 809: aqui é texto GRANDE, não leitura */
+  margin: var(--v2-s4) auto 0;
+  text-align: center;
+}
+
+.v2-post-titulo {
+  margin: 0;
+  font-size: var(--v2-t-caso-hero);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: var(--v2-track-display);
+  text-wrap: balance;
+}
+
+.v2-post-resumo {
+  margin: 0;
+  max-width: var(--v2-medida-lead);
+  font-size: var(--v2-t-lead);
+  line-height: 1.42;
+  color: var(--v2-muted);
+}
+
+/* A capa de abertura sangra, como no viper: ela é o conteúdo, não moldura
+   em volta do conteúdo (M4). */
+.v2-post-abertura {
+  width: calc(100vw - var(--v2-barra, 0px));
+  margin: var(--v2-s5) 0 var(--v2-s6);
+  margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
+}
+
+.v2-post-abertura img {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------- corpo do post
+   640px, a medida da página de caso. O `--v2-medida` de 809 é para texto
+   grande; leitura longa mede 640 desde a Fase 6, quando 900 deixaram 500px
+   de vazio à direita. O blog não estreia uma terceira medida. */
+.v2-post-corpo {
+  max-width: var(--v2-medida-post);
+  margin-inline: auto;
+  /* Sem isto o primeiro parágrafo encosta no resumo e os dois leem como um
+     bloco só — e o resumo deixa de ser resumo. Só vale quando não há capa de
+     abertura; com capa, a margem dela já separa. */
+  margin-top: var(--v2-s5);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.68;
+}
+
+.v2-post-abertura + .v2-post-corpo { margin-top: 0; }
+
+.v2-post-corpo > p { margin: 0 0 var(--v2-s3); }
+
+.v2-post-corpo h2 {
+  margin: var(--v2-s6) 0 var(--v2-s3);
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: var(--v2-track-titulo);
+}
+
+.v2-post-corpo h3 {
+  margin: var(--v2-s5) 0 var(--v2-s2);
+  font-size: var(--v2-t-lead);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.v2-post-corpo a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--v2-accent);
+  padding-bottom: 1px;
+}
+
+.v2-post-corpo strong { font-weight: 600; }
+
+.v2-post-corpo ul,
+.v2-post-corpo ol { margin: 0 0 var(--v2-s4); padding-left: var(--v2-s3); }
+.v2-post-corpo li { margin-bottom: var(--v2-s2); line-height: 1.55; }
+.v2-post-corpo li::marker { color: var(--v2-accent); }
+.v2-post-corpo li > ul, .v2-post-corpo li > ol { margin-top: var(--v2-s2); }
+
+/* Citação. Nos posts ela carrega a fala que virou decisão, ou a pergunta que
+   abre a seção seguinte, então ela sobe um degrau e ganha a régua accent. */
+.v2-post-corpo blockquote {
+  margin: var(--v2-s5) 0;
+  padding-left: var(--v2-s3);
+  border-left: 2px solid var(--v2-accent);
+  font-size: var(--v2-t-lead);
+  line-height: 1.35;
+  letter-spacing: var(--v2-track-titulo);
+  color: var(--v2-ink);
+}
+
+.v2-post-corpo blockquote p { margin: 0 0 var(--v2-s2); }
+.v2-post-corpo blockquote p:last-child { margin-bottom: 0; }
+
+.v2-post-corpo code {
+  padding: 2px 6px;
+  background: var(--v2-superficie);
+  font-family: var(--v2-mono);
+  font-size: .9em;
+}
+
+.v2-post-corpo pre {
+  overflow-x: auto;
+  margin: var(--v2-s4) 0;
+  padding: var(--v2-s3);
+  background: var(--v2-superficie);
+}
+
+.v2-post-corpo pre code { padding: 0; background: none; }
+
+/* Tabela. Régua em cima e embaixo do cabeçalho, nada de zebra nem de borda em
+   volta: é a mesma gramática de linha que a página de caso usa para dado.
+
+   `display: block` + `overflow-x: auto` na própria tabela porque o markdown
+   emite `<table>` sem invólucro, e sem isso uma tabela de quatro colunas
+   empurra a página inteira em 390px. Ela rola dentro de si, e o corpo do texto
+   nunca ganha barra horizontal. */
+.v2-post-corpo table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin: var(--v2-s4) 0;
+  border-collapse: collapse;
+  font-size: var(--v2-t-corpo);
+  text-align: left;
+}
+
+.v2-post-corpo thead th {
+  padding: 0 var(--v2-s3) var(--v2-s2) 0;
+  border-bottom: 1px solid var(--v2-ink);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  font-weight: 400;
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+  white-space: nowrap;
+}
+
+.v2-post-corpo tbody td {
+  padding: var(--v2-s2) var(--v2-s3) var(--v2-s2) 0;
+  border-bottom: 1px solid var(--v2-rule);
+  line-height: 1.45;
+  vertical-align: top;
+}
+
+.v2-post-corpo tbody tr:last-child td { border-bottom: 0; }
+.v2-post-corpo th:last-child,
+.v2-post-corpo td:last-child { padding-right: 0; }
+
+/* Número alinhado à direita quando o markdown pede (`---:`), com tabular
+   para a coluna de dígitos não dançar de linha para linha. */
+.v2-post-corpo th[align="right"],
+.v2-post-corpo td[align="right"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-post-corpo hr {
+  margin: var(--v2-s6) 0;
+  border: 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+/* ::destaque — o pull-quote. Um degrau acima do corpo, sem virar título. */
+.v2-post-destaque {
+  margin: var(--v2-s5) 0;
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: var(--v2-track-titulo);
+  text-wrap: balance;
+}
+
+/* ::margem — a nota que sai do fluxo de leitura e vai para a coluna de
+   300px, que a página de caso já tem (`--v2-margem-caso`).
+
+   Float e não grid: o corpo é HTML gerado, cada bloco é irmão dos outros, e
+   num grid a nota ocuparia uma linha inteira só para ela. Com float ela
+   acompanha o parágrafo ao lado do qual foi escrita, que é o ponto de uma
+   nota de margem. */
+.v2-post-margem {
+  margin: 0 0 var(--v2-s3);
+  padding-left: var(--v2-s3);
+  border-left: 1px solid var(--v2-rule);
+  font-size: var(--v2-t-label);
+  line-height: 1.5;
+  color: var(--v2-muted);
+}
+
+.v2-post-margem p { margin: 0 0 var(--v2-s1); }
+.v2-post-margem p:last-child { margin-bottom: 0; }
+
+/* ::figura — as três larguras da gramática de mídia. */
+.v2-post-fig { margin: var(--v2-s5) 0; }
+
+.v2-post-fig img {
+  display: block;
+  width: 100%;
+  border-radius: var(--v2-r-media);
+}
+
+.v2-post-fig figcaption {
+  margin-top: var(--v2-s2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: .04em;
+  line-height: 1.5;
+  color: var(--v2-muted);
+}
+
+.v2-post-fig.is-sangra {
+  width: calc(100vw - var(--v2-barra, 0px));
+  margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
+}
+
+.v2-post-fig.is-sangra figcaption {
+  max-width: var(--v2-medida-caso);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--v2-gutter);
+}
+
+.v2-post-carregando {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+@media (min-width: 1281px) {
+  /* A partir daqui existe margem de sobra à direita da coluna de 640: a nota
+     sai do fluxo e a figura larga pode passar dos dois lados. */
+  .v2-post-margem {
+    float: right;
+    width: var(--v2-margem-caso);
+    margin: 6px calc(-1 * (var(--v2-margem-caso) + var(--v2-s4))) var(--v2-s3) var(--v2-s4);
+    padding-left: var(--v2-s2);
+  }
+
+  /* Com a coluna centrada, a figura larga volta a poder crescer para os DOIS
+     lados: ela cresce 260px de cada lado de uma coluna que tem folga igual na
+     esquerda e na direita. Foi a primeira versao, encostada a esquerda, que
+     jogava a imagem para x = -260 e a fazia nascer cortada. */
+  .v2-post-fig.is-larga {
+    width: var(--v2-caso-larga);
+    margin-left: calc((var(--v2-medida-post) - var(--v2-caso-larga)) / 2);
+  }
+}
+
+/* --------------------------------------------------------- assinatura e fim */
+.v2-post-assinatura {
+  display: grid;
+  justify-items: center;
+  gap: var(--v2-s2);
+  max-width: var(--v2-medida-post);
+  margin: var(--v2-s6) auto 0;
+  text-align: center;
+  padding-top: var(--v2-s4);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-post-autor {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  letter-spacing: var(--v2-track-titulo);
+}
+
+.v2-post-autor-nota {
+  margin: 0;
+  max-width: var(--v2-medida-lead);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
+
+.v2-post-404-cta { margin-top: var(--v2-s4); }
+
+.v2-post-vizinhos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--v2-s4);
+  margin-top: var(--v2-s4);
+}
+
+@media (min-width: 901px) {
+  .v2-post-vizinhos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--v2-s5); }
+}
+
+.v2-post-vizinho {
+  display: grid;
+  gap: var(--v2-s2);
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-post-vizinho-rot {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-post-vizinho-titulo {
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: var(--v2-track-titulo);
+  text-wrap: balance;
+  transition: opacity 320ms var(--v2-ease);
+}
+
+.v2-post-vizinho:hover .v2-post-vizinho-titulo { opacity: .55; }
+
+/* Perto disso: lista tipográfica, sem imagem. Três capas seguidas depois de
+   dois cartões seriam a terceira grade da mesma página. */
+.v2-post-perto { margin-top: var(--v2-s4); }
+
+.v2-post-perto-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: var(--v2-s2) var(--v2-s3);
+  padding: var(--v2-s3) 0;
+  border-top: 1px solid var(--v2-rule);
+  color: inherit;
+  text-decoration: none;
+}
+
+.v2-post-perto-item:last-child { border-bottom: 1px solid var(--v2-rule); }
+
+.v2-post-perto-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+}
+
+.v2-post-perto-titulo {
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: var(--v2-track-titulo);
+  transition: opacity 320ms var(--v2-ease);
+}
+
+.v2-post-perto-item .v2-post-meta { grid-column: 2; }
+.v2-post-perto-item:hover .v2-post-perto-titulo { opacity: .55; }
+
+@media (min-width: 901px) {
+  .v2-post-perto-item {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+  }
+  .v2-post-perto-item .v2-post-meta { grid-column: 3; }
+}
+
+/* Quem pediu menos movimento não recebe zoom de capa nem véu deslizando. */
+@media (prefers-reduced-motion: reduce) {
+  .v2-post-capa img,
+  .v2-post-card-veu,
+  .v2-post-card-resumo,
+  .v2-blog-tag::after { transition: none; }
+  .v2-post-card:hover .v2-post-capa img,
+  .v2-post-destaque-capa:hover .v2-post-capa img { transform: none; }
+}

@@ -59,7 +59,7 @@ export const temBusca  = (posts = POSTS) => posts.length >= MIN_BUSCA;
    Sem acento e sem caixa dos dois lados: quem digita "oficio" tem que achar
    "Ofício", e quem digita no celular quase nunca põe acento. */
 const normal = (s) =>
-  String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 export function filtrar(posts, { tag = "", q = "" } = {}) {
   let saida = posts;
@@ -117,12 +117,16 @@ export function dataCurta(iso) {
 
 /* --- o corpo do post -----------------------------------------------------
    Fica fora do bundle e é buscado quando alguém abre o post. O cache é de
-   sessão: voltar para a listagem e reabrir o mesmo post não busca de novo. */
+   sessão: voltar para a listagem e reabrir o mesmo post não busca de novo.
+
+   O endereço é /conteudo/blog/ e não /blog/: uma pasta chamada `blog` no
+   dist faz o servidor responder 302 em /blog e engolir a listagem. Está
+   medido e explicado em blog.mjs. */
 const cache = new Map();
 
 export async function corpo(slug) {
   if (cache.has(slug)) return cache.get(slug);
-  const r = await fetch(`/blog/${slug}.json`, { headers: { accept: "application/json" } });
+  const r = await fetch(`/conteudo/blog/${slug}.json`, { headers: { accept: "application/json" } });
   if (!r.ok) throw new Error(`o texto deste post não carregou (${r.status})`);
   const dados = await r.json();
   cache.set(slug, dados.html);

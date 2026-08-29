@@ -82,14 +82,19 @@ export function Dobra({ id, n, nome, carimbo, escuro = false, largo = false, chi
 /* Título de dobra. Um degrau só, 104px, com a marca opcional grudada como as
    referências fazem: `Feartured Portfolio®`, `Bungee®`, `greyola©`. A marca é
    grafismo, então sai do fluxo de leitura por aria-hidden. */
-export function Titulo({ children, marca, className = "", i = 0 }) {
+/* `como` existe por causa do axe: a listagem do blog é uma página cujo título
+   principal É o título da dobra, e sem ele a página fica sem h1 nenhum
+   (`page-has-heading-one`, medido em 29/08). Nas outras páginas o h1 é o hero,
+   e por isso o padrão continua sendo h2. */
+export function Titulo({ children, marca, className = "", i = 0, como = "h2" }) {
   const cortina = useCortina();
+  const H = motion[como] || motion.h2;
   return (
     <span className={`v2-titulo-janela ${className}`} ref={cortina.ref}>
-      <motion.h2 className="v2-titulo" {...cortina.props(i)}>
+      <H className="v2-titulo" {...cortina.props(i)}>
         {children}
         {marca ? <span className="v2-titulo-marca" aria-hidden="true">{marca}</span> : null}
-      </motion.h2>
+      </H>
     </span>
   );
 }

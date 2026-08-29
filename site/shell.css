@@ -453,11 +453,15 @@
   text-decoration: none;
 }
 
+/* Opacidade medida, não escolhida: branco a 45% sobre #0B0B0C dá 4.57:1 no
+   papel e o axe reprovou mesmo assim, em 12px. A 60% dá 7.06:1 e passa com
+   folga. O mesmo vale para o carimbo e o social, abaixo — cromo continua
+   discreto, mas legível. */
 .v2-menu-n {
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
-  opacity: .45;
+  opacity: .6;
 }
 
 /* O degrau de seção, sem inventar tamanho: 40px em 390px de largura. */
@@ -507,8 +511,8 @@
   text-decoration: none;
 }
 
-.v2-menu-social a { opacity: .6; }
-.v2-menu-carimbo { margin: 0; opacity: .35; }
+.v2-menu-social a { opacity: .7; }
+.v2-menu-carimbo { margin: 0; opacity: .6; }
 
 /* Acima de 860px o botão não existe; se o menu ficou aberto e a janela
    cresceu, o JS fecha. Isto é o cinto: nada de chapa escura no desktop

@@ -12,7 +12,8 @@
  *   site/posts.gerado.js   o índice (título, data, tag, resumo, capa...).
  *                          Entra no bundle: a listagem precisa dele inteiro
  *                          para filtrar e buscar sem ida ao servidor.
- *   dist/blog/<slug>.json  o corpo de UM post, buscado quando alguém abre
+ *   dist/conteudo/blog/<slug>.json
+ *                          o corpo de UM post, buscado quando alguém abre
  *                          aquele post.
  *
  * Junto, o corpo de todos os posts no bundle faria a home carregar artigo
@@ -20,9 +21,15 @@
  * o blog crescer.
  *
  * O JSON é servido como arquivo estático: a Vercel checa o sistema de
- * arquivos ANTES dos rewrites do vercel.json, então /blog/x.json devolve o
- * arquivo e /blog/x (sem extensão, não existe em disco) cai no index.html
- * como qualquer outra rota da SPA. */
+ * arquivos ANTES dos rewrites do vercel.json, então o arquivo é devolvido e
+ * /blog/x (que não existe em disco) cai no index.html como qualquer outra
+ * rota da SPA.
+ *
+ * A pasta é /conteudo/blog/ e NÃO /blog/, apesar de /blog/ ser o nome óbvio.
+ * Medido em 29/08: com os JSONs em dist/blog/, a rota /blog passou a devolver
+ * 302 — o servidor via um diretório com aquele nome e redirecionava para
+ * /blog/, antes de qualquer fallback de SPA. A listagem inteira sumia atrás de
+ * um redirect. Dado e rota não dividem endereço. */
 
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -31,6 +38,9 @@ import { marked } from "marked";
 
 export const DIR_POSTS = "conteudo/blog";
 export const DIR_MIDIA = "/volume/assets/blog";
+/* Endereço público dos corpos. Espelha o do repositório, e de propósito não
+   é /blog: ver o comentário do topo. */
+export const DIR_CORPO = "/conteudo/blog";
 
 /* --- frontmatter ---------------------------------------------------------
    Um subconjunto de YAML, à mão, porque é tudo que o formato precisa:
@@ -129,7 +139,26 @@ function expandirDiretivas(corpo, slug, arquivo) {
 /* --- um post -------------------------------------------------------------- */
 
 const OBRIGATORIAS = ["titulo", "data", "tag", "resumo"];
-const FORMATOS = ["quadrado", "retrato", "paisagem"];
+
+/* `formato` diz que espaço o post ocupa na grade, e tem DOIS valores.
+ *
+ * A primeira tentativa deu três (quadrado / retrato / paisagem), cada post
+ * escolhendo a proporção da própria capa, imitando o bungee — que serve
+ * aspect-ratio 1, 0.699 e 1.152 na mesma página. Medido em 29/08 numa grade
+ * de três colunas: não funciona. Linha de grade tem a altura do item mais
+ * alto, então um retrato ao lado de dois quadrados abre dois buracos de
+ * ~180px, e a página lê como tabela mal preenchida. O bungee escapa disso
+ * porque a grade dele não é de três colunas alinhadas.
+ *
+ * A variação que sobra é a que a grade sabe fazer sem buraco: `largo` ocupa
+ * a linha inteira, com a capa de um lado e o título do outro. É a quebra de
+ * ritmo do viper, que enfia uma imagem sem texto entre duas seções.
+ *
+ * Os nomes antigos continuam valendo para nenhum .md quebrar. */
+const FORMATOS = {
+  normal: "normal", largo: "largo",
+  quadrado: "normal", retrato: "normal", paisagem: "largo",
+};
 
 function umPost(arquivo, bruto) {
   const { meta, corpo } = frontmatter(bruto, arquivo);
@@ -145,7 +174,7 @@ function umPost(arquivo, bruto) {
   // pasta ficar em ordem no editor e não entra na URL.
   const slug = path.basename(arquivo, ".md").replace(/^\d{4}-\d{2}-\d{2}-/, "");
 
-  const formato = FORMATOS.includes(meta.formato) ? meta.formato : "quadrado";
+  const formato = FORMATOS[meta.formato] || "normal";
 
   /* Tempo de leitura é CONTADO, não digitado. O site inteiro só serve número
      medido, e um "5 min" chutado no frontmatter seria a única exceção.
@@ -213,7 +242,7 @@ export async function escreverBlog(raiz, dist, posts) {
   await writeFile(path.join(raiz, "site", "posts.gerado.js"), js);
 
   // 2. um JSON por post, com o corpo.
-  const saida = path.join(dist, "blog");
+  const saida = path.join(dist, "conteudo", "blog");
   await mkdir(saida, { recursive: true });
   for (const p of posts) {
     await writeFile(path.join(saida, `${p.slug}.json`), JSON.stringify({ slug: p.slug, html: p.html }));

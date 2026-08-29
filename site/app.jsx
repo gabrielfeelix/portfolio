@@ -12,11 +12,16 @@ import Home from "./Home.jsx";
 import Caso from "./Case.jsx";
 import Processo from "./Processo.jsx";
 import Sobre from "./Sobre.jsx";
+import Blog from "./Blog.jsx";
+import Post from "./Post.jsx";
+import { porSlug } from "./blog.js";
 
 /* --- roteamento ---
    /            → home
    /processo    → o método
    /sobre       → quem é
+   /blog        → a listagem do blog
+   /blog/<slug> → um post
    /case/<id>   → caso
    Path real, sem hash: o servidor devolve index.html para qualquer path que
    não seja arquivo, então a URL é compartilhável e o back/forward funciona.
@@ -29,6 +34,9 @@ function rotaAtual() {
   if (!p || p === "index.html") return { tipo: "home" };
   if (p === "processo") return { tipo: "processo" };
   if (p === "sobre") return { tipo: "sobre" };
+  if (p === "blog") return { tipo: "blog" };
+  const b = p.match(/^blog\/([\w-]+)$/);
+  if (b) return { tipo: "post", slug: b[1] };
   const m = p.match(/^case\/([\w-]+)$/);
   if (m) return { tipo: "caso", id: m[1] };
   return { tipo: "404", path: p };
@@ -195,6 +203,10 @@ function App() {
     const base = "Gabriel Felix Barbosa";
     let titulo = `${base} · UX / Product Designer`;
     let caminho = "/";
+    let descricao = null;
+    let imagem = null;
+    let tipoOg = "website";
+
     if (rota.tipo === "caso") {
       titulo = `${(chapterById(rota.id) || {}).title || rota.id} · ${base}`;
       caminho = `/case/${rota.id}`;
@@ -204,13 +216,47 @@ function App() {
     } else if (rota.tipo === "sobre") {
       titulo = `Sobre · ${base}`;
       caminho = "/sobre";
+    } else if (rota.tipo === "blog") {
+      titulo = `Notas · ${base}`;
+      caminho = "/blog";
+      descricao = "Ofício, bastidor e carreira: o que eu aprendi medindo, o que deu errado antes de dar certo, e o que ninguém conta em processo seletivo.";
+    } else if (rota.tipo === "post") {
+      const post = porSlug(rota.slug);
+      titulo = post ? `${post.titulo} · ${base}` : `Texto não encontrado · ${base}`;
+      caminho = `/blog/${rota.slug}`;
+      /* Post é a única rota do site em que a prévia de link importa de
+         verdade: texto circula em grupo e em rede social, e sem isto todo
+         post se anunciaria com a descrição da home. */
+      if (post) {
+        descricao = post.resumo;
+        tipoOg = "article";
+        if (post.capa) imagem = window.location.origin + post.capa;
+      }
     }
+
     document.title = titulo;
     const url = window.location.origin + caminho;
-    const can = document.querySelector('link[rel="canonical"]');
-    if (can) can.setAttribute("href", url);
-    const og = document.querySelector('meta[property="og:url"]');
-    if (og) og.setAttribute("content", url);
+
+    const por = (sel, attr, valor) => {
+      if (valor == null) return;
+      const el = document.querySelector(sel);
+      if (el) el.setAttribute(attr, valor);
+    };
+
+    por('link[rel="canonical"]', "href", url);
+    por('meta[property="og:url"]', "content", url);
+    por('meta[property="og:type"]', "content", tipoOg);
+    por('meta[property="og:title"]', "content", titulo);
+    por('meta[name="twitter:title"]', "content", titulo);
+    if (descricao) {
+      por('meta[name="description"]', "content", descricao);
+      por('meta[property="og:description"]', "content", descricao);
+      por('meta[name="twitter:description"]', "content", descricao);
+    }
+    if (imagem) {
+      por('meta[property="og:image"]', "content", imagem);
+      por('meta[name="twitter:image"]', "content", imagem);
+    }
   }, [rota]);
 
   if (erro) {
@@ -229,6 +275,8 @@ function App() {
           {rota.tipo === "home" ? <Home ir={ir} />
             : rota.tipo === "processo" ? <Processo ir={ir} />
             : rota.tipo === "sobre" ? <Sobre ir={ir} />
+            : rota.tipo === "blog" ? <Blog ir={ir} />
+            : rota.tipo === "post" ? <Post slug={rota.slug} ir={ir} />
             : <Caso id={rota.id || rota.path} ir={ir} />}
         </main>
         <Rodape />

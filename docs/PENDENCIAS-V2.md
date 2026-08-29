@@ -141,10 +141,12 @@ vira produto", que o passo 06 já diz uma tela acima.
 Portão passando: axe 0 em 1440 / 1280 / 390, zero erro de JS, zero overflow
 horizontal, e as quatro páginas de caso sem regressão.
 
-**Achado que ficou de fora:** abaixo de 860px a nav esconde os três links
-(`.v2-nav-links { display: none }`, `v2/shell.css`). No celular não existe
-caminho para /processo a não ser pela URL. Não é regressão desta tarefa, é
-como a V2 sempre esteve, e o conserto é um menu, que é decisão de desenho.
+**Achado que ficou de fora, e foi resolvido em 29/08:** abaixo de 860px a nav
+escondia os três links (`.v2-nav-links { display: none }`, `site/shell.css`).
+No celular não existia caminho para /processo a não ser pela URL. Não era
+regressão daquela tarefa, era como a V2 sempre esteve. Virou bloqueio quando o
+blog entrou — texto longo se lê no telefone — e o menu foi feito junto com
+ele. Ver `docs/BLOG.md`.
 
 **"Sobre" · ABERTA.** Não existe. A nav ainda aponta para a dobra 06 da home.
 
@@ -153,3 +155,47 @@ como a V2 sempre esteve, e o conserto é um menu, que é decisão de desenho.
 Por comparação de print, nunca por descrição. Para movimento, print não basta:
 URL local mais filmstrip de quadros. Ele é designer e fala português. Odeia
 resposta longa: responda curto, com o número medido.
+
+## Blog · 29/08
+
+Existe em `/blog` e `/blog/<slug>`. Estrutura, decisões medidas e o manual de
+como publicar estão em **`docs/BLOG.md`** — o que segue é só o que falta.
+
+### 10. Os três primeiros posts · FECHADA
+
+No ar, um por tag, o que já dá sentido ao filtro quando ele aparecer:
+
+- **Ofício** — "Ver alguém travar numa tela que eu achava óbvia", sobre teste
+  com usuário real, a planilha paralela do financeiro e as gravações de sessão
+  que viraram a reunião do PCYES;
+- **Bastidor** — "O que eu medi em seis sites bonitos", a análise das refs com
+  os números de raio, escala e medida;
+- **Carreira** — "Todo case do meu portfólio termina antes do número", a
+  auditoria de triagem e o que ela achou.
+
+Todo número citado sai de `volume/data.jsx`, de `docs/ANALISE-REFS.md` ou do
+relatório de auditoria. Nada foi inventado.
+
+**Ainda aberto:** o post da **recomendação de teste de usabilidade** (o e-mail,
+com foto) que o Gabriel pediu. Falta o texto do e-mail e a imagem.
+
+### 11. Capa própria por post · ABERTA
+
+Os três posts têm capa, e as três são **foto de banco** (Unsplash, licença
+comercial, registro em `volume/assets/blog/CREDITOS.md`). Isso segura a página e
+não é o destino.
+
+O que falta é capa que só este site poderia ter: gravação de tela do protótipo,
+recorte de uma tela real, foto do trabalho acontecendo. É a mesma pendência de
+material que a pendência 3 já registra para a home.
+
+Antes da foto de banco, as capas eram SVG com o gráfico do dado de cada post.
+Reprovado por print: diagrama tem texto perto da borda e todo recorte cortava
+palavra, e três chapas de gráfico seguidas leem como slide de relatório.
+
+### 12. Filtro e busca ainda não aparecem · POR DESENHO
+
+Filtro entra com 5 posts e 2 tags; busca entra com 8. Os dois já estão no
+código e testados com 5 posts de teste (grade, filtro e as três diretivas
+passaram). Não é pendência, é o combinado — está aqui só para ninguém achar
+que sumiu.
