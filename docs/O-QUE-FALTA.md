@@ -1,6 +1,6 @@
 # O que falta no volume
 
-> Atualizado em 2026-08-27 sobre `9355e72`. Este é **o** arquivo de
+> Atualizado em 2026-08-29 (noite) sobre `bf26a57`. Este é **o** arquivo de
 > pendência. Arquitetura, regras duras, como medir e armadilhas estão em
 > `docs/HANDOFF.md`: não duplique aqui.
 >
@@ -29,6 +29,24 @@ rotas de empresa.
 # A · Travado no Gabriel · precisa de material ou de decisão dele
 
 Nada aqui avança sem ele. Não tentar resolver por conta própria.
+
+### A0 · Ligar o Web Analytics na Vercel
+
+Medido em 29/08 contra produção:
+
+```
+https://4yu.com.br/_vercel/speed-insights/script.js  → 200  ✓
+https://4yu.com.br/_vercel/insights/script.js        → 404  ✗
+```
+
+O Speed Insights está ligado, o **Web Analytics não**. `dist/analytics.js`
+empilha eventos em `window.vaq` esperando um script que nunca chega, então
+**todo `vtrack` se perde** — inclusive o clique em canal de contato
+(WhatsApp, e-mail, LinkedIn, Instagram, currículo), que é a única medida de
+conversão que o site tem.
+
+Não é código: é Project → Analytics → Enable no painel. Confirmar com o `curl`
+acima antes de dar por resolvido.
 
 ### A1 · Nove imagens com o creme antigo gravado dentro
 
@@ -100,7 +118,60 @@ imagem rolar na horizontal dentro da moldura. As duas mexem em 27 imagens e
 
 ---
 
+### A7 · A seção de outros projetos precisa de mockup e história
+
+Pedido do Gabriel em 29/08: a fita de peças (`.v2-fita-secao`, `Home.jsx`) é
+uma faixa baixa que corre sozinha, sem narrativa. Ele quer **mockups e
+histórias de verdade**. Precisa de arte e texto dele antes de virar código.
+
+### A8 · A capa da página PROCESSO
+
+Ele quer uma, e **ainda não sabe qual**. Depende de B0c. Não inventar.
+
 # B · Aberto de verdade · pode andar sem ele
+
+### B0 · Aliviar o motion da seção PROCESSO na home
+
+Pedido do Gabriel em 29/08: "tá com motion muito lento, pesado, quero
+relaxar/diminuir".
+
+Já localizado. `site/Home.jsx:547-559` define um `linha(i)` **local** que
+escapou do acerto global de `bf26a57` (que levou o resto do site de 1.2s para
+0.6s):
+
+```js
+initial: { opacity: 0, y: 16, filter: "blur(6px)" },
+transition: { duration: 0.9, ease, delay: 0.1 + i * 0.05 },
+```
+
+Dois problemas: `0.9s` contra os `0.6s` do resto, e o `blur(6px)`, que além de
+caro para o compositor é o que faz o movimento ler como pesado. A régua em
+`Home.jsx:543` também está em `0.9`. Há um segundo blur igual em
+`Home.jsx:648-649` — conferir se é a mesma seção antes de mexer.
+
+Usar `easeRevela`, `dur` e `passo` de `motion.js` como o resto, e avaliar
+**tirar** o blur em vez de só encurtá-lo.
+
+### B0b · Apagar `volume/assets/lua.webp`
+
+Untracked, sem uso: era a lua da tela de carregamento, que saiu em `bf26a57`.
+O `preload` já foi removido do template. Só apagar.
+
+### B0c · A página PROCESSO com componentes melhores
+
+Pedido do Gabriel em 29/08: "tá muito simples hoje". Quer **componentes mais
+interessantes de outras refs**.
+
+As refs baixadas estão em `~/dev/refs/`: `bungee`, `isabella-pires`,
+`launchfolio`, `porto-template`, `tabfolio`, `td-maxfolio`, `viper-template` e
+`fuel.framer.website` (esta com análise medida em `~/dev/refs/fuel-ANALISE.md`).
+Comparativo em `docs/ANALISE-REFS.md`.
+
+**Perguntar a ele qual referência agrada antes de propor.** Na sessão de 29/08
+ele apontou a fuel e a decisão saiu muito mais rápida do que teria saído com o
+agente propondo do zero.
+
+Entra junto A8 (a capa) e B0 (o motion da seção dela na home).
 
 ### B1 · Engordar os outros quatro capítulos
 
