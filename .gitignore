@@ -19,3 +19,8 @@ writing-skills/
 # material biográfico com salário: NUNCA commitar
 empresas-para-o-portfolio.md
 site/posts.gerado.js
+
+# arte de origem das camadas do campo: 4,9MB de PNG que so servem
+# para reprocessar. As camadas publicadas sao volume/assets/campo/*.webp
+# (304KB), geradas por tools/camadas-campo.py.
+uploads/*-parallax.png

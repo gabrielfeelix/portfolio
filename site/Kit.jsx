@@ -12,7 +12,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir, useVoo, AVIAO_D } from "./motion.js";
+import { useRevelar, useCortina, useParallax, useCamadas, useContador, useRise, useSubir, useVoo, AVIAO_D } from "./motion.js";
 import { Label, Regua, Lamina } from "./Shell.jsx";
 
 /* A lâmina mora em Shell.jsx, que é o módulo de baixo — Kit importa de Shell,
@@ -36,7 +36,7 @@ import { CAPAS_CHEIAS } from "./copy.js";
 export function Cromo({ n, nome, carimbo, escuro = false }) {
   return (
     <p className="v2-cromo" data-escuro={escuro ? "1" : undefined}>
-      <span className="v2-cromo-n">( _{n} )</span>
+      {n ? <span className="v2-cromo-n">( _{n} )</span> : null}
       <span className="v2-cromo-nome">{nome}</span>
       {carimbo ? <span className="v2-cromo-carimbo">{carimbo}</span> : null}
     </p>
@@ -231,6 +231,52 @@ export function Quebra({ src, video = false, alt = "", intensidade = 12 }) {
         )}
       </motion.div>
     </figure>
+  );
+}
+
+/* O campo noturno: a quebra em cinco camadas, altura de viewport inteira.
+
+   Por que cinco arquivos e não uma imagem só:
+
+   1. PROFUNDIDADE. Parallax numa foto chapada é translação — a imagem inteira
+      desliza e nada fica mais perto de nada. Com camadas em velocidades
+      diferentes o olho lê distância de verdade, porque é assim que ele lê
+      distância no mundo: o que está perto passa mais rápido.
+
+   2. E, o que importa mais, o CELULAR. Imagem chapada só sabe ser cortada, e
+      `cover` corta pelo eixo que sobra: numa seção de viewport inteira o
+      telefone é retrato, então uma paisagem deitada perde a lua e metade do
+      morro. Foi exatamente o bug que a capa anterior tinha. Em camadas cada
+      peça tem posição própria, então a composição se REMONTA em vez de ser
+      cortada: no retrato os morros crescem e sobem, a lua e o avião se
+      recentram, e a cena continua sendo a mesma cena.
+
+   A ordem de pintura é a ordem de profundidade, e o avião mora entre os dois
+   morros de propósito: assim a crista da frente pode passar na frente dele.
+
+   A lua não tem alpha. Ela entra por `mix-blend-mode: screen` sobre o próprio
+   preto em que foi desenhada, que é como luz se soma de verdade — recortar
+   halo em alpha sempre deixa uma borda, e o screen não deixa nenhuma. */
+const CAMPO = "/volume/assets/campo";
+/* px de curso por camada. Quem anda mais está mais perto. */
+const CAMPO_V = [14, 22, 40, 64, 92];
+
+export function Campo({ nome = "Intervalo", carimbo = "©26" }) {
+  const { ref, estilos } = useCamadas(CAMPO_V);
+  const camada = (i, classe, arquivo) => (
+    <motion.div className={`v2-campo-camada ${classe}`} style={estilos[i]}>
+      <img src={`${CAMPO}/${arquivo}.webp`} alt="" aria-hidden="true" loading="lazy" />
+    </motion.div>
+  );
+  return (
+    <section className="v2-campo" ref={ref} aria-label="Intervalo">
+      {camada(0, "v2-campo-ceu", "ceu")}
+      {camada(1, "v2-campo-lua", "lua")}
+      {camada(2, "v2-campo-longe", "morro-longe")}
+      {camada(3, "v2-campo-aviao", "aviao")}
+      {camada(4, "v2-campo-perto", "morro-perto")}
+      <Cromo nome={nome} carimbo={carimbo} escuro />
+    </section>
   );
 }
 

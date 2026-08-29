@@ -32,47 +32,13 @@ import {
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
-import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
+import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Campo, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
   casos, pieceProjects, pieceCover, pieceDestino,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
 import { FERRAMENTAS } from "./ferramentas.js";
-
-/* A quebra entre casos e números, em largura total, e o único momento mudo da
-   página: `04 quebra de imagem pura, sem texto` na etapa B de
-   docs/ANALISE-REFS.md.
-
-   Também é o terceiro tempo escuro da página, e o do meio. O hero é escuro, o
-   rodapé é escuro, e tudo entre os dois é papel branco — então preto sangrando
-   74vh aqui não é decoração, é a respiração da dobradiça: sai de "olha o
-   trabalho" e entra em "olha a escala".
-
-   O stock vermelho abstrato que morava aqui (capa-quebra.webp, o "temporário
-   para provar a tese em print" da etapa C) saiu. No lugar entra o motivo do
-   próprio site: o aviãozinho de papel vermelho que o `CampoDeVoo` já faz
-   atravessar o corpo claro de todas as páginas por baixo do conteúdo. Ali ele é
-   subliminar — pequeno, atrás, translúcido. Aqui ele vira objeto uma vez só, em
-   largura total. É o pagamento do motivo, não a repetição dele.
-
-   Detalhes que não são acidente, e que uma troca de arte não pode perder:
-     - o bico aponta para a DIREITA, igual ao AVIAO_D de motion.js;
-     - a luz vem de cima à direita e o avião voa PARA ela, um scroll antes de
-       "O que já saiu da mesa";
-     - a poeira é fria e suspensa. Faísca laranja lê como foguete, que é
-       lançamento e agressão; o registro aqui é deriva e vento.
-
-   Formato: 2400x1120, que é 2.14:1. Não é 2.4:1 por engano — 2.4 é a JANELA
-   (.v2-quebra, 74vh) e a arte precisa de folga vertical para o parallax
-   deslizar. A regra é dura: a folga de .v2-quebra-in tem que ser >= a
-   intensidade, porque `useParallax(N)` corre N% no total. Com o parallax mais
-   forte pedido em 29/08 os dois subiram juntos, de 12/112% para 24/124%.
-   Cortar a arte em 2.4 faria a imagem faltar no fim do curso.
-
-   O vermelho do original saía em (219,65,62); foi puxado para o --v2-accent
-   (#E4231B) só nos pixels vermelhos, com o fundo azul-preto intocado. */
-const QUEBRA = "/volume/assets/stock/capa-quebra-aviao.webp";
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -877,10 +843,21 @@ export default function Home({ ir }) {
         <Declaracao />
         <Marquee />
         <Trabalho ir={ir} />
-        {/* Muda de proposito, e escura de proposito. O porque da arte, do
-            formato 2.14:1 e da cor esta na definicao de QUEBRA, no topo. */}
-        <Quebra src={QUEBRA} alt="" aria-hidden="true" intensidade={24} />
         <Numeros />
+        {/* A quebra vinha ANTES dos numeros, e isso partia uma frase no meio:
+            "Trabalho selecionado" e "O que ja saiu da mesa" sao a mesma coisa
+            dita em duas partes — o trabalho, e a escala dele. Imagem cheia
+            entre as duas separava sujeito de predicado.
+
+            Aqui ela separa dois movimentos de verdade: o que eu fiz e em que
+            escala, respiro, como eu trabalho e onde estive. E resolve o ritmo,
+            que era a queixa do Gabriel: a dobra de casos ja e quatro cartoes
+            com capa, entao emendar imagem cheia logo depois era imagem sobre
+            imagem. Agora alterna — imagem, tipografia, imagem, tipografia.
+
+            Nenhum cromo precisou ser renumerado: a quebra nao tem indice, de
+            proposito. Ela nao e uma dobra, e a passagem entre duas. */}
+        <Campo />
         <Processo ir={ir} />
         <OndeEstive ir={ir} />
         <Sobre />

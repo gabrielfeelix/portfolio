@@ -1286,3 +1286,41 @@ export function useContador(ate, duracao = 1.6) {
   }, [ate, duracao, quieto]);
   return { ref, valor };
 }
+
+/* 21. camadas
+   O parallax multicamada do campo noturno.
+
+   `useParallax` não serve aqui, e não é detalhe de implementação: ele cria o
+   próprio `ref` e a própria medição de scroll. Cinco camadas com cinco
+   `useParallax` seriam cinco `useScroll` medindo cinco elementos diferentes —
+   e como cada camada tem altura própria, `["start end", "end start"]` resolve
+   um progresso ligeiramente diferente em cada uma. O resultado é deriva: as
+   camadas saem de sincronia e a cena descola em vez de ter profundidade.
+
+   Aqui há UMA medição, a da seção, e as camadas são só transformações
+   diferentes do mesmo progresso. É o que faz elas continuarem sendo a mesma
+   cena enquanto se movem em velocidades diferentes.
+
+   As velocidades vêm em px e não em %, também de propósito: em % cada camada
+   andaria em fração da PRÓPRIA altura, então o céu (alto) e o avião (baixo)
+   percorreriam distâncias diferentes com o mesmo número, e a ordem de
+   profundidade dependeria do tamanho do arquivo. Em px o número É a distância.
+
+   Quem anda mais está mais perto. Essa é a regra inteira do efeito. */
+export function useCamadas(velocidades) {
+  const ref = useRef(null);
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const estilos = velocidades.map((v) => {
+    /* eslint-disable react-hooks/rules-of-hooks -- `velocidades` é uma
+       constante de módulo, então a contagem de hooks nunca muda entre
+       renders, que é o que a regra existe para garantir. */
+    const bruto = useTransform(scrollYProgress, [0, 1], [v, -v]);
+    const y = useSpring(bruto, { stiffness: 120, damping: 30, mass: 0.6 });
+    return quieto ? undefined : { y };
+  });
+  return { ref, estilos, quieto };
+}
