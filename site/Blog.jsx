@@ -27,8 +27,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Dobra, Titulo, GradeCasos } from "./Kit.jsx";
-import { useRise, useSubir } from "./motion.js";
+import { Dobra, Titulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
+import { useParallax, useRise, useSubir } from "./motion.js";
 import {
   POSTS, tags, filtrar, destaque, dataCurta, rotuloTag,
   temFiltro, temBusca,
@@ -59,11 +59,22 @@ function escreverURL({ tag, q }) {
    Um componente só para os dois estados, porque a alternativa é cada lugar
    que mostra post decidir sozinho o que fazer quando não há imagem — e aí
    metade da página trata o vazio de um jeito e a outra metade de outro. */
-function Capa({ p, n, className = "" }) {
+function Capa({ p, n, className = "", intensidade = 10 }) {
+  /* O hook vem antes do `if`: React exige a mesma ordem de hooks em todo
+     render, e post com capa e post sem capa passam pelo mesmo componente. */
+  const par = useParallax(intensidade);
+
   if (p.capa) {
     return (
-      <span className={`v2-post-capa ${className}`}>
-        <img src={p.capa} alt={p.capaAlt || ""} loading="lazy" decoding="async" />
+      /* Parallax na capa. A moldura corta e a foto anda dentro dela: é a
+         mesma primitiva que a `Quebra` do kit já usa na home, com a mesma
+         folga de 114% de altura para o deslocamento não abrir faixa vazia
+         em cima nem embaixo. Em reduced-motion o hook devolve `undefined`
+         e a foto fica parada. */
+      <span className={`v2-post-capa ${className}`} ref={par.ref}>
+        <motion.span className="v2-post-capa-in" style={par.style}>
+          <img src={p.capa} alt={p.capaAlt || ""} loading="lazy" decoding="async" />
+        </motion.span>
       </span>
     );
   }
@@ -89,7 +100,7 @@ function Destaque({ p, ir }) {
       onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
       {...subir(0)}
     >
-      <Capa p={p} n={1} className="is-larga" />
+      <Capa p={p} n={1} className="is-larga" intensidade={16} />
       <span className="v2-post-destaque-texto">
         <span className="v2-post-meta">
           {dataCurta(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} MIN
@@ -180,7 +191,7 @@ function Card({ p, i, n, ir }) {
       {...rise(i % 3)}
     >
       <span className="v2-post-card-janela">
-        <Capa p={p} n={n} />
+        <Capa p={p} n={n} intensidade={8} />
         <span className="v2-post-card-veu" aria-hidden="true" />
         <span className="v2-post-card-resumo">{p.resumo}</span>
       </span>
@@ -212,7 +223,7 @@ export default function Blog({ ir }) {
   const limpar = useCallback(() => { setTag(""); setQ(""); }, []);
 
   return (
-    <>
+    <CampoDeVoo variante="blog">
       <Dobra id="blog" n="01" nome="Blog" carimbo={`©${new Date().getFullYear()}`} data-clara="1">
         <header className="v2-blog-cabeca">
           <Titulo marca="®" como="h1">Notas</Titulo>
@@ -269,6 +280,6 @@ export default function Blog({ ir }) {
       {/* O blog devolve para o trabalho: é o argumento da ordem. Quem chegou
           por um texto sai sabendo que existem quatro casos abertos. */}
       <GradeCasos cromo="Do outro lado" titulo="Isso tudo saiu de algum lugar" ir={ir} />
-    </>
+    </CampoDeVoo>
   );
 }

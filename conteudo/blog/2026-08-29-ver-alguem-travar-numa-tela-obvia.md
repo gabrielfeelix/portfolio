@@ -6,7 +6,7 @@ resumo: A ordem na empresa era resolver sem pesquisa. Fui atrás da fonte que
   ninguém tinha proibido, e a primeira sessão gravada desmontou uma tela que eu
   já dava como pronta.
 capa: capa.webp
-capaAlt: Vista de cima de uma mesa com wireframes desenhados à mão, post-its coloridos e várias mãos anotando
+capaAlt: Tablet sobre uma mesa de madeira com o esboço colorido de uma landing page desenhado à mão, ao lado de óculos e uma caneta
 formato: normal
 destaque: true
 publicado: true

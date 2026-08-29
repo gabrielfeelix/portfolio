@@ -46,13 +46,26 @@
   border-radius: var(--v2-r-media);   /* 0 */
 }
 
+/* A janela do parallax. A foto é 14% mais alta que a moldura e sobe 7% para
+   ficar centrada em repouso, então ela pode andar ±7% sem abrir faixa vazia
+   em cima ou embaixo. É a mesma folga que a `Quebra` do kit usa na home
+   (112% / -6%), com um ponto a mais porque a intensidade aqui é maior. */
+.v2-post-capa-in {
+  display: block;
+  width: 100%;
+  height: 114%;
+  margin-top: -7%;
+  will-change: transform;
+}
+
 .v2-post-capa img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   /* O zoom lento do hover. Escala e não translate: a capa tem que crescer
-     dentro da janela, não deslizar dentro dela. */
+     dentro da janela, não deslizar dentro dela. O parallax mora no elemento
+     de cima, então os dois não disputam a mesma propriedade. */
   transition: transform 1200ms var(--v2-ease);
 }
 
@@ -534,16 +547,31 @@
    em volta do conteúdo (M4). */
 .v2-post-abertura {
   width: calc(100vw - var(--v2-barra, 0px));
+  /* Altura fixa em vez de `max-height`: o parallax precisa de uma moldura que
+     corta, e moldura que se ajusta ao conteúdo não corta nada. */
+  height: 72vh;
+  overflow: hidden;
   margin: var(--v2-s5) 0 var(--v2-s6);
   margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
+  background: var(--v2-card);
+}
+
+.v2-post-abertura-in {
+  display: block;
+  width: 100%;
+  height: 116%;
+  margin-top: -8%;
+  will-change: transform;
 }
 
 .v2-post-abertura img {
   display: block;
   width: 100%;
-  max-height: 72vh;
+  height: 100%;
   object-fit: cover;
 }
+
+@media (max-width: 900px) { .v2-post-abertura { height: 52vh; } }
 
 /* ---------------------------------------------------------- corpo do post
    640px, a medida da página de caso. O `--v2-medida` de 809 é para texto
@@ -717,6 +745,27 @@
   border-radius: var(--v2-r-media);
 }
 
+/* A classe é posta pelo JS (ver useParallaxNoCorpo em Post.jsx) e não vem do
+   markdown: sem script, a figura fica exatamente como estava, na altura
+   natural dela. Com script, a moldura trava numa proporção e corta enquanto a
+   foto anda dentro. */
+.v2-post-fig.tem-parallax {
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+}
+
+.v2-post-fig.tem-parallax img {
+  height: 114%;
+  margin-top: -7%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-post-fig.tem-parallax { aspect-ratio: auto; overflow: visible; }
+  .v2-post-fig.tem-parallax img { height: auto; margin-top: 0; transform: none; }
+}
+
 .v2-post-fig figcaption {
   margin-top: var(--v2-s2);
   font-family: var(--v2-mono);
@@ -885,4 +934,7 @@
   .v2-blog-tag::after { transition: none; }
   .v2-post-card:hover .v2-post-capa img,
   .v2-post-destaque-capa:hover .v2-post-capa img { transform: none; }
+  /* Sem movimento, a folga do parallax vira só faixa cortada à toa. */
+  .v2-post-capa-in { height: 100%; margin-top: 0; }
+  .v2-post-abertura-in { height: 100%; margin-top: 0; }
 }

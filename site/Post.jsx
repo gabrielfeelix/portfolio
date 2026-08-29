@@ -20,11 +20,11 @@
  *    ficha vêm do índice, que já está no bundle. É o motivo de o corpo morar
  *    num JSON separado (ver blog.mjs). */
 
-import React, { useEffect, useState } from "react";
-import { motion } from "motion/react";
-import { Dobra, Titulo } from "./Kit.jsx";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { Dobra, Titulo, CampoDeVoo } from "./Kit.jsx";
 import { Pill } from "./Shell.jsx";
-import { useRise, useSubir } from "./motion.js";
+import { useParallax, useRise, useSubir } from "./motion.js";
 import {
   porSlug, corpo, vizinhos, relacionados,
   dataLonga, dataCurta, rotuloTag,
@@ -62,6 +62,61 @@ function useDadosEstruturados(p) {
   }, [p]);
 }
 
+/* Parallax nas figuras do CORPO.
+ *
+ * As outras imagens do blog usam `useParallax`, que é um hook e precisa de um
+ * componente React em volta. O corpo do post não tem: ele é HTML gerado pelo
+ * build e entra inteiro por `dangerouslySetInnerHTML`, então não existe
+ * componente para pendurar hook nenhum.
+ *
+ * Por isso aqui é feito na mão, no DOM, com a MESMA conta do hook: a figura
+ * ganha uma janela que corta, a imagem fica 14% mais alta que ela, e o
+ * deslocamento vai de +intensidade/2 a -intensidade/2 conforme a figura
+ * atravessa a tela.
+ *
+ * Um listener de scroll com rAF, e não IntersectionObserver: a pergunta é
+ * "onde exatamente esta figura está na tela agora", que é posição contínua, e
+ * IO só responde sobre cruzar um limiar. */
+function useParallaxNoCorpo(ref, html, intensidade = 12) {
+  const quieto = useReducedMotion();
+
+  useEffect(() => {
+    if (quieto || !ref.current || html === null) return;
+    const figs = Array.from(ref.current.querySelectorAll(".v2-post-fig img"));
+    if (!figs.length) return;
+
+    for (const img of figs) img.parentElement.classList.add("tem-parallax");
+
+    let quadro = 0;
+    const calc = () => {
+      quadro = 0;
+      const alturaJanela = window.innerHeight;
+      for (const img of figs) {
+        const r = img.parentElement.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > alturaJanela) continue;
+        // 0 quando a figura entra por baixo, 1 quando sai por cima.
+        const t = (alturaJanela - r.top) / (alturaJanela + r.height);
+        const deslocamento = (0.5 - t) * intensidade;
+        img.style.transform = `translate3d(0, ${deslocamento}%, 0)`;
+      }
+    };
+    const agendar = () => { if (!quadro) quadro = requestAnimationFrame(calc); };
+
+    calc();
+    window.addEventListener("scroll", agendar, { passive: true });
+    window.addEventListener("resize", agendar);
+    return () => {
+      cancelAnimationFrame(quadro);
+      window.removeEventListener("scroll", agendar);
+      window.removeEventListener("resize", agendar);
+      for (const img of figs) {
+        img.style.transform = "";
+        img.parentElement.classList.remove("tem-parallax");
+      }
+    };
+  }, [ref, html, intensidade, quieto]);
+}
+
 function Cartao({ p, ir, rot }) {
   return (
     <a
@@ -84,8 +139,11 @@ export default function Post({ slug, ir }) {
   const [erro, setErro] = useState(null);
   const rise = useRise();
   const subir = useSubir();
+  const abertura = useParallax(14);
+  const corpoRef = useRef(null);
 
   useDadosEstruturados(p);
+  useParallaxNoCorpo(corpoRef, html);
 
   /* `vivo` corta o setState de uma busca que ainda estava no ar quando a
      pessoa já trocou de post: sem ele, o texto do post anterior chega depois
@@ -121,7 +179,7 @@ export default function Post({ slug, ir }) {
   const perto = relacionados(p.slug, 3);
 
   return (
-    <>
+    <CampoDeVoo variante="post">
       {/* A ficha em cima, no modelo do viper: o leitor sabe a data, o assunto
           e quanto tempo vai gastar ANTES de decidir se lê. */}
       <Dobra n="01" nome="Blog" carimbo={rotuloTag(p.tag).toUpperCase()} data-clara="1">
@@ -135,8 +193,10 @@ export default function Post({ slug, ir }) {
           </header>
 
           {p.capa ? (
-            <motion.figure className="v2-post-abertura" {...subir(0)}>
-              <img src={p.capa} alt={p.capaAlt || ""} decoding="async" />
+            <motion.figure className="v2-post-abertura" ref={abertura.ref} {...subir(0)}>
+              <motion.span className="v2-post-abertura-in" style={abertura.style}>
+                <img src={p.capa} alt={p.capaAlt || ""} decoding="async" />
+              </motion.span>
             </motion.figure>
           ) : null}
 
@@ -145,7 +205,7 @@ export default function Post({ slug, ir }) {
               terceiro, e é por isso que `dangerouslySetInnerHTML` é seguro
               aqui. Se um dia o texto passar a vir de fora, isto muda. */}
           {html !== null ? (
-            <div className="v2-post-corpo" dangerouslySetInnerHTML={{ __html: html }} />
+            <div className="v2-post-corpo" ref={corpoRef} dangerouslySetInnerHTML={{ __html: html }} />
           ) : erro ? (
             <div className="v2-post-corpo">
               <p className="v2-erro">{erro}</p>
@@ -204,6 +264,6 @@ export default function Post({ slug, ir }) {
           </div>
         </Dobra>
       ) : null}
-    </>
+    </CampoDeVoo>
   );
 }
