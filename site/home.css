@@ -118,6 +118,23 @@
   gap: var(--v2-s3);
 }
 
+/* A tira de cromo do hero no celular.
+
+   Abaixo de 620 o `VOL. 2026` ja sai (regra mais abaixo, decidida em 28/08),
+   entao sobram duas pecas numa linha so: o papel, de 129px, e o relogio, de
+   182px. Medido, a folga entre as duas e de 31px em 390 e de 16px em 360 —
+   nao e uma linha com dois extremos, e duas etiquetas encostadas uma na
+   outra. Era isso que o Gabriel viu como "muito grudadas ali em cima".
+
+   Elas passam a ocupar duas linhas em diagonal: o papel no alto a esquerda e
+   o relogio embaixo a direita. Nenhuma peca some, nenhuma encolhe, e a tira
+   volta a ler como marca de registro e nao como pilha. */
+@media (max-width: 560px) {
+  .v2-hero-topo { flex-wrap: wrap; row-gap: var(--v2-s1); }
+  .v2-hero-topo > .v2-relogio { order: 3; flex: 1 0 100%; text-align: right; }
+  .v2-hero-topo > .v2-hero-papel { flex: 0 0 auto; }
+}
+
 .v2-hero-papel {
   margin: 0;
   font-size: var(--v2-t-label);

@@ -123,6 +123,15 @@
   --v2-max: 1800px;
   --v2-gutter: var(--v2-s4);
   --v2-label-col: 220px;
+  /* A COLUNA do texto grande, e por isso ela sobe junto com ele.
+
+     809 e o valor medido no viper, e vale ate 1600. Do 1601 em diante o
+     --v2-t-secao vai de 88 para 104px e a coluna ficava parada: medido em
+     1920, a linha mais larga da declaracao dava 787px dentro de 809, ou seja
+     22px de folga contra os 151px que a mesma frase tem em 1440. Era isso que
+     o Gabriel via como "quase cortando de tao grande" no monitor. A coluna
+     agora cresce na mesma proporcao do degrau (809 x 104/88 = 956, arredondado
+     para 960, que e da grade de 8). */
   --v2-medida: 809px;    /* medido no viper: max-width 809px no texto grande */
   /* O parágrafo de leitura que mora embaixo de uma linha em display. Medido
      no viper, na seção de intro que o Gabriel mandou como referência: a frase
@@ -199,6 +208,8 @@
     --v2-t-hero: 9rem;          /* 144 */
     --v2-t-secao: 6.5rem;       /* 104 */
     --v2-t-dado: 8rem;          /* 128 */
+    /* a coluna sobe com o degrau; ver a nota em --v2-medida */
+    --v2-medida: 960px;
   }
 }
 
