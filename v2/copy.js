@@ -97,4 +97,5 @@ export const PROCESSO_CURTO = [
    mesma razão e cobre 1.78x. */
 export const CAPAS_CHEIAS = {
   pcyes: "/volume/assets/projetos/pcyes/capa-home.webp",
+  "locarmais-conciliacao": "/volume/assets/projetos/locarmais/capa-home.webp",
 };
