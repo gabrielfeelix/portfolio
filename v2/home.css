@@ -32,6 +32,66 @@
   overflow: hidden;
 }
 
+/* A capa do hero. 1672x941, o aviao vermelho na nevoa.
+
+   A moldura e 180px mais alta que a caixa e comeca 90px acima: e essa sobra
+   que o parallax gasta, sem nunca descobrir borda. */
+.v2-hero-capa {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+/* A arte ja vem espelhada e subida 170px do arquivo original: no original o
+   aviao voa no canto de baixo a esquerda, que e exatamente onde moram o
+   titulo de 144px, o subtitulo e o botao. Espelhar resolve o lado, subir
+   resolve a altura, e as duas coisas ficam no arquivo porque `object-position`
+   nao tem folga vertical aqui: a arte e mais larga que a caixa, entao o
+   `cover` prende a altura. */
+.v2-hero-capa img {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -90px;
+  bottom: -90px;
+  width: 100%;
+  height: calc(100% + 180px);
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  will-change: transform;
+}
+
+/* O veu.
+
+   Nao e uma faixa no pe: e uma elipse ancorada no canto de baixo a esquerda,
+   que e exatamente onde moram o titulo de 144px, o subtitulo e o botao. Faixa
+   no pe escurecia a largura inteira e apagava o aviao junto, que voa no lado
+   direito. Assim o texto ganha chao e a arte continua visivel.
+
+   A chapa fraca por cima segura o caso em que a nevoa passa clara atras de
+   uma palavra. */
+/* No celular a caixa e altissima (390 por 1024) contra uma arte de 1,78: o
+   `cover` corta 78% da largura e sobra a tira do meio, sem aviao. Puxando a
+   janela para 62%, que e onde ele voa, ele volta para o quadro. */
+@media (max-width: 760px) {
+  .v2-hero-capa img { object-position: 62% center; }
+}
+
+.v2-hero-veu {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background:
+    radial-gradient(125% 95% at 0% 100%,
+      rgba(11, 11, 12, .96) 0%,
+      rgba(11, 11, 12, .90) 30%,
+      rgba(11, 11, 12, .55) 58%,
+      rgba(11, 11, 12, .12) 82%,
+      rgba(11, 11, 12, 0) 100%),
+    linear-gradient(rgba(11, 11, 12, .14), rgba(11, 11, 12, .14));
+}
+
 /* A dobra é uma coluna que empurra: rótulo colado na nav em cima, headline e
    pé colados embaixo. O vazio do meio é intencional e é ele que dá a escala. */
 .v2-hero-in {

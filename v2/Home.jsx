@@ -99,8 +99,28 @@ function Hero({ paraCasos }) {
   // O hero fica preso enquanto o corpo sobe por cima dele, e sai perdendo
   // escala em vez de rolar para fora. É a única passagem coberta da home.
   const capa = useCobertura();
+  const quieto = useReducedMotion();
+  /* Parallax do fundo: sai da rolagem da PAGINA, e nao do progresso da secao.
+     O hero e sticky, e com sticky a caixa para de andar em relacao a janela,
+     entao useScroll com target congela. Mesma decisao do hero da pagina de
+     caso, anotada em v2/Case.jsx. */
+  const { scrollY } = useScroll();
+  const desloca = useTransform(scrollY, [0, 900], [0, 90]);
   return (
     <section className="v2-hero v2-grao v2-halo" id="v2-hero" data-escuro="1" ref={capa.ref}>
+      {/* A capa. Fica atras de tudo, e o `.v2-grao` do hero ja poe os filhos
+          em z-index 1, entao o conteudo passa por cima sozinho. Em
+          reduced-motion ela entra parada: parallax e movimento. */}
+      <div className="v2-hero-capa" aria-hidden="true">
+        <motion.img
+          src="/volume/assets/hero/capa.webp"
+          alt=""
+          decoding="async"
+          fetchPriority="high"
+          style={quieto ? undefined : { y: desloca }}
+        />
+        <span className="v2-hero-veu" />
+      </div>
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
         <motion.div className="v2-hero-topo" {...linha(0)}>
           <p className="v2-hero-papel">{HERO.papel}</p>
