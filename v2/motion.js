@@ -14,7 +14,7 @@ import {
   useReducedMotion, useScroll, useTransform, useSpring, useMotionValue,
   useInView, useMotionTemplate, animate,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /* 1. spring
    Default de tudo que responde a hover, clique ou drag.
@@ -353,6 +353,69 @@ export function usePalavra(total) {
   return { ref, palavras, quieto };
 }
 
+/* 15b. voo
+   O aviãozinho vermelho da dobra 01.
+
+   A declaração é partida: a primeira metade encosta à esquerda no alto, a
+   segunda à direita embaixo. Sobram dois vazios em diagonal, um em cima à
+   direita e outro embaixo à esquerda, e o voo mora exatamente neles. Entra
+   pela direita, dá uma volta no vazio de cima, atravessa na diagonal e sai
+   embaixo à esquerda.
+
+   Usa `offset-path` em vez de keyframes de x e y por dois motivos: a curva
+   fica de verdade curva, e `offset-rotate: auto` inclina o avião na direção
+   do voo sozinho, inclusive dentro da volta. O navegador resolve
+   `offset-distance` como transform, então continua valendo a regra de só
+   animar transform e opacidade.
+
+   O caminho é montado em pixel a partir da caixa medida: em fração ele
+   deformaria junto com a proporção da dobra, e a volta viraria uma elipse
+   achatada nas telas largas. */
+function rotaDoVoo(w, h) {
+  const x = (f) => Math.round(w * f);
+  const y = (f) => Math.round(h * f);
+  return [
+    `M ${x(1.1)} ${y(0.04)}`,
+    `C ${x(0.98)} ${y(0.08)}, ${x(0.88)} ${y(0.09)}, ${x(0.8)} ${y(0.15)}`,
+    // a volta
+    `C ${x(0.7)} ${y(0.23)}, ${x(0.65)} ${y(0.33)}, ${x(0.74)} ${y(0.35)}`,
+    `C ${x(0.85)} ${y(0.37)}, ${x(0.91)} ${y(0.28)}, ${x(0.86)} ${y(0.21)}`,
+    `C ${x(0.82)} ${y(0.15)}, ${x(0.75)} ${y(0.16)}, ${x(0.71)} ${y(0.22)}`,
+    // a travessia na diagonal
+    `C ${x(0.6)} ${y(0.36)}, ${x(0.48)} ${y(0.48)}, ${x(0.38)} ${y(0.58)}`,
+    `C ${x(0.29)} ${y(0.67)}, ${x(0.2)} ${y(0.73)}, ${x(0.22)} ${y(0.81)}`,
+    `C ${x(0.24)} ${y(0.89)}, ${x(0.16)} ${y(0.93)}, ${x(0.08)} ${y(0.95)}`,
+    `C ${x(0.0)} ${y(0.98)}, ${x(-0.08)} ${y(1.02)}, ${x(-0.16)} ${y(1.08)}`,
+  ].join(" ");
+}
+
+export function useVoo(refCaixa) {
+  const quieto = useReducedMotion();
+  const [caixa, setCaixa] = useState(null);
+  useLayoutEffect(() => {
+    const el = refCaixa.current;
+    if (!el) return undefined;
+    const medir = () => setCaixa({ w: el.offsetWidth, h: el.offsetHeight });
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [refCaixa]);
+  const { scrollYProgress } = useScroll({
+    target: refCaixa,
+    offset: ["start end", "end start"],
+  });
+  /* mola frouxa: sem ela o avião trava e destrava junto com o passo da roda do
+     mouse, e voo aos solavancos denuncia que é scroll, não voo */
+  const suave = useSpring(scrollYProgress, { stiffness: 80, damping: 24, mass: 0.5 });
+  const distancia = useTransform(suave, [0, 1], ["0%", "100%"]);
+  return {
+    caminho: caixa && caixa.w > 0 ? rotaDoVoo(caixa.w, caixa.h) : null,
+    distancia,
+    quieto,
+  };
+}
+
 /* 16. trilha
    O trilho do porto: 01 —— 02 —— 03, com a linha se desenhando da esquerda
    para a direita conforme a dobra passa, e o nó acendendo quando a ponta da
@@ -397,14 +460,17 @@ export function useTrilha(total) {
    ligaduras e o olho le uma caneta andando, nao uma cortina abrindo.
 
    Duas escolhas que fazem a diferenca entre "cortina" e "caneta":
-   - a borda tem 9% de suavidade, entao a tinta aparece em vez de saltar;
-   - o easing e quase linear no miolo, com saida longa, que e o ritmo de quem
-     escreve e levanta a caneta no fim.
+   - a borda tem 5% de suavidade, entao a tinta aparece em vez de saltar;
+   - o easing e quase linear no miolo, com uma saida curta.
+
+   Foi encurtada de 2,1s para 1,3s e a borda de 9% para 5%: com a Ephesis o
+   efeito longo somava com o floreio da letra e o conjunto lia como enfeite.
+   Com a Bad Script, que e monolinear, o traco rapido e seco basta.
 
    Nao usa whileInView de proposito: e useInView + animate, porque no motion
    v13 valor dentro de mask-image nao interpola por whileInView (mesma
    armadilha do clipPath, anotada em useMaskLine). */
-export function useEscrita({ duracao = 2.1, atraso = 0.2 } = {}) {
+export function useEscrita({ duracao = 1.3, atraso = 0.15 } = {}) {
   const ref = useRef(null);
   const quieto = useReducedMotion();
   const naTela = useInView(ref, { once: true, amount: 0.55 });
@@ -414,11 +480,11 @@ export function useEscrita({ duracao = 2.1, atraso = 0.2 } = {}) {
     const ctrl = animate(p, 109, {
       duration: duracao,
       delay: atraso,
-      ease: [0.22, 0.42, 0.28, 1],
+      ease: [0.3, 0.5, 0.4, 1],
     });
     return () => ctrl.stop();
   }, [naTela, quieto, p, duracao, atraso]);
-  const mascara = useMotionTemplate`linear-gradient(90deg, #000 0%, #000 ${p}%, rgba(0,0,0,0) calc(${p}% + 9%))`;
+  const mascara = useMotionTemplate`linear-gradient(90deg, #000 0%, #000 ${p}%, rgba(0,0,0,0) calc(${p}% + 5%))`;
   const estilo = quieto
     ? undefined
     : { maskImage: mascara, WebkitMaskImage: mascara };

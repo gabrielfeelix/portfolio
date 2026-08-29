@@ -83,30 +83,3 @@ export const PROCESSO_CURTO = [
   },
 ];
 
-/* O protótipo de brinquedo que mora dentro do passo 02.
-
-   A dobra 01 afirma que opinião sobre imagem estática é gosto e opinião sobre
-   uma coisa que a pessoa tentou usar é informação. Aqui a dobra 04 executa
-   essa frase em vez de repetir ela: para responder a pergunta, o visitante
-   precisa clicar, e as tres respostas desembocam no mesmo lugar.
-
-   Nao ha dado de cliente nenhum aqui, e nao pode haver: e um brinquedo, e o
-   texto assume isso. */
-export const PROTOTIPO = {
-  pergunta: "O que te dá opinião melhor sobre uma tela?",
-  opcoes: [
-    { id: "estatica", rotulo: "Uma imagem estática" },
-    { id: "clicavel", rotulo: "Uma tela que eu posso clicar" },
-    { id: "prazo",    rotulo: "Depende do prazo" },
-  ],
-  acao: "Responder",
-  respostas: {
-    estatica: "Anotado. Mesmo assim, você clicou para me dizer isso.",
-    clicavel: "Foi exatamente o que você acabou de fazer aqui.",
-    prazo: "Justo. E ainda assim você clicou para responder.",
-  },
-  fecho: "Isso é o passo 02 inteiro, em oito segundos.",
-  antes: "Você está olhando.",
-  depois: "Agora você tentou.",
-  reiniciar: "De novo",
-};

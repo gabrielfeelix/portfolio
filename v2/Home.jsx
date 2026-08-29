@@ -23,12 +23,12 @@
  *   peças       extra, fora da hierarquia principal, de propósito
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   spring, ease, useTardio, useRise, useMaskLine, useCobertura,
   useSticky, usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita,
-  useTrilha,
+  useTrilha, useVoo,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
 import { ILUSTRACOES } from "./Ilustracoes.jsx";
@@ -37,7 +37,7 @@ import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO, PROTOTIPO } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -171,6 +171,7 @@ function Declaracao() {
   const palavras = DECLARACAO.split(" ");
   const corte = Math.ceil(palavras.length / 2);
   const { ref, palavras: anim, quieto } = usePalavra(palavras.length);
+  const voo = useVoo(ref);
   const trecho = (de, ate, classe) => (
     <p className={`v2-declaracao ${classe}`}>
       {palavras.slice(de, ate).map((w, k) => {
@@ -202,6 +203,24 @@ function Declaracao() {
   return (
     <Dobra id="sobre" n="01" nome="A tese" carimbo="©26">
       <div className="v2-declaracao-par" ref={ref}>
+        {/* o voo fica atrás do texto e recortado na caixa: assim ele passa por
+            baixo das frases e nunca empurra a largura da página */}
+        {voo.caminho && !voo.quieto ? (
+          <div className="v2-voo" aria-hidden="true">
+            <motion.div
+              className="v2-voo-obj"
+              style={{
+                offsetPath: `path("${voo.caminho}")`,
+                offsetDistance: voo.distancia,
+                offsetRotate: "auto",
+              }}
+            >
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="var(--v2-accent)" />
+              </svg>
+            </motion.div>
+          </div>
+        ) : null}
         {trecho(0, corte, "is-esq")}
         {trecho(corte, palavras.length, "is-dir")}
       </div>
@@ -395,146 +414,89 @@ function Numeros() {
 
 /* --------------------------------------------------------------- 7. processo */
 
-/* A trilha do porto: a linha se desenha da esquerda para a direita e o nó
-   acende quando a ponta chega nele. Os nós são quadrados, não círculos: a
-   regra do raio 0 vale, e o marcador quadrado é o mesmo sinal que o cromo já
-   usa antes do nome da dobra.
+/* A trilha, agora diagonal.
 
-   A linha é scaleX com origem à esquerda, então continua sendo só transform,
-   que é a regra de motion.js. */
-function Trilha({ total, avanco, acesos, quieto }) {
-  return (
-    <div className="v2-trilha" aria-hidden="true">
-      <span className="v2-trilha-tr" />
-      <motion.span
-        className="v2-trilha-ln"
-        style={quieto ? { scaleX: 1 } : { scaleX: avanco }}
-      />
-      {Array.from({ length: total }, (_, i) => (
-        <span key={i} className={`v2-trilha-no${i < acesos ? " is-aceso" : ""}`}>
-          {`0${i + 1}`}
-        </span>
-      ))}
-    </div>
-  );
-}
+   Ela desce pela borda esquerda de cada bloco e dá um salto na diagonal para o
+   bloco seguinte, que está deslocado para a direita e para baixo. O caminho
+   inteiro vive na margem: nunca cruza texto, porque corre rente à esquerda e
+   os blocos têm recuo maior que o nó.
 
-/* O grupo de três quadradinhos que o viper e o porto repetem em toda fase.
-   Custa nada e responde sozinho "estou no segundo de três". */
-function Pontos({ i, total }) {
-  return (
-    <span className="v2-pontos" aria-hidden="true">
-      {Array.from({ length: total }, (_, k) => (
-        <span key={k} className={`v2-ponto${k <= i ? " is-cheio" : ""}`} />
-      ))}
-    </span>
-  );
-}
-
-/* O protótipo de brinquedo do passo 02.
-
-   A dobra 01 afirma que opinião sobre uma coisa que a pessoa tentou usar é
-   informação. Esta dobra executa a frase: para responder, é preciso clicar.
-   O rodapé só troca de "Você está olhando" para "Agora você tentou" depois do
-   primeiro toque, e é o toque que muda o texto, não o scroll.
-
-   Acessibilidade: é fieldset com radio de verdade e um submit de verdade, não
-   div com onClick. Funciona no teclado e o leitor de tela anuncia o grupo, a
-   pergunta e a resposta (aria-live no resultado). */
-function Prototipo() {
-  const [escolha, setEscolha] = useState(null);
-  const [enviado, setEnviado] = useState(false);
-  const [toques, setToques] = useState(0);
-  const quieto = useReducedMotion();
-  const tocar = () => setToques((n) => n + 1);
-  /* Não usa o `spring` global de propósito. Ele tem damping 60, feito para
-     hover e drag, e leva ~1,5s para assentar: com AnimatePresence em
-     mode="wait" a troca de estado passava de 3 segundos. Num painel que existe
-     para provar que protótipo responde na hora, 3 segundos derruba o próprio
-     argumento. Saída em 140ms, entrada em 240ms. */
-  const entra = quieto ? { duration: 0 } : { duration: 0.24, ease };
-  const sai = quieto ? { duration: 0 } : { duration: 0.14, ease };
-
-  return (
-    <div className="v2-proto">
-      <div className="v2-proto-topo">
-        <span className="v2-proto-etq">protótipo</span>
-        <span className="v2-proto-cont">
-          {`toques ${String(toques).padStart(2, "0")}`}
-        </span>
-      </div>
-
-      <div className="v2-proto-corpo">
-        <AnimatePresence mode="wait" initial={false}>
-          {enviado ? (
-            <motion.div
-              key="fim"
-              className="v2-proto-fim"
-              initial={quieto ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={quieto ? undefined : { opacity: 0, y: -8, transition: sai }}
-              transition={entra}
-            >
-              <span className="v2-proto-marca" aria-hidden="true" />
-              <p className="v2-proto-resp" role="status">
-                {PROTOTIPO.respostas[escolha]}
-              </p>
-              <p className="v2-proto-fecho">{PROTOTIPO.fecho}</p>
-              <button
-                type="button"
-                className="v2-proto-voltar"
-                onClick={() => { tocar(); setEnviado(false); setEscolha(null); }}
-              >
-                {PROTOTIPO.reiniciar}
-              </button>
-            </motion.div>
-          ) : (
-            <motion.form
-              key="form"
-              initial={quieto ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={quieto ? undefined : { opacity: 0, y: -8, transition: sai }}
-              transition={entra}
-              onSubmit={(e) => { e.preventDefault(); tocar(); setEnviado(true); }}
-            >
-              <fieldset className="v2-proto-set">
-                <legend className="v2-proto-pgt">{PROTOTIPO.pergunta}</legend>
-                {PROTOTIPO.opcoes.map((o) => (
-                  <label
-                    key={o.id}
-                    className={`v2-proto-op${escolha === o.id ? " is-on" : ""}`}
-                  >
-                    <input
-                      type="radio"
-                      name="v2-proto"
-                      value={o.id}
-                      checked={escolha === o.id}
-                      onChange={() => { tocar(); setEscolha(o.id); }}
-                    />
-                    <span className="v2-proto-cx" aria-hidden="true" />
-                    <span>{o.rotulo}</span>
-                  </label>
-                ))}
-              </fieldset>
-              <button type="submit" className="v2-proto-ok" disabled={!escolha}>
-                {PROTOTIPO.acao}
-              </button>
-            </motion.form>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <p className="v2-proto-pe">
-        {toques ? PROTOTIPO.depois : PROTOTIPO.antes}
-      </p>
-    </div>
-  );
+   Por que medido em pixel e não em porcentagem: a altura de cada bloco depende
+   do texto e da largura da tela, então qualquer coordenada fixa desalinha a
+   linha do nó em algum viewport. O ResizeObserver remede a cada mudança de
+   caixa e o path sai em pixel de verdade, exato em qualquer largura. */
+function useCaminho(refCaixa, refsNos, refsBlocos, dependencia) {
+  const [caminho, setCaminho] = useState(null);
+  useLayoutEffect(() => {
+    const caixa = refCaixa.current;
+    if (!caixa) return undefined;
+    /* offsetLeft/offsetTop e nao getBoundingClientRect de proposito: o bloco
+       entra na tela com translate(-34px, -26px), e o rect ja vem com o
+       transform aplicado. Medindo assim a linha nascia deslocada 34px para a
+       esquerda e ficava presa lá, porque a medicao acontece uma vez e a
+       animacao roda depois. offset* devolve a posicao de layout, sem
+       transform, que e a posicao onde o bloco vai parar. */
+    const desloc = (el) => {
+      let x = 0;
+      let y = 0;
+      let n = el;
+      while (n && n !== caixa) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+      return [x, y];
+    };
+    const medir = () => {
+      const pts = [];
+      for (let i = 0; i < refsNos.current.length; i++) {
+        const no = refsNos.current[i];
+        const bl = refsBlocos.current[i];
+        if (!no || !bl) return;
+        const [nx, ny] = desloc(no);
+        const [, by] = desloc(bl);
+        const x = Math.round(nx + no.offsetWidth / 2);
+        pts.push([x, Math.round(ny + no.offsetHeight / 2)]);
+        pts.push([x, Math.round(by + bl.offsetHeight)]);
+      }
+      if (!pts.length) return;
+      setCaminho({
+        w: caixa.offsetWidth,
+        h: caixa.offsetHeight,
+        d: "M " + pts.map((p) => p.join(" ")).join(" L "),
+      });
+    };
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(caixa);
+    return () => ro.disconnect();
+  }, [refCaixa, refsNos, refsBlocos, dependencia]);
+  return caminho;
 }
 
 function Processo() {
   const total = PROCESSO_CURTO.length;
   const { ref, avanco, acesos, quieto } = useTrilha(total);
-  const revelar = useRevelar();
+  const nos = useRef([]);
+  const blocos = useRef([]);
+  const caminho = useCaminho(ref, nos, blocos, total);
+
+  /* Os blocos entram vindo de cima e da esquerda, que é de onde a linha vem.
+     Todo o movimento da dobra aponta para o mesmo lado, que é o vocabulário
+     repetido que docs/ANALISE-REFS.md cobra: a diagonal não é só o arranjo, é
+     também a direção de tudo que se mexe aqui. O desfoque é o mesmo da dobra
+     01, para o olho reconhecer o sotaque. */
+  const entrada = (i) =>
+    quieto
+      ? {
+          initial: { opacity: 0 },
+          whileInView: { opacity: 1 },
+          viewport: { once: true, amount: 0.25 },
+          transition: { duration: 0.2 },
+        }
+      : {
+          initial: { opacity: 0, x: -34, y: -26, filter: "blur(7px)" },
+          whileInView: { opacity: 1, x: 0, y: 0, filter: "blur(0px)" },
+          viewport: { once: true, amount: 0.35 },
+          transition: { duration: 1.1, ease, delay: i * 0.06 },
+        };
+
   return (
     <Dobra id="processo" n="04" nome="Método" carimbo="©26">
       <Cabecalho
@@ -543,24 +505,46 @@ function Processo() {
         lead="Três movimentos, e o do meio é o que a maioria pula."
       />
       <div className="v2-metodo" ref={ref}>
-        <Trilha total={total} avanco={avanco} acesos={acesos} quieto={quieto} />
+        {caminho ? (
+          <svg
+            className="v2-diag"
+            viewBox={`0 0 ${caminho.w} ${caminho.h}`}
+            width={caminho.w}
+            height={caminho.h}
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path className="v2-diag-tr" d={caminho.d} fill="none" />
+            <motion.path
+              className="v2-diag-ln"
+              d={caminho.d}
+              fill="none"
+              style={{ pathLength: quieto ? 1 : avanco }}
+            />
+          </svg>
+        ) : null}
+
         <ol className="v2-fases">
           {PROCESSO_CURTO.map((f, i) => {
             const Ilustra = ILUSTRACOES[i];
             return (
-            <motion.li key={f.titulo} className="v2-fase" {...revelar(i)}>
-              <Pontos i={i} total={total} />
-              <Ilustra />
-              <h3 className="v2-fase-t">
-                <span className="v2-fase-n" aria-hidden="true">{`0${i + 1}`}</span>
-                {f.titulo}
-              </h3>
-              <p className="v2-fase-p">{f.frase}</p>
-              {/* o passo do meio é o que a maioria pula, então é o único que
-                  ganha peso: ele não conta que o protótipo existe, ele entrega
-                  um para a pessoa mexer */}
-              {i === 1 ? <Prototipo /> : null}
-            </motion.li>
+              <motion.li
+                key={f.titulo}
+                className="v2-fase"
+                ref={(el) => { blocos.current[i] = el; }}
+                {...entrada(i)}
+              >
+                <span
+                  className={`v2-fase-no${i < acesos ? " is-aceso" : ""}`}
+                  ref={(el) => { nos.current[i] = el; }}
+                  aria-hidden="true"
+                >
+                  {`0${i + 1}`}
+                </span>
+                <Ilustra />
+                <h3 className="v2-fase-t">{f.titulo}</h3>
+                <p className="v2-fase-p">{f.frase}</p>
+              </motion.li>
             );
           })}
         </ol>

@@ -188,10 +188,33 @@
    metades, uma ancorada a esquerda e outra a direita, com um degrau de altura
    entre elas. A revelacao palavra a palavra continua por cima. */
 .v2-declaracao-par {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--v2-s3);
 }
+
+/* A camada do voo. `overflow: clip` e nao `hidden`: clip nao cria caixa de
+   rolagem, entao o aviao pode sair pelas bordas sem alargar a pagina, e sem
+   repetir a armadilha do IntersectionObserver anotada em motion.js. O clip
+   fica so nesta camada, que so tem o aviao dentro, e nunca nos paragrafos. */
+.v2-voo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+.v2-voo-obj {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+}
+.v2-voo-obj svg { display: block; width: 100%; height: 100%; }
+/* o texto passa por cima: o aviao e fundo, nao ilustracao */
+.v2-declaracao { position: relative; z-index: 1; }
 
 .v2-declaracao {
   margin: 0;
@@ -671,43 +694,53 @@
 
 /* Numeral na mono a esquerda, frase a direita: a lista de servicos do bungee.
    Sem tamanho de tipo novo, so posicao. */
-/* ---------------- 04. metodo: a trilha e as tres fases ---------------- */
+/* ---------------- 04. metodo: a diagonal ---------------- */
 
-/* A trilha do porto. Os nos ficam nas pontas e no meio por space-between, e a
-   linha vai do centro do primeiro ao centro do ultimo: por isso o inset de
-   14px, que e metade do no. */
-.v2-metodo { margin-top: var(--v2-s5); }
-
-/* `space-around` com tres itens poe os centros em 1/6, 3/6 e 5/6 da largura,
-   que e exatamente o centro de cada uma das tres colunas de baixo. Com
-   `space-between` os nos iam parar nas pontas da medida e a trilha lia como
-   regua solta em cima das colunas, em vez de espinha delas. Por isso o inset
-   da linha e 16.667%, de centro a centro, e nao 14px. */
-.v2-trilha {
+/* Tres blocos em escada: cada um desce uma linha e anda quatro colunas para a
+   direita. A linha corre rente a borda esquerda de cada bloco e salta na
+   diagonal para o proximo, entao ela vive so na margem e nunca cruza texto.
+   O recuo de s4 no bloco existe para isso: o no tem 28px, centro em 14, e o
+   texto so comeca em 40. */
+.v2-metodo {
   position: relative;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 28px;
-  margin-bottom: var(--v2-s4);
+  margin-top: var(--v2-s5);
 }
-.v2-trilha-tr,
-.v2-trilha-ln {
+.v2-diag {
   position: absolute;
-  left: 16.667%;
-  right: 16.667%;
-  top: 50%;
-  height: 1px;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
 }
-.v2-trilha-tr { background: var(--v2-rule); }
-.v2-trilha-ln {
-  background: var(--v2-accent);
-  transform-origin: left center;
-  will-change: transform;
-}
-.v2-trilha-no {
+.v2-diag-tr { stroke: var(--v2-rule); stroke-width: 1; }
+.v2-diag-ln { stroke: var(--v2-accent); stroke-width: 1; }
+
+.v2-fases {
   position: relative;
   z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  row-gap: var(--v2-s4);
+}
+.v2-fase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v2-s2);
+  padding-left: var(--v2-s4);
+}
+.v2-fase:nth-child(1) { grid-column: 1 / span 5; grid-row: 1; }
+.v2-fase:nth-child(2) { grid-column: 5 / span 5; grid-row: 2; }
+.v2-fase:nth-child(3) { grid-column: 9 / span 4; grid-row: 3; }
+
+.v2-fase-no {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: grid;
   place-items: center;
   width: 28px;
@@ -722,58 +755,31 @@
               border-color .35s var(--v2-ease),
               color .35s var(--v2-ease);
 }
-.v2-trilha-no.is-aceso {
+.v2-fase-no.is-aceso {
   background: var(--v2-accent);
   border-color: var(--v2-accent);
   color: #fff;
 }
 
-/* Os tres quadradinhos de posicao, do viper e do porto. */
-.v2-pontos { display: flex; gap: 4px; }
-.v2-ponto {
-  width: 5px;
-  height: 5px;
-  background: var(--v2-rule);
+/* a faixa de ilustracao. viewBox igual nas tres, entao a altura bate.
+   `display: block` porque svg inline herda baseline e sobra filete embaixo. */
+.v2-ilu {
+  display: block;
+  width: 100%;
+  /* sem teto a ilustracao acompanha a coluna e a dobra passava de 1500px de
+     altura so com tres passos. 360 mantem ela legivel e devolve ~400px. */
+  max-width: 360px;
+  height: auto;
+  aspect-ratio: 320 / 200;
+  margin: var(--v2-s2) 0 var(--v2-s1);
+  overflow: visible;
 }
-.v2-ponto.is-cheio { background: var(--v2-accent); }
 
-/* Tres colunas separadas so por filete, sem cartao e sem chapa: e o
-   tratamento do porto, e e o unico que nao briga com o raio 0. */
-.v2-fases {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid var(--v2-rule);
-}
-.v2-fase {
-  padding: var(--v2-s4) var(--v2-s4) var(--v2-s5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--v2-s2);
-}
-.v2-fase + .v2-fase { border-left: 1px solid var(--v2-rule); }
-.v2-fase:first-child { padding-left: 0; }
-.v2-fase:last-child { padding-right: 0; }
 .v2-fase-t {
   margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: var(--v2-s2);
   font-size: var(--v2-t-lead);
   font-weight: 600;
   letter-spacing: var(--v2-track-titulo);
-}
-/* No desktop o no da trilha fica logo acima do centro da coluna, entao o
-   numero no titulo era o mesmo dado repetido a 60px de distancia. Some aqui e
-   volta no empilhado, onde a trilha deixa de estar alinhada com a coluna. */
-.v2-fase-n {
-  display: none;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  color: var(--v2-accent);
 }
 .v2-fase-p {
   margin: 0;
@@ -782,143 +788,13 @@
   color: var(--v2-muted);
 }
 
-/* A faixa de ilustracao. viewBox igual nas tres, entao a altura bate e a
-   linha de baixo nao serrilha. `display: block` porque svg inline herda
-   baseline e sobra um filete de 4px embaixo. */
-.v2-ilu {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 320 / 200;
-  margin: var(--v2-s2) 0 var(--v2-s1);
-  overflow: visible;
-}
-
-/* ---- o prototipo de brinquedo, dentro do passo 02 ---- */
-
-.v2-proto {
-  margin-top: var(--v2-s3);
-  border: 1px solid var(--v2-rule);
-  background: var(--v2-paper);
-}
-.v2-proto-topo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--v2-rule);
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  color: var(--v2-muted);
-}
-/* figura tabular: o contador nao pode empurrar a caixa a cada toque */
-.v2-proto-cont { font-variant-numeric: tabular-nums; }
-.v2-proto-corpo { padding: 14px; min-height: 186px; display: grid; }
-.v2-proto-set { margin: 0; padding: 0; border: 0; }
-.v2-proto-pgt {
-  padding: 0 0 10px;
-  font-size: var(--v2-t-corpo);
-  font-weight: 600;
-  letter-spacing: var(--v2-track-titulo);
-  color: var(--v2-ink);
-}
-.v2-proto-op {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-top: 1px solid var(--v2-rule);
-  font-size: var(--v2-t-corpo);
-  color: var(--v2-muted);
-  cursor: pointer;
-}
-.v2-proto-op.is-on { color: var(--v2-ink); }
-/* o radio nativo continua no DOM para teclado e leitor de tela; some da tela
-   sem sair da arvore de acessibilidade */
-.v2-proto-op input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-.v2-proto-cx {
-  flex: none;
-  width: 13px;
-  height: 13px;
-  border: 1px solid var(--v2-muted);
-}
-.v2-proto-op.is-on .v2-proto-cx {
-  background: var(--v2-accent);
-  border-color: var(--v2-accent);
-}
-.v2-proto-op input:focus-visible ~ .v2-proto-cx {
-  outline: 2px solid var(--v2-accent);
-  outline-offset: 2px;
-}
-.v2-proto-ok {
-  margin-top: 14px;
-  width: 100%;
-  padding: 11px 14px;
-  border: 0;
-  background: var(--v2-ink);
-  color: #fff;
-  font: inherit;
-  font-size: var(--v2-t-corpo);
-  font-weight: 600;
-  letter-spacing: var(--v2-track-titulo);
-  cursor: pointer;
-}
-.v2-proto-ok:disabled {
-  background: var(--v2-superficie);
-  color: var(--v2-muted);
-  cursor: not-allowed;
-}
-.v2-proto-fim { display: flex; flex-direction: column; gap: 10px; }
-.v2-proto-marca { width: 13px; height: 13px; background: var(--v2-accent); }
-.v2-proto-resp {
-  margin: 0;
-  font-size: var(--v2-t-corpo);
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: var(--v2-track-titulo);
-  color: var(--v2-ink);
-}
-.v2-proto-fecho { margin: 0; font-size: var(--v2-t-corpo); color: var(--v2-muted); }
-.v2-proto-voltar {
-  margin-top: auto;
-  align-self: flex-start;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  color: var(--v2-ink);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  cursor: pointer;
-}
-.v2-proto-pe {
-  margin: 0;
-  padding: 10px 14px;
-  border-top: 1px solid var(--v2-rule);
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  color: var(--v2-muted);
-}
-
+/* No empilhado a escada nao existe: tudo vai para a coluna 1 e a linha vira
+   uma vertical unica, que continua dizendo a mesma coisa. */
 @media (max-width: 900px) {
-  .v2-fase-n { display: inline; }
-  .v2-fases { grid-template-columns: 1fr; }
-  .v2-fase { padding: var(--v2-s4) 0; }
-  .v2-fase + .v2-fase {
-    border-left: 0;
-    border-top: 1px solid var(--v2-rule);
-  }
+  .v2-fases { grid-template-columns: 1fr; row-gap: var(--v2-s5); }
+  .v2-fase:nth-child(1),
+  .v2-fase:nth-child(2),
+  .v2-fase:nth-child(3) { grid-column: 1; grid-row: auto; }
 }
 
 /* ---- sobre ---- */
@@ -984,7 +860,10 @@
 .v2-sobre-ass-tinta {
   display: inline-block;
   font-family: var(--v2-font-mao);
-  font-size: calc(var(--v2-t-lead) * 2.6);
+  /* Bad Script no lugar da Ephesis: a Ephesis tinha laco e contraste de
+     caligrafia e lia como floreio, nao como assinatura. Esta e monolinear e
+     sem enfeite. Roda maior para o mesmo px, entao 1.9x e nao 2.6x. */
+  font-size: calc(var(--v2-t-lead) * 1.9);
   line-height: 1.35;
   color: var(--v2-ink);
   /* a cursiva inclina para a direita: sem isso a ultima letra encosta no ar */
