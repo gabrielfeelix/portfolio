@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { chapterById } from "./content.js";
-import { Nav, Rodape, Progresso } from "./Shell.jsx";
+import { Nav, Rodape } from "./Shell.jsx";
 import { useScrollSuave } from "./motion.js";
 import Home from "./Home.jsx";
 import Caso from "./Case.jsx";
@@ -115,7 +115,6 @@ function App() {
   try {
     return (
       <div className="v2-shell">
-        {rota.tipo === "caso" && <Progresso />}
         <Nav sobreEscuro={sobreEscuro} ir={ir} />
         <main>
           {rota.tipo === "home"

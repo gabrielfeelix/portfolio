@@ -1,10 +1,10 @@
-/* Casca da V2: nav, rodapé e a barra de progresso que substitui o índice.
+/* Casca da V2: nav e rodapé.
  *
  * A nav é clara por padrão. Sobre um hero escuro ela inverte, e volta ao claro
  * quando o hero sai da tela: é o mesmo elemento, não dois. */
 
 import React, { useEffect, useState } from "react";
-import { motion, useScroll, useSpring } from "motion/react";
+import { motion } from "motion/react";
 import { spring } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
 
@@ -124,14 +124,6 @@ export function Nav({ sobreEscuro, ir }) {
       </div>
     </header>
   );
-}
-
-/* Barra de progresso do documento. Na página de caso ela ocupa o lugar do
-   índice que a V1 tinha: diz onde você está sem pedir atenção. */
-export function Progresso() {
-  const { scrollYProgress } = useScroll();
-  const x = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
-  return <motion.div className="v2-progresso" style={{ scaleX: x }} aria-hidden="true" />;
 }
 
 export function Rodape() {

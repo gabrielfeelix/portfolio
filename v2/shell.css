@@ -377,17 +377,6 @@
   .v2-nav-links { display: none; }
 }
 
-/* ---------------- progresso ---------------- */
-
-.v2-progresso {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 40;
-  height: 2px;
-  background: var(--v2-accent);
-  transform-origin: 0 50%;
-}
-
 /* ---------------- rodapé ---------------- */
 
 /* O fecho da pagina inteira, em todas as rotas. Escuro de proposito: a home
