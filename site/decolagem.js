@@ -59,7 +59,6 @@
 
   var PISO = 1100;    // ms: abaixo disso a tela é um flash
   var TETO = 4200;    // ms: acima disso ninguém espera mais
-  var CIRC = 464.96;  // 2 * pi * 74, o raio da órbita no viewBox
 
   var t0 = (window.performance && performance.now) ? performance.now() : Date.now();
   var agora = function () {
@@ -84,23 +83,22 @@
   if (document.readyState === "complete") marcos.carga = 1;
   else window.addEventListener("load", fecha("carga"));
 
-  var num = document.getElementById("v2-dec-n");
   var rastro = tela.querySelector(".v2-dec-rastro");
-  var nave = tela.querySelector(".v2-dec-nave");
+  var barra = tela.querySelector(".v2-dec-barra i");
 
-  var p = 0;         // o que está desenhado
+  var p = 0;          // o que está desenhado
   var saindo = false;
+  var ultimo = 0;     // o instante do quadro anterior, para a conta por tempo
 
   var pinta = function (v) {
-    var d = Math.round(v * 100);
-    if (num) num.textContent = d >= 100 ? "100" : (d < 10 ? "00" : "0") + d;
-    if (rastro) rastro.setAttribute("stroke-dashoffset", String(CIRC * (1 - v)));
-    /* Uma volta exata, e não mais que isso: o avião anda os mesmos 360v graus
-       que o rastro, então ele fica sempre na PONTA do próprio rastro. É essa
-       coincidência que faz a peça ler como "o avião está desenhando o arco" em
-       vez de "há um arco e há um avião". E em 100 ele volta ao topo, onde
-       começou: a volta fecha. */
-    if (nave) nave.style.transform = "rotate(" + (v * 360).toFixed(2) + "deg)";
+    /* O rastro cresce atrás do avião, que fica parado no centro. É a distância
+       já voada: o avião não anda, o mundo é que passa por ele. */
+    /* Duas leituras do mesmo número, e nenhuma delas é um número: o rastro
+       atrás do avião, que é quanto já se voou, e o filete embaixo da frase,
+       que é quanto falta. */
+    var f = v.toFixed(4);
+    if (rastro) rastro.style.setProperty("--p", f);
+    if (barra) barra.style.setProperty("--p", f);
   };
 
   /* A saída, nos dois tempos que o CSS descreve: a noite engole a tela, e a
@@ -114,10 +112,16 @@
     setTimeout(function () {
       tela.setAttribute("data-fase", "fora");
       raiz.setAttribute("data-pronto", "1");
-      raiz.removeAttribute("data-decolando");
+      /* `data-decolando` NÃO sai aqui, sai em `solta`.
+
+         Ele é quem trava a rolagem, e tirá-lo no meio da animação devolve a
+         barra de rolagem: a janela encolhe uns 15px, a página inteira e a
+         própria tela de carregamento pulam de lado no meio do gesto. Era o
+         "sobrando/faltando um pouquinho da tela" que o Gabriel viu no print.
+         380ms de rolagem travada a mais não custam nada. */
       /* 380ms é a subida; a folga de 60 é para o último quadro dela existir */
       setTimeout(solta, 440);
-    }, 520);
+    }, 460);
   };
 
   var quadro = function () {
@@ -130,10 +134,19 @@
     var tempo = Math.min(1, t / PISO);
     var alvo = Math.min(real, tempo);
     if (t >= TETO) alvo = 1;
-    /* Aproximação por fração fixa: o número sobe rápido quando está longe e
-       encosta devagar, que é o que faz um contador parecer medindo alguma
-       coisa em vez de rodando um relógio. */
-    p += (alvo - p) * 0.14;
+    /* Aproximação exponencial, por TEMPO e não por quadro.
+
+       Era `p += (alvo - p) * 0.14` a cada requestAnimationFrame, o que amarra a
+       velocidade do contador à taxa de quadros. Medido com a névoa borrada na
+       tela: o rAF caiu para uns cinco quadros por segundo e o contador levava
+       mais de três segundos e meio para chegar a 92 — a tela de carregamento
+       tinha virado o motivo da espera.
+
+       Com `1 - e^(-dt/TAU)` a curva é a mesma e o tempo até chegar é o mesmo em
+       5fps ou em 120fps. TAU de 130ms dá a mesma sensação dos 14% a 60fps. */
+    var dt = ultimo ? Math.min(120, t - ultimo) : 16;
+    ultimo = t;
+    p += (alvo - p) * (1 - Math.exp(-dt / 130));
     if (alvo >= 1 && p > 0.995) { sai(); return; }
     pinta(p);
     requestAnimationFrame(quadro);
