@@ -109,16 +109,28 @@ function Hero({ paraCasos }) {
   return (
     <section className="v2-hero v2-grao v2-halo" id="v2-hero" data-escuro="1" ref={capa.ref}>
       {/* A capa. Fica atras de tudo, e o `.v2-grao` do hero ja poe os filhos
-          em z-index 1, entao o conteudo passa por cima sozinho. Em
-          reduced-motion ela entra parada: parallax e movimento. */}
+          em z-index 1, entao o conteudo passa por cima sozinho.
+
+          Em reduced-motion o video nem entra no DOM: sai a tag inteira e fica
+          a arte parada. Video em loop e movimento, e quem pediu para nada se
+          mover nao ganha excecao por ser bonito. */}
       <div className="v2-hero-capa" aria-hidden="true">
-        <motion.img
-          src="/volume/assets/hero/capa.webp"
-          alt=""
-          decoding="async"
-          fetchPriority="high"
-          style={quieto ? undefined : { y: desloca }}
-        />
+        {quieto ? (
+          <img src="/volume/assets/hero/capa.webp" alt="" decoding="async" />
+        ) : (
+          <motion.video
+            style={{ y: desloca }}
+            poster="/volume/assets/hero/capa-poster.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            <source src="/volume/assets/hero/capa.webm" type="video/webm" />
+            <source src="/volume/assets/hero/capa.mp4" type="video/mp4" />
+          </motion.video>
+        )}
         <span className="v2-hero-veu" />
       </div>
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
