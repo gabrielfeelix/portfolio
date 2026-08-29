@@ -232,42 +232,50 @@
 
 .v2-caso-p + .v2-caso-p { margin-top: var(--v2-s3); }
 
-/* ---------------- movimento ---------------- */
+/* ---------------- capa de capítulo ---------------- */
 
-/* A virada. Largura cheia, tipografia grande, nenhum label, e a única régua
-   com cruz da página. Quatro por caso. */
-.v2-mov { margin-top: var(--v2-s7); }
+/* A virada de movimento, que era `.v2-mov`: uma linha de texto na mesma
+   largura e na mesma superfície de tudo o mais. Agora é uma chapa que sangra
+   de borda a borda e ocupa metade da tela, e é o único corte da página.
 
-.v2-mov .v2-regua {
-  max-width: var(--v2-caso-larga);
-  margin-inline: auto;
-  margin-block: 0 var(--v2-s5);
+   Ela sangra por NÃO usar `.v2-wrap`, e não por margem negativa. O pai é
+   `.v2-corpo-claro`, que em shell.css é largura cheia sem padding: quem
+   trava a medida na página inteira é o wrap de cada seção. Menos um truque
+   de 100vw, e nenhum problema com a barra de rolagem. */
+.v2-capitulo {
+  margin-top: var(--v2-s7);
+  background: var(--v2-ink);
+  color: var(--v2-paper);
+  padding-block: var(--v2-s7);
+  min-height: 46svh;
+  display: flex;
+  align-items: flex-end;
 }
 
-.v2-mov-in {
-  display: grid;
-  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
-  gap: var(--v2-s4);
-  align-items: baseline;
-  max-width: var(--v2-caso-larga);
-  margin-inline: auto;
-  padding-bottom: var(--v2-s2);
-}
+.v2-capitulo-in { width: 100%; }
 
-.v2-mov-n {
-  margin: 0;
-  font-size: var(--v2-t-label);
-  font-weight: 500;
-  color: var(--v2-muted);
-  font-variant-numeric: tabular-nums;
+/* O cromo em mono, que é a segunda voz do site (M1 de docs/ANALISE-REFS.md).
+   Ele existia em dez lugares na página inteira contra cento e oitenta e cinco
+   do corpo; a partir daqui abre toda capa. */
+.v2-capitulo-cromo {
+  display: flex;
+  gap: var(--v2-s3);
+  margin: 0 0 var(--v2-s5);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  font-weight: 400;
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--v2-paper) 60%, transparent);
 }
+.v2-capitulo-cont { font-variant-numeric: tabular-nums; }
 
-.v2-mov-t {
+.v2-capitulo-t {
   margin: 0;
   font-size: var(--v2-t-movimento);
   font-weight: 700;
-  line-height: .98;
-  letter-spacing: -.03em;
+  line-height: .96;
+  letter-spacing: var(--v2-track-display);
 }
 
 /* ---------------- ficha ---------------- */
@@ -375,16 +383,53 @@
   background: var(--v2-superficie);
 }
 
-/* ---------------- midia emoldurada ---------------- */
+/* ---------------- mídia ---------------- */
 
-/* A midia da pagina de caso vive dentro de um painel e nunca sangra. O
-   painel é o único lugar onde `--v2-card` aparece, e a textura de 5px mora
-   dentro dele (`.v2-textura`, em shell.css), nunca na página. */
+/* A mídia da página de caso. O painel `--v2-card` continua sendo o único
+   lugar onde o cinza aparece, com a textura de 5px dentro dele
+   (`.v2-textura`, em shell.css), nunca na página.
+
+   Três larguras, e só três: sangra, meia e terço. Medido em 29/08 na página
+   do PCYES, a mídia aparecia em cinco larguras diferentes no mesmo caso
+   (932, 559, 438, 430 e 263px), o que é uma das razões de a página ler como
+   coisa espalhada. A regra de qual usar sai da CONTAGEM de figuras do bloco,
+   não do gosto da dobra:
+
+     1 figura     sangra de borda a borda
+     2 figuras    par lado a lado, meia e meia
+     3 figuras    tríptico: âncora larga em cima, duas embaixo
+     4 ou mais    peça navegável (abas), uma por vez
+
+   Medido no inventário do repositório: 18 das 30 figuras dos quatro casos
+   são 16:10, então par e tríptico fecham sem sobra de proporção. */
 .v2-fig {
   margin: var(--v2-s4) 0 0;
   padding: var(--v2-s3);
   border-radius: var(--v2-r-secao);
   background: var(--v2-card);
+}
+
+/* Sangria. A figura fica FORA do `.v2-wrap`, filha direta de
+   `.v2-corpo-claro`, que é largura cheia: nada de margem negativa, e nada
+   de overflow horizontal para caçar depois. Quem usa isto tem que sair do
+   wrap no JSX; ver `Abertura` em Case.jsx. */
+.v2-fig.is-sangra {
+  margin-block: var(--v2-s6) 0;
+  margin-inline: 0;
+  padding: 0;
+  background: none;
+  max-width: none;
+}
+.v2-fig.is-sangra .v2-fig-moldura { border-radius: 0; }
+/* A legenda não sangra junto: ela é texto, e volta para a coluna de leitura.
+   O padding da esquerda repete a grade da Dobra (gutter + coluna do label +
+   o vão), para a legenda nascer na mesma vertical do corpo das outras
+   dobras. Sem isso ela fica centrada na janela e denuncia que a figura saiu
+   do wrap. */
+.v2-fig.is-sangra .v2-fig-leg {
+  max-width: calc(var(--v2-medida-caso) + var(--v2-gutter) + var(--v2-label-col) + var(--v2-s4));
+  margin: var(--v2-s3) auto 0;
+  padding-inline: calc(var(--v2-gutter) + var(--v2-label-col) + var(--v2-s4)) var(--v2-gutter);
 }
 
 .v2-fig-moldura {
@@ -878,6 +923,79 @@
 
 /* ---------------- modulos ---------------- */
 
+/* ---------------- abas ---------------- */
+
+/* O trilho das abas. Mono, caixa alta e reto, que é o contrato do cromo: ele
+   não é conteúdo, é moldura. Rola na horizontal quando não cabe, e o
+   `scroll-snap` faz a aba parar inteira em vez de cortada. */
+.v2-abas-trilho {
+  display: flex;
+  gap: 0;
+  margin: var(--v2-s5) 0 var(--v2-s5);
+  border-top: 1px solid var(--v2-rule);
+  border-bottom: 1px solid var(--v2-rule);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.v2-aba {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s2);
+  padding: var(--v2-s3) var(--v2-s4) var(--v2-s3) 0;
+  margin-right: var(--v2-s4);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--v2-muted);
+  font-family: var(--v2-font);
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.v2-aba:hover { color: var(--v2-ink); }
+.v2-aba[aria-selected="true"] {
+  color: var(--v2-ink);
+  border-bottom-color: var(--v2-accent);
+}
+/* O foco tem que aparecer: a peça inteira se navega por seta, e sem anel
+   visível quem usa teclado fica sem saber onde está. */
+.v2-aba:focus-visible {
+  outline: 2px solid var(--v2-accent);
+  outline-offset: -2px;
+}
+
+.v2-aba-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  font-weight: 400;
+  letter-spacing: var(--v2-track-cromo);
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-muted);
+}
+.v2-aba[aria-selected="true"] .v2-aba-n { color: var(--v2-accent); }
+
+/* Dentro de uma aba o item já está isolado: a régua e a margem que
+   separavam um do próximo não têm mais o que separar. */
+.v2-abas-painel .v2-mod .v2-regua { display: none; }
+.v2-abas-painel .v2-mod-topo { margin-top: 0; }
+
+/* O rótulo da aba já nomeia o painel, e o `aria-labelledby` do tabpanel
+   aponta para ele: repetir o mesmo texto como título dentro é ler duas vezes,
+   na tela e no leitor de tela. Só o primeiro título de cada painel sai; os
+   de dentro do conteúdo continuam. */
+.v2-abas-painel > .v2-bloco > .v2-bloco-t { display: none; }
+
+/* O trilho já é a separação. Sem isto o painel nasce com a margem de bloco
+   empilhado e abre um vão morto embaixo das abas. */
+.v2-abas-painel > .v2-bloco { margin-top: 0; }
+
 .v2-mod + .v2-mod { margin-top: var(--v2-s6); }
 
 .v2-mod .v2-regua { margin-block: 0 var(--v2-s4); }
@@ -1162,10 +1280,12 @@
      ela empurraria o pé do hero para fora da tela. */
   .v2-caso-hero-grade { grid-template-columns: 1fr; }
   .v2-caso-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
-  .v2-mov-in { grid-template-columns: 1fr; gap: var(--v2-s1); }
   .v2-caso-abre { padding-top: var(--v2-s5); }
   .v2-dobra { margin-top: var(--v2-s5); }
-  .v2-mov { margin-top: var(--v2-s6); }
+  .v2-fig.is-sangra .v2-fig-leg { padding-inline: var(--v2-gutter); max-width: none; }
+  /* A capa encolhe mas continua sendo a tela inteira: é o corte, e um corte
+     de 46svh num celular já é meia tela. */
+  .v2-capitulo { margin-top: var(--v2-s6); padding-block: var(--v2-s6); min-height: 40svh; }
   .v2-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
   .v2-resumo { grid-template-columns: 1fr; gap: var(--v2-s3); }
 

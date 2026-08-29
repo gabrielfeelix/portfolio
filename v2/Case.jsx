@@ -198,17 +198,30 @@ function NotaMargem({ k, children }) {
 
 /* ---------------------------------------------------------- movimento */
 
-/* A virada de movimento: largura cheia, tipografia grande, nenhum label,
-   nenhum dado. É o que dá hierarquia às dezoito dobras sem virar índice.
-   Quatro por página, e a régua com cruz só aparece aqui. */
-function Movimento({ n, t }) {
+/* A capa de capítulo.
+ *
+ * Era `Movimento`: uma linha de texto na mesma largura e na mesma superfície
+ * de todas as outras, que é o motivo de a página ler como vinte e duas coisas
+ * em fila. Medido em 29/08 na página do PCYES: uma largura de conteúdo, uma
+ * posição de alinhamento e zero trocas de superfície do hero preto ao
+ * "Aprendi" preto.
+ *
+ * Agora ela sangra de borda a borda, em chapa escura, e é a única coisa na
+ * tela quando aparece. Quatro por caso, e é o corte que diz "mudei de bloco"
+ * sem precisar de índice.
+ *
+ * A régua com cruz saiu: numa chapa que já é um corte, ela era um segundo
+ * corte dentro do primeiro. */
+function CapaCapitulo({ n, t, de = "04" }) {
   const subir = useSubir();
   return (
-    <section className="v2-wrap v2-mov">
-      <Regua />
-      <motion.div className="v2-mov-in" {...subir(0)}>
-        <p className="v2-mov-n" aria-hidden="true">{n}</p>
-        <h2 className="v2-mov-t">{t}</h2>
+    <section className="v2-capitulo" data-escuro="1" data-escuro-corpo="1" aria-label={`Movimento ${n}, ${t}`}>
+      <motion.div className="v2-wrap v2-capitulo-in" {...subir(0)}>
+        <p className="v2-capitulo-cromo">
+          <span>Movimento</span>
+          <span className="v2-capitulo-cont">{n} / {de}</span>
+        </p>
+        <h2 className="v2-capitulo-t">{t}</h2>
       </motion.div>
     </section>
   );
@@ -332,10 +345,19 @@ function Abertura({ cap }) {
   const a = cap.abertura;
   if (!a) return null;
   const fig = a.fig && cap.figuras ? cap.figuras[a.fig] : null;
+  /* A figura sai da Dobra de propósito.
+   *
+   * Ela é a única do bloco, e pela regra de contagem uma figura sozinha
+   * sangra de borda a borda. Sangrar por `margin-inline: 50% - 50vw` não
+   * funcionaria daqui: dentro da Dobra ela mora na coluna de conteúdo, que a
+   * grade já deslocou para a direita pela largura do label, então os 50%
+   * dela não são o meio da página. Medido: 130px de overflow horizontal.
+   * Fora do wrap, `.v2-corpo-claro` é largura cheia e a sangria é o padrão. */
   return (
-    <Dobra label={a.k} larga topo={<Ato titulo={a.t} paras={a.p} />}>
-      <Figura fig={fig} className="is-larga" />
-    </Dobra>
+    <>
+      <Dobra label={a.k} larga topo={<Ato titulo={a.t} paras={a.p} />} />
+      <Figura fig={fig} className="is-sangra" />
+    </>
   );
 }
 
@@ -637,7 +659,16 @@ function Sistema({ cap }) {
       topo={<Ato titulo={s.t} paras={s.p} />}
       aside={<NotaMargem>{s.nota}</NotaMargem>}
     >
-      {s.escada ? (
+      {/* O sistema, em abas.
+          Empilhado ele media 4.210px, quase cinco telas, e é o bloco menos
+          obrigatório da leitura: quem quer ver a escada de cor não precisa
+          rolar por motion e espaço antes. Mesma peça dos módulos. */}
+      <Abas
+        id="sis"
+        rotulo="O sistema"
+        itens={[
+          s.escada && { chave: "escada", rotulo: s.escada.k, conteudo: (
+
         <motion.div className="v2-bloco" {...rise(0)}>
           <h3 className="v2-bloco-t">{s.escada.k}</h3>
           <p className="v2-corpo v2-caso-p">{s.escada.n}</p>
@@ -658,9 +689,9 @@ function Sistema({ cap }) {
             ))}
           </ul>
         </motion.div>
-      ) : null}
+          ) },
+          s.funcoes && { chave: "funcoes", rotulo: "Cor com função", conteudo: (
 
-      {s.funcoes ? (
         <motion.div className="v2-bloco" {...rise(0)}>
           <h3 className="v2-bloco-t">Cor com função</h3>
           <ul className="v2-funcoes">
@@ -674,9 +705,9 @@ function Sistema({ cap }) {
             ))}
           </ul>
         </motion.div>
-      ) : null}
+          ) },
+          s.caso && { chave: "caso", rotulo: s.caso.t, conteudo: (
 
-      {s.caso ? (
         <motion.div className="v2-bloco" {...rise(0)}>
           <h3 className="v2-bloco-t">{s.caso.t}</h3>
           {(s.caso.p || []).map((p, i) => <p className="v2-corpo v2-caso-p" key={i}>{p}</p>)}
@@ -690,13 +721,12 @@ function Sistema({ cap }) {
             ))}
           </div>
         </motion.div>
-      ) : null}
+          ) },
+          s.motion && { chave: "motion", rotulo: s.motion.t, conteudo: <SistemaMotion m={s.motion} /> },
+          s.tipografia && { chave: "tipo", rotulo: s.tipografia.t, conteudo: <SistemaTipo t={s.tipografia} /> },
+          s.espaco && { chave: "espaco", rotulo: s.espaco.t, conteudo: <SistemaEspaco e={s.espaco} /> },
+          s.derivado && { chave: "derivado", rotulo: s.derivado.t, conteudo: (
 
-      {s.motion ? <SistemaMotion m={s.motion} /> : null}
-      {s.tipografia ? <SistemaTipo t={s.tipografia} /> : null}
-      {s.espaco ? <SistemaEspaco e={s.espaco} /> : null}
-
-      {s.derivado ? (
         <motion.div className="v2-bloco" {...rise(0)}>
           <h3 className="v2-bloco-t">{s.derivado.t}</h3>
           {(s.derivado.p || []).map((p, i) => <p className="v2-corpo v2-caso-p" key={i}>{p}</p>)}
@@ -713,7 +743,9 @@ function Sistema({ cap }) {
             ))}
           </div>
         </motion.div>
-      ) : null}
+          ) },
+        ].filter(Boolean)}
+      />
     </Dobra>
   );
 }
@@ -911,17 +943,22 @@ function Ponte({ cap }) {
 
 /* =============================================================== módulos */
 
-function Modulo({ mod, figuras }) {
+/* `emAba`: dentro de uma aba o `mod.k` já é o rótulo do botão, e o tabpanel
+   aponta para ele por `aria-labelledby`. Repetir como h3 lê duas vezes. Ele
+   sai do DOM em vez de sumir por CSS, e o título sobe de h4 para h3: com o
+   h3 só escondido, o h4 ficava órfão e o axe acusava heading-order. */
+function Modulo({ mod, figuras, emAba = false }) {
   const rise = useRise();
   const figs = (mod.figs || []).map((k) => figuras && figuras[k]).filter(Boolean);
+  const Titulo = emAba ? "h3" : "h4";
 
   return (
     <div className="v2-mod">
       <Regua discreta />
       <div className="v2-mod-topo">
         <div className="v2-caso-medida">
-          <h3 className="v2-mod-k">{mod.k}</h3>
-          <h4 className="v2-caso-ato">{mod.t}</h4>
+          {emAba ? null : <h3 className="v2-mod-k">{mod.k}</h3>}
+          <Titulo className="v2-caso-ato">{mod.t}</Titulo>
           {mod.buraco ? <p className="v2-buraco">{mod.buraco}</p> : null}
           {(mod.p || []).map((p, i) => <p className="v2-corpo v2-caso-p" key={i}>{p}</p>)}
         </div>
@@ -967,12 +1004,89 @@ function Modulo({ mod, figuras }) {
   );
 }
 
+/* Abas.
+ *
+ * A peça que troca um empilhamento longo por um item de cada vez. Nasceu
+ * para os módulos do PCYES, que empilhados mediam 8.233px, nove telas,
+ * sozinhos 24% da página (medido em 29/08 no 1440), e serve qualquer bloco
+ * com quatro ou mais itens do mesmo assunto. É a quarta forma da gramática
+ * de mídia; as outras três (sangra, par, tríptico) são CSS.
+ *
+ * O conteúdo não sai da página: os painéis inativos ficam no DOM com
+ * `hidden`, então Ctrl+F e leitor de tela continuam achando tudo.
+ *
+ * Teclado: setas andam entre as abas, Home e End vão às pontas. É o padrão
+ * de tablist, e sem ele a peça é uma armadilha para quem não usa mouse.
+ */
+function Abas({ itens, rotulo, id }) {
+  const [ativo, setAtivo] = React.useState(0);
+  const refs = React.useRef([]);
+  if (!itens || itens.length < 2) return itens && itens.length ? itens[0].conteudo : null;
+
+  const foca = (i) => {
+    const n = (i + itens.length) % itens.length;
+    setAtivo(n);
+    const el = refs.current[n];
+    if (el) el.focus();
+  };
+  const tecla = (e) => {
+    const mapa = { ArrowRight: ativo + 1, ArrowLeft: ativo - 1, Home: 0, End: itens.length - 1 };
+    if (!(e.key in mapa)) return;
+    e.preventDefault();
+    foca(mapa[e.key]);
+  };
+
+  return (
+    <>
+      <div className="v2-abas-trilho" role="tablist" aria-label={rotulo} onKeyDown={tecla}>
+        {itens.map((it, i) => (
+          <button
+            key={it.chave}
+            type="button"
+            role="tab"
+            id={`${id}-aba-${i}`}
+            aria-selected={i === ativo}
+            aria-controls={`${id}-painel-${i}`}
+            tabIndex={i === ativo ? 0 : -1}
+            ref={(el) => { refs.current[i] = el; }}
+            className="v2-aba"
+            onClick={() => setAtivo(i)}
+          >
+            <span className="v2-aba-n">{String(i + 1).padStart(2, "0")}</span>
+            {it.rotulo}
+          </button>
+        ))}
+      </div>
+      {itens.map((it, i) => (
+        <div
+          key={it.chave}
+          role="tabpanel"
+          id={`${id}-painel-${i}`}
+          aria-labelledby={`${id}-aba-${i}`}
+          hidden={i !== ativo}
+          className="v2-abas-painel"
+        >
+          {it.conteudo}
+        </div>
+      ))}
+    </>
+  );
+}
+
 function Modulos({ cap }) {
   const lista = cap.modulos || [];
   if (!lista.length) return null;
   return (
     <Dobra label="Os módulos" larga>
-      {lista.map((m) => <Modulo mod={m} figuras={cap.figuras} key={m.k} />)}
+      <Abas
+        id="mod"
+        rotulo="Os módulos"
+        itens={lista.map((m) => ({
+          chave: m.k,
+          rotulo: m.k,
+          conteudo: <Modulo mod={m} figuras={cap.figuras} emAba />,
+        }))}
+      />
     </Dobra>
   );
 }
@@ -1210,17 +1324,17 @@ export default function Caso({ id, ir }) {
         <Resumo cap={cap} />
 
         {/* Os quatro movimentos. A régua com cruz só existe na virada. */}
-        <Movimento n="01" t="O problema" />
+        <CapaCapitulo n="01" t="O problema" />
         <Problema cap={cap} />
         <Funil cap={cap} />
         <Gesto cap={cap} />
 
-        <Movimento n="02" t="A investigação" />
+        <CapaCapitulo n="02" t="A investigação" />
         <Investigacao cap={cap} />
         <Busca cap={cap} />
         <Citacao cap={cap} />
 
-        <Movimento n="03" t="A resposta" />
+        <CapaCapitulo n="03" t="A resposta" />
         <Decisoes cap={cap} />
         <Recusei cap={cap} />
         <Ponte cap={cap} />
@@ -1229,7 +1343,7 @@ export default function Caso({ id, ir }) {
         <Modulos cap={cap} />
         <Calendario cap={cap} />
 
-        <Movimento n="04" t="O resultado" />
+        <CapaCapitulo n="04" t="O resultado" />
         <AntesDepois cap={cap} />
         <Resultado cap={cap} />
       </div>

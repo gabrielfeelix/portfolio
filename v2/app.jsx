@@ -97,6 +97,31 @@ function App() {
   // Amortecimento do scroll da página inteira. Ver a primitiva 7 em motion.js.
   useScrollSuave();
 
+  /* A largura da barra de rolagem, em token.
+   *
+   * Quem sangra de borda a borda dentro de um container centrado usa
+   * `margin-inline: calc(50% - 50vw)`. O problema é que `100vw` conta a barra
+   * de rolagem e `50%` não, então em qualquer navegador com barra fixa a
+   * mídia passa alguns pixels da janela e nasce um overflow horizontal que
+   * não aparece em teste sem barra.
+   *
+   * `overflow: hidden` ou `clip` no ancestral resolveria e traz um problema
+   * pior: ancestral com overflow diferente de `visible` mata o
+   * IntersectionObserver dos filhos, e a página inteira depende de
+   * `whileInView`. Está anotado em docs/HANDOFF-V2.md.
+   *
+   * Então a barra vira número e o cálculo desconta ela. Recalcula no resize
+   * porque a barra some quando a página encolhe. */
+  useEffect(() => {
+    const mede = () => {
+      const barra = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.setProperty("--v2-barra", `${Math.max(0, barra)}px`);
+    };
+    mede();
+    window.addEventListener("resize", mede);
+    return () => window.removeEventListener("resize", mede);
+  }, []);
+
   useEffect(() => {
     document.title =
       rota.tipo === "caso"
