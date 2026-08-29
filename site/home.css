@@ -469,7 +469,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--v2-s3);
   max-width: var(--v2-max);
-  margin: 0 auto 30vh;   /* o curso de scroll da travessia, ver abaixo */
+  margin: 0 auto var(--v2-s3);   /* mesmo vao das colunas: a pilha e uma grade so */
   padding-inline: var(--v2-gutter);
   will-change: transform;
 }
@@ -477,9 +477,9 @@
 /* Moldura clara com a midia embutida, medida na ref: 658x526 com 10px de
    respiro em volta da foto e 20px embaixo, para a legenda. Card opaco de
    proposito: e a opacidade dele que cobre a linha anterior. */
-/* A ultima linha nao e coberta por ninguem: a margem dela seria so um vao de
-   44vh entre os casos e as marcas. */
-.v2-linha-casos:last-child { margin-bottom: var(--v2-s6); }
+/* A ultima linha nao e coberta por ninguem, e o curso agora vive no padding da
+   .v2-pilha: margem aqui so somaria vao morto depois da pilha pronta. */
+.v2-linha-casos:last-child { margin-bottom: 0; }
 
 /* A MOLDURA, medida na ref da viper (29/08, pedido do Gabriel).
 
@@ -989,8 +989,49 @@
   margin-right: var(--v2-s2);
 }
 
-/* A pilha perde o padding proprio: quem espaca agora e a dobra. */
-.v2-pilha { padding: 0 0 var(--v2-s6); }
+/* O CURSO DA PILHA mora aqui, e nao no vao entre as linhas. Medido em 1440x900
+   (29/08): a linha 0 so continua grudada enquanto a .v2-pilha ainda se estende
+   abaixo dela, entao e o padding daqui que paga o tempo de grude. O vao entre
+   as linhas faz o contrario — atrasa a chegada da linha 1 e gasta o orcamento
+   da linha 0 antes dela chegar.
+
+   Era `margin-bottom: 30vh` na linha e `var(--v2-s6)` aqui: a linha 0 fugia
+   para top=-33 enquanto a linha 1 ainda estava em 125, sobrepondo 52px (10% do
+   card) em 1 quadro de 220. Na viper, que e a ref, a linha 0 fica em top=70
+   com a linha 1 chegando em 82 — lombada de 12px.
+
+   A metrica que decide e a LOMBADA NO INSTANTE EM QUE A LINHA 0 LARGA O GRUDE.
+   Pequena = a linha 1 subiu e cobriu, que e o gesto. Grande = a linha 0 fugiu
+   para cima, que e o bug. Varredura em 1440x900, com o vao morto que sobra
+   depois da pilha como custo:
+
+     curso     lombada no solte    vao morto
+     0         306px               0
+     20vh      173px               180px
+     30vh       99px               270px
+     40vh       19px               360px
+     50vh       18px               450px
+     60vh       29px               540px
+
+   Satura em 40vh. Acima disso so paga vao morto: 60vh custa 180px a mais de
+   scroll parado e nao fecha a lombada melhor. A lombada minima e 16px em todos
+   (contra 2px da viper, que chega la sem curso nenhum porque o fundo do
+   container dela E o fundo da ultima linha). */
+.v2-pilha { padding: 0 0 40vh; }
+
+/* Os dois resets do curso precisam vir DEPOIS da regra acima: mesma
+   especificidade, entao quem ganha e a ordem no arquivo. Medido em 29/08 com
+   eles la em cima, onde eram letra morta — o celular ficava com 338px e o
+   reduced-motion com 360px de vao morto embaixo da pilha.
+
+   Nos dois casos a pilha vira `position: relative` e nao ha grude nenhum para
+   pagar: o curso viraria so um buraco antes da proxima dobra. */
+@media (max-width: 860px) {
+  .v2-pilha { padding-bottom: var(--v2-s6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v2-pilha { padding-bottom: var(--v2-s6); }
+}
 .v2-linha-casos { padding-inline: 0; }
 
 /* ---- numeros ---- */
