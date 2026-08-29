@@ -84,7 +84,6 @@
   /* Pagina de caso. A escala cai: leitura longa em coluna de 640px nao
      aguenta o hero da home. */
   --v2-t-caso-hero:      2.5rem;   /* 40 */
-  --v2-t-caso-manifesto: 1.5rem;   /* 24 */
   --v2-t-caso-ato:       1.5rem;   /* 24 */
   /* A virada de movimento. Maior que o titulo de ato e menor que o hero: ela e
      a unica tipografia da pagina que nao divide a dobra com nada. */
@@ -167,7 +166,6 @@
     --v2-t-dado: 6rem;          /* 96 */
     --v2-t-lead: 1.5rem;        /* 24 */
     --v2-t-caso-hero: 4.5rem;   /* 72 */
-    --v2-t-caso-manifesto: 2rem;/* 32 */
     --v2-t-caso-ato: 2.5rem;    /* 40 */
     --v2-t-movimento: 3.5rem;   /* 56 */
     --v2-t-agua: 12.5rem;       /* 200 */

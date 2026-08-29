@@ -115,7 +115,7 @@
 .v2-caso-hero-premissa {
   margin: var(--v2-s3) 0 0;
   max-width: 30ch;
-  font-size: var(--v2-t-caso-manifesto);
+  font-size: var(--v2-t-lead);
   font-weight: 500;
   line-height: 1.14;
   letter-spacing: -.02em;
@@ -414,7 +414,7 @@
    de overflow horizontal para caçar depois. Quem usa isto tem que sair do
    wrap no JSX; ver `Abertura` em Case.jsx. */
 .v2-fig.is-sangra {
-  margin-block: var(--v2-s6) 0;
+  margin-block: var(--v2-s6);
   margin-inline: 0;
   padding: 0;
   background: none;
@@ -576,7 +576,7 @@
 .v2-citacao-q {
   margin: 0;
   max-width: 24ch;
-  font-size: var(--v2-t-caso-manifesto);
+  font-size: var(--v2-t-lead);
   font-weight: 500;
   line-height: 1.18;
   letter-spacing: -.02em;
@@ -1213,7 +1213,7 @@
 .v2-aprendi-p {
   margin: 0;
   max-width: var(--v2-medida-caso);
-  font-size: var(--v2-t-caso-manifesto);
+  font-size: var(--v2-t-lead);
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: -.02em;
@@ -1246,7 +1246,7 @@
 
 .v2-proximo-t {
   display: block;
-  font-size: var(--v2-t-manifesto);
+  font-size: var(--v2-t-movimento);
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -.025em;
