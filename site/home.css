@@ -702,67 +702,142 @@
   .v2-linha-casos { position: relative; top: auto !important; }
 }
 
-/* ---------------- 7. peças, em fita ---------------- */
+/* ---------------- 7. peças, em grade ---------------- */
 
-/* Faixa baixa que corre sozinha. Sem titulo, sem card, sem etiqueta: a
-   hierarquia e que precisa dizer que isto e material extra. */
-.v2-fita-secao {
+/* Era uma fita que corria sozinha: dezoito projetos passando como imagem sem
+   nome, sem o que era, sem para onde ir. O trabalho desta dobra e ser VARRIDA,
+   e varredura pede grade parada, nao faixa em movimento.
+
+   A hierarquia continua sendo a regra: os casos provam profundidade, estas
+   provam alcance. Por isso o card daqui e menor, tem tinta mais baixa e
+   nenhum motion proprio. */
+.v2-pecas-secao {
   display: grid;
-  gap: var(--v2-s4);
+  gap: var(--v2-s5);
   padding: var(--v2-s6) 0;
-  overflow: hidden;
 }
 
-.v2-fita { overflow: hidden; }
-
-.v2-fita-trilho {
-  display: flex;
-  width: max-content;
-  gap: var(--v2-s2);
-  animation: v2-fita-anda 52s linear infinite;
-}
-
-.v2-fita:hover .v2-fita-trilho { animation-play-state: paused; }
-
-.v2-fita-grupo { display: flex; gap: var(--v2-s2); }
-
-.v2-fita-item {
-  display: block;
-  width: 280px;
-  height: 176px;
-  border-radius: var(--v2-r-card);
-  overflow: hidden;
-  background: var(--v2-card);
-}
-
-.v2-fita-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* -50% e exatamente uma copia do grupo: o loop fecha sem costura. */
-@keyframes v2-fita-anda {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-
-/* As pecas sem imagem nenhuma. Uma linha de texto, no tom do label: some da
-   hierarquia e ainda deixa o nome na pagina. */
-.v2-fita-resto {
+.v2-pecas-grade {
+  list-style: none;
   margin: 0 auto;
-  max-width: var(--v2-medida);
   padding-inline: var(--v2-gutter);
-  font-size: var(--v2-t-label);
-  line-height: 1.6;
+  max-width: var(--v2-max);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+.v2-peca {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--v2-cartao-filete);
+  border-radius: var(--v2-cartao-raio);
+  background: var(--v2-card);
+  padding: 10px 10px 16px;
+  overflow: hidden;
+}
+
+/* Proporcao fixa para a grade nao serrilhar: as capas vem de fontes
+   diferentes e nenhuma tem o mesmo recorte. */
+.v2-peca-midia {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--v2-cartao-raio-in);
+  overflow: hidden;
+  background: var(--v2-superficie);
+  display: grid;
+  place-items: center;
+}
+
+.v2-peca-midia img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* As onze sem arte. Card do mesmo tamanho, para a grade nao abrir buraco, e
+   sem mockup falso: so o descritor em caixa alta, no tom de label. Assim que
+   a foto entrar em `cover`, isto vira imagem sem tocar em codigo. */
+.v2-peca-semfoto {
+  padding: var(--v2-s3);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  line-height: 1.5;
+  text-align: center;
   color: var(--v2-muted);
 }
 
-.v2-fita-resto-r {
-  text-transform: uppercase;
-  letter-spacing: .12em;
+.v2-peca-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  padding: 14px 6px 0;
+}
+
+.v2-peca-tit {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 600;
+  line-height: 1.2;
   color: var(--v2-ink);
 }
 
+/* Tres linhas: as descricoes variam de seis a quarenta palavras, e sem teto a
+   grade desalinha inteira por causa de um card. */
+.v2-peca-desc {
+  margin: 0;
+  font-size: var(--v2-t-cromo);
+  line-height: 1.5;
+  color: var(--v2-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* `margin-top: auto` prende o pe no fundo do card, entao a linha do destino
+   fica na mesma altura em todos, independente do tamanho da descricao. */
+.v2-peca-pe {
+  margin: auto 0 0;
+  padding-top: var(--v2-s2);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v2-s2);
+}
+
+.v2-peca-dom {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+}
+
+/* Pastilha secundaria, e nao botao: cinco pecas nao tem destino nenhum, e um
+   CTA grande viraria buraco nelas. O card nao e clicavel por inteiro de
+   proposito — o alvo e o link, que e a unica parte que promete alguma coisa. */
+.v2-peca-link {
+  flex: none;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--v2-ink);
+  padding-bottom: 1px;
+  transition: opacity .2s ease;
+}
+
+.v2-peca-link:hover { opacity: .6; }
+
+@media (max-width: 1100px) {
+  .v2-pecas-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .v2-pecas-grade { grid-template-columns: 1fr; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .v2-fita-trilho { animation: none; }
-  .v2-fita { overflow-x: auto; }
+  .v2-peca-link { transition: none; }
 }
 
 /* ---------------- 8. onde estive: a coluna presa ---------------- */
@@ -891,10 +966,6 @@
 
 /* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
 
-@media (max-width: 1100px) {
-  .v2-fita-item { width: 240px; height: 152px; }
-}
-
 @media (max-width: 860px) {
   .v2-tra-item { padding: var(--v2-s4) 0; }
   .v2-tra-marca { min-height: 96px; }
@@ -985,7 +1056,7 @@
 }
 
 /* Sem movimento o laco para e a fileira vira rolagem de dedo/trackpad, que e
-   a mesma saida que a .v2-fita das pecas usa. */
+   a mesma saida que a grade das pecas usa. */
 @media (prefers-reduced-motion: reduce) {
   .v2-prova-quadro { transition: none; }
   .v2-prova-ferr-trilho { animation: none; }

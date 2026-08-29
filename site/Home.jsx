@@ -35,23 +35,42 @@ import { ILUSTRACOES } from "./Ilustracoes.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Quebra, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
-  casos, pieceProjects, pieceLink,
+  casos, pieceProjects, pieceCover, pieceDestino,
 } from "./content.js";
 import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
 import { FERRAMENTAS } from "./ferramentas.js";
 
-/* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
+/* A quebra entre casos e números, em largura total, e o único momento mudo da
+   página: `04 quebra de imagem pura, sem texto` na etapa B de
+   docs/ANALISE-REFS.md.
 
-   Pedido do Gabriel em 28/08: capa de banco, moderna, cor chamativa, no lugar
-   do print de sistema que estava aqui (a busca da V2 do PCYES, em
-   volume/assets/projetos/pcyes/busca-v2.webp, se for para voltar).
+   Também é o terceiro tempo escuro da página, e o do meio. O hero é escuro, o
+   rodapé é escuro, e tudo entre os dois é papel branco — então preto sangrando
+   74vh aqui não é decoração, é a respiração da dobradiça: sai de "olha o
+   trabalho" e entra em "olha a escala".
 
-   StockSnap, CC0, uso comercial liberado e sem atribuição, via a API da
-   Openverse (Unsplash e Pexels continuam atrás de bot-wall). O original só
-   serve 960px de largura, então isto é upscale para 1600: passa porque a
-   imagem é abstrata e desfocada, e não tem detalhe para perder. Se ela ficar,
-   vale procurar a mesma coisa em resolução nativa. */
-const QUEBRA = "/volume/assets/stock/capa-quebra.webp";
+   O stock vermelho abstrato que morava aqui (capa-quebra.webp, o "temporário
+   para provar a tese em print" da etapa C) saiu. No lugar entra o motivo do
+   próprio site: o aviãozinho de papel vermelho que o `CampoDeVoo` já faz
+   atravessar o corpo claro de todas as páginas por baixo do conteúdo. Ali ele é
+   subliminar — pequeno, atrás, translúcido. Aqui ele vira objeto uma vez só, em
+   largura total. É o pagamento do motivo, não a repetição dele.
+
+   Detalhes que não são acidente, e que uma troca de arte não pode perder:
+     - o bico aponta para a DIREITA, igual ao AVIAO_D de motion.js;
+     - a luz vem de cima à direita e o avião voa PARA ela, um scroll antes de
+       "O que já saiu da mesa";
+     - a poeira é fria e suspensa. Faísca laranja lê como foguete, que é
+       lançamento e agressão; o registro aqui é deriva e vento.
+
+   Formato: 2400x1120, que é 2.14:1. Não é 2.4:1 por engano — 2.4 é a JANELA
+   (.v2-quebra, 74vh), e .v2-quebra-in tem 112% de altura para o parallax
+   deslizar. 2.40/1.12 = 2.14, então a folga vertical é exatamente o curso do
+   `useParallax(12)`. Cortar em 2.4 faria a imagem faltar no fim do curso.
+
+   O vermelho do original saía em (219,65,62); foi puxado para o --v2-accent
+   (#E4231B) só nos pixels vermelhos, com o fundo azul-preto intocado. */
+const QUEBRA = "/volume/assets/stock/capa-quebra-aviao.webp";
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -759,58 +778,80 @@ function Assinatura({ children }) {
 
 /* ----------------------------------------------------------------- 10. peças */
 
-/* Peça extra num portfólio de UX não pode ter tratamento de caso. Uma fita que
-   corre sozinha, altura baixa. As sem imagem viram uma linha de texto. */
-function Fita() {
-  const lista = pieceProjects();
-  const capa = (p) => p.cover || (p.shots && p.shots[0]);
-  const comFoto = lista.filter(capa);
-  const semFoto = lista.filter((p) => !capa(p));
-  if (!comFoto.length) return null;
+/* Peça extra num portfólio de UX não pode ter tratamento de caso: os casos
+   provam PROFUNDIDADE, e estas provam ALCANCE. Se as duas competirem, some a
+   diferença entre elas — por isso o card daqui é menor, mais quieto e sem
+   nenhum motion próprio.
 
-  const item = (p, dobra) => {
-    const href = pieceLink(p);
-    const Tag = href && !dobra ? "a" : "span";
-    return (
-      <Tag
-        key={(dobra ? "b" : "") + p.id}
-        className="v2-fita-item"
-        href={!dobra && href ? href : undefined}
-        target={!dobra && href ? "_blank" : undefined}
-        rel={!dobra && href ? "noopener noreferrer" : undefined}
-        aria-hidden={dobra ? "true" : undefined}
-        tabIndex={dobra ? -1 : undefined}
-        /* o nome acessível já vinha do alt da imagem, mas o link abre em aba
-           nova e isso não era anunciado em lugar nenhum */
-        aria-label={dobra || !href ? undefined : `${p.title}, abre em nova aba`}
-      >
-        <img src={capa(p)} alt={dobra ? "" : p.title} loading="lazy" decoding="async" />
-      </Tag>
-    );
-  };
+   Era uma fita que corria sozinha, e ela não explicava nada: dezoito projetos
+   passavam como imagem sem nome, sem o que era, sem para onde ir. Virou grade
+   porque o trabalho desta dobra é ser VARRIDA — ninguém lê dezoito descrições,
+   mas todo mundo passa o olho em dezoito capas.
+
+   Sobre manter: a foto sai de `pieceCover` e o destino de `pieceDestino`, os
+   dois em volume/data.jsx. É de propósito que o card não saiba montar nenhum
+   dos dois sozinho — quando o painel de detalhe entrar, ele lê das mesmas duas
+   funções e a foto é literalmente a mesma. Trocar `cover` no projeto troca nos
+   dois lugares.
+
+   Onze das dezoito não têm arte nenhuma em disco (medido em 29/08). Elas não
+   somem nem viram lista de texto: ficam como card de tipografia, com o mesmo
+   tamanho das outras, para a grade não abrir buraco. Assim que o mockup
+   entrar em `cover`, o card vira foto sem mexer em código. */
+function Pecas() {
+  const lista = pieceProjects();
+  if (!lista.length) return null;
+
+  /* Com foto primeiro. A ordem editorial do PIECE_ORDER continua valendo
+     DENTRO de cada grupo — o que ela não previa é que a maioria ainda não tem
+     arte, e abrir a dobra com quatro cards de tipografia entrega a seção pelo
+     que falta nela. Conforme as fotos entrarem, isto volta sozinho para a
+     ordem dele. Para desligar, apague o sort. */
+  const ordenada = lista.slice().sort((a, b) => !!pieceCover(b) - !!pieceCover(a));
 
   return (
-    <section className="v2-fita-secao" id="pecas" aria-label="Outras peças">
+    <section className="v2-pecas-secao" id="pecas" aria-label="Outras peças">
       <div className="v2-wrap"><Cromo n="07" nome="Fora da estante" carimbo="©26" /></div>
-      <div className="v2-fita">
-        <div className="v2-fita-trilho">
-          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, false))}</div>
-          {/* a segunda cópia existe só para o loop não ter costura */}
-          <div className="v2-fita-grupo">{comFoto.map((p) => item(p, true))}</div>
-        </div>
-      </div>
-
-      {semFoto.length ? (
-        <p className="v2-fita-resto">
-          <span className="v2-fita-resto-r">Também passaram por aqui</span>
-          {semFoto.map((p, i) => (
-            <span key={p.id}>
-              {i ? <span aria-hidden="true"> · </span> : " "}
-              {p.title}
-            </span>
-          ))}
-        </p>
-      ) : null}
+      <ul className="v2-pecas-grade">
+        {ordenada.map((p) => {
+          const foto = pieceCover(p);
+          const destino = pieceDestino(p);
+          return (
+            <li className="v2-peca" key={p.id}>
+              <div className="v2-peca-midia">
+                {foto ? (
+                  <img src={foto} alt={p.title} loading="lazy" decoding="async" draggable="false" />
+                ) : (
+                  /* aria-hidden: o domínio já é lido no pé do card, e repetir
+                     aqui só faz o leitor de tela ouvir duas vezes */
+                  <span className="v2-peca-semfoto" aria-hidden="true">{p.domain || p.title}</span>
+                )}
+              </div>
+              <div className="v2-peca-corpo">
+                <h3 className="v2-peca-tit">{p.title}</h3>
+                {p.desc ? <p className="v2-peca-desc">{p.desc}</p> : null}
+                <p className="v2-peca-pe">
+                  <span className="v2-peca-dom">{p.domain}</span>
+                  {destino ? (
+                    <a
+                      className="v2-peca-link"
+                      href={destino.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      /* o nome do projeto entra no rótulo acessível porque
+                         "Ver no ar" sozinho se repete dezoito vezes na lista
+                         de links do leitor de tela */
+                      aria-label={`${destino.rotulo}: ${p.title}, abre em nova aba`}
+                    >
+                      {destino.rotulo}
+                    </a>
+                  ) : null}
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }
@@ -833,16 +874,14 @@ export default function Home({ ir }) {
         <Declaracao />
         <Marquee />
         <Trabalho ir={ir} />
-        {/* Era fumaca de banco: 666px de video que nao dizia nada sobre o
-            trabalho, no meio de um portfolio de UX. Agora e tela real em
-            largura total, sem moldura de device, que e o tratamento que
-            docs/ANALISE-REFS.md prescreve para print de sistema. */}
+        {/* Muda de proposito, e escura de proposito. O porque da arte, do
+            formato 2.14:1 e da cor esta na definicao de QUEBRA, no topo. */}
         <Quebra src={QUEBRA} alt="" aria-hidden="true" />
         <Numeros />
         <Processo ir={ir} />
         <OndeEstive ir={ir} />
         <Sobre />
-        <Fita />
+        <Pecas />
       </CampoDeVoo>
     </>
   );

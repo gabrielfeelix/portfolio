@@ -1313,6 +1313,23 @@ const PROJECTS = [
 /* peça só aparece no índice quando tem para onde levar */
 function pieceLink(p) { return (p.links && (p.links.vercel || p.links.play || p.links.figma)) || null; }
 
+/* A FOTO da peca, em um lugar so. A grade da home e o painel de detalhe leem
+   daqui: trocar `cover` no projeto troca a imagem nos dois, que foi o pedido
+   do Gabriel em 29/08 ("uma unica foto, e se abrir algo usa a mesma"). */
+function pieceCover(p) { return p.cover || (p.shots && p.shots[0]) || null; }
+
+/* Para onde a peca aponta, e COMO chamar isso. Os tres destinos prometem
+   coisas diferentes e um rotulo unico mentiria em dois deles: `vercel` e
+   produto no ar, `play` e loja de app, `figma` e arquivo de design. Peca sem
+   destino devolve null e o card sai sem botao. */
+function pieceDestino(p) {
+  const l = p.links || {};
+  if (l.vercel) return { href: l.vercel, rotulo: "Ver no ar" };
+  if (l.play)   return { href: l.play,   rotulo: "Play Store" };
+  if (l.figma)  return { href: l.figma,  rotulo: "Ver no Figma" };
+  return null;
+}
+
 /* tag shown on a project cover: chapters carry their CAP number */
 function projTag(p) {
   const piece = LANG === "en" ? "PIECE" : "PEÇA";   // LANG: i18n.jsx, resolved at call time
@@ -1611,4 +1628,4 @@ function CompanyLogo({ company, kind = "qsc", dark = false }) {
   return <span className={`${kind}-logo-mark`}>{company.name}</span>;
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, pieceCover, pieceDestino, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
