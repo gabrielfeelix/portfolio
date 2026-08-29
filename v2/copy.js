@@ -117,6 +117,7 @@ export const CAPAS_CHEIAS = {
 export const CAPAS_CASO = {
   pcyes: "/volume/assets/projetos/pcyes/capa-caso.webp",
   odex: "/volume/assets/projetos/odex/capa-caso.webp",
+  "oderco-revenda": "/volume/assets/projetos/oderco-revenda/capa-caso.webp",
 };
 
 /* As marcas das empresas, em cor, para a dobra 05.
