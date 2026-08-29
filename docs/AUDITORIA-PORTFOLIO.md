@@ -47,7 +47,7 @@ funcional na página feita para o recrutador com pressa.
 | Home põe o trabalho na frente | `Capa.jsx:450-462` | Ordem: hero → diferencial → **capítulos** → outras peças → quem sou. A maioria erra pondo bio ou social acima dos cases. |
 | Índice já vende resultado | `Capa.jsx:225-253` | `ChapterBlock` mostra domínio, título, contexto e **Resultado** antes do clique. Decisão informada, não thumbnail. |
 | Dado desenhado, não printado | `painel`, `funil`, `gesto` | Print de dashboard é foto de ferramenta. Número desenhado é argumento. E cada painel carrega `fonte` + `nota` do que a amostra sustenta e do que não sustenta. |
-| Vocabulário do Locar Mais | `data.jsx:561-572` | Cinco status que fixaram linguagem e acabaram com ambiguidade em conversa de time. Trabalho de designer sênior. |
+| Vocabulário do Locarmais | `data.jsx:561-572` | Cinco status que fixaram linguagem e acabaram com ambiguidade em conversa de time. Trabalho de designer sênior. |
 | "Forçar conciliação exige motivo" | `data.jsx:541` | Exceção do processo virou dado estruturado. Melhor decisão de produto do volume. |
 | Honestidade sobre limite de evidência | `data.jsx:574` | "Não tenho medição formal de antes e depois". Demarcar o que não se sabe aumenta confiança. |
 | Sistema de espaço e tipo | `colors_and_type.css:99-127` | `--ma-1..7` em progressão quase Fibonacci, tipo fluido em `clamp`. Sistema, não escolha por tela. |
@@ -69,18 +69,18 @@ tempo? O volume em 2 minutos"*. É a página do recrutador apressado.
 | Capítulo | `fact` atual | Problema |
 |---|---|---|
 | PCYES | "Caminho de compra encurtado e checkout reconstruído a partir de gravação de sessão" | Descreve o que foi feito, não o que mudou. Particípio, não outcome. |
-| Locar Mais | "Substituiu ferramenta externa e eliminou planilhas paralelas" | **Este está certo.** É o modelo. |
+| Locarmais | "Substituiu ferramenta externa e eliminou planilhas paralelas" | **Este está certo.** É o modelo. |
 | Odex | "No ar a tempo da feira" | Prazo cumprido é logística, não efeito de design. |
 | Oderço | "Reduziu de três para dois os sistemas do comercial" | Bom, mas apresentado como nota de rodapé. |
 
-O padrão do Locar Mais é o correto e já está dominado: três mudanças de
+O padrão do Locarmais é o correto e já está dominado: três mudanças de
 comportamento verificáveis no lugar do número ausente. **Não inventar
 número lá.** O PCYES não pode ter número (publica em outubro/2026), mas
 precisa desse enquadramento em vez do particípio.
 
 ### 3. Distribuição de peso invertida
 
-PCYES **16 beats** · Locar Mais 6 · Odex 5 · Oderço 5.
+PCYES **16 beats** · Locarmais 6 · Odex 5 · Oderço 5.
 
 O case central é o primeiro **e** o mais longo. Quem lê na ordem gasta a
 atenção inteira no Cap. 01 e chega no Cap. 03 exausto, e o Cap. 03 é o
@@ -175,7 +175,7 @@ competir com a principal.
 9. Varrer os `[assim]` restantes.
 
 **Deixar quieto**
-- Não inventar número para o Locar Mais. É o modelo, não o problema.
+- Não inventar número para o Locarmais. É o modelo, não o problema.
 - Não cortar beats do PCYES para "equilibrar". O problema é falta de
   atalho, não excesso de argumento.
 

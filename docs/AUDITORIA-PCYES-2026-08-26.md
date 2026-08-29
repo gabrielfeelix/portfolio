@@ -241,7 +241,7 @@ fecha no Esc; em EN a lupa lê "+ ZOOM" e são os mesmos 21 botões.
 
 Os outros quatro capítulos herdaram a mesma régua: `odex`,
 `oderco-revenda`, `portfolio` e `locarmais-conciliacao` passaram a
-mostrar a `solucao` a 1033px, com zoom. No Locar Mais os prints em
+mostrar a `solucao` a 1033px, com zoom. No Locarmais os prints em
 retrato usam `meia` e ficam a 485px de largura por 647 de altura, que é o
 tamanho certo para um 3:4.
 

@@ -633,7 +633,7 @@ const CHAPTERS = [
   },
   {
     id: "locarmais-conciliacao", num: "02", cap: "CAP. 02", domain: "SAAS", cat: "saas",
-    project: "Locar Mais", descriptor: "Módulo de conciliação financeira", title: "Locar Mais",
+    project: "Locarmais", descriptor: "Módulo de conciliação financeira", title: "Locarmais",
     sfx: "チャリン",                    // charin: moeda (financeiro)
     capa: { logo: "/volume/assets/marcas/branco/locarmais.png", bg: "#3C1354", accent: "#F43180" },   /* capa de marca: o print não fecha em 4:5 */
     links: { vercel: null, figma: null },
@@ -1194,7 +1194,7 @@ const PROJECTS = [
     desc: "Redesign do e-commerce", cover: "/volume/assets/projetos/pcyes/cover.webp",
     links: { vercel: "https://pcyes-v3-codigo-fonte.vercel.app/", figma: "https://www.figma.com/design/A0Zg3I15KcYI82zZocmyjD/PCYES-V2--DS-?node-id=0-1&t=dk2knegACkkGkGEI-1" } },
   { id: "locarmais-conciliacao", shots: ["/volume/assets/projetos/locarmais/s1-conciliacao.webp", "/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp", "/volume/assets/projetos/locarmais/s3-detalhe-conciliacao.webp", "/volume/assets/projetos/locarmais/s4-forcar-conciliacao.webp"],
-    title: "Locar Mais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
+    title: "Locarmais", cat: "saas", domain: "SaaS · Gestão", fav: true, chapterId: "locarmais-conciliacao",
     desc: "Módulo de conciliação financeira", links: { vercel: null, figma: null } },
   { id: "odex", shots: ["/volume/assets/projetos/odex/s1.webp", "/volume/assets/projetos/odex/s2.webp"],
     title: "ODEX", cat: "desktop", domain: "Desktop e Web", fav: true, chapterId: "odex",

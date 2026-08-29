@@ -59,7 +59,7 @@ function Dots({ index, total }) {
 }
 
 /* Um capítulo: a arte, e a barra por baixo dela.
-   `chap` pode não ter arte (Locar Mais até os prints entrarem): nesse caso
+   `chap` pode não ter arte (Locarmais até os prints entrarem): nesse caso
    a chapa do MangaPlate assume o quadro, e o vazio fica editorial em vez
    de ler como imagem quebrada.
 

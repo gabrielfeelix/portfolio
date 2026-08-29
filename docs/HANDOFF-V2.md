@@ -88,7 +88,7 @@ a tinta cai, abaixo do header:
 | PCYES | 6,79:1 | 5,74:1 | 14,77:1 |
 | ODEX | 4,89:1 | 4,95:1 | 5,41:1 |
 | Oderço | 6,54:1 | 4,11:1 | 6,22:1 |
-| Locar Mais | 8,90:1 | 4,77:1 | 5,34:1 |
+| Locarmais | 8,90:1 | 4,77:1 | 5,34:1 |
 
 O 4,11 do Oderço são 14 pixels numa coluna só, dentro da premissa, que é de
 24px e conta como texto grande: o limite ali é 3:1.

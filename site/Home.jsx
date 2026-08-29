@@ -314,7 +314,7 @@ const PILHA_PASSO = 40;   /* a lombada de cada linha coberta, medida na ref */
    pedido dele: ela é idioma de mangá e aqui brigaria com a interface do print.
 
    `capa.bg` vem de volume/data.jsx, capítulo a capítulo, e é a cor da marca:
-   PCYES #B00000, Locar Mais #3C1354, ODEX #0D1D52, Oderço #00308F. É o único
+   PCYES #B00000, Locarmais #3C1354, ODEX #0D1D52, Oderço #00308F. É o único
    lugar da home onde cor de produto aparece, que é a mesma regra do volume. */
 function Cartao({ caso, i, ir }) {
   const cap = caso.chap;

@@ -122,13 +122,13 @@ E a lição mais cara: chegar em uma conversa difícil com gravação de sessão
 
 ---
 
-# CAP. 02 — Locar Mais
+# CAP. 02 — Locarmais
 
 ## Ficha
 
 | Campo | Conteúdo |
 |---|---|
-| Título | Locar Mais |
+| Título | Locarmais |
 | Subtítulo | Módulo de conciliação financeira |
 | Categoria | SaaS |
 | Papel | UX Designer, responsável pelo módulo |

@@ -57,7 +57,7 @@ A mídia é 16/10, e não 4/3: print de produto é largo, e num box de 4/3 o `co
 cortava o texto da tela no meio da palavra.
 
 A escala do coberto cai só para 0.97, porque quem separa as camadas é a
-lombada, não o encolhimento. Quatro casos dão duas linhas. Locar Mais, que não
+lombada, não o encolhimento. Quatro casos dão duas linhas. Locarmais, que não
 tem foto de capa, recebe a capa de marca, mesma solução da V1.
 
 **H4. O manifesto vira uma declaração.** Uma frase só, em `--v2-t-manifesto`,
