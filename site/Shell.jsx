@@ -22,8 +22,8 @@ import { CONTATO, AUTOR } from "./content.js";
 const LINKS = [
   { id: "casos",    rot: "Casos",    href: "/#casos",     rota: true },
   { id: "processo", rot: "Processo", href: "/processo",  rota: true },
-  { id: "blog",     rot: "Blog",     href: "/blog",      rota: true },
   { id: "sobre",    rot: "Sobre",    href: "/sobre",     rota: true },
+  { id: "blog",     rot: "Blog",     href: "/blog",      rota: true },
 ];
 
 /* O ícone do pill. Duas cópias empilhadas dentro de uma janela de 13px: no
