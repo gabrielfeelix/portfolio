@@ -24,7 +24,7 @@
  * este arquivo decide é layout, ritmo e hierarquia. */
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRise, useSubir, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import { chapterById, proximoCaso } from "./content.js";
@@ -225,15 +225,35 @@ function Movimento({ n, t }) {
 function CasoHero({ cap }) {
   const linha = useMaskLine();
   const capa = useCobertura();
+  const quieto = useReducedMotion();
   const links = cap.links || {};
   /* a mesma arte que abre o caso na home. Ver CAPAS_CHEIAS em v2/copy.js. */
   const fundo = CAPAS_CHEIAS[cap.id];
+
+  /* Parallax da capa.
+
+     Sai da rolagem da PÁGINA e não do progresso da seção. A seção é sticky, e
+     com sticky a caixa dela para de andar em relação à janela: o `useScroll`
+     com `target` congela e o efeito vira deslocamento morto. Está anotado
+     desde a primeira versão deste hero, e é por isso que não havia parallax
+     aqui.
+
+     A arte anda 80px enquanto a primeira tela rola. A moldura da imagem é
+     160px mais alta que a caixa e começa 80px acima, então o movimento nunca
+     descobre a borda. */
+  const { scrollY } = useScroll();
+  const desloca = useTransform(scrollY, [0, 900], [0, 80]);
 
   return (
     <section className="v2-hero v2-caso-hero v2-grao v2-halo" data-escuro="1" ref={capa.ref}>
       {fundo ? (
         <div className="v2-caso-fundo" aria-hidden="true">
-          <img src={fundo} alt="" decoding="async" />
+          <motion.img
+            src={fundo}
+            alt=""
+            decoding="async"
+            style={quieto ? undefined : { y: desloca }}
+          />
           {/* o veu: sem ele o titulo branco cai em cima de uma foto clara e
               o contraste vira sorte. Escuro embaixo e a esquerda, que e onde
               o texto mora, e quase transparente no alto a direita. */}

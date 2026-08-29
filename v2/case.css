@@ -21,12 +21,21 @@
   z-index: 0;
   overflow: hidden;
 }
+/* A moldura da arte e maior que a caixa nos dois lados: e essa sobra que o
+   parallax gasta. Sem ela, os 80px de deslocamento descobririam uma faixa
+   vazia no pe da dobra. */
 .v2-caso-fundo img {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -80px;
+  bottom: -80px;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 160px);
   object-fit: cover;
   object-position: center;
   display: block;
+  will-change: transform;
 }
 /* O veu. Duas camadas somadas: uma diagonal, que escurece o canto de baixo a
    esquerda, onde o titulo mora, e uma chapa fraca no geral, que segura o texto
@@ -43,6 +52,33 @@
       rgba(11, 11, 12, .30) 64%,
       rgba(11, 11, 12, .14) 100%),
     linear-gradient(rgba(11, 11, 12, .12), rgba(11, 11, 12, .12));
+}
+
+/* No celular a capa deixa de ser fundo e vira faixa.
+
+   Medido em 390x844: com `cover` numa caixa de razao 0,46 contra uma arte de
+   1,45, sobravam 32% da arte, e o que aparecia era um pedaco ampliado do meio
+   do print, sem cena e sem aparelho inteiro. Como faixa no alto, a mesma arte
+   mostra cerca de 70%, e o texto ganha chao preto de verdade embaixo.
+
+   O parallax sai junto: a faixa nao tem a sobra de 160px que o movimento
+   gasta, entao ele descobriria o vazio. O `!important` e para vencer o
+   transform que o motion escreve no style do elemento. */
+@media (max-width: 760px) {
+  .v2-caso-fundo img {
+    top: 0;
+    bottom: auto;
+    height: 46svh;
+    transform: none !important;
+  }
+  .v2-caso-fundo-veu {
+    background: linear-gradient(
+      to bottom,
+      rgba(11, 11, 12, .32) 0%,
+      rgba(11, 11, 12, .48) 26%,
+      rgba(11, 11, 12, .92) 44%,
+      var(--v2-ink) 54%);
+  }
 }
 
 /* Sem a coluna de midia, o texto do hero para de dividir a dobra com um painel
