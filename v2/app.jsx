@@ -10,15 +10,20 @@ import { Nav, Rodape } from "./Shell.jsx";
 import { useScrollSuave } from "./motion.js";
 import Home from "./Home.jsx";
 import Caso from "./Case.jsx";
+import Processo from "./Processo.jsx";
+import Sobre from "./Sobre.jsx";
 
 /* --- roteamento ---
    /v2            → home
+   /v2/processo   → o método
    /v2/case/<id>  → caso
    Path real, sem hash: o dev server devolve /v2/index.html para qualquer path
    sob /v2, então a URL é compartilhável e o back/forward funciona. */
 function rotaAtual() {
   const p = window.location.pathname.replace(/^\/v2\/?/, "").replace(/\/+$/, "");
   if (!p) return { tipo: "home" };
+  if (p === "processo") return { tipo: "processo" };
+  if (p === "sobre") return { tipo: "sobre" };
   const m = p.match(/^case\/([\w-]+)$/);
   if (m) return { tipo: "caso", id: m[1] };
   return { tipo: "404", path: p };
@@ -123,10 +128,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.title =
-      rota.tipo === "caso"
-        ? `${(chapterById(rota.id) || {}).title || rota.id} · Gabriel Felix Barbosa`
-        : "Gabriel Felix Barbosa · UX / Product Designer";
+    if (rota.tipo === "caso") {
+      document.title = `${(chapterById(rota.id) || {}).title || rota.id} · Gabriel Felix Barbosa`;
+    } else if (rota.tipo === "processo") {
+      document.title = "Processo · Gabriel Felix Barbosa";
+    } else if (rota.tipo === "sobre") {
+      document.title = "Sobre · Gabriel Felix Barbosa";
+    } else {
+      document.title = "Gabriel Felix Barbosa · UX / Product Designer";
+    }
   }, [rota]);
 
   if (erro) {
@@ -142,8 +152,9 @@ function App() {
       <div className="v2-shell">
         <Nav sobreEscuro={sobreEscuro} ir={ir} />
         <main>
-          {rota.tipo === "home"
-            ? <Home ir={ir} />
+          {rota.tipo === "home" ? <Home ir={ir} />
+            : rota.tipo === "processo" ? <Processo ir={ir} />
+            : rota.tipo === "sobre" ? <Sobre ir={ir} />
             : <Caso id={rota.id || rota.path} ir={ir} />}
         </main>
         <Rodape />

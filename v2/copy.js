@@ -161,3 +161,88 @@ export const LOGOS_COR = {
   locar: "/volume/assets/logos/locarmais.png",
   oderco: "/volume/assets/logos/oderco.png",
 };
+
+/* ================================================================== /sobre
+
+   A página /sobre é o Posfácio da V1 remontado na gramática da V2. Nenhuma
+   frase foi escrita aqui: cada bloco abaixo é cópia literal de
+   volume/Posfacio.jsx, com a origem anotada linha a linha, na mesma regra
+   que vale para HERO e MANIFESTO no topo deste arquivo.
+
+   Três cortes, e só três, todos por regra de copy já escrita:
+
+   1. o parágrafo "Esse portfólio é um mangá de propósito" ficou de fora: a
+      metáfora é da V1, e a V2 não é um mangá;
+   2. o meio de "Gosto de colocar uma tela clicável" entra cortado no ponto
+      final de "informação", igual ao MANIFESTO acima, porque o resto fala de
+      IA e a regra do Gabriel é não vender isso;
+   3. a lista de cursos some do parágrafo da virada, porque a dobra de
+      formação logo abaixo imprime os cinco certificados de CERTS. */
+
+/* volume/Posfacio.jsx · <p className="pos-hand"> */
+export const SOBRE_OI = "oi, eu sou o Gabriel.";
+
+/* v2/Home.jsx · a frase da dobra 06, que é onde a home apresenta a pessoa.
+   Repetida aqui de propósito: é a mesma posição na página, e a /sobre é a
+   versão longa da mesma dobra. */
+export const SOBRE_PREMISSA =
+  "Designer de produto em Maringá, que aprende o problema antes de abrir " +
+  "o Figma e implementa quando o prazo aperta.";
+
+/* volume/Posfacio.jsx · seção "Como eu trabalho". O primeiro parágrafo virou
+   lead do cabeçalho por ser o argumento de julgamento, que é o que
+   docs/DIAGNOSTICO-TEXTO-2026-08-27.md pede que a página defenda. */
+export const SOBRE_TRABALHO = {
+  lead:
+    "Gosto de colocar uma tela clicável na mão das pessoas cedo, porque " +
+    "opinião sobre imagem estática costuma ser gosto, e opinião sobre uma " +
+    "coisa que a pessoa tentou usar costuma ser informação.",
+  paras: [
+    "Depois disso é ajuste, e mais ajuste. A parte demorada do meu trabalho é essa, e é a parte que eu não abro mão.",
+    "Nunca consegui pensar design e código como duas coisas separadas. Quando o prazo aperta, eu mesmo implemento.",
+  ],
+};
+
+/* volume/data.jsx · CHAPTERS, pcyes: campo `fact`. É a frase mais forte do
+   portfólio inteiro e, até aqui, só existia enterrada no capítulo 1. Entra
+   com a origem visível, porque frase sem caso é slogan. */
+export const SOBRE_CITACAO = {
+  q: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada.",
+  f: "PCYES V2 · Grupo Oderço · 2026",
+};
+
+/* volume/Posfacio.jsx · seção "Como eu cheguei aqui" (bloco .pt-text). */
+export const SOBRE_VIRADA = [
+  "Eu estava no fim do curso de Direito na UEM quando a pandemia parou tudo. Para ocupar a cabeça, montei um e-commerce só para aprender a mexer.",
+  "Foi ali que a coisa virou. Não me peguei gostando só das telas: gostei da engenharia de fazer um sistema existir, de tirar algo do nada e botar de pé.",
+  "Larguei o Direito, me formei em Design Gráfico, fui atrás de curso de UX e tirei a certificação Scrum para andar no ritmo de time ágil. Comecei na TT&T, desenhei produto na Locarmais, e hoje toco o design de um time inteiro de marcas no Grupo Oderço.",
+];
+
+/* volume/Posfacio.jsx · seção "Fora da tela". O terceiro parágrafo cita dois
+   dos aplicativos que já estão em PROJECTS: "Deixei Aqui" e "Quanto Cobro".
+   O link do TikTok sai de CONTATO, não daqui. */
+export const SOBRE_FORA = [
+  "Corro, treino boxe há dois anos e jogo vôlei toda semana num time amador aqui em Maringá.",
+  { pre: "Leio mangá e manhwa numa quantidade difícil de justificar, e mantenho um canal sobre anime. Se quiser conferir o que eu ando assistindo, ", link: "tá aqui", pos: "." },
+  "Também construo aplicativo por hobby. Costumo fazer só os que resolvem algum problema meu: tem um que lembra onde eu estacionei o carro, e outro que ajuda freelancer a calcular quanto cobrar por hora.",
+];
+
+/* volume/Posfacio.jsx · seção "Para onde eu vou". É a única frase da página
+   endereçada a quem contrata, e por isso fecha. */
+export const SOBRE_ADIANTE =
+  "Quero trabalhar em produto maior, com gente que sabe mais que eu, e estar " +
+  "mais perto de onde as decisões são tomadas.";
+
+/* volume/Posfacio.jsx · <p className="pos-hand"> do fim. */
+export const SOBRE_OBRIGADO = "obrigado por ler até aqui.";
+
+/* As ferramentas.
+
+   Só entra ferramenta que já aparece escrita em volume/data.jsx, nos `skills`
+   das empresas ou no corpo dos capítulos: nenhuma foi acrescentada de
+   memória. Uma linha em mono, e não uma grade de ícones, porque grade de
+   ícone de ferramenta é o componente mais copiado de portfólio que existe e
+   não diz nada que a lista não diga. */
+export const SOBRE_FERRAMENTAS = [
+  "Figma", "FigJam", "Magento", "RD Station", "Microsoft Clarity", "GA4", "Trello",
+];

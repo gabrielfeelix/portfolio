@@ -1,0 +1,213 @@
+/* Página /processo.
+   Quase tudo aqui é reuso: hero de home.css, dobra de três colunas, capa de
+   capítulo, ficha, figura e grade de casos de case.css. O que este arquivo
+   acrescenta são cinco peças que só esta página tem: o registro dos seis
+   passos no hero, a frase de movimento na capa de capítulo, o número em
+   display na margem, o "de relance" e o fecho. */
+
+/* ---------------- hero ---------------- */
+
+/* O hero do método não tem capa. Método não tem screenshot, e stock aqui seria
+   a moldura bonita em volta de foto chata que docs/ANALISE-REFS.md descreve.
+   Quem preenche a tela é o registro dos seis passos, que é índice e grafismo
+   na mesma peça. */
+.v2-proc-hero-baixo { display: grid; gap: var(--v2-s4); }
+
+/* Um degrau abaixo do hero da home: o título são duas linhas de frase, não
+   três palavras, e a 144px ele não caberia em uma janela de 1280. É o mesmo
+   degrau que a página de caso usa, então as duas internas abrem igual. */
+.v2-proc-hero-h { font-size: var(--v2-t-caso-hero); }
+
+.v2-proc-premissa {
+  margin: 0;
+  max-width: var(--v2-medida-lead);
+  font-size: var(--v2-t-lead);
+  line-height: 1.35;
+  letter-spacing: -.01em;
+  color: rgba(255, 255, 255, .74);
+}
+
+/* O registro: os seis passos numa fileira, na mono.
+   Não é navegação e não tem link. É o sumário: quem contrata sabe o método
+   inteiro antes de rolar uma linha, e quem quer o detalhe rola, que é o gesto
+   que a página inteira pede. */
+.v2-proc-registro {
+  list-style: none;
+  margin: var(--v2-s2) 0 0;
+  padding: var(--v2-s3) 0 0;
+  border-top: 1px solid rgba(255, 255, 255, .18);
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--v2-s3);
+}
+
+.v2-proc-reg-cel { display: grid; gap: var(--v2-s1); align-content: start; }
+
+.v2-proc-reg-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, .54);
+}
+
+.v2-proc-reg-t {
+  font-size: var(--v2-t-corpo);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  color: #fff;
+}
+
+/* A capa de capítulo entra aqui sem nada além do nome do movimento, igual à
+   da página de caso. A frase de `PROCESSO_CURTO` foi tentada embaixo do título
+   e saiu: ela é a CONDENSAÇÃO dos dois passos que vêm logo abaixo, então a
+   capa anunciava o que a dobra seguinte ia dizer, palavra por palavra. Quem
+   costura esta página à dobra 04 da home são os três títulos, que bastam. */
+
+/* ---------------- o número do passo ---------------- */
+
+/* Quatro dos seis passos não têm prova visual honesta, e a gramática de mídia
+   por contagem da página de caso já resolve o caso zero: o número em display
+   ocupa o lugar da imagem. Aqui ele mora na coluna de margem, alinhado ao topo
+   do texto, em mono e em cinza de marca d'água: é o grafismo desta página, e
+   é a razão de ela não precisar inventar ilustração para se sustentar.
+
+   `aria-hidden` no JSX, porque o número já está escrito no label da dobra
+   ("Passo 03") e um leitor de tela ouviria dois. */
+.v2-proc-n {
+  margin: 0;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-dado);
+  font-weight: 400;
+  line-height: .82;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--v2-ink) 13%, transparent);
+}
+
+.v2-proc-n::before { content: attr(data-n); }
+
+/* ---------------- de relance ---------------- */
+
+/* O recap que na V1 morava no pé da página. Subiu para a margem da primeira
+   dobra: seis nomes numa olhada valem mais antes da leitura do que depois. */
+.v2-proc-relance {
+  list-style: none;
+  margin: var(--v2-s2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--v2-s1);
+  font-size: var(--v2-t-label);
+  line-height: 1.4;
+  color: var(--v2-muted);
+}
+
+.v2-proc-relance li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: var(--v2-s1);
+}
+
+.v2-proc-relance span {
+  font-family: var(--v2-mono);
+  letter-spacing: var(--v2-track-cromo);
+  font-variant-numeric: tabular-nums;
+  color: var(--v2-ink);
+}
+
+/* ---------------- fecho ---------------- */
+
+/* Mesma chapa do "O que eu aprendi" da página de caso, e por isso reusa
+   `.v2-aprendi`. O que muda é o degrau: aqui a frase é a última coisa dita, e
+   ela é a única da dobra. */
+.v2-proc-fecho-p {
+  margin: 0;
+  max-width: var(--v2-medida);
+  font-size: var(--v2-t-movimento);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: var(--v2-track-display);
+  color: #fff;
+}
+
+/* Vermelho sobre preto mede 4,27:1: reprova em corpo e passa em texto grande,
+   que é o mínimo de 3:1. Aqui a frase anda de 48 a 72px em peso 700, então
+   está dentro. Se o degrau cair, esta cor sai. Ver a tabela em tokens.css. */
+.v2-proc-fecho-forte { color: var(--v2-accent); }
+
+.v2-proc-fecho .v2-caso-pills { margin-top: var(--v2-s5); }
+
+/* ---------------- grade de quatro casos ---------------- */
+
+/* A página de caso fecha com três quadros e cabe em uma fileira. /processo
+   fecha com os quatro, e quatro em uma fileira de 1240px dão 310px cada: o
+   quadro fica menor que o cartão da home e a arte de capa deixa de ser
+   legível. Em dois por dois cada um mede 600px, que é maior que na home. */
+.v2-outros-grade.is-quatro {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s5) var(--v2-s4);
+}
+
+/* ---------------- respiro ---------------- */
+
+@media (max-width: 1320px) {
+  /* Mesmo ponto de virada da nota marginal em case.css: abaixo dele a coluna
+     de margem desce, e o número de 112px empilhado embaixo do parágrafo viraria
+     um segundo título. Ele encolhe para o degrau de leitura e vira marcador. */
+  .v2-proc-n {
+    font-size: var(--v2-t-caso-ato);
+    line-height: 1;
+    color: var(--v2-muted);
+  }
+}
+
+@media (max-width: 1100px) {
+  /* Seis colunas abaixo de 1100 dão 160px cada, e "Protótipo navegável" quebra
+     em três linhas. Três por linha mantém o nome inteiro em duas. */
+  .v2-proc-registro { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--v2-s3); }
+}
+
+@media (max-width: 860px) {
+  .v2-proc-registro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v2-proc-hero-baixo { gap: var(--v2-s3); }
+  .v2-outros-grade.is-quatro { grid-template-columns: 1fr; gap: var(--v2-s5); }
+  .v2-proc-fecho .v2-caso-pills { margin-top: var(--v2-s4); }
+}
+
+/* ---------------- densidade do passo ---------------- */
+
+/* A frase de cada passo é UMA linha de texto: em corpo de 16px ela pesava
+   menos que o rótulo da dobra, e a dobra inteira lia como título solto num
+   vão de 104px. No degrau de leitura ela sustenta o título de 40px e o número
+   de 112px que dividem a dobra com ela.
+
+   Não é degrau novo: é o mesmo `--v2-t-lead` do premissa do hero e da frase
+   de movimento. */
+.v2-proc-frase {
+  margin: 0;
+  max-width: var(--v2-medida-caso);
+  font-size: var(--v2-t-lead);
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: var(--v2-ink);
+}
+
+/* Passo a passo dentro de um movimento anda mais perto que dobra a dobra: os
+   104px de `.v2-dobra.v2-wrap` são a distância entre assuntos, e dois passos
+   do mesmo movimento são o mesmo assunto. Quem abre os 104 é a capa escura,
+   que já traz 168px de margem própria. */
+.v2-dobra.v2-wrap.v2-proc-passo { margin-top: var(--v2-s5); }
+
+/* O primeiro passo depois de uma capa escura não precisa de margem: a capa já
+   termina em 168px de padding. */
+.v2-capitulo + .v2-proc-passo { margin-top: var(--v2-s6); }
+
+/* A frase do fecho tem sete palavras e quebra no meio: "até o ar" é a metade
+   que importa, e é ela que vai em vermelho, em linha própria. */
+.v2-proc-fecho-forte { display: block; }
+
+/* A premissa do hero tem duas sentenças e 82 caracteres: sem `balance` a
+   segunda linha nasce com uma palavra. */
+.v2-proc-premissa { text-wrap: balance; }

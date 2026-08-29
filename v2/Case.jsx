@@ -25,9 +25,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRise, useSubir, useMaskLine, useCobertura, ease } from "./motion.js";
+import { useRise, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
-import { chapterById, casos } from "./content.js";
+/* A gramática de página interna mora no kit desde 29/08, quando /processo
+   passou a existir: as mesmas peças montam as duas páginas. */
+import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos } from "./Kit.jsx";
+import { chapterById } from "./content.js";
 import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
 /* ============================================================ utilidades */
@@ -117,55 +120,6 @@ function Dado({
   );
 }
 
-/* Mídia emoldurada. Painel claro, padding, raio, textura dentro, e a legenda
-   dentro da moldura. A mídia da página de caso nunca sangra: sangria fica
-   para o hero e para o bloco escuro do fim. */
-function Figura({ fig, className = "" }) {
-  const rise = useRise();
-  if (!fig || !fig.src) return null;
-  return (
-    <motion.figure className={"v2-fig v2-textura " + className} {...rise(0)}>
-      <span className="v2-fig-moldura" style={fig.ar ? { aspectRatio: fig.ar.replace("/", " / ") } : undefined}>
-        <img src={fig.src} alt={fig.alt || ""} loading="lazy" decoding="async" />
-      </span>
-      {fig.legenda ? <figcaption className="v2-fig-leg">{fig.legenda}</figcaption> : null}
-    </motion.figure>
-  );
-}
-
-/* A dobra padrão.
- *
- * Sem `larga`: label à esquerda, coluna de leitura de 640px à direita, e o
- * par inteiro centrado no container. O vazio que sobra fica dos dois lados,
- * que é a única saída honesta quando não há conteúdo para a direita.
- *
- * Com `larga`: o mesmo label, a mesma coluna de 640 para o texto de topo,
- * mais a coluna de nota marginal à direita (`aside`) e a largura toda para
- * o dado e a mídia que vêm embaixo.
- *
- * `regua` é falso por padrão desde a Fase 6: quem separa dobra de dobra
- * dentro de um movimento é o espaço. A régua ficou para a virada de
- * movimento, onde ela significa alguma coisa. */
-function Dobra({ label, larga = false, regua = false, topo, aside, children, id }) {
-  return (
-    <section className={"v2-dobra v2-wrap" + (larga ? " is-larga" : "")} id={id}>
-      {regua ? <Regua discreta={regua === "discreta"} /> : null}
-      <div className={"v2-caso-duas" + (larga ? " is-larga" : "")}>
-        {label ? <Label>{label}</Label> : <div aria-hidden="true" />}
-        <div className="v2-caso-coluna">
-          {topo || aside ? (
-            <div className="v2-caso-topo">
-              <div className="v2-caso-medida">{topo}</div>
-              <div className="v2-caso-margem">{aside}</div>
-            </div>
-          ) : null}
-          {children}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Ato({ titulo, paras }) {
   const rise = useRise();
   return (
@@ -193,37 +147,6 @@ function NotaMargem({ k, children }) {
       {k ? <p className="v2-margem-k">{k}</p> : null}
       <p className="v2-margem-p">{children}</p>
     </motion.div>
-  );
-}
-
-/* ---------------------------------------------------------- movimento */
-
-/* A capa de capítulo.
- *
- * Era `Movimento`: uma linha de texto na mesma largura e na mesma superfície
- * de todas as outras, que é o motivo de a página ler como vinte e duas coisas
- * em fila. Medido em 29/08 na página do PCYES: uma largura de conteúdo, uma
- * posição de alinhamento e zero trocas de superfície do hero preto ao
- * "Aprendi" preto.
- *
- * Agora ela sangra de borda a borda, em chapa escura, e é a única coisa na
- * tela quando aparece. Quatro por caso, e é o corte que diz "mudei de bloco"
- * sem precisar de índice.
- *
- * A régua com cruz saiu: numa chapa que já é um corte, ela era um segundo
- * corte dentro do primeiro. */
-function CapaCapitulo({ n, t, de = "04" }) {
-  const subir = useSubir();
-  return (
-    <section className="v2-capitulo" data-escuro="1" data-escuro-corpo="1" aria-label={`Movimento ${n}, ${t}`}>
-      <motion.div className="v2-wrap v2-capitulo-in" {...subir(0)}>
-        <p className="v2-capitulo-cromo">
-          <span>Movimento</span>
-          <span className="v2-capitulo-cont">{n} / {de}</span>
-        </p>
-        <h2 className="v2-capitulo-t">{t}</h2>
-      </motion.div>
-    </section>
   );
 }
 
@@ -1263,58 +1186,6 @@ function Aprendi({ cap }) {
   );
 }
 
-/* ============================================================== próximo */
-
-/* Os outros casos, no fim da página.
- *
- * Era `Proximo`, um link de texto para o caso seguinte na ordem. Quem termina
- * de ler um caso está pronto para ver outro, e um nome sem imagem não
- * convida: a home mostra os quatro em arte e a página de caso mostrava um em
- * texto.
- *
- * São os outros três, com a mesma capa e o mesmo quadro 16/11 da home, então
- * a página de caso fecha na gramática que a home abriu. O hover repete o zoom
- * de 3,5% que a home já usa; quem mexer num tem que mexer no outro.
- */
-function OutrosCasos({ cap, ir }) {
-  const rise = useRise();
-  const outros = casos().filter((c) => c.id !== cap.id);
-  if (!outros.length) return null;
-
-  return (
-    <section className="v2-wrap v2-outros" aria-labelledby="outros-t">
-      <div className="v2-outros-topo">
-        <p className="v2-outros-cromo">Continue</p>
-        <h2 className="v2-outros-t" id="outros-t">Os outros casos</h2>
-      </div>
-      <ul className="v2-outros-grade">
-        {outros.map((c, i) => {
-          const href = `/v2/case/${c.id}`;
-          const capa = CAPAS_CHEIAS[c.id];
-          return (
-            <motion.li key={c.id} {...rise(Math.min(i, 3))}>
-              <a
-                className="v2-outro"
-                href={href}
-                onClick={(e) => { e.preventDefault(); ir(href); }}
-              >
-                <span className="v2-outro-quadro">
-                  {capa ? (
-                    <img className="v2-outro-capa" src={capa} alt="" loading="lazy" decoding="async" />
-                  ) : null}
-                </span>
-                <span className="v2-outro-n">{String(i + 1).padStart(2, "0")}</span>
-                <span className="v2-outro-t">{c.chap.title}</span>
-                <span className="v2-outro-d">{c.chap.descriptor}</span>
-              </a>
-            </motion.li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
 function NaoAchou({ id, ir }) {
   return (
     <div className="v2-corpo-claro" data-clara="1">
@@ -1372,7 +1243,7 @@ export default function Caso({ id, ir }) {
         <AntesDepois cap={cap} />
         <Resultado cap={cap} />
         <Aprendi cap={cap} />
-        <OutrosCasos cap={cap} ir={ir} />
+        <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
       </div>
     </>
   );

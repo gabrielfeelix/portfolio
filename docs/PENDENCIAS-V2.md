@@ -105,9 +105,48 @@ Medido no PCYES a 1440: de **34.182px (38 telas) para 24.737px (27 telas)**.
 Os quatro casos têm arte dedicada no hero, em `CAPAS_CASO` (`v2/copy.js`).
 Commits `9f4817b`, `05661a0`, `1e2393a`, `0b813a5`.
 
-### 9. Páginas "Sobre" e "Processo" · ABERTA
+### 9. Páginas "Sobre" e "Processo"
 
-Não existem na V2. Precisam ser desenhadas. A nav já linka para elas.
+**"Processo" · FECHADA.** Existe em `/v2/processo`, em `v2/Processo.jsx` e
+`v2/processo.css`. A nav passou a rotear para ela (`rota: true` em `LINKS`,
+`v2/Shell.jsx`); "Sobre" continua sendo âncora até a página dela existir.
+
+A gramática da página de caso virou kit: `DobraCaso`, `Figura`,
+`CapaCapitulo` e `GradeCasos` saíram de `v2/Case.jsx` e moram em `v2/Kit.jsx`,
+importados pelas duas páginas. A página de caso não mudou de forma nenhuma:
+PCYES continua medindo 24.737px.
+
+Como ela está montada: hero escuro com o registro dos seis passos na mono
+(índice e grafismo na mesma peça, e o método inteiro antes de rolar uma
+linha), ficha, uma dobra de abertura com o "de relance" na margem, três capas
+de capítulo com dois passos cada, fecho escuro e os quatro casos em dois por
+dois. 9.296px a 1440, que são 10,3 telas.
+
+O número do passo em display é o grafismo da página, e é a resposta da
+gramática de mídia por contagem: quatro dos seis passos não têm print honesto,
+e zero figuras já significava "o número ocupa o lugar da imagem". Ele entra
+por `content: attr(data-n)`, não como texto do DOM, porque em 13% de tinta o
+axe reprovava contraste em cima de uma coisa que ninguém lê.
+
+**Texto novo, e é só ele:** os dois parágrafos de `ABERTURA` no topo de
+`v2/Processo.jsx`. O resto é verbatim: as seis etapas saem de `PROCESSO`
+(volume/data.jsx), o título e a premissa do hero saem de `volume/Processo.jsx`
+(a mesma página na V1), os nomes dos três movimentos saem de `PROCESSO_CURTO`.
+
+Duas repetições foram cortadas na revisão: a frase de movimento saiu das capas
+escuras (ela condensa os dois passos que vêm logo abaixo, então a capa
+anunciava a dobra seguinte palavra por palavra), e o fecho perdeu "Protótipo
+vira produto", que o passo 06 já diz uma tela acima.
+
+Portão passando: axe 0 em 1440 / 1280 / 390, zero erro de JS, zero overflow
+horizontal, e as quatro páginas de caso sem regressão.
+
+**Achado que ficou de fora:** abaixo de 860px a nav esconde os três links
+(`.v2-nav-links { display: none }`, `v2/shell.css`). No celular não existe
+caminho para /processo a não ser pela URL. Não é regressão desta tarefa, é
+como a V2 sempre esteve, e o conserto é um menu, que é decisão de desenho.
+
+**"Sobre" · ABERTA.** Não existe. A nav ainda aponta para a dobra 06 da home.
 
 ## Como ele avalia
 

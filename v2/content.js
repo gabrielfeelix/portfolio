@@ -23,6 +23,7 @@ export const CASE_ORDER = () => g("CASE_ORDER");
 export const PIECE_ORDER = () => (window.PIECE_ORDER || []);
 export const PROCESSO   = () => g("PROCESSO");
 export const COMPANIES  = () => g("COMPANIES");
+export const CERTS      = () => g("CERTS");
 export const CONTATO    = () => g("CONTATO");
 export const ALL_MARKS  = () => g("ALL_MARKS");
 export const AUTOR      = () => g("AUTOR");

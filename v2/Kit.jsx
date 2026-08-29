@@ -12,7 +12,10 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { useRevelar, useCortina, useParallax, useContador } from "./motion.js";
+import { useRevelar, useCortina, useParallax, useContador, useRise, useSubir } from "./motion.js";
+import { Label, Regua } from "./Shell.jsx";
+import { casos } from "./content.js";
+import { CAPAS_CHEIAS } from "./copy.js";
 
 /* ------------------------------------------------------------------ cromo */
 
@@ -202,4 +205,125 @@ export function Contador({ ate, sufixo = "", rotulo, nota }) {
    separar, entra uma linha de 1px e o cromo em cima dela. */
 export function Linha() {
   return <hr className="v2-linha" aria-hidden="true" />;
+}
+
+/* ======================================================= gramática interna
+
+   O que segue nasceu dentro de v2/Case.jsx e mora aqui desde 29/08, quando a
+   página /processo passou a existir. São as peças que fazem uma página interna
+   parecer a mesma página interna: a dobra de três colunas, a figura emoldurada,
+   a capa de capítulo e a grade de casos do pé.
+
+   Case.jsx importa daqui com `DobraCaso as Dobra`. Nada mudou de forma: as
+   classes são as mesmas, então o print da página de caso é idêntico ao de
+   9091ddd. */
+
+/* Mídia emoldurada. Painel claro, padding, raio, textura dentro, e a legenda
+   dentro da moldura. */
+export function Figura({ fig, className = "" }) {
+  const rise = useRise();
+  if (!fig || !fig.src) return null;
+  return (
+    <motion.figure className={"v2-fig v2-textura " + className} {...rise(0)}>
+      <span className="v2-fig-moldura" style={fig.ar ? { aspectRatio: fig.ar.replace("/", " / ") } : undefined}>
+        <img src={fig.src} alt={fig.alt || ""} loading="lazy" decoding="async" />
+      </span>
+      {fig.legenda ? <figcaption className="v2-fig-leg">{fig.legenda}</figcaption> : null}
+    </motion.figure>
+  );
+}
+
+/* A dobra padrão de página interna.
+ *
+ * Sem `larga`: label à esquerda, coluna de leitura de 640px à direita, e o
+ * par inteiro centrado no container.
+ *
+ * Com `larga`: o mesmo label, a mesma coluna de 640 para o texto de topo,
+ * mais a coluna de nota marginal à direita (`aside`) e a largura toda para
+ * o dado e a mídia que vêm embaixo. */
+export function DobraCaso({ label, larga = false, regua = false, topo, aside, children, id, classe = "" }) {
+  return (
+    <section className={"v2-dobra v2-wrap" + (larga ? " is-larga" : "") + (classe ? " " + classe : "")} id={id}>
+      {regua ? <Regua discreta={regua === "discreta"} /> : null}
+      <div className={"v2-caso-duas" + (larga ? " is-larga" : "")}>
+        {label ? <Label>{label}</Label> : <div aria-hidden="true" />}
+        <div className="v2-caso-coluna">
+          {topo || aside ? (
+            <div className="v2-caso-topo">
+              <div className="v2-caso-medida">{topo}</div>
+              <div className="v2-caso-margem">{aside}</div>
+            </div>
+          ) : null}
+          {children}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* A capa de capítulo: chapa escura sangrando de borda a borda, meia tela, e a
+   única coisa na tela quando aparece. É o corte que diz "mudei de bloco" sem
+   precisar de índice.
+ *
+ * Ela sangra por NÃO usar `.v2-wrap`, e não por margem negativa: o pai é
+ * `.v2-corpo-claro`, que já é largura cheia. */
+export function CapaCapitulo({ n, t, de = "04", rotulo = "Movimento" }) {
+  const subir = useSubir();
+  return (
+    <section className="v2-capitulo" data-escuro="1" data-escuro-corpo="1" aria-label={`${rotulo} ${n}, ${t}`}>
+      <motion.div className="v2-wrap v2-capitulo-in" {...subir(0)}>
+        <p className="v2-capitulo-cromo">
+          <span>{rotulo}</span>
+          <span className="v2-capitulo-cont">{n} / {de}</span>
+        </p>
+        <h2 className="v2-capitulo-t">{t}</h2>
+      </motion.div>
+    </section>
+  );
+}
+
+/* A grade de casos do pé de página interna.
+ *
+ * Quem termina de ler está pronto para ver outra coisa, e um nome sem imagem
+ * não convida: são as capas da home, no quadro 16/11 da home, com o mesmo zoom
+ * de hover. Quem mexer aqui mexe na home junto.
+ *
+ * `excluir` tira o caso que a pessoa acabou de ler; sem ele, entram os quatro. */
+export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os casos", ir }) {
+  const rise = useRise();
+  const lista = casos().filter((c) => c.id !== excluir);
+  if (!lista.length) return null;
+
+  return (
+    <section className="v2-wrap v2-outros" aria-labelledby="grade-casos-t">
+      <div className="v2-outros-topo">
+        <p className="v2-outros-cromo">{cromo}</p>
+        <h2 className="v2-outros-t" id="grade-casos-t">{titulo}</h2>
+      </div>
+      <ul className={"v2-outros-grade" + (lista.length === 4 ? " is-quatro" : "")}>
+        {lista.map((c, i) => {
+          const href = `/v2/case/${c.id}`;
+          const capa = CAPAS_CHEIAS[c.id];
+          return (
+            <motion.li key={c.id} {...rise(Math.min(i, 3))}>
+              <a
+                className="v2-outro"
+                href={href}
+                onClick={(e) => { e.preventDefault(); ir(href); }}
+              >
+                <span className="v2-outro-quadro">
+                  {capa ? (
+                    <img className="v2-outro-capa" src={capa} alt="" loading="lazy" decoding="async" />
+                  ) : null}
+                </span>
+                <span className="v2-outro-n">{String(i + 1).padStart(2, "0")}</span>
+                <span className="v2-outro-t">{c.chap.title}</span>
+                <span className="v2-outro-d">{c.chap.descriptor}</span>
+              </a>
+            </motion.li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }
