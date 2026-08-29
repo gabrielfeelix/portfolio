@@ -1,295 +1,184 @@
-# Handoff: home da V2, depois do kit
+# Handoff: home da V2
 
-Escrito em 2026-08-28, no fim da sessão que montou o kit e remontou a home.
-Substitui a versão anterior deste arquivo. Não leia transcript: o repositório,
-`docs/ANALISE-REFS.md` e este arquivo têm tudo.
+Escrito em 2026-08-28. Substitui a versão anterior. Cole isto numa sessão nova
+e não traga a antiga junto.
 
 ## Antes de tudo
 
-1. Invoque a skill `token-hygiene` e siga as regras dela na tarefa inteira.
-2. Leia, nesta ordem: este arquivo e **`docs/ANALISE-REFS.md`**, que é a base de
-   direção e não é opcional. Os specs antigos
-   (`docs/superpowers/specs/2026-08-28-*.md`) continuam valendo só para a página
-   de caso; a home foi refeita por cima deles.
-3. A tarefa desta próxima sessão é **caçar erro visual**, não redesenhar. Ver
-   "O que provavelmente está errado", abaixo. Gabriel ainda não viu o resultado.
+1. Invoque a skill `token-hygiene` e siga na tarefa inteira.
+2. Leia só: este arquivo e `docs/ANALISE-REFS.md`.
+3. Não vasculhe transcript. O que é verdade está no repo e no `git log`.
 
-## O estado, em uma frase
+## Onde está
 
-A home foi remontada sobre um kit de componentes, builda, roda sem erro de JS,
-sem overflow horizontal a 1440 / 1280 / 390, e a página de caso continua
-abrindo. **Ninguém olhou com olho humano ainda.**
+Repositório `/home/gabfelix/dev/portfolio`, branch **`main`** (a
+`home-v2-redesign` foi mergeada e as duas estão em dia com o `origin`).
 
-## O que aconteceu nesta sessão
+Produção **não muda**: a Vercel roda `npm run build` sem `BUILD_V2`, que não
+emite `dist/v2/`. Verificado por hash: os 162 arquivos de produção saem
+idênticos com ou sem a V2 no repo. O que está no ar em 4yu.com.br é o volume
+de mangá e não foi tocado.
 
-A home anterior tinha sido recusada por Gabriel ("não gostei muito, esperava
-outra coisa"). Ele destrinchou as referências em detalhe e o diagnóstico virou
-`docs/ANALISE-REFS.md`: não faltava seção, faltava gramática. Sete mecanismos
-medidos no código das refs, e a V2 não tinha nenhum deles.
+Últimos commits que importam:
 
-Decisão dele, literal: "quero que você faça o IDEAL, desde kit, padrões, tudo
-que é bom fazer, aí vc pode montar, sei la como vc prefere, a ordem, só fz, eu n
-manjo". Ou seja: as escolhas abaixo foram do agente, com a análise como base, e
-ainda **não passaram pelo crivo dele**.
+- `b128e9c` a dobra 04 virou índice tipográfico  ← **é o que ele recusou**
+- `0f59782` o avião passa a costurar a página inteira
+- `fbb2eff` método diagonal, assinatura Bad Script, avião na dobra 01
+- `86e2f71` ilustrações SVG (já substituídas)
 
-## O kit
+## Como rodar e conferir
 
-`v2/Kit.jsx` + `v2/kit.css`. A regra está no topo do arquivo: nenhuma dobra da
-home desenha cromo, título ou mídia por conta própria; se falta componente, ele
-entra no kit primeiro.
+```bash
+BUILD_V2=1 npm run build
+cd dist && python3 -m http.server 8793 --bind 127.0.0.1   # home em /v2/
+```
 
-| Componente | O que é |
+O servidor não faz fallback de rota: `/v2/case/pcyes` dá 404, abra `/v2/` e
+clique num card.
+
+**Portão, antes de dizer que está bom:** axe 0 a 1440 / 1280 / 390, zero erro
+de JS, zero overflow horizontal nos três, reduced-motion sem dobra invisível,
+e a página de caso abrindo com as 17 dobras. Tudo isso passa em `b128e9c`.
+
+Espere **3 segundos** depois de rolar antes de rodar o axe: com menos, o
+`useRise` da linha do tempo ainda está correndo e o axe acusa 4 contrastes
+reprovados que não existem. `npm i --no-save axe-core`.
+
+## A tarefa aberta: refazer a dobra 04 (Método, "Do objetivo ao ar")
+
+Palavras dele sobre o índice que está lá: *"achei mt parecida com a próxima
+seção, e ainda achei mt sem graça, parece q n estamos usando personalidade nem
+criatividade"*. As duas críticas procedem:
+
+1. **Colisão real.** O índice é linha + filete + texto. A dobra 05 (`#onde`, "A
+   linha do tempo") é a mesma coisa. Duas dobras seguidas com a mesma forma.
+2. **Falta personalidade.** É a terceira tentativa nessa dobra. As duas
+   anteriores (escada diagonal com ilustrações 320x200; três colunas com um
+   quiz clicável) foram recusadas por serem forçadas. Esta foi recusada por ser
+   sem graça. O ponto médio ainda não foi achado.
+
+**O que ele pediu:** a opção 1 combinada com a opção 4, ou seja o índice com
+**um desenho contínuo único** atravessando a dobra, uma linha vermelha que
+muda de forma com a rolagem (pontos espalhados → moldura → barra publicada) em
+vez de três selos separados. Os três selos de 64px que estão em
+`v2/Ilustracoes.jsx` já são um ensaio disso: é o mesmo objeto em três estados,
+com o ponto vermelho persistindo. Falta virar um traço só.
+
+## Lacuna que ELE apontou e que é real
+
+**As seis referências não foram varridas direito.** O que foi olhado:
+
+| Ref | Varrido |
 |---|---|
-| `Cromo` | a tripla `( _03 ) NOME ©26` na mono, no topo de toda dobra |
-| `Relogio` | relógio vivo com Maringá, no hero |
-| `Dobra` | o `<section>`, que já monta o cromo, a largura e o fundo |
-| `Titulo` | 104px, com marca ® opcional, revelado por cortina |
-| `Cabecalho` | as 5 partes do viper: olho, título, lead, CTA, nota + prova |
-| `FitaMidia` | a fita do bungee: colunas em arco, sangrando, vídeo + imagem |
-| `Quebra` | imagem/vídeo full-bleed entre dobras, com parallax |
-| `Contador` | número 0→N a 128px |
+| viper-template | só a seção Approach |
+| porto-template | só a seção Three Phases |
+| launchfolio | página inteira |
+| td-maxfolio | página inteira |
+| bungee | **nada** |
+| tabfolio | **nada** |
 
-## A gramática (v2/tokens.css)
+Antes de propor qualquer coisa, abra as quatro que faltam **por inteiro** e
+procure COMPONENTE, não seção de processo.
 
-| | antes | agora |
+Como olhar (as refs estão em `~/dev/refs/`, 384MB, Framer com CSS inline):
+
+```bash
+python3 -m http.server 8796 --bind 127.0.0.1 --directory ~/dev/refs
+# depois: playwright, fullPage, e rolar antes de fotografar para disparar o motion
+```
+
+Playwright: não tem caminho fixo, descubra como `tools/home-v2.mjs` faz.
+
+## Componentes já inventariados (não precisa reachar)
+
+| Componente | Onde | Usado? |
 |---|---|---|
-| Fontes | Switzer só | Switzer + **Geist Mono** (só cromo) |
-| Escala | 128/72/64/44/17/14 | 140/104/128/22/17/11, sem miolo |
-| Tracking display | -0.032em | -0.055em |
-| Raio | 20/24/28 | 0, com 500px só no arco da fita |
-| Medida de texto | 1000px | 809px |
+| Título de duas cores (linha 1 cinza, linha 2 preta) | launchfolio, em toda seção | **não**, e é o ganho mais barato da lista |
+| Título fixo à esquerda + lista rolando à direita | launchfolio | não |
+| Pilha de linhas mono entre parênteses `(8+ years)` | td-maxfolio | não |
+| Bento: painel grande + coluna de painéis estreitos | td-maxfolio | não |
+| Primeira frase do parágrafo em negrito | launchfolio | sim, na dobra 04 |
+| Barras de progresso com % | viper | não |
+| Grupo de bolinhas de posição | viper e porto | não (saiu com a escada) |
 
-Geist Mono foi escolhida porque é grotesk como a Switzer, tem figura tabular
-para contador e relógio, e não carrega o tique retrô da Space Mono nem o de
-editor da JetBrains Mono. Carrega de `fonts.googleapis.com` no
-`v2/index.template.html`.
+Achado que vale lembrar: **três das seis não têm seção de processo nenhuma**
+(bungee, td-maxfolio, tabfolio). As duas que têm são template de estúdio
+vendendo serviço. A dobra 04 não é obrigatória, então precisa se pagar.
 
-Os apelidos `--v2-t-manifesto`, `--v2-t-painel`, `--v2-t-frase`, `--v2-t-num` e
-`--v2-t-bloco` continuam existindo, mas agora apontam para os cinco degraus. Não
-crie um sexto degrau: se um componente pede, o degrau escolhido está errado.
+## Decisões fechadas, não reabra
 
-## A ordem da home, e o argumento dela
+- **O quiz clicável saiu** e não volta. "Vergonhoso", palavras dele.
+- **Ilustração de conceito, uma por passo, saiu** e não volta. "Forçado".
+- **O avião vermelho está aprovado e ele amou.** Não mexa sem pedir. Ele entra
+  pela direita na dobra da tese, dá uma volta, atravessa na diagonal e daí
+  costura a página inteira, sempre atrás do conteúdo.
+- **Assinatura: Bad Script**, monolinear, sem floreio. A Ephesis foi recusada
+  ("faculdade de pornografia"). Continua placeholder até o SVG dele chegar.
+- **A revelação por desfoque da dobra 01** (opacidade + blur + subida) está
+  aprovada: "amei, amei mesmo".
+- **Gravação de tela é assunto de página de caso, não da home.** Na etapa 01 do
+  método não existe tela ainda e na 03 seria redundante.
+
+## Aberto, e é decisão do Gabriel
+
+- **"2+ Anos em produto"** a 128px na dobra 03. O item 2 de
+  `docs/PENDENCIAS-TEXTO.md` diz que esse número argumenta contra ele em vaga
+  de pleno. Ele já sabe o argumento e ainda não decidiu.
+- **A capa da quebra** entre casos e números é foto de banco (macro de lanterna
+  de carro, StockSnap CC0, via API da Openverse, em
+  `volume/assets/stock/capa-quebra.webp`). Só existe em 960px de largura e está
+  em upscale para 1600. O print do PCYES que estava lá está anotado no
+  comentário de `v2/Home.jsx` caso volte.
+- **A dobra 05 (linha do tempo)** ele quer com logo das empresas e o bloco de
+  texto deslocado para a direita. Não começou.
+- **A dobra 07 (Fora da estante)** e o rodapé "falar comigo": pensar depois.
+
+## Arquivos
 
 ```
-hero (+ relógio) → fita de mídia sangrando (a passagem que faltava)
-01 tese, partida esquerda/direita → marcas coladas nela
-02 trabalho, cabeçalho de 5 partes, pilha grudada
-   → quebra de fumaça full-bleed
-03 números (4 · 18 · 3 · 2+)
-04 método, numerado na mono
-05 trajetória
-06 GABRIEL, com a foto cruzando por cima (efeito do porto)
-07 peças, fora da hierarquia de propósito
+v2/Home.jsx          dobras da home; Processo() é a dobra 04
+v2/Ilustracoes.jsx   os três selos de 64px (viram um traço só)
+v2/motion.js         primitivas; useVoo (avião), usePalavra (tese), useEscrita
+v2/home.css          estilo da home; bloco "04. metodo: o indice"
+v2/copy.js           PROCESSO_CURTO = [{titulo, frase} x3]
+v2/tokens.css        escala, cores, --v2-font-mao
+docs/ANALISE-REFS.md a base de direção, não é opcional
 ```
 
-Os quatro números saem de `volume/data.jsx` (COMPANIES, CASE_ORDER,
-PIECE_ORDER) e do ano de início 2024. **Nenhum foi inventado, e nenhum pode
-ser.**
+## Armadilhas que custaram tempo
 
-## Mídia de banco, temporária
+- `npm run build` **não** emite `dist/v2/`. Use `BUILD_V2=1`.
+- `overflow` diferente de `visible` num `<svg>` **zera o IntersectionObserver
+  dos filhos**: `whileInView` nunca dispara e nada aparece, sem erro no
+  console. Mesma coisa com `overflow: hidden` em qualquer ancestral.
+- `clipPath` e valor dentro de `mask-image` não interpolam por `whileInView` no
+  motion v13. Use `useInView` + `animate`.
+- Meça posição com `offsetLeft`/`offsetTop`, não `getBoundingClientRect`, se o
+  elemento tem animação de entrada com `translate`: o rect já vem transformado.
+- `offset-distance` anda em **comprimento de arco**, não em altura. Ligando
+  scroll direto nele o objeto foge do leitor. Ver a tabela em `useVoo`.
+- Antes de criar classe, `grep` o nome: `.v2-marca` já existia e o
+  `padding-inline` dela vazou para um svg novo.
+- `pkill -f chromium` mata o próprio shell. Use `pkill -f "[h]eadless_shell"`.
+- **NUNCA commitar `empresas-para-o-portfolio.md`.** Tem salário e o repo é
+  público. Já vazou uma vez. Está no `.gitignore`, confira o `git status`
+  assim mesmo.
 
-`volume/assets/stock/ink-*.mp4`, seis vídeos do Mixkit (licença comercial
-liberada, sem atribuição). Tinta preta e vermelha em fundo branco: não é stock
-genérico, é a mesma linguagem que o portfólio já tem em
-`volume/assets/ink-splash.png` e `splatter.svg`, e o vermelho do 41999 bate com
-`--v2-accent`.
+## Regras de conteúdo
 
-Unsplash e Pexels estão atrás de bot-wall (Anubis e Cloudflare); Playwright não
-passa. Mixkit passa via Playwright, e o padrão de URL é
-`https://assets.mixkit.co/videos/{id}/{id}-720.mp4`, com thumb em
-`{id}-thumb-360-0.jpg`. O script de coleta ficou no scratchpad da sessão, então
-refaça se precisar: abra `https://mixkit.co/free-stock-video/<categoria>/` e leia
-`video[src]` do DOM, porque o network só serve os previews pagos do Envato.
+- Zero travessões (—) em texto do site. Dois-pontos, vírgula ou ponto; em
+  título, "·". Em comentário de código pode.
+- Não invente número, resultado nem história de emprego. Sai de
+  `volume/data.jsx` e do GA4.
+- Paleta: branco, preto, vermelho e cinza. Cor de produto tem dois lugares e só
+  dois: a chapa do quadro do caso e a chapa da empresa atual.
+- Raio 0 em tudo, com uma exceção declarada: os 10px da tela flutuante dentro
+  do quadro do caso, que é o desenho de uma janela de navegador.
+- Commits em português, no tom dos anteriores, terminando com
+  `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`.
 
-**Os seis mp4 somam 28MB e estão versionados.** Não tem `ffmpeg` nem
-ImageMagick nesta máquina. Antes de qualquer publicação isso precisa cair, e a
-saída certa é trocar por gravação de tela do Gabriel, não comprimir stock.
+## Como ele decide
 
-## Dois bugs de motion que custaram tempo
-
-Ambos estão anotados em `v2/motion.js`, e ambos fazem a dobra sair **em branco**,
-sem erro no console:
-
-1. `clipPath` não interpola com `whileInView` no motion v13. Com `animate`
-   funciona, e é por isso que o `useMaskLine` do hero sempre funcionou.
-2. `overflow: hidden` no ancestral zera o retângulo do IntersectionObserver
-   quando o filho está deslocado para fora dele. O observer nunca acusa entrada
-   e a animação nunca dispara. Por isso `useCortina` devolve um `ref` para a
-   janela (que não se move) em vez de props de `whileInView`.
-
-Se uma dobra nova sair invisível, comece por aqui.
-
-## Segunda rodada, 28/08: a fita saiu e os casos viraram quadro
-
-Depois de ver os prints, o Gabriel recusou uma coisa e pediu outra.
-
-**A fita de mídia saiu.** Palavras dele: "não curti essas ideias dos vídeos em
-círculo, acho que não combinou". O motivo está na própria ANÁLISE: no bungee a
-coluna em arco funciona porque o conteúdo dela é render 3D e moda, onde a forma
-É a arte. Com tela de sistema dentro, o arco corta justo a interface. O
-componente `FitaMidia` foi removido do kit, não só da home.
-
-**No lugar entrou a passagem do viper**, medida em `~/dev/refs/viper-template`
-(as seis refs foram baixadas nesta máquina, 384MB): o escuro termina em corte
-seco e o branco abre com uma régua fina e a cruz de registro no meio. Reusa a
-`.v2-cruz` que já existia no Shell. Zero movimento, e responde "mudei de seção"
-igual.
-
-**Os casos viraram quadro.** Pedido literal: "não quero essas fotos chapadas,
-prefiro que tenham um fundo com um componente dentro". É o tratamento que a V1
-já tinha em `.rvm-art` (`volume/app.css`): chapa na cor da marca do cliente
-(`capa.bg` de `data.jsx`, PCYES #B00000, Locar Mais #3C1354, ODEX #0D1D52,
-Oderço #00308F), degradê para a cor não ficar lisa, logo branco no canto, e a
-tela flutuando inteira por cima com sombra. **A retícula pontilhada da V1 ficou
-de fora, por pedido dele.**
-
-Uma exceção declarada à regra do raio 0: a tela flutuante tem 10px. Ela não é
-um card, é o desenho de uma janela de navegador, e sem raio lia como adesivo
-colado na chapa.
-
-**Bug achado no caminho: `useCobertura` nunca funcionou.** Ela media
-`target: ref` com o ref no herói, que é `position: sticky`, e o retângulo de um
-elemento preso congela: progresso 0 a página inteira, opacidade 1 e transform
-`none` em qualquer rolagem, medido. O corpo branco subia e guilhotinava a
-headline no meio da palavra, em opacidade cheia. É a mesma armadilha que
-`usePilhaTrilho` já documentava três hooks abaixo. Agora mede a janela: a
-opacidade cai 1 → 0.70 → 0.41 → 0.11 → 0 ao longo da altura do herói.
-
-## Caçada de erro visual, 28/08 (segunda máquina)
-
-Esta lista foi percorrida com Playwright em 1440x900, 1280x620 e 390x844, e o
-que segue é o placar. **O que a sessão anterior suspeitava e o que estava
-errado de verdade não são o mesmo conjunto.**
-
-Fechado:
-
-1. **A rotativa do hero passava por cima da linha branca a cada 2,8s.** Em
-   repouso o H1 estava certo, só a troca quebrava, e por isso leitura de código
-   não pegava. Causa: `mode="popLayout"` mantém as duas frases vivas, e a de
-   saída sobe 0.9em dentro de uma janela com 26px de folga. Agora é
-   `mode="wait"`, curso de 0.3em e saída de 160ms. Medido: 0 quadros com duas
-   linhas, 0 quadros invadindo a linha de cima.
-2. **O cabeçalho de casos vinha de trás para frente no desktop.** `align-items:
-   end` no `.v2-cabecalho` afundava a coluna esquerda quando a direita era alta,
-   e o título chegava 340px DEPOIS do lead, do CTA e das logos. No celular, que
-   empilha, a ordem sempre esteve certa. Agora é `start`, com `padding-top` no
-   lado direito.
-3. **A foto do `.v2-sobre` era um retângulo creme opaco** apagando GA[BRI]EL no
-   desktop e quase tudo no celular, e reintroduzia o creme que saiu do volume
-   (A1 de `O-QUE-FALTA.md`). Agora é `volume/assets/gabriel-recorte.webp`, alfa
-   de verdade, gerado de `gabriel.png` por chave de cor: flood fill a partir das
-   bordas mais uma segunda passada que remove bolsões fechados acima de 4000px
-   (o vão entre as pernas). 115KB.
-4. **A faixa de marcas misturava nome preto e logo colorido**, um deles roxo,
-   contra a regra do projeto de faixa monocromática. Agora `filter: grayscale(1)
-   brightness(0)` no logo.
-5. **A prova social herdava a célula da marquee** (112px de altura, filete à
-   direita) e virava grade com borda solta e célula vazia. Zerada.
-6. **`.v2-cartao-idx` reprovava AA**: accent a 12px sobre `--v2-superficie` mede
-   4.2:1. Virou tinta, que é o que `.v2-cromo-n` já fazia.
-7. **O cromo do hero quebrava em seis linhas no 390.** O `VOL. 2026` sai abaixo
-   de 620px: é decorativo e já aparece como ©26 em toda dobra.
-8. **`.v2-dobra { margin-top }` do `case.css` vazava para a home.** As duas
-   páginas usam a classe. Escopado em `.v2-dobra.v2-wrap`, que só as dobras de
-   caso têm. Isso, mais o padding de dobra caindo de `s7` para `s6`, tirou 2,5
-   mil pixels de branco: a home foi de 13.405 para 10.936 a 1440.
-9. **Os casos eram cards de 420px com moldura** dentro de um container de 1800.
-   A linha agora mede `--v2-max` e o cartão perdeu chapa e filete: a mídia é o
-   card. Era o "quase full width, QUASE eu disse".
-10. **Locar Mais caía na chapa de marca roxa** porque `locarmais-conciliacao`
-    não tem `cover` nem no capítulo nem no projeto. Agora cai para `shots[0]`,
-    que é tela real do caso.
-11. **A quebra era fumaça de banco**, 666px de vídeo que não dizia nada. Virou
-    `busca-v2.webp` em largura total. A fita caiu de cinco vídeos de tinta para
-    dois, e ganhou três telas do PCYES: sete das nove colunas são trabalho dele.
-12. **A declaração argumentava "eu também codo"**, que é o item 0 do adendo da
-    home em `DIAGNOSTICO-TEXTO-2026-08-27.md`. A primeira frase saiu. A menção
-    ao build sobrevive uma vez, na assinatura da dobra 06.
-
-Verificado e **limpo**, não precisa reabrir:
-
-- **axe: 0 violações** a 1440 e a 390, WCAG 2.1 A e AA. **Espere 3s depois de
-  rolar antes de auditar**: com 600ms o `useRise` da linha do tempo ainda está
-  correndo e o axe acusa 4 falhas de contraste no 4º item que não existem.
-- **`prefers-reduced-motion`**: nenhuma dobra invisível, contadores param no
-  valor final, rotativa congela na primeira frase.
-- **0 erro de JS e 0 overflow horizontal** nos três viewports.
-- **A página de caso não regrediu**: 17 dobras com os 104px intactos, altura de
-  29.831px, sem overflow.
-- **Os 7 links da fita de peças não estavam sem nome**: o `alt` da imagem já
-  dava o nome acessível. Ganharam `aria-label` só para anunciar a aba nova.
-- **`tools/home-v2.mjs`** tinha o caminho do Playwright cravado na outra
-  máquina. Agora descobre sozinho, como `tools/medir.mjs`.
-
-Aberto, e é decisão do Gabriel, não bug:
-
-- A declaração ainda roda 6 linhas de 104px numa medida de 809px. Encolheu de
-  1896 para 1305px, mas continua sendo a dobra mais alta em proporção ao que
-  diz. Alargar a medida ou baixar um degrau são as duas saídas, e as duas
-  mudam a gramática.
-- O vazio do meio do hero no celular são ~280px. É o `space-between` que as
-  referências usam e está anotado como intencional em `home.css`.
-- "2+ Anos em produto" segue a 128px no bloco de números, e o item 2 de
-  `PENDENCIAS-TEXTO.md` diz que esse número argumenta contra ele.
-- A assinatura continua sendo o nome em itálico. Vira SVG quando ele mandar.
-- Os dois `.mp4` de tinta que sobraram somam 2,4MB e continuam versionados. Os
-  outros quatro foram apagados nesta rodada: 11MB viraram 2,4MB.
-
-## Lista original de suspeitas, para histórico
-
-Escrita antes de qualquer print. Metade não procedia:
-
-1. **`axe` não rodou** nesta versão da home. O cromo em `--v2-muted` sobre
-   branco, a nota de contador e o olho em `--v2-accent` a 11px são os
-   candidatos a falhar contraste. O accent já não passa AA em texto normal
-   (4.61:1), e agora ele aparece em texto de 11px em três lugares: `.v2-olho`,
-   `.v2-passo-n` e `.v2-cartao-idx`. **Isto é uma violação provável, não uma
-   suspeita.**
-2. **`prefers-reduced-motion` não foi testado** depois do kit. `useCortina` e
-   `useContador` têm ramo de reduced-motion escrito mas não medido.
-3. **A fita de mídia (`FitaMidia`) é `aria-hidden`** e as capas de caso estão
-   dentro dela. Confira se isso não some com conteúdo que devia ser lido.
-4. **A altura da fita é `46vh`** e ela vem logo depois do hero preso. Em tela
-   baixa (1280x620) pode encavalar com a passagem de cobertura do hero.
-5. **`.v2-sobre` tem `height: 86vh`** com a foto em `position: absolute`
-   escalando de 0.55 a 1. Em viewport curta a foto pode passar do nome ou
-   estourar a janela.
-6. **O raio virou 0 na página de caso inteira** (`--v2-r-card/media/secao`).
-   A página abre, mas ninguém olhou dobra a dobra se algum componente dependia
-   do raio para não parecer colado.
-7. **Tab e foco** não foram percorridos depois do kit.
-8. **A assinatura** em `.v2-sobre-ass` é o nome em itálico, placeholder
-   assumido. Vira SVG quando Gabriel mandar a dele.
-9. O `Cabecalho` usa `align-items: end`, então quando a coluna direita é alta
-   (dobra `02`) o título desce para o rodapé da linha. É intencional, mas pode
-   ler como desalinho.
-
-## Armadilhas que continuam valendo
-
-- `npm run build` **não** emite `dist/v2/`. Use `BUILD_V2=1 npm run build`
-  (`build.mjs:41`).
-- `v2/kit.css` precisa estar na lista `ordem` de `buildV2Css()`
-  (`build.mjs:217`), depois de `tokens.css`.
-- O servidor estático não faz fallback de rota: `/v2/case/pcyes` responde 404.
-  Para ver a página de caso, abra `/v2/` e clique num card.
-- `position: sticky` só gruda dentro do bloco que o contém, e nenhum ancestral
-  pode ter `overflow` diferente de `visible` nem `transform`.
-- Espaço no fim de um `inline-block` é descartado.
-- `pkill -f chromium` mata o próprio shell. Use `pkill -f "[h]eadless_shell"`
-  numa chamada separada.
-- Playwright vive em `/home/gabrielbarbosa/.claude/node_modules/playwright`.
-- Verificação: `node tools/home-v2.mjs medidas` e `... prints`, com
-  `cd dist && python3 -m http.server 8793 --bind 127.0.0.1`.
-
-## Como Gabriel decide
-
-Por comparação de print, nunca por descrição. Print de opção A contra opção B
-funciona; parágrafo descrevendo a proposta não funciona. Ele é designer, fala
-português, e a regra de copy dele proíbe travessão e menção gratuita a IA.
-
-## O que ele ainda deve
-
-1. Gravação de tela dos protótipos (PCYES primeiro, é o caso com mais material).
-   Os slots já existem na fita e na quebra: é trocar o `src` em
-   `v2/Home.jsx`, constante `INK`.
-2. A assinatura em SVG.
+Por comparação de print, nunca por descrição. É designer, fala português. Se
+mudar algo visual, mostre. Para movimento, print não basta: mande a URL local e
+um filmstrip de quadros.
