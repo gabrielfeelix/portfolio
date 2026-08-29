@@ -8,11 +8,50 @@
 /* O bloco ocupa toda a sobra do hero: o titulo de caso tem uma linha, nao
    tres como o da home, e sem isso o alto da dobra ficava vazio. O texto
    continua colado embaixo; quem preenche a altura e a capa. */
+/* O fundo do hero: a mesma arte que abre o caso na home, em tela cheia.
+
+   Antes o hero mostrava o `coverTall` num painel de 32% ao lado do titulo. Com
+   a capa cheia atras, aquilo virava miniatura do proprio fundo, entao saiu.
+
+   `position: absolute` na secao, atras do `.v2-hero-in`, que ja e z-index 1 por
+   causa do `.v2-grao`. */
+.v2-caso-fundo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.v2-caso-fundo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+/* O veu. Duas camadas somadas: uma diagonal, que escurece o canto de baixo a
+   esquerda, onde o titulo mora, e uma chapa fraca no geral, que segura o texto
+   quando a arte e clara no meio. Medido: sobre o ponto mais claro da capa do
+   ODEX, o branco do titulo fica em 8,4:1. */
+.v2-caso-fundo-veu {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background:
+    linear-gradient(to top right,
+      rgba(11, 11, 12, .92) 0%,
+      rgba(11, 11, 12, .72) 32%,
+      rgba(11, 11, 12, .30) 64%,
+      rgba(11, 11, 12, .14) 100%),
+    linear-gradient(rgba(11, 11, 12, .12), rgba(11, 11, 12, .12));
+}
+
+/* Sem a coluna de midia, o texto do hero para de dividir a dobra com um painel
+   e ocupa a largura de leitura. */
 .v2-caso-hero-grade {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 32%);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--v2-s5);
   align-items: end;
   margin-top: var(--v2-s5);
@@ -62,26 +101,6 @@
 /* `position: relative` + imagem absoluta: com a imagem no fluxo, a altura
    intrinseca dela (4:5 de 1000px) empurrava o hero para 1830px de altura em
    vez de obedecer aos 100svh. */
-.v2-caso-hero-media {
-  position: relative;
-  align-self: stretch;
-  justify-self: end;
-  width: 100%;
-  min-height: 0;
-  border-radius: var(--v2-r-media);
-  overflow: hidden;
-  background: rgba(255, 255, 255, .06);
-}
-
-.v2-caso-hero-media img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
 /* ---------------- a grade da página ---------------- */
 
 /* Fase 6, crítica B. Antes: `220px + 900px` encostado à esquerda de um
@@ -1078,8 +1097,7 @@
 }
 
 @media (max-width: 1100px) {
-  .v2-caso-hero-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 38%); gap: var(--v2-s4); }
-  .v2-caso-hero-media { align-self: end; aspect-ratio: 4 / 5; max-height: 56svh; }
+  .v2-caso-hero-grade { gap: var(--v2-s4); }
   .v2-funcoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .v2-caminhos { grid-template-columns: 1fr; }
   .v2-preso { grid-template-columns: minmax(0, 46%) minmax(0, 1fr); gap: var(--v2-s4); }
@@ -1094,7 +1112,6 @@
   /* A capa sai no celular: 4:5 ao lado de um título já não cabe, e embaixo
      ela empurraria o pé do hero para fora da tela. */
   .v2-caso-hero-grade { grid-template-columns: 1fr; }
-  .v2-caso-hero-media { display: none; }
   .v2-caso-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
   .v2-mov-in { grid-template-columns: 1fr; gap: var(--v2-s1); }
   .v2-caso-abre { padding-top: var(--v2-s5); }

@@ -28,6 +28,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { useRise, useSubir, useMaskLine, useCobertura, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 import { chapterById, proximoCaso } from "./content.js";
+import { CAPAS_CHEIAS } from "./copy.js";
 
 /* ============================================================ utilidades */
 
@@ -225,9 +226,20 @@ function CasoHero({ cap }) {
   const linha = useMaskLine();
   const capa = useCobertura();
   const links = cap.links || {};
+  /* a mesma arte que abre o caso na home. Ver CAPAS_CHEIAS em v2/copy.js. */
+  const fundo = CAPAS_CHEIAS[cap.id];
 
   return (
     <section className="v2-hero v2-caso-hero v2-grao v2-halo" data-escuro="1" ref={capa.ref}>
+      {fundo ? (
+        <div className="v2-caso-fundo" aria-hidden="true">
+          <img src={fundo} alt="" decoding="async" />
+          {/* o veu: sem ele o titulo branco cai em cima de uma foto clara e
+              o contraste vira sorte. Escuro embaixo e a esquerda, que e onde
+              o texto mora, e quase transparente no alto a direita. */}
+          <span className="v2-caso-fundo-veu" />
+        </div>
+      ) : null}
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
         <motion.div className="v2-hero-topo" {...linha(0)}>
           <p className="v2-hero-papel">{cap.descriptor}</p>
@@ -258,11 +270,9 @@ function CasoHero({ cap }) {
             </ul>
           </div>
 
-          {cap.coverTall ? (
-            <div className="v2-caso-hero-media" aria-hidden="true">
-              <img src={cap.coverTall} alt="" decoding="async" />
-            </div>
-          ) : null}
+          {/* o mockup 4:5 que ficava aqui saiu em 29/08: a arte de capa agora
+              e o fundo da dobra inteira, e um segundo recorte da mesma coisa
+              ao lado do titulo lia como miniatura do proprio fundo. */}
         </div>
       </motion.div>
     </section>
