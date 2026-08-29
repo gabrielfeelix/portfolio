@@ -64,9 +64,11 @@ import { FERRAMENTAS } from "./ferramentas.js";
        lançamento e agressão; o registro aqui é deriva e vento.
 
    Formato: 2400x1120, que é 2.14:1. Não é 2.4:1 por engano — 2.4 é a JANELA
-   (.v2-quebra, 74vh), e .v2-quebra-in tem 112% de altura para o parallax
-   deslizar. 2.40/1.12 = 2.14, então a folga vertical é exatamente o curso do
-   `useParallax(12)`. Cortar em 2.4 faria a imagem faltar no fim do curso.
+   (.v2-quebra, 74vh) e a arte precisa de folga vertical para o parallax
+   deslizar. A regra é dura: a folga de .v2-quebra-in tem que ser >= a
+   intensidade, porque `useParallax(N)` corre N% no total. Com o parallax mais
+   forte pedido em 29/08 os dois subiram juntos, de 12/112% para 24/124%.
+   Cortar a arte em 2.4 faria a imagem faltar no fim do curso.
 
    O vermelho do original saía em (219,65,62); foi puxado para o --v2-accent
    (#E4231B) só nos pixels vermelhos, com o fundo azul-preto intocado. */
@@ -877,7 +879,7 @@ export default function Home({ ir }) {
         <Trabalho ir={ir} />
         {/* Muda de proposito, e escura de proposito. O porque da arte, do
             formato 2.14:1 e da cor esta na definicao de QUEBRA, no topo. */}
-        <Quebra src={QUEBRA} alt="" aria-hidden="true" />
+        <Quebra src={QUEBRA} alt="" aria-hidden="true" intensidade={24} />
         <Numeros />
         <Processo ir={ir} />
         <OndeEstive ir={ir} />
