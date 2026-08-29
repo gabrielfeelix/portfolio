@@ -397,6 +397,22 @@
   background: var(--chapa, var(--v2-ink));
 }
 
+/* A capa cheia: arte pronta, sangrando no quadro. `cover` e nao `contain`
+   porque o arquivo ja vem na razao 16/11 e um pixel de folga nao pode virar
+   faixa de fundo aparecendo na borda. */
+.v2-cartao-capa {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* sem chapa por baixo: se a imagem demora, o que aparece e o cinza de midia,
+   e nao a cor da marca piscando atras dela */
+.v2-cartao-media[data-cheia="1"] { background: var(--v2-card); }
+
 /* Claro no alto e escuro embaixo: a tela flutuante ganha um fundo que ABRE
    atras dela em vez de competir. E o que separa chapa de cor de bloco de cor. */
 .v2-cartao-luz {

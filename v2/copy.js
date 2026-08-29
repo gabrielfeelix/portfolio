@@ -83,3 +83,18 @@ export const PROCESSO_CURTO = [
   },
 ];
 
+
+/* Capas cheias.
+
+   Quando o caso tem arte de capa pronta, a chapa de cor, o degradê e a tela
+   flutuante saem: a imagem ocupa o quadro inteiro, sangrando, na razão 16/11
+   do cartão. O mapa mora aqui e não em volume/data.jsx de propósito: data.jsx
+   é o arquivo que a V1 publica em produção, e a V2 não pode obrigá-lo a mudar
+   para ganhar um campo que só ela lê.
+
+   Medida: 1696 x 1166 é o dobro do maior tamanho em que o cartão renderiza
+   (848 x 583, em janela de 1920). O arquivo atual mede 1513 x 1040, que é a
+   mesma razão e cobre 1.78x. */
+export const CAPAS_CHEIAS = {
+  pcyes: "/volume/assets/projetos/pcyes/capa-home.webp",
+};

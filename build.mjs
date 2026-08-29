@@ -35,9 +35,11 @@ const SCRIPTS = [
 const SCRIPTS_SOB_DEMANDA = ["Capitulo.jsx", "EmpresaPage.jsx"];
 
 // A V2 (v2/) e um app separado, com import/export de verdade e bundle proprio.
-// Ela so e emitida em desenvolvimento ou sob BUILD_V2=1: enquanto Gabriel nao
-// aprovar, o build de producao da Vercel nao gera dist/v2/, entao nao existe
-// URL publica possivel. Ver docs/superpowers/specs/2026-08-28-portfolio-v2-design.md (D6).
+// Desde 28/08 ela TAMBEM sai em producao: vercel.json roda o build com
+// BUILD_V2=1 e reescreve /v2 e /v2/* para dist/v2/index.html, entao o endereco
+// publico e 4yu.com.br/v2. A V1 continua sendo a home de /, e nada no bundle
+// dela muda por causa disso: a V2 so acrescenta arquivos dentro de dist/v2/.
+// Ver docs/superpowers/specs/2026-08-28-portfolio-v2-design.md (D6).
 const V2_LIGADO = process.argv.includes("--serve") || process.env.BUILD_V2 === "1";
 
 async function clean() {

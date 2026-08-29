@@ -37,7 +37,7 @@ import {
   ALL_MARKS, VOL, COMPANIES,
   casos, pieceProjects, pieceLink,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO } from "./copy.js";
+import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS } from "./copy.js";
 
 /* A quebra entre casos e números, em largura total. 1600x613 aguenta 100vw.
 
@@ -271,6 +271,10 @@ function Cartao({ caso, i, ir }) {
   const proj = caso.proj;
   const foto = cap.cover || (proj && (proj.cover || (proj.shots && proj.shots[0])));
   const capa = cap.capa;
+  /* capa cheia: arte pronta, sangrando no quadro inteiro. Ver CAPAS_CHEIAS em
+     v2/copy.js. Quando existe, a chapa de cor, o degradê, a marca e a tela
+     flutuante saem: tudo isso já está dentro do arquivo. */
+  const cheia = CAPAS_CHEIAS[caso.id];
   const href = `/v2/case/${caso.id}`;
   return (
     <article className="v2-cartao">
@@ -281,14 +285,24 @@ function Cartao({ caso, i, ir }) {
       >
         <span
           className="v2-cartao-media"
+          data-cheia={cheia ? "1" : undefined}
           style={capa ? { "--chapa": capa.bg } : undefined}
         >
+          {cheia ? (
+            <img
+              className="v2-cartao-capa"
+              src={cheia}
+              alt=""
+              loading={i < 2 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          ) : null}
           {/* o degradê: sem ele a chapa é cor lisa e a tela não tem onde pousar */}
-          <span className="v2-cartao-luz" aria-hidden="true" />
-          {capa && capa.logo ? (
+          {cheia ? null : <span className="v2-cartao-luz" aria-hidden="true" />}
+          {!cheia && capa && capa.logo ? (
             <img className="v2-cartao-marca" src={capa.logo} alt="" loading="lazy" decoding="async" />
           ) : null}
-          {foto ? (
+          {!cheia && foto ? (
             <span className="v2-cartao-tela">
               <img
                 className="v2-cartao-foto"
