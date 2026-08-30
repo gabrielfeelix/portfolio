@@ -811,8 +811,20 @@
 .v2-lamina[data-borda="base"] { bottom: 0; }
 
 /* O conteúdo passa por cima da lâmina. Sem isto o primeiro bloco da seção
-   fica atrás dela e some. */
-.v2-corpo-claro > *:not(.v2-lamina) { position: relative; z-index: 1; }
+   fica atrás dela e some.
+
+   A camada do voo precisa ficar de FORA desta regra, e por isso a exceção é
+   dupla. Ela é filha direta do `.v2-corpo-claro` (o `CampoDeVoo` a renderiza
+   como primeiro filho de propósito), então era pega junto — e as duas
+   declarações a matavam ao mesmo tempo: `position: relative` anula o
+   `inset: 0` dela, que passa a não ter altura nenhuma e, com `overflow: clip`,
+   recorta o avião inteiro; e o `z-index: 1` desfaz o -1 que é o que faz ele
+   pintar por baixo do conteúdo.
+
+   Sintoma: o avião continuava no DOM, com o caminho certo e opacidade 1, e
+   simplesmente não aparecia em página nenhuma de corpo claro. Medido em
+   29/08: `.v2-voo` com height 0 e z-index computado 1. */
+.v2-corpo-claro > *:not(.v2-lamina):not(.v2-voo) { position: relative; z-index: 1; }
 
 /* O respiro entre o corte do hero e a primeira dobra.
 

@@ -1028,6 +1028,18 @@
 
 /* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
 
+/* A ultima linha da pilha nao precisa de margem: ela separa uma linha da
+   proxima, e depois da ultima nao ha proxima — so o pe da dobra, que ja tem
+   espaco proprio. */
+.v2-pilha .v2-linha-casos:last-child { margin-bottom: 0; }
+
+/* No retrato a pilha nao tem curso nenhum para soltar: o sticky ja e desligado
+   (`position: relative; top: auto`), entao os 64px embaixo dela nao davam
+   soltura a coisa nenhuma, eram so branco antes da dobra seguinte. */
+@media (max-width: 900px) {
+  .v2-pilha { padding-bottom: 0; }
+}
+
 @media (max-width: 900px) {
   .v2-tra-item { padding: var(--v2-s4) 0; }
 

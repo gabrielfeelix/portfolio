@@ -362,14 +362,23 @@
    quebra deixa de ser acidente. */
 .v2-campo-dito {
   position: absolute;
-  top: var(--v2-s6);
+  top: calc(var(--v2-s6) - var(--v2-s1));
   left: 30%;
   right: var(--v2-gutter);
 }
 .v2-campo-frase {
   margin: 0;
   text-align: right;
-  font-size: var(--v2-t-secao);
+  /* Correcao optica de 8px, pedida depois de ver em tela, e nao um degrau
+     novo: ela e ancorada em --v2-t-secao e anda junto com ele em toda a
+     escala, entao continua sendo o mesmo degrau, so assentado. Texto branco
+     sobre ceu escuro le maior do que mede — a mancha clara sobre fundo escuro
+     avanca sobre o fundo — e 8px devolve o tamanho que o degrau aparenta ter
+     no papel branco do resto do site.
+
+     No retrato ele nao entra: em 40px, 8px seriam 20% do corpo, e o que e
+     ajuste no display vira outro tamanho no pequeno. */
+  font-size: calc(var(--v2-t-secao) - 8px);
   font-weight: 600;
   line-height: 1.04;
   letter-spacing: var(--v2-track-display);
@@ -411,10 +420,11 @@
      ocupar a largura inteira. */
   .v2-campo-dito {
     top: auto; bottom: 22%;
+    /* o retrato nao herda nem a correcao optica nem a subida */
     left: var(--v2-s3); right: var(--v2-s3);
     max-width: none;
   }
-  .v2-campo-frase { text-align: left; }
+  .v2-campo-frase { text-align: left; font-size: var(--v2-t-secao); }
   .v2-campo-regua { transform-origin: left center; }
   .v2-campo-lua   img { left: 30%; top: 22%; width: 62%; }
   .v2-campo-aviao img { left: 55%; top: 44%; width: 42%; }
@@ -453,7 +463,11 @@
 /* ------------------------------------------------------------------ móvel */
 
 @media (max-width: 900px) {
-  .v2-dobra-in { padding: var(--v2-s6) var(--v2-s3); }
+  /* 104px em cima e embaixo e espaco de DESKTOP. Numa tela de 844px de altura
+     duas dobras vizinhas somavam 208px so de padding, e com a margem da secao
+     e o pe da pilha o vao entre os casos e os numeros chegava a 384px — 45% de
+     uma tela inteira de branco, medido em 390x844. Cai para --v2-s5. */
+  .v2-dobra-in { padding: var(--v2-s5) var(--v2-s3); }
   .v2-dobra[data-largo="1"] .v2-cromo,
   .v2-dobra[data-largo="1"] .v2-cabecalho { padding: 0 var(--v2-s3); }
   /* `minmax(0, 1fr)` e nao `1fr`: os dois viram uma coluna so, mas `1fr`
