@@ -82,7 +82,7 @@ const CHAPTERS = [
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
-      resultado: "A direção oposta à do briefing foi a aprovada. Entra no ar em outubro de 2026",
+      resultado: "A direção oposta à do briefing foi a aprovada. Design entregue, no ar em outubro de 2026",
     },
     /* ---- a nota do suporte, antes do Ato I --------------------------
        O capítulo foi desenhado mobile first e mostra telas de celular ao
@@ -608,7 +608,7 @@ const CHAPTERS = [
       mes: "Outubro", ano: "2026", dia: 26,
       dow: ["D", "S", "T", "Q", "Q", "S", "S"],
       semanas: [[0, 0, 0, 1, 2, 3, 4], [5, 6, 7, 8, 9, 10, 11], [12, 13, 14, 15, 16, 17, 18], [19, 20, 21, 22, 23, 24, 25], [26, 27, 28, 29, 30, 31, 0]],
-      legenda: "26 de outubro de 2026: a data combinada com a diretoria para a V2 entrar no ar. Até lá, o protótipo é o produto que dá para testar.",
+      legenda: "26 de outubro de 2026: a data combinada com a diretoria para a V2 entrar no ar. O design está entregue; a publicação é do time de desenvolvimento.",
     },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
@@ -631,9 +631,9 @@ const CHAPTERS = [
       ],
     },
     resultado: {
-      t: "Entra em produção em outubro",
-      p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada e a data ficou marcada.",
-          "Resultado de operação eu ainda não tenho, e prefiro não apresentar número que não existe."],
+      t: "Entregue, com data marcada para outubro",
+      p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada, o design saiu da minha mesa e a data ficou marcada.",
+          "Número de operação só passa a existir depois que a loja estiver no ar, e eu prefiro não apresentar número que não existe."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
               "Conclusão do checkout e abandono por etapa",
@@ -909,6 +909,15 @@ const CHAPTERS = [
       app: { src: "/volume/assets/projetos/oderco-revenda/s3.webp", ar: "1600/1000",
         alt: "Seção do aplicativo de revenda, com quatro benefícios numerados ao lado da tela do aplicativo",
         legenda: "O que o revendedor ganha: catálogo com o seu preço, filial que entrega mais rápido, condições por quantidade e pedido pelo aplicativo." },
+      hero: { src: "/volume/assets/projetos/oderco-revenda/lp-hero.webp", ar: "1600/1000",
+        alt: "Primeira dobra da página nova: o título Você vende, a Oderço abastece à esquerda, e o formulário de abertura de conta à direita, pedindo CNPJ, responsável pelo setor de compras, e-mail e WhatsApp",
+        legenda: "A primeira dobra faz as duas coisas ao mesmo tempo. À esquerda a empresa se apresenta — estoque próprio, dois centros de distribuição, cinco marcas —, e à direita o cadastro já está aberto, com o prazo e o critério ditos antes do primeiro campo: leva um minuto, e só para empresa com CNPJ ativo." },
+      numeros: { src: "/volume/assets/projetos/oderco-revenda/lp-numeros.webp", ar: "1600/900",
+        alt: "Faixa de números da página: anos abastecendo o lojista brasileiro, centros de distribuição no Paraná e no Espírito Santo, e marcas próprias",
+        legenda: "Para quem chega de anúncio sem conhecer a marca, é a faixa que responde de que tamanho é a empresa do outro lado do formulário." },
+      fechamento: { src: "/volume/assets/projetos/oderco-revenda/lp-cadastro.webp", ar: "1600/1000",
+        alt: "Fecho da página, com o título O seu próximo fornecedor está a um cadastro de distância e o botão Quero me cadastrar",
+        legenda: "O fecho repete o convite depois do argumento, e escolhe a palavra certa para o que mudou: quem se cadastra solicita acesso às condições comerciais. O cadastro deixou de ser a porta e virou a fila." },
       antigo: { src: "/volume/assets/projetos/oderco-revenda/cadastro-antigo.webp", ar: "1400/1228",
         alt: "A página de cadastro antiga da Oderço: título Seja um parceiro Oderço, um campo de CNPJ, dois aceites, um reCAPTCHA e o botão continuar",
         legenda: "O cadastro que o anúncio encontrava: um campo de CNPJ, dois aceites e um reCAPTCHA. Nenhuma linha sobre o que a empresa distribui — e a política de dropshipping como selo no rodapé, onde ela não filtra ninguém." },
@@ -944,8 +953,9 @@ const CHAPTERS = [
     solucao: {
       t: "A página responde antes do formulário",
       p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso, de modo que quem chega ao cadastro já sabe o que está aceitando."],
-      slots: 3,
-      shots: [{ fig: "catalogo" }, { fig: "marcas" }, { fig: "app" }],
+      slots: 6,
+      shots: [{ fig: "hero" }, { fig: "catalogo" }, { fig: "marcas" },
+              { fig: "app" }, { fig: "numeros" }, { fig: "fechamento" }],
     },
     antesDepois: {
       antes: "/volume/assets/projetos/oderco-revenda/cadastro-antigo.webp",
