@@ -20,13 +20,26 @@
 export const HERO = {
   linha1: "Product Designer",
   linha2: "que leva",
-  /* volume/Capa.jsx · <RotateWord items={...} /> */
+  /* volume/Capa.jsx · <RotateWord items={...} />
+     As quatro que a V1 rodava. Ficam como registro do que já esteve no ar;
+     a home usa `fixa` desde 30/08. */
   rotativas: [
     "a pesquisa à tela",
     "o dado à decisão",
     "a dúvida ao teste",
     "a ideia ao ar",
   ],
+  /* A home parou de sortear a promessa.
+   *
+   * Motivo, da auditoria de triagem de 30/08: numa leitura e num print
+   * tirados com segundos de diferença, o H1 dizia duas coisas diferentes.
+   * A frase mais importante do site era um alvo móvel, então quem tira
+   * print para mandar no time captura uma promessa sorteada entre quatro.
+   *
+   * "o dado à decisão" é a que fica porque é a única das quatro que o resto
+   * do site prova com número: o funil do /processo e o trimestre de GA4 do
+   * PCYES. As outras três são verdadeiras e não têm prova na mão. */
+  fixa: "o dado à decisão",
   /* volume/Capa.jsx · <p className="splash-sub"> */
   sub: ["Antes de desenhar, eu assisto ", "sessão de usuário", ". É de lá que saem as decisões."],
   papel: "UX / Product Designer",

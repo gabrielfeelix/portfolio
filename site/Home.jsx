@@ -62,12 +62,16 @@ function rota(ir, href) {
 function Rotativa({ itens, intervalo = 2800 }) {
   const [i, setI] = useState(0);
   const quieto = useReducedMotion();
+  const parada = !itens || itens.length < 2;
   useEffect(() => {
-    if (quieto) return;
+    if (quieto || parada) return;
     const t = setInterval(() => setI((v) => (v + 1) % itens.length), intervalo);
     return () => clearInterval(t);
-  }, [itens.length, intervalo, quieto]);
-  if (quieto) return <span className="v2-rot">{itens[0]}</span>;
+  }, [itens.length, intervalo, quieto, parada]);
+  /* Uma frase só não gira: sai do AnimatePresence e vira texto, sem o timer
+     e sem a caixa de troca. É como a home ficou desde 30/08 — a peça
+     continua aqui porque ela é da V1 e ainda serve se voltar a ter lista. */
+  if (quieto || parada) return <span className="v2-rot">{itens[0]}</span>;
   return (
     <span className="v2-rot">
       <span className="v2-rot-caixa">
@@ -149,7 +153,7 @@ function Hero({ paraCasos }) {
           <span className="v2-hero-linha"><motion.span {...linha(1)}>{HERO.linha1}</motion.span></span>
           <span className="v2-hero-linha"><motion.span {...linha(2)}>{HERO.linha2}</motion.span></span>
           <span className="v2-hero-linha is-rot">
-            <motion.span {...linha(3)}><Rotativa itens={HERO.rotativas} /></motion.span>
+            <motion.span {...linha(3)}><Rotativa itens={[HERO.fixa]} /></motion.span>
           </span>
         </h1>
 

@@ -48,6 +48,19 @@ function rotaAtual() {
   return rotaDe(window.location.pathname);
 }
 
+/* Encurta uma descrição sem cortar palavra no meio. Prefere terminar numa
+   frase inteira; se nem a primeira frase couber, corta na última palavra e
+   fecha com reticências. */
+function encurtar(txt, max) {
+  const s = String(txt || "").trim();
+  if (s.length <= max) return s;
+  const corte = s.slice(0, max + 1);
+  const frase = Math.max(corte.lastIndexOf(". "), corte.lastIndexOf("? "), corte.lastIndexOf("! "));
+  if (frase > max * 0.5) return s.slice(0, frase + 1);
+  const palavra = corte.lastIndexOf(" ");
+  return s.slice(0, palavra > 0 ? palavra : max).trimEnd() + "…";
+}
+
 
 /* Link antigo da V1 com hash de rota (#/cap/pcyes) continua chegando de
    mensagem e de candidatura enviada. O `#` nunca sobe para o servidor, então
@@ -222,19 +235,45 @@ function App() {
     const base = "Gabriel Felix Barbosa";
     let titulo = `${base} · UX / Product Designer`;
     let caminho = "/";
-    let descricao = null;
+    /* A descrição da home é o padrão, não `null`: como isto roda a cada troca
+       de rota numa SPA, sair de um caso para a home com `null` deixava a
+       description do caso na página anterior colada na home. Toda rota agora
+       escreve a sua, e quem não tem uma própria cai aqui de volta. */
+    let descricao = "Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro casos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.";
     let imagem = null;
     let tipoOg = "website";
 
     if (rota.tipo === "caso") {
-      titulo = `${(chapterById(rota.id) || {}).title || rota.id} · ${base}`;
+      const cap = chapterById(rota.id);
+      titulo = `${(cap || {}).title || rota.id} · ${base}`;
       caminho = `/case/${rota.id}`;
+      /* Cada caso se descreve com o que ele tem de próprio.
+       *
+       * Até 30/08 só /blog e /blog/<slug> definiam descrição, então os quatro
+       * casos, /processo e /sobre serviam a description da home: quem mandava
+       * /case/pcyes no LinkedIn ou no WhatsApp gerava prévia de catálogo, e o
+       * caso mais forte do site se anunciava como página inicial.
+       *
+       * `descriptor` diz o que é, `premise` é a frase de abertura do caso, e
+       * `fact` é o resultado que o Resumo já mostra. Nada escrito novo: é o
+       * mesmo texto que está na tela. */
+      if (cap) {
+        const cabeca = [cap.descriptor, cap.project].filter(Boolean).join(" · ");
+        const corpo = [cap.premise, cap.fact].filter(Boolean).join(" ");
+        /* Corte em 200: acima disso a prévia trunca no meio de uma palavra e
+           a última frase, que é onde mora o resultado, nunca chega. Corta na
+           última fronteira de frase que couber, e só cai no reticências se a
+           primeira frase sozinha já passar. */
+        descricao = encurtar(`${cabeca}. ${corpo}`.replace(/\s+/g, " ").trim(), 200);
+      }
     } else if (rota.tipo === "processo") {
       titulo = `Processo · ${base}`;
       caminho = "/processo";
+      descricao = "Meu processo muda, o critério não. Os dois caminhos que eu rodo, o que decide o tamanho da pesquisa, e a vez em que o dado provou que a minha aposta estava errada.";
     } else if (rota.tipo === "sobre") {
       titulo = `Sobre · ${base}`;
       caminho = "/sobre";
+      descricao = "Larguei Direito por causa de um e-commerce que montei na pandemia. Hoje sou o designer de produto de uma distribuidora nacional, e desenho e implemento quando o prazo aperta.";
     } else if (rota.tipo === "blog") {
       titulo = `Notas · ${base}`;
       caminho = "/blog";
@@ -253,6 +292,17 @@ function App() {
       }
     }
 
+    /* Endereço que não existe: título genérico, fora do índice, e canonical
+       apontando para a home em vez de para o próprio caminho errado.
+       Vale para /qualquer-coisa e para /case/<id> de caso que não existe. */
+    const achou = rota.tipo !== "404" && !(rota.tipo === "caso" && !chapterById(rota.id))
+      && !(rota.tipo === "post" && !porSlug(rota.slug));
+    if (!achou) {
+      titulo = `Página não encontrada · ${base}`;
+      caminho = "/";
+      descricao = "Esse endereço não existe mais ou nunca existiu.";
+    }
+
     document.title = titulo;
     const url = window.location.origin + caminho;
 
@@ -262,6 +312,7 @@ function App() {
       if (el) el.setAttribute(attr, valor);
     };
 
+    por('meta[name="robots"]', "content", achou ? "index, follow" : "noindex, follow");
     por('link[rel="canonical"]', "href", url);
     por('meta[property="og:url"]', "content", url);
     por('meta[property="og:type"]', "content", tipoOg);

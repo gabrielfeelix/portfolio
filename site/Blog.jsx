@@ -188,6 +188,12 @@ function Card({ p, i, n, ir }) {
       data-formato={p.formato}
       href={`/blog/${p.slug}`}
       onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
+      /* O resumo mora dentro da janela da capa, então ele vem antes do título
+         no DOM e o nome acessível do link saía pelo resumo: "Recusei a minha
+         própria home e não sabia dizer por quê. Baixei seis…" em vez do
+         título. Na tela a ordem está certa — o resumo só aparece no hover, por
+         cima da capa —, o que estava errado era o que o link anuncia. */
+      aria-label={p.titulo}
       {...rise(i % 3)}
     >
       <span className="v2-post-card-janela">

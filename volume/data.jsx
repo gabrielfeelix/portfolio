@@ -301,6 +301,11 @@ const CHAPTERS = [
           "Depois procurei por mause e aí não veio nada, e as sugestões que apareciam eram outros erros de grafia do próprio catálogo, \u201cMause\u201d, \u201cVulcam\u201d. O mesmo acontecia com mous, com teclao, com qualquer variação que escapasse da grafia exata.",
           "Metade dos nomes numa loja de hardware é estrangeira e cheia de número, então errar a grafia é o caso comum e não a exceção. Quem escrevia mause tinha o mesmo dinheiro de quem escrevia mouse, e saía sem ver um único produto."],
       figs: ["buscaMouse", "buscaMause"],
+      /* a terceira tela fecha o argumento onde ele é feito. As duas de cima
+         são a V1 falhando; esta é o que a V2 respondeu. Ela também aparece
+         no módulo "O acabamento", como primeira das oito correções — lá ela
+         é execução, aqui é a resposta ao achado. */
+      figFim: "buscaV2",
       /* o dado que transforma o achado qualitativo em medida: sem ele a
          busca parece caso de borda que eu encontrei testando na mão. Com
          ele, é o caminho de 4 em cada 10 pessoas. */

@@ -12,6 +12,13 @@
 <link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/">
 <meta name="theme-color" content="#0B0B0C">
 
+<!-- Endereço inexistente numa SPA estática responde 200: o servidor devolve
+     este mesmo HTML para qualquer caminho. Como não dá para trocar o status
+     pelo cliente, quem avisa o buscador é este meta, ligado e desligado a
+     cada troca de rota em site/app.jsx. Sem ele, todo endereço errado que
+     alguém linkar entra no índice como página válida. -->
+<meta name="robots" content="index, follow">
+
 <!-- Open Graph / social preview -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Gabriel Felix Barbosa">
@@ -43,8 +50,15 @@
 }
 </script>
 
-<link rel="icon" type="image/png" href="/uploads/favicon.png">
-<link rel="apple-touch-icon" href="/uploads/favicon.png">
+<!-- O favicon era um PNG de 1254px e 1,42 MB servido para tudo: aba, atalho e
+     ícone de aplicativo. O navegador desenha 16 ou 32 pixels, então era 1,4 MB
+     para pintar um quadrado do tamanho de uma letra. Agora cada uso pede o seu:
+     2 KB na aba, 37 KB no atalho de iOS. O de 512 fica para manifest e para
+     quem salva na tela inicial. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/uploads/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/uploads/favicon-512.png">
+<link rel="icon" href="/uploads/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" sizes="180x180" href="/uploads/favicon-180.png">
 
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="stylesheet"
