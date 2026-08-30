@@ -261,20 +261,40 @@ const CAMPO = "/volume/assets/campo";
 /* px de curso por camada. Quem anda mais está mais perto. */
 const CAMPO_V = [14, 22, 40, 64, 92];
 
-export function Campo({ nome = "Intervalo", carimbo = "©26" }) {
+/* A frase da passagem.
+
+   docs/PENDENCIAS-V2.md sempre pediu que esta seção fosse "passagem para a
+   dobra seguinte, e não banner mudo" — e sem uma palavra ela era banner mudo,
+   por mais bonita que estivesse.
+
+   Ela aponta para os dois lados de propósito, porque é isso que uma passagem
+   faz: para cima estão os números, o que já foi entregue; para baixo está o
+   método, como aquilo foi feito. "Ao ar" não é escolha de estilo, é o
+   vocabulário que a página já usa em "Do objetivo ao ar" e em "o que sobrou
+   no ar".
+
+   O que ela NÃO é: aspiração. A voz do site é concreta em toda parte ("Números
+   de produção, não de vaidade", "Três movimentos, e o do meio é o que a
+   maioria pula"), e frase de capa é exatamente onde soar genérico custa mais
+   caro num portfólio. */
+const CAMPO_FRASE = "Acima, o que foi ao ar. Abaixo, como foi parar lá.";
+
+export function Campo({ nome = "Travessia", carimbo = "©26", frase = CAMPO_FRASE }) {
   const { ref, estilos } = useCamadas(CAMPO_V);
+  const revelar = useRevelar();
   const camada = (i, classe, arquivo) => (
     <motion.div className={`v2-campo-camada ${classe}`} style={estilos[i]}>
       <img src={`${CAMPO}/${arquivo}.webp`} alt="" aria-hidden="true" loading="lazy" />
     </motion.div>
   );
   return (
-    <section className="v2-campo" ref={ref} aria-label="Intervalo">
+    <section className="v2-campo" ref={ref} aria-label={nome}>
       {camada(0, "v2-campo-ceu", "ceu")}
       {camada(1, "v2-campo-lua", "lua")}
       {camada(2, "v2-campo-longe", "morro-longe")}
       {camada(3, "v2-campo-aviao", "aviao")}
       {camada(4, "v2-campo-perto", "morro-perto")}
+      {frase ? <motion.p className="v2-campo-frase" {...revelar(1)}>{frase}</motion.p> : null}
       <Cromo nome={nome} carimbo={carimbo} escuro />
     </section>
   );

@@ -1146,7 +1146,7 @@
 
    E o mesmo valor no desktop, no celular e em reduced-motion, entao os dois
    @media que existiam aqui viraram letra morta e sairam. */
-.v2-pilha { padding: 0 0 var(--v2-s6); }
+.v2-pilha { padding: 0 0 var(--v2-s5); }
 .v2-linha-casos { padding-inline: 0; }
 
 /* ---- numeros ---- */
