@@ -1000,7 +1000,7 @@ const CONTATO = {
      PDF no ATS, e sem ele o portfólio inteiro depende de a pessoa ter tempo
      de ler. Mora em uploads/ porque é a única pasta que build.mjs sincroniza
      para dist/; o arquivo na raiz do repo não é servido. */
-  curriculo: { label: "Currículo", display: "PDF · 36 KB", href: "/uploads/gabriel-felix-barbosa-product-designer.pdf" },
+  curriculo: { label: "Currículo", display: "PDF · 30 KB", href: "/uploads/gabriel-felix-barbosa-product-designer.pdf" },
 };
 const AUTOR = "Gabriel Felix Barbosa";
 const VOL = "VOL. 2026";

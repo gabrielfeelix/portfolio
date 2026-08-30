@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Gabriel Felix Barbosa — Product Designer</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap">
+<style>
+  @page { size: A4; margin: 10mm 13mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Switzer", -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 8.5pt; line-height: 1.3; color: #16181d;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: #16181d; text-decoration: none; border-bottom: .4pt solid #b9bec9; }
+
+  /* cabeçalho */
+  .nome { font-size: 18.5pt; font-weight: 700; letter-spacing: -.022em; margin: 0; }
+  .cargo { font-size: 10.2pt; font-weight: 500; color: #E4231B; margin: 1.5pt 0 0; letter-spacing: -.005em; }
+  .contato { font-size: 8.3pt; color: #4a5060; margin: 4.5pt 0 0; }
+  .contato span { white-space: nowrap; }
+  .sep { color: #b9bec9; padding: 0 3.5pt; }
+
+  /* seções */
+  h2 {
+    font-size: 7.1pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: #6b7280; margin: 5.6pt 0 0; padding-bottom: 1.6pt;
+    border-bottom: .5pt solid #dfe2e8;
+  }
+  .resumo { margin: 4pt 0 0; text-align: justify; }
+
+  /* cargo + empresa */
+  .cargo-linha { display: flex; justify-content: space-between; align-items: baseline; margin: 5.2pt 0 0; gap: 8pt; }
+  .cargo-linha.primeiro { margin-top: 6pt; }
+  .cargo-t { font-size: 9.9pt; font-weight: 700; letter-spacing: -.012em; }
+  .cargo-t em { font-style: normal; font-weight: 500; color: #4a5060; }
+  .cargo-d { font-size: 8.1pt; color: #6b7280; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .contexto { margin: 1.8pt 0 0; color: #4a5060; font-size: 8.3pt; }
+
+  ul { margin: 2.8pt 0 0; padding: 0; list-style: none; }
+  li { position: relative; padding-left: 8.5pt; margin-top: 1.9pt; }
+  li::before {
+    content: ""; position: absolute; left: 0; top: 4.6pt;
+    width: 2.6pt; height: 2.6pt; border-radius: 50%; background: #c3c8d2;
+  }
+  b { font-weight: 600; }
+
+  /* rodapé de blocos curtos */
+  .linha { margin: 2.2pt 0 0; }
+  .rot { font-weight: 600; }
+  .comp { margin: 4.5pt 0 0; color: #2a2f3a; }
+  .duas { display: flex; gap: 16pt; margin-top: 3.5pt; }
+  .duas > div { flex: 1; }
+</style>
+</head>
+<body>
+
+<p class="nome">Gabriel Felix Barbosa</p>
+<p class="cargo">Product Designer</p>
+<p class="contato">
+  <span>Maringá – PR</span><span class="sep">·</span><span>(44) 99877-5978</span><span class="sep">·</span><span>gab.feelix@gmail.com</span><span class="sep">·</span><span><a href="https://www.linkedin.com/in/gabrielfeelix/">linkedin.com/in/gabrielfeelix</a></span><span class="sep">·</span><span><a href="https://gabrielfelix-ux.4yu.com.br"><b>gabrielfelix-ux.4yu.com.br</b></a></span>
+</p>
+
+<h2>Resumo</h2>
+<p class="resumo">Product Designer em produto interno, e-commerce e SaaS de gestão. Trabalho a partir de dado de uso — gravação de sessão, funil de analytics e conversa com quem opera — e levo a decisão até o ar: quando o prazo não espera o time de desenvolvimento, eu mesmo implemento. Acessibilidade entra como requisito, não como ajuste final.</p>
+
+<h2>Experiência</h2>
+
+<div class="cargo-linha primeiro">
+  <span class="cargo-t">Grupo Oderço <em>· UX/UI Designer</em></span>
+  <span class="cargo-d">02/2026 – Atual · Maringá/PR</span>
+</div>
+<p class="contexto">Único designer de uma distribuidora nacional com cinco marcas próprias (PCYES, Vinik, Skul, Odex e Tonante), em três frentes simultâneas — e-commerce, plataforma e sistema interno — sem nível acima.</p>
+<ul>
+  <li><b>Encurtei em 60% o checkout que já estava no ar</b> — de 3.421 px para 1.366 px —, com os quatro meios de pagamento em linha única e o frete condensado. Correção proposta na versão em produção, sem esperar o redesenho.</li>
+  <li>Redesenhei o e-commerce PCYES (V2), <b>em implementação, publicação prevista para outubro/2026</b>. Parti do funil do GA4 do trimestre — <b>166.267 sessões, evento a evento</b> — e de gravação no Clarity: <b>a loja convertia a 0,13% contra 1,1% da categoria</b>, e o dado derrubou minha própria hipótese — o gargalo não era o checkout, era o passo entre ver o produto e pôr no carrinho.</li>
+  <li><b>Contrariei o briefing de direção visual com gravação de sessão na mão</b> e propus um terceiro caminho, com o caminho de compra como eixo. Foi a direção aprovada pela diretoria.</li>
+  <li>Construí o design system do PCYES — <b>239 tokens e 69 componentes</b>, sincronizados com o código por Tokens Studio —, para o time implementar sem redecidir espaçamento, estado e cor a cada tela.</li>
+  <li>Cadastro de revenda com validação automática de CNPJ e esteira de lead. Documentei a API do RD Station para automatizar, e isso mostrou ao time que dava para conectá-la ao CRM interno: <b>a operação comercial passou de três sistemas para dois</b>, fora do escopo.</li>
+  <li>Redesenhei a plataforma Odex e o app, com protótipos validados junto de gestores e diretoria, que operam o sistema todo dia. <b>Implementei o site eu mesmo no Magento</b> porque a entrega estava presa a uma data de feira sem janela do time.</li>
+  <li>Acessibilidade em produção: <b>VLibras</b> e correção de contraste para <b>WCAG AA (4.51:1 medido)</b>.</li>
+</ul>
+
+<div class="cargo-linha">
+  <span class="cargo-t">Locarmais <em>· UX Designer</em></span>
+  <span class="cargo-d">02/2025 – 02/2026 · Maringá/PR</span>
+</div>
+<p class="contexto">Cinco produtos SaaS do mercado imobiliário e de locação (Locarmais, IMMO, Locar Fácil, Signa Mais e Credfacil).</p>
+<ul>
+  <li>Desenhei do zero o <b>módulo de conciliação financeira multi-adquirente</b> — cinco status, três caminhos ordenados por esforço humano e trilha de auditoria —, acompanhando o time que rodava o processo em planilha. <b>Fechar com diferença passou a exigir motivo em lista fechada: a exceção era um buraco no processo e virou dado.</b></li>
+  <li>Entrou em produção, <b>substituiu uma ferramenta externa contratada e as planilhas paralelas do financeiro deixaram de existir</b>. O time parou de abrir chamado no desenvolvimento para pedir relatório.</li>
+  <li><b>Fui a referência de UX de outro designer do time</b> no produto IMMO: revisão de entrega, direção e acompanhamento.</li>
+  <li><b>Único lugar onde testei com o usuário real do sistema</b> — entrevista, gravação e hipótese em cima do observado, sob uma regra de gestão que era resolver sem pesquisa formal.</li>
+  <li>Painéis para operação e diretoria: carteira por comportamento, contratos aprovados contra pagos, meta por representante e churn.</li>
+</ul>
+
+<div class="cargo-linha">
+  <span class="cargo-t">TT&amp;T <em>· Estagiário em UX/UI Design</em></span>
+  <span class="cargo-d">02/2024 – 11/2024 · Remoto</span>
+</div>
+<p class="contexto">Programa de formação em produto com cerca de quarenta estagiários, em squads com ritual ágil.</p>
+<ul>
+  <li>Entrei para desenhar e <b>acabei coordenando o squad de design</b>: backlog, rituais e entrega em Trello e FigJam, além de seleção e onboarding de designer novo. Fluxo, jornada, arquitetura da informação e prototipação. <b>Sem usuário real em momento nenhum</b> — o que se aprende ali é como uma operação de produto se organiza por dentro.</li>
+</ul>
+
+<h2>Projetos próprios</h2>
+<div class="duas">
+  <div>
+    <p class="linha"><span class="rot">Deixei Aqui</span> — app de localização de veículo, publicado na Play Store</p>
+    <p class="linha"><span class="rot">Quanto Cobro</span> — cálculo de preço por hora para freelancer, Android</p>
+  </div>
+  <div>
+    <p class="linha"><span class="rot">Worklife</span> — gestão de ponto: painel do gestor e app do diarista · <a href="https://ponto-snowy.vercel.app">ponto-snowy.vercel.app</a></p>
+    
+  </div>
+</div>
+
+<h2>Formação e certificações</h2>
+<div class="duas">
+  <div>
+    <p class="linha"><span class="rot">Design Gráfico</span> — UNINTER · 2022 – 2024</p>
+    <p class="linha"><span class="rot">Direito</span> — UEM · 2019 – 2024 <span style="color:#6b7280">(largado no último ano para seguir design)</span></p>
+  </div>
+  <div>
+    <p class="linha">UX à prova de balas · Design Circuit — UX/UI (2025)</p>
+    <p class="linha">Coderhouse — UX/UI (2022) · Scrum Foundation SFPC — CertiProf (2023) · Criação com IA: Claude + Figma — Tera (2026)</p>
+  </div>
+</div>
+
+<h2>Competências</h2>
+<p class="comp">Design System · Pesquisa com Usuário · Gravação de Sessão (Clarity) · Análise de Funil (GA4) · Wireframe e Protótipo (Figma) · Arquitetura da Informação · Mapeamento de Processo e Jornada · Acessibilidade (WCAG 2.2, contraste, leitor de tela) · Design de Sistema B2B · E-commerce (Magento) · Documentação e Handoff · Scrum · HTML/CSS<br><span style="color:#6b7280">Idiomas: Português nativo · Inglês técnico</span></p>
+
+</body>
+</html>
