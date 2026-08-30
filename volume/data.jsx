@@ -68,7 +68,7 @@ const CHAPTERS = [
        chave que faz o atalho existir: capítulo sem `minutos` não ganha
        atalho, porque um atalho de 3 minutos num capítulo de 3 minutos
        seria mentira. Se o capítulo crescer, meça de novo e atualize. */
-    minutos: 18,
+    minutos: 19,
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
@@ -647,6 +647,9 @@ const CHAPTERS = [
     surface: "Sistema de gestão · web",
     periodo: "Em produção",
     year: "2026",
+    /* Medido, não estimado: 1379 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 7,
     fact: "Substituiu uma ferramenta externa e eliminou as planilhas paralelas do time financeiro",
     tldr: {
       papel: "UX Designer, responsável pelo módulo",
@@ -774,6 +777,9 @@ const CHAPTERS = [
     surface: "Plataforma · aplicativo · site",
     periodo: "Plataforma em andamento · site em produção · app em protótipo",
     year: "2026",
+    /* Medido, não estimado: 604 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 3,
     fact: "Sistema legado atualizado sem alterar o percurso de quem já usava",
     tldr: {
       papel: "UX/UI Designer",
@@ -844,6 +850,9 @@ const CHAPTERS = [
     surface: "Landing page · formulário · RD Station",
     periodo: "Pronta, lançamento em etapas",
     year: "2026",
+    /* Medido, não estimado: 756 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 4,
     fact: "Reduziu de três para dois os sistemas usados pelo comercial",
     tldr: {
       papel: "UX/UI Designer, do fluxo à automação",
@@ -908,6 +917,9 @@ const CHAPTERS = [
     surface: "Website · Manifesto",
     periodo: "No ar",
     year: "2026",
+    /* Medido, não estimado: 449 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 2,
     fact: "Zero violação WCAG, medida view a view",
     tldr: {
       papel: "Ideia, design e código, do conceito ao ar",
@@ -963,6 +975,12 @@ const CONTATO = {
   linkedin:  { label: "LinkedIn", display: "/in/gabrielfeelix", href: "https://www.linkedin.com/in/gabrielfeelix/" },
   instagram: { label: "Instagram", display: "@gaabriel.feelix", href: "https://www.instagram.com/gaabriel.feelix/" },
   tiktok:    { label: "TikTok", display: "@mangudosanimes", href: "https://www.tiktok.com/@mangudosanimes" },
+  /* O currículo em PDF. Entrou em 30/08: o site tinha WhatsApp, e-mail e
+     LinkedIn e nenhum arquivo para anexar. Quem faz triagem precisa subir um
+     PDF no ATS, e sem ele o portfólio inteiro depende de a pessoa ter tempo
+     de ler. Mora em uploads/ porque é a única pasta que build.mjs sincroniza
+     para dist/; o arquivo na raiz do repo não é servido. */
+  curriculo: { label: "Currículo", display: "PDF · 36 KB", href: "/uploads/gabriel-felix-barbosa-ux-designer.pdf" },
 };
 const AUTOR = "Gabriel Felix Barbosa";
 const VOL = "VOL. 2026";

@@ -151,7 +151,11 @@ function Hamburguer({ aberto, onClick }) {
 function Menu({ aberto, fechar, ir, rota }) {
   const painel = useRef(null);
   const c = CONTATO();
-  const sociais = ["linkedin", "instagram", "whatsapp"].filter((k) => c[k]);
+  /* Deixou de ser só rede social em 30/08, quando o currículo entrou: o menu
+     do telefone é a única navegação que existe em tela pequena, e era o único
+     lugar do site onde o PDF não teria como aparecer. Por isso `atalhos` e
+     não `sociais` — o currículo fecha a fila, depois dos canais de conversa. */
+  const atalhos = ["linkedin", "instagram", "whatsapp", "curriculo"].filter((k) => c[k]);
 
   /* Enquanto aberto: Escape fecha, a página atrás não rola, e o foco entra no
      painel. Sem a trava de scroll, arrastar o menu arrastava a home embaixo
@@ -221,7 +225,7 @@ function Menu({ aberto, fechar, ir, rota }) {
           >
             <a className="v2-menu-email" href={c.email.href}>{c.email.display}</a>
             <ul className="v2-menu-social">
-              {sociais.map((k) => (
+              {atalhos.map((k) => (
                 <li key={k}>
                   <a href={c[k].href} target="_blank" rel="noopener noreferrer">{c[k].label}</a>
                 </li>
@@ -368,7 +372,11 @@ export function Lamina({ tom = "claro", borda = "topo" }) {
    sobre quando inverter. */
 export function Rodape() {
   const c = CONTATO();
-  const canais = ["email", "linkedin", "whatsapp", "instagram"].filter((k) => c[k]);
+  /* `curriculo` fecha a lista desde 30/08. É o único item daqui que não é um
+     canal de conversa, e é justamente o que faltava: recrutador que gostou do
+     site precisa de um arquivo para anexar. Entra por último porque a ordem
+     da lista é a da intenção — falar primeiro, arquivar depois. */
+  const canais = ["email", "linkedin", "whatsapp", "instagram", "curriculo"].filter((k) => c[k]);
   return (
     <footer className="v2-rodape" id="contato" data-escuro-corpo="1">
       {/* A lâmina escura que subia aqui SAIU em 29/08, a pedido do Gabriel:

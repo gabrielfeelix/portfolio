@@ -280,6 +280,12 @@ function Ficha({ cap }) {
     ["Papel", cap.role],
     ["Superfície", cap.surface],
     ["Período", cap.periodo],
+    /* O preço da leitura, declarado antes de ser cobrado. `minutos` era medido
+       em volume/data.jsx desde sempre e não chegava à tela: o capítulo 01 pede
+       19 minutos e abria sem avisar. Numa triagem que dá quatro minutos ao site
+       inteiro, isso lê como quem não sabe editar. Declarado, lê como quem sabe
+       o que custa ler o que escreveu. */
+    ["Leitura", cap.minutos ? `${cap.minutos} min` : null],
   ].filter(([, v]) => v);
 
   return (

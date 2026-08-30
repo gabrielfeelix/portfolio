@@ -391,6 +391,11 @@ function Cartao({ caso, i, ir }) {
           <span className="v2-cartao-dom">
             <span className="v2-cartao-idx">{`_0${i + 1}`}</span>
             {cap.domain}
+            {/* O tempo de leitura no cartão, e não só dentro do caso: aqui é
+                onde a escolha acontece. Quem tem quatro minutos vê que o 01
+                pede 19 e entra pelo 03, que pede 3 — em vez de abrir o mais
+                longo, desistir no meio e sair do site achando que leu. */}
+            {cap.minutos ? <span className="v2-cartao-min">{`${cap.minutos} min`}</span> : null}
           </span>
         </span>
       </a>

@@ -568,6 +568,17 @@
   border-top: 1px solid var(--v2-rule);
 }
 
+/* O par de pills do fecho. O `.v2-sb-fecho` é um space-between de dois filhos,
+   e o segundo passou a ser dois botões em 30/08: sem este wrapper eles viravam
+   o terceiro e o quarto item do space-between e se afastavam um do outro pela
+   largura da dobra. Quebra para a linha de baixo no telefone. */
+.v2-sb-fecho-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s2);
+}
+
 .v2-sb-obrigado {
   margin: 0;
   font-family: var(--v2-mono);
