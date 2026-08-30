@@ -8,7 +8,12 @@ dist/
 
 # material pessoal e sensível: não vai pro repo nem pro deploy
 dossie-profissional-gabriel.md
+# O CV na raiz é a fonte de edição e fica fora do git. A cópia que vai ao
+# ar é uploads/, essa sim versionada. A regra era *Curriculo*.pdf e quebrou
+# quando o arquivo foi renomeado para o nome que o recrutador lê.
+/Gabriel-Felix-Barbosa-Product-Designer.pdf
 *Curriculo*.pdf
+*.pdf:Zone.Identifier
 *.Zone.Identifier
 *Zone.Identifier
 
