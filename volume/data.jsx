@@ -69,6 +69,16 @@ const CHAPTERS = [
        atalho, porque um atalho de 3 minutos num capítulo de 3 minutos
        seria mentira. Se o capítulo crescer, meça de novo e atualize. */
     minutos: 19,
+    /* O caminho curto, medido pela mesma régua: a espinha do capítulo
+       (resumo, problema, decisões, solução, resultado e o que aprendi) soma
+       451 palavras, contra 3761 do caminho inteiro.
+
+       Só existe onde a economia é real. A regra é a que já estava escrita
+       aqui em cima, no `minutos` do capítulo 01: um atalho de 3 minutos num
+       capítulo de 3 minutos seria mentira. O corte é economia de 3 minutos ou
+       mais — por isso ODEX, Oderço e Portfólio não têm este campo, e a página
+       deles não oferece escolha nenhuma. */
+    minutosCurto: 2,
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
@@ -650,6 +660,16 @@ const CHAPTERS = [
     /* Medido, não estimado: 1379 palavras de prosa no caminho padrão, a 200
        palavras por minuto. Se o capítulo crescer, meça de novo. */
     minutos: 7,
+    /* O caminho curto, medido pela mesma régua: a espinha do capítulo
+       (resumo, problema, decisões, solução, resultado e o que aprendi) soma
+       673 palavras, contra 1370 do caminho inteiro.
+
+       Só existe onde a economia é real. A regra é a que já estava escrita
+       aqui em cima, no `minutos` do capítulo 01: um atalho de 3 minutos num
+       capítulo de 3 minutos seria mentira. O corte é economia de 3 minutos ou
+       mais — por isso ODEX, Oderço e Portfólio não têm este campo, e a página
+       deles não oferece escolha nenhuma. */
+    minutosCurto: 3,
     fact: "Substituiu uma ferramenta externa e eliminou as planilhas paralelas do time financeiro",
     tldr: {
       papel: "UX Designer, responsável pelo módulo",

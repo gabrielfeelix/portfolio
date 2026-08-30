@@ -304,6 +304,49 @@ function Ficha({ cap }) {
 
 /* ============================================================== abertura */
 
+/* ============================================================== caminho
+
+   A escolha entre ler o capítulo inteiro e ler só a espinha dele.
+
+   O motivo é de triagem: o capítulo 01 pede 19 minutos e o portfólio inteiro
+   pede 35, contra os três ou quatro que alguém gasta num primeiro passe. Até
+   aqui a página tinha uma porta só, e quem não tinha o tempo saía no meio —
+   que é pior que ler o resumo, porque sai sem o resultado.
+
+   Duas portas declaradas resolvem sem cortar uma linha do texto: quem tem o
+   tempo lê tudo, quem não tem lê a espinha inteira e chega ao fim. E a espinha
+   NÃO é um resumo escrito à parte: é o mesmo texto, filtrado. Nada aqui foi
+   reescrito para caber, então o caminho curto não tem como divergir do longo.
+
+   Só aparece onde a economia é real (ver `minutosCurto` em volume/data.jsx).
+   Em capítulo de 3 minutos não há escolha a oferecer, e a página não oferece. */
+function Caminho({ cap, curto, trocar }) {
+  if (!cap.minutos || !cap.minutosCurto) return null;
+  const opcoes = [
+    { k: false, r: "Capítulo inteiro", m: cap.minutos },
+    { k: true, r: "Só o essencial", m: cap.minutosCurto },
+  ];
+  return (
+    <section className="v2-wrap v2-caminho" aria-label="Como você quer ler">
+      <p className="v2-caminho-l">Como você quer ler</p>
+      <div className="v2-caminho-op" role="group">
+        {opcoes.map((o) => (
+          <button
+            key={String(o.k)}
+            type="button"
+            className="v2-caminho-b"
+            aria-pressed={curto === o.k}
+            onClick={() => trocar(o.k)}
+          >
+            <span className="v2-caminho-r">{o.r}</span>
+            <span className="v2-caminho-m">{o.m} min</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Abertura({ cap }) {
   const a = cap.abertura;
   if (!a) return null;
@@ -1314,19 +1357,52 @@ export default function Caso({ id, ir }) {
   /* `tem` lista as chaves de conteúdo que sustentam o movimento. Se nenhuma
      existe, o movimento inteiro sai — capa incluída. Cada componente já sabe
      se apaga sozinho; o que faltava era a capa saber. */
+  /* O caminho escolhido mora na URL, e não só no estado: quem manda o link do
+     caso para alguém manda junto a forma como leu. `?curto=1` é ignorado pelo
+     roteador, que só olha `pathname` (ver rotaDe em app.jsx), então ele não
+     tem como atrapalhar a navegação. */
+  const [curto, setCurto] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("curto") === "1";
+  });
+
+  /* Trocar de caminho volta ao topo do corpo. Sem isso a pessoa que aperta
+     "só o essencial" no meio do capítulo continua na mesma altura de rolagem,
+     que no caminho curto é outro trecho — ou o fim da página. */
+  const trocar = (v) => {
+    setCurto(v);
+    const u = new URL(window.location.href);
+    if (v) u.searchParams.set("curto", "1"); else u.searchParams.delete("curto");
+    window.history.replaceState(null, "", u.pathname + u.search);
+    const alvo = document.getElementById("v2-caso-corpo");
+    if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  /* `tem` lista as chaves de conteúdo que sustentam o movimento. Se nenhuma
+     existe, o movimento inteiro sai — capa incluída.
+
+     `curto` é o mesmo movimento com o corpo reduzido à espinha. Quando ele é
+     `null`, o movimento não existe no caminho curto: é o caso da investigação,
+     que é o trecho mais longo do capítulo 01 e o primeiro a sair quando alguém
+     tem quatro minutos. A numeração das capas acompanha o caminho escolhido,
+     porque ela sai do tamanho da lista já filtrada. */
   const movimentos = [
     { t: "O problema", tem: ["problema", "funil", "gesto"],
-      corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></> },
+      corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></>,
+      curto: <Problema cap={cap} /> },
     { t: "A investigação", tem: ["investigacao", "busca", "citacao"],
-      corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></> },
+      corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></>,
+      curto: null },
     { t: "A resposta", tem: ["decisoes", "recusei", "ponte", "solucao", "sistema", "vocabulario", "modulos", "calendario"],
-      corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></> },
+      corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></>,
+      curto: <><Decisoes cap={cap} /><Solucao cap={cap} /></> },
     { t: "O resultado", tem: ["antesDepois", "resultado", "aprendi"],
-      corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></> },
+      corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></>,
+      curto: <><Resultado cap={cap} /><Aprendi cap={cap} /></> },
   ].filter((m) => m.tem.some((k) => {
     const v = cap[k];
     return Array.isArray(v) ? v.length > 0 : v != null;
-  }));
+  })).filter((m) => !curto || m.curto);
 
   return (
     <>
@@ -1335,8 +1411,14 @@ export default function Caso({ id, ir }) {
           `data-clara` é o que a nav observa para saber quando inverter. */}
       <CampoDeVoo variante="caso" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
         <Lamina />
-        {/* A abertura: quem é o projeto, antes de qualquer movimento. */}
+        {/* A abertura: quem é o projeto, antes de qualquer movimento.
+
+            O caminho vem logo depois da ficha de propósito: é na ficha que a
+            pessoa acabou de ler "Leitura · 19 min", e a escolha tem que estar
+            onde o preço aparece, não três dobras abaixo. */}
+        <span id="v2-caso-corpo" />
         <Ficha cap={cap} />
+        <Caminho cap={cap} curto={curto} trocar={trocar} />
         <Abertura cap={cap} />
         <Resumo cap={cap} />
 
@@ -1351,12 +1433,22 @@ export default function Caso({ id, ir }) {
          * Agora cada movimento declara o que o sustenta. Sem conteúdo, não
          * há capa, e o denominador acompanha: o Oderço lê 01/03 a 03/03, e
          * quem tem os quatro segue em 01/04 a 04/04. */}
-        {movimentos.map(({ t, corpo }, i) => (
-          <React.Fragment key={t}>
-            <CapaCapitulo n={dois(i + 1)} t={t} de={dois(movimentos.length)} />
-            {corpo}
+        {movimentos.map((m, i) => (
+          <React.Fragment key={m.t}>
+            <CapaCapitulo n={dois(i + 1)} t={m.t} de={dois(movimentos.length)} />
+            {curto ? m.curto : m.corpo}
           </React.Fragment>
         ))}
+
+        {/* A saída do caminho curto. Quem leu a espinha e se interessou não
+            deveria precisar procurar como ler o resto: a oferta vem no ponto
+            em que ele acabou de terminar, que é onde a vontade existe. */}
+        {curto ? (
+          <section className="v2-wrap v2-caminho v2-caminho-fim">
+            <p className="v2-caminho-l">Você leu a versão de {cap.minutosCurto} min</p>
+            <Pill onClick={() => trocar(false)}>Ler o capítulo inteiro · {cap.minutos} min</Pill>
+          </section>
+        ) : null}
         <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
       </CampoDeVoo>
     </>
