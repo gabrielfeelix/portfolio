@@ -12,7 +12,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { useRevelar, useCortina, useParallax, useCamadas, useContador, useRise, useSubir, useVoo, AVIAO_D } from "./motion.js";
+import { useRevelar, useCortina, useParallax, useCamadas, useContador, useRise, useSubir, useVoo, AVIAO_D, dur, easeRevela } from "./motion.js";
 import { Label, Regua, Lamina } from "./Shell.jsx";
 
 /* A lâmina mora em Shell.jsx, que é o módulo de baixo — Kit importa de Shell,
@@ -273,15 +273,45 @@ const CAMPO_V = [14, 22, 40, 64, 92];
    vocabulário que a página já usa em "Do objetivo ao ar" e em "o que sobrou
    no ar".
 
+   A FORMA é a frase. Ela diz "acima" e "abaixo", então vem partida em duas
+   metades separadas por uma régua: a de cima fica literalmente acima da linha
+   e a de baixo, abaixo. A tipografia encena o que o texto afirma, em vez de só
+   transportá-lo. A régua não é ornamento novo — é o mesmo filete que separa as
+   linhas do índice do método e abre toda dobra do site.
+
+   O degrau é --v2-t-secao, o mesmo dos títulos de dobra, e não um tamanho
+   entre ele e o lead: tokens.css proíbe o sexto degrau ("se um componente
+   pedir um sexto, o degrau escolhido está errado; não falta degrau"). Em
+   20px a frase lia como legenda de foto, que era a queixa. Ela nunca divide
+   tela com um título de dobra, então não há competição.
+
+   O "ar" sai no --v2-accent. É a única palavra colorida, e o avião é o único
+   objeto vermelho da cena: a palavra e a coisa acendem na mesma cor.
+
    O que ela NÃO é: aspiração. A voz do site é concreta em toda parte ("Números
    de produção, não de vaidade", "Três movimentos, e o do meio é o que a
    maioria pula"), e frase de capa é exatamente onde soar genérico custa mais
    caro num portfólio. */
-const CAMPO_FRASE = "Acima, o que foi ao ar. Abaixo, como foi parar lá.";
+const CAMPO_FRASE = ["Acima, o que foi ao *ar*.", "Abaixo, como foi parar lá."];
+
+function acender(t) {
+  return t.split("*").map((p, i) =>
+    i % 2 ? <em key={i} className="v2-campo-acende">{p}</em> : p);
+}
 
 export function Campo({ nome = "Travessia", carimbo = "©26", frase = CAMPO_FRASE }) {
-  const { ref, estilos } = useCamadas(CAMPO_V);
+  const { ref, estilos, quieto } = useCamadas(CAMPO_V);
   const revelar = useRevelar();
+  /* A regua nao entra em fade: ela se DESENHA, do lado alinhado para o solto.
+     E o mesmo gesto das reguas do indice do metodo, e e por isso que ela le
+     como parte do sistema e nao como um risco posto em cima da foto. O
+     transform-origin mora no CSS porque vira com o alinhamento no retrato. */
+  const regua = quieto
+    ? { initial: { opacity: 0 }, whileInView: { opacity: 1 },
+        viewport: { once: true, amount: 0.4 }, transition: { duration: 0.2 } }
+    : { initial: { scaleX: 0 }, whileInView: { scaleX: 1 },
+        viewport: { once: true, amount: 0.4 },
+        transition: { duration: dur, ease: easeRevela, delay: 0.08 } };
   const camada = (i, classe, arquivo) => (
     <motion.div className={`v2-campo-camada ${classe}`} style={estilos[i]}>
       <img src={`${CAMPO}/${arquivo}.webp`} alt="" aria-hidden="true" loading="lazy" />
@@ -294,7 +324,15 @@ export function Campo({ nome = "Travessia", carimbo = "©26", frase = CAMPO_FRAS
       {camada(2, "v2-campo-longe", "morro-longe")}
       {camada(3, "v2-campo-aviao", "aviao")}
       {camada(4, "v2-campo-perto", "morro-perto")}
-      {frase ? <motion.p className="v2-campo-frase" {...revelar(1)}>{frase}</motion.p> : null}
+      {frase ? (
+        <div className="v2-campo-dito">
+          {/* o asterisco marca a palavra do accent e nunca chega ao DOM, que é
+              a mesma convenção da DECLARACAO em copy.js */}
+          <motion.p className="v2-campo-frase" {...revelar(0)}>{acender(frase[0])}</motion.p>
+          <motion.span className="v2-campo-regua" aria-hidden="true" {...regua} />
+          <motion.p className="v2-campo-frase" {...revelar(1)}>{acender(frase[1])}</motion.p>
+        </div>
+      ) : null}
       <Cromo nome={nome} carimbo={carimbo} escuro />
     </section>
   );

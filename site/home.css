@@ -1179,7 +1179,7 @@
 .v2-linha {
   position: relative;
   display: grid;
-  grid-template-columns: var(--v2-label-col) minmax(0, 1fr) 64px;
+  grid-template-columns: var(--v2-label-col) minmax(0, 1fr);
   align-items: start;
   gap: var(--v2-s4);
   padding: var(--v2-s4) 0;
@@ -1214,33 +1214,13 @@
 /* o nome do passo em negrito na frente da propria frase: e o componente da
    launchfolio, e evita pedir um sexto degrau na escala */
 .v2-linha-t { font-weight: 600; color: var(--v2-ink); }
-.v2-linha-m { display: block; }
-
-/* O selo: 64x64, traco, o mesmo objeto em tres estados.
-
-   Chama-se selo e nao marca porque `.v2-marca` ja existe: e a celula de logo
-   da faixa de marcas, com padding-inline de 64px e border-right. Reusando o
-   nome, o padding dela vazava e o svg media 129px em vez de 64, com a marca
-   pintando 65px fora da goteira. */
-/* `overflow: visible` e obrigatorio aqui, e nao e estetica: o disparo das
-   marcas e whileInView, e overflow diferente de visible no proprio <svg> zera
-   o retangulo do IntersectionObserver para os filhos. Com `hidden` as tres
-   marcas simplesmente nao apareciam, sem erro nenhum no console. E a mesma
-   armadilha anotada em motion.js. */
-.v2-selo {
-  display: block;
-  width: 64px;
-  height: 64px;
-  overflow: visible;
-}
 
 @media (max-width: 760px) {
   .v2-linha {
-    grid-template-columns: 1fr 64px;
+    grid-template-columns: 1fr;
     gap: var(--v2-s2) var(--v2-s3);
   }
   .v2-linha-n { grid-column: 1; padding-top: 0; }
-  .v2-linha-m { grid-column: 2; grid-row: 1 / span 2; }
   .v2-linha-p { grid-column: 1; }
 }
 

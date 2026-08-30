@@ -31,7 +31,6 @@ import {
   rolarPara,
 } from "./motion.js";
 import { Pill } from "./Shell.jsx";
-import { ILUSTRACOES } from "./Ilustracoes.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Campo, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
@@ -569,9 +568,7 @@ function Processo({ ir }) {
         cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>Ver o método inteiro</Pill>}
       />
       <ol className="v2-indice">
-        {PROCESSO_CURTO.map((f, i) => {
-          const Marca = ILUSTRACOES[i];
-          return (
+        {PROCESSO_CURTO.map((f, i) => (
             <li className="v2-linha" key={f.titulo}>
               <motion.span
                 className="v2-linha-regua"
@@ -585,12 +582,8 @@ function Processo({ ir }) {
               <motion.p className="v2-linha-p" {...linha(i)}>
                 <b className="v2-linha-t">{f.titulo}.</b> {f.frase}
               </motion.p>
-              <motion.span className="v2-linha-m" aria-hidden="true" {...linha(i)}>
-                <Marca />
-              </motion.span>
             </li>
-          );
-        })}
+        ))}
       </ol>
     </Dobra>
   );
