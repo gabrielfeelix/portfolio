@@ -331,15 +331,33 @@
 /* Descido de top 40% para 53%: em 40% ele cruzava por baixo da segunda metade
    do dito, e as duas coisas disputavam a mesma faixa. A faixa livre e a que
    sobra entre o pe do texto e a crista do morro da frente. */
-.v2-campo-aviao img { left: 44%; top: 53%; width: 14%; }
+.v2-campo-aviao img { left: 44%; top: 46%; width: 14%; }
 
 /* Os morros ancoram embaixo e sangram nas duas bordas. O `bottom` negativo
    nao e recorte: e enquadramento. Sem ele os morros comem 60% da altura e
    sobra pouco ceu, que e o oposto da cena. */
 .v2-campo-longe img,
 .v2-campo-perto img { left: 50%; width: 100%; transform: translateX(-50%); }
-.v2-campo-longe img { bottom: -9%; }
-.v2-campo-perto img { bottom: -15%; }
+/* Os morros dobraram de altura no arquivo (e a folga que o parallax consome),
+   e como ancoram pelo pe, a crista subiria o mesmo tanto se o `bottom` nao
+   descesse junto. A compensacao TEM que ser em vw.
+
+   `bottom` em % resolve contra a ALTURA da secao, mas a altura renderizada da
+   imagem sai da LARGURA dela (width: 100% e a proporcao do arquivo). As duas
+   so coincidem numa proporcao de tela; em qualquer outra a conta desanda. Foi
+   o que aconteceu: com -69% os morros subiram ate tapar o aviao numa janela
+   larga e baixa.
+
+   Entao o termo grande vai em vw, que e a mesma medida de que a altura da
+   imagem depende, e o termo pequeno (o enquadramento original, que o Gabriel
+   aprovou) continua em %.
+
+   A conta do termo em vw: metade da altura renderizada, porque o arquivo tem
+   exatamente o dobro da altura util.
+     perto  1724/2560 = .67344 -> metade .33672, vezes o width da camada
+     longe  1375/2560 = .53711 -> metade .26855, vezes o width da camada */
+.v2-campo-longe img { bottom: calc(-26.86vw - 9%); }
+.v2-campo-perto img { bottom: calc(-33.67vw - 15%); }
 
 /* O dito mora no alto a direita, que e o unico canto grande de ceu limpo: a
    lua ocupa a esquerda, o aviao o centro e os morros o pe. Alinhado a direita
@@ -398,6 +416,35 @@
   transform-origin: right center;
 }
 
+/* Telas MUITO largas e baixas.
+
+   A altura dos morros sai da largura da tela; a altura da secao e fixa em
+   100svh. Entao quanto mais deitada a janela, maior o morro dentro dela — e
+   isso nao e um bug de compensacao (essa ja esta certa em vw acima), e a
+   propria geometria: em 1440x900 a crista fica a 62% da altura, e em 1893x817
+   a mesma regra poe ela a 37%, tapando o aviao. Medido em 29/08.
+
+   Os dois degraus abaixo empurram os morros mais para baixo conforme a janela
+   deita. Sao por proporcao e nao por largura, porque o que desregula e a
+   RELACAO entre largura e altura, nao o tamanho.
+
+   Ficam depois da regra base e antes dos @media de largura, que atendem
+   telas estreitas e nunca colidem com estes. */
+@media (min-aspect-ratio: 2/1) {
+  .v2-campo-longe img { bottom: calc(-26.86vw - 17%); }
+  .v2-campo-perto img { bottom: calc(-33.67vw - 25%); }
+  /* Numa janela deitada a faixa livre entre o pe do dito e a crista do morro
+     encolhe para pouco mais de 120px, e o aviao em 14% da largura ja nao cabe
+     nela: medido em 1893x817, ele encostava no texto por 26px. Ele diminui em
+     vez de o texto subir, porque quem tem folga aqui e ele — o dito ja esta
+     no alto e o morro ja desceu o que podia. */
+  .v2-campo-aviao img { top: 48%; width: 10%; }
+}
+@media (min-aspect-ratio: 23/10) {
+  .v2-campo-longe img { bottom: calc(-26.86vw - 25%); }
+  .v2-campo-perto img { bottom: calc(-33.67vw - 33%); }
+}
+
 .v2-campo .v2-cromo {
   position: absolute;
   left: var(--v2-s4); right: var(--v2-s4); bottom: var(--v2-s4);
@@ -411,8 +458,8 @@
 @media (max-width: 900px) {
   .v2-campo-lua   img { left: 24%; top: 22%; width: 40%; }
   .v2-campo-aviao img { left: 52%; top: 40%; width: 26%; }
-  .v2-campo-longe img { width: 130%; bottom: -5%; }
-  .v2-campo-perto img { width: 145%; bottom: -8%; }
+  .v2-campo-longe img { width: 130%; bottom: calc(-34.92vw - 5%); }
+  .v2-campo-perto img { width: 145%; bottom: calc(-48.82vw - 8%); }
 }
 @media (max-width: 560px) {
   /* No retrato o alto a direita e estreito demais para o degrau de display:
@@ -428,8 +475,8 @@
   .v2-campo-regua { transform-origin: left center; }
   .v2-campo-lua   img { left: 30%; top: 22%; width: 62%; }
   .v2-campo-aviao img { left: 55%; top: 44%; width: 42%; }
-  .v2-campo-longe img { width: 170%; bottom: -1%; }
-  .v2-campo-perto img { width: 190%; bottom: -2%; }
+  .v2-campo-longe img { width: 170%; bottom: calc(-45.65vw - 1%); }
+  .v2-campo-perto img { width: 190%; bottom: calc(-63.98vw - 2%); }
   .v2-campo .v2-cromo { left: var(--v2-s3); right: var(--v2-s3); bottom: var(--v2-s3); }
 }
 

@@ -90,7 +90,11 @@
   --v2-t-movimento:      2.5rem;   /* 40 */
   /* A marca d'agua do rodape e do "GABRIEL" da dobra 06: e grafismo, e por
      isso pode passar do maior degrau de texto. */
-  --v2-t-agua:           4rem;     /* 64 */
+  /* 5.5rem e nao 4: em 64px a palavra media 278px numa tela de 390 e sobrava
+     goteira dos dois lados, entao ela lia como titulo e nao como marca d'agua.
+     Em 88px ela ocupa a largura quase inteira, que e o efeito que o degrau
+     existe para dar. */
+  --v2-t-agua:           5.5rem;   /* 88 */
 
   --v2-t-bloco:     var(--v2-t-lead);
   --v2-t-corpo:     1rem;      /* 16 */

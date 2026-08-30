@@ -404,7 +404,10 @@
   .v2-hero { padding-block: var(--v2-s5) var(--v2-s4); }
   .v2-hero-pe { flex-direction: column; align-items: flex-start; gap: var(--v2-s3); }
   .v2-hero-seta { display: none; }
-  .v2-declaracao-secao { padding-block: var(--v2-s6); }
+  /* --v2-s5, nao s6: mesmo motivo do .v2-dobra-in em kit.css. 104px em cima e
+     embaixo e medida de desktop, e num telefone vira meia tela de branco. */
+  .v2-declaracao-secao { padding-block: var(--v2-s5); }
+  .v2-fita-secao { padding: var(--v2-s5) 0; gap: var(--v2-s3); }
   .v2-marca { height: 80px; padding-inline: var(--v2-s4); }
 }
 
@@ -622,7 +625,11 @@
   object-fit: contain;
   display: block;
   border-radius: 10px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .38), 0 4px 12px rgba(0, 0, 0, .22);
+  /* Era `0 24px 60px rgba(0,0,0,.38)`, e a 38% de preto com 60px de raio a
+     sombra pesava mais que a propria tela dentro do card — o Gabriel chamou de
+     "sombra fortissima". A janela de navegador continua descolada da chapa,
+     que e a funcao dela, mas com a densidade de uma sombra e nao de um halo. */
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .13), 0 2px 6px rgba(0, 0, 0, .08);
   transition: transform 900ms var(--v2-ease);
 }
 
@@ -865,8 +872,16 @@
   .v2-fita { overflow-x: auto; }
 }
 
+/* No retrato o laco precisa correr mais rapido para LER como laco.
+
+   A 52s a fita anda ~7px por segundo. Em 1440 isso e movimento perceptivel
+   porque ha seis cards em tela e a relacao entre eles muda; em 390 cabem um e
+   meio, e sete pixels por segundo contra uma borda parada nao se distingue de
+   uma fila parada — que foi a leitura do Gabriel, "no mobile ficam fixos".
+   A 26s a peca atravessa a tela em tempo de ser notada. */
 @media (max-width: 620px) {
   .v2-fita-item { width: 268px; height: 168px; }
+  .v2-fita-trilho { animation-duration: 26s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1042,6 +1057,16 @@
 
 @media (max-width: 900px) {
   .v2-tra-item { padding: var(--v2-s4) 0; }
+  /* Sem o painel da esquerda, o nome da empresa passa a ser o unico ancoradouro
+     visual da lista, e em 20px ele nao aguentava esse papel. Sobe para o degrau
+     de display. E o que diferencia esta dobra do metodo logo acima: la o
+     display alterna de lado e conta ate tres; aqui ele fica a esquerda e cada
+     bloco carrega ano, papel e nota. */
+  .v2-tra-nome {
+    font-size: var(--v2-t-secao);
+    line-height: 1.02;
+    letter-spacing: var(--v2-track-display);
+  }
 
   /* O painel da esquerda SAI no retrato, e nao so encolhe.
 
@@ -1264,6 +1289,20 @@
    launchfolio, e evita pedir um sexto degrau na escala */
 .v2-linha-t { font-weight: 600; color: var(--v2-ink); }
 
+/* O metodo e a trajetoria no retrato liam como a mesma coisa: duas pilhas de
+   blocos separados por filete, com titulo pequeno e um paragrafo embaixo. No
+   desktop elas nao se confundem porque a trajetoria tem duas colunas e o
+   metodo tem uma — e a diferenca some quando as duas viram coluna unica.
+
+   A saida nao e enfeitar uma delas, e devolver a cada uma o que ela ja e. O
+   metodo e uma CONTAGEM: tres passos, em ordem, e o nome de cada passo e a
+   informacao. Entao o nome sai da frente da frase, sobe para o degrau de
+   display e ganha a linha inteira; a frase fica embaixo, em corpo. E as linhas
+   alternam de lado, que e o mesmo movimento da declaracao logo depois da hero
+   — o par esquerda/direita que o Gabriel pediu para repetir aqui.
+
+   A alternancia so vale no retrato: no desktop a linha tem duas colunas e o
+   numero ja marca o ritmo. */
 @media (max-width: 760px) {
   .v2-linha {
     grid-template-columns: 1fr;
@@ -1271,6 +1310,16 @@
   }
   .v2-linha-n { grid-column: 1; padding-top: 0; }
   .v2-linha-p { grid-column: 1; }
+  .v2-linha-t {
+    display: block;
+    margin-bottom: var(--v2-s2);
+    font-size: var(--v2-t-secao);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: var(--v2-track-display);
+  }
+  .v2-indice > li:nth-child(even) { text-align: right; }
+  .v2-indice > li:nth-child(even) .v2-linha-regua { transform-origin: right center; }
 }
 
 /* ---- sobre ---- */
@@ -1351,7 +1400,10 @@
 @media (max-width: 900px) {
   .v2-sobre { height: 60vh; }
   /* 62vw cobria o nome inteiro e sobrava G...L */
-  .v2-sobre-foto { width: 44vw; }
+  /* 44vw davam 172px numa tela de 390: a foto lia como miniatura ao lado de um
+     nome de 64px, e a dobra que devia ser a assinatura da home era a mais
+     apagada dela. 68vw poem a figura na escala do nome. */
+  .v2-sobre-foto { width: 68vw; }
   .v2-declaracao-par { gap: var(--v2-s4); }
   /* Alinhar a direita no celular deixa o paragrafo com a borda esquerda
      serrilhada e a leitura sofre. A coluna e uma so: o bloco da direita

@@ -945,6 +945,7 @@ function tabelaPorAltura(d, w) {
   try { total = path.getTotalLength(); } catch (_) { total = 0; }
   const alturas = [];
   const distancias = [];
+  const forcado = [];
   /* -1 saiu pela esquerda, +1 pela direita, 0 dentro da caixa. */
   const lados = [];
   if (total > 0) {
@@ -968,7 +969,12 @@ function tabelaPorAltura(d, w) {
          devagar, que e a maior parte de uma travessia larga, vale o Y de
          verdade: forcar tambem ali redistribuia a rolagem inteira e o aviao
          saia pelo pe da janela, medido em 1104px numa janela de 900. */
-      const y = ultimo === -Infinity || pt.y > ultimo ? pt.y : ultimo + minimo;
+      const anda = ultimo === -Infinity || pt.y > ultimo;
+      const y = anda ? pt.y : ultimo + minimo;
+      /* Guarda QUAIS amostras andaram para tras e tiveram a altura forcada.
+         E o sinal exato do teleporte, e nao ha como reconstrui-lo depois: a
+         tabela final so tem alturas crescentes, entao a forcada some nela. */
+      forcado.push(!anda);
       ultimo = y;
       alturas.push(y);
       distancias.push(f);
@@ -983,7 +989,7 @@ function tabelaPorAltura(d, w) {
   return {
     entradas: alturas.map((y) => (y - y0) / span),
     saidas: distancias.map((f) => `${(f * 100).toFixed(3)}%`),
-    opacidades: cortina(alturas, lados),
+    opacidades: cortina(alturas, lados, forcado),
   };
 }
 
@@ -1002,7 +1008,7 @@ function tabelaPorAltura(d, w) {
 
    O corte acontece com o avião já fora da caixa dos dois lados, então não há
    fade a fazer: ninguém vê ele apagar nem acender. */
-function cortina(alturas, lados) {
+function cortina(alturas, lados, forcado) {
   const op = lados.map((l) => (l === 0 ? 1 : 0));
   const janela = typeof window !== "undefined" ? window.innerHeight : 800;
   /* Duas medidas, e vale a menor. Meia janela sozinha bastaria numa pagina
@@ -1029,6 +1035,44 @@ function cortina(alturas, lados) {
     fimAnterior = i;
     ladoAnterior = lados[i];
   }
+  /* Segunda regra: o TELEPORTE.
+
+     A primeira regra so cobre a manobra que sai da caixa pelos dois lados. Mas
+     o percurso tem trechos que andam muito de lado sem nunca sair dela, e ali
+     acontece a mesma coisa por outro caminho: `offset-distance` anda em
+     comprimento de ARCO e a tabela anda em ALTURA, entao um trecho que quase
+     nao desce gasta um arco enorme por um tanto minusculo de rolagem.
+
+     Medido em 1440x900, varrendo de 250 em 250px: entre scrollY 6750 e 7750 o
+     aviao consumia 6.8% do percurso por amostra contra 1.3% no resto, e
+     atravessava 1400px na horizontal em 250px de rolagem. Nao le como voo, le
+     como teleporte — foi a queixa do Gabriel em 29/08.
+
+     Duas saidas foram medidas e descartadas antes desta. Subir o passo minimo
+     da tabela: em 1.0 o salto cai para 5.8% mas o aviao passa a sair da janela
+     em 7 das 29 amostras visiveis, que e exatamente o que o passo de 0.45
+     existe para evitar. E cortar por velocidade acima da mediana: nao dispara
+     nunca, porque o proprio passo minimo ja limita a razao a ~1/0.45 = 2.2x,
+     e o salto agregado so passa disso porque a distribuicao e bimodal.
+
+     O sinal certo e mais direto: as amostras que tiveram a altura FORCADA sao,
+     por definicao, as que andaram para tras. Um punhado delas e o arredondar
+     de uma curva e nao se ve; uma corrida longa e a manobra atravessando a
+     tela. O corte e por tamanho da corrida, em fracao do total de amostras. */
+  if (forcado && forcado.length > 8) {
+    const CORRIDA = Math.max(3, Math.round(forcado.length * 0.015));
+    let i = 0;
+    while (i < forcado.length) {
+      if (!forcado[i]) { i++; continue; }
+      const ini = i;
+      while (i + 1 < forcado.length && forcado[i + 1]) i++;
+      if (i - ini + 1 >= CORRIDA) {
+        for (let k = ini; k <= Math.min(i + 1, op.length - 1); k++) op[k] = 0;
+      }
+      i++;
+    }
+  }
+
   return op;
 }
 
@@ -1327,12 +1371,27 @@ export function useCamadas(velocidades) {
     target: ref,
     offset: ["start end", "end start"],
   });
-  const estilos = velocidades.map((v) => {
+  const estilos = velocidades.map((v, i) => {
     /* eslint-disable react-hooks/rules-of-hooks -- `velocidades` é uma
        constante de módulo, então a contagem de hooks nunca muda entre
        renders, que é o que a regra existe para garantir. */
     const bruto = useTransform(scrollYProgress, [0, 1], [v, -v]);
-    const y = useSpring(bruto, { stiffness: 120, damping: 30, mass: 0.6 });
+    /* A mola endurece camada a camada, e isso NÃO é enfeite.
+
+       Com a mesma mola em todas, as cinco aceleram e param no mesmo instante:
+       a distância percorrida muda, mas o ritmo é idêntico, e o olho lê cinco
+       cópias da mesma animação em escalas diferentes em vez de cinco planos.
+       Massa distante responde devagar e massa próxima responde na hora — então
+       o céu chega atrasado e o morro da frente acompanha o dedo. É o que
+       separa profundidade de translação.
+
+       Vai de 90 a 210 acompanhando `velocidades`: quem anda mais também
+       responde mais rápido. */
+    const y = useSpring(bruto, {
+      stiffness: 90 + i * 30,
+      damping: 30 - i * 2,
+      mass: 0.75 - i * 0.09,
+    });
     return quieto ? undefined : { y };
   });
   return { ref, estilos, quieto };

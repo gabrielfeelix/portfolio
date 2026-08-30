@@ -258,8 +258,17 @@ export function Quebra({ src, video = false, alt = "", intensidade = 12 }) {
    preto em que foi desenhada, que é como luz se soma de verdade — recortar
    halo em alpha sempre deixa uma borda, e o screen não deixa nenhuma. */
 const CAMPO = "/volume/assets/campo";
-/* px de curso por camada. Quem anda mais está mais perto. */
-const CAMPO_V = [14, 22, 40, 64, 92];
+/* px de curso por camada. Quem anda mais está mais perto.
+
+   Subiu de [14,22,40,64,92] em 29/08: o efeito estava tímido demais para se
+   perceber que eram planos separados. E o espaçamento entre os números importa
+   tanto quanto o tamanho deles — de 14 a 92 as três camadas do meio ficavam
+   quase juntas; agora cada degrau é grande o bastante para o olho separar.
+
+   O curso do morro da frente (210px) é o que dita a folga que os arquivos
+   precisam ter embaixo, e é por isso que tools/camadas-campo.py estica os
+   morros ao dobro da altura. Se este número subir, aquele fator sobe junto. */
+const CAMPO_V = [18, 44, 90, 150, 210];
 
 /* A frase da passagem.
 

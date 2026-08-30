@@ -72,6 +72,41 @@ def noite(im, k=(.60,.71,.82)):
                 p[x, y] = (int(r*k[0]), int(g*k[1]), int(b*k[2]), a)
     return im
 
+def alonga(im, fator=1.0):
+    """Estica cada coluna do morro para baixo, a partir do pixel opaco mais baixo.
+
+    O recorte termina na caixa do alpha, entao o pe do morro e um CORTE RETO. Ele
+    fica fora da tela enquanto a camada esta parada, mas o parallax sobe a camada
+    — e quanto mais forte o parallax, mais ele sobe. No celular o Gabriel viu
+    exatamente isso: a borda de baixo aparecendo, e o morro parecendo voar.
+
+    Nao da para resolver no CSS: um retangulo de cor chapada por baixo denuncia a
+    emenda contra a textura de grama, e limitar o curso do parallax e desistir do
+    efeito. Entao a correcao e no arquivo — cada coluna continua para baixo com a
+    cor do proprio pixel mais baixo dela, o que para uma silhueta de morro e
+    simplesmente o morro sendo mais fundo. Coluna que nunca teve morro continua
+    vazia, porque ali nao ha morro para continuar.
+
+    O fator 1.0 dobra a altura. Parece exagero e nao e: e cor lisa, entao o webp
+    custa quase nada, e a folga tem que ser maior que o curso do parallax da
+    camada mais rapida — hoje 210px."""
+    w, h = im.size
+    extra = int(h * fator)
+    nova = Image.new("RGBA", (w, h + extra), (0, 0, 0, 0))
+    nova.paste(im, (0, 0))
+    p = im.load(); n = nova.load()
+    for x in range(w):
+        base = None
+        for y in range(h - 1, -1, -1):
+            if p[x, y][3] > 200:
+                base = p[x, y]
+                break
+        if base is None:
+            continue
+        for y in range(h, h + extra):
+            n[x, y] = base
+    return nova
+
 def corta_vazio(im):
     bb = im.getchannel("A").point(lambda v: 255 if v > 6 else 0).getbbox()
     # largura inteira preservada: o morro tem que sangrar nas duas bordas
@@ -91,7 +126,7 @@ grava(Image.open(f"{ENT}/ceu-parallax.png").convert("RGB"), "ceu", 2560)
 grava(Image.open(f"{ENT}/lua-parallax.png").convert("RGB"), "lua", 900)
 
 for ent, nome in (("morro1", "morro-perto"), ("morro2", "morro-longe")):
-    im = corta_vazio(noite(recorta_branco(Image.open(f"{ENT}/{ent}-parallax.png"))))
+    im = alonga(corta_vazio(noite(recorta_branco(Image.open(f"{ENT}/{ent}-parallax.png")))))
     grava(im, nome, 2560)
 
 av = recorta_branco(Image.open(f"{ENT}/aviao-parallax.png"))
