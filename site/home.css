@@ -1229,10 +1229,14 @@
    eles nao cabem em quatro colunas abaixo de 1200: viram dois por linha. */
 .v2-numeros {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--v2-s5) var(--v2-s4);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--v2-s5) var(--v2-s3);
 }
-@media (max-width: 1200px) { .v2-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* 3 e depois 2, e nao 4: com cinco dados, quatro colunas deixam UM sozinho na
+   segunda linha, que le como sobra. Tres deixa dois, e dois deixa um par mais
+   um — as duas quebras leem como grade. */
+@media (max-width: 1200px) { .v2-numeros { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px)  { .v2-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 620px)  { .v2-numeros { grid-template-columns: 1fr; } }
 
 /* ---- processo ---- */

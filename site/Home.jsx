@@ -484,6 +484,7 @@ const ANO_INICIO = 2024;
 
 function Numeros() {
   const empresas = COMPANIES().length;
+  const marcas = ALL_MARKS().length;
   const casosN = casos().length;
   const pecas = pieceProjects().length;
   const anos = Math.max(1, new Date().getFullYear() - ANO_INICIO);
@@ -494,9 +495,22 @@ function Numeros() {
         titulo="O que já saiu da mesa"
         lead="Números de produção, não de vaidade: cada um deles tem página no site."
       />
+      {/* Cinco e nao quatro desde 29/08. Com quatro colunas a dobra abria um
+          vazio grande a esquerda, embaixo do titulo, e o Gabriel leu como
+          desalinhamento — nao era, mas parecia.
+
+          O quinto dado nao foi inventado para preencher a linha: ALL_MARKS ja
+          existe e ja esta na tela, e a fita de logos duas dobras acima. E o
+          unico numero disponivel que fala de ESCALA, que e o assunto da dobra,
+          e o unico grande o bastante para dividir a linha com o 22 sem parecer
+          enchimento. A regra da dobra continua valendo: nada aqui e digitado a
+          mao, tudo sai de volume/data.jsx.
+
+          A ordem desce: 4, 22, 17, 3, 2. */}
       <div className="v2-numeros">
-        <Contador ate={casosN} rotulo="Casos abertos" nota="Problema, pesquisa e resultado" />
+        <Contador ate={casosN} rotulo="Casos abertos" nota="Abertos por inteiro" />
         <Contador ate={casosN + pecas} rotulo="Projetos publicados" nota="Casos mais peças" />
+        <Contador ate={marcas} rotulo="Marcas atendidas" nota="Todas na fita acima" />
         <Contador ate={empresas} rotulo="Times por dentro" nota="Estágio, UX e produto" />
         <Contador ate={anos} sufixo="+" rotulo="Anos em produto" nota={`Desde ${ANO_INICIO}`} />
       </div>
