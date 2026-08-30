@@ -484,6 +484,7 @@ function Busca({ cap }) {
   const b = cap.busca;
   if (!b) return null;
   const figs = (b.figs || []).map((k) => cap.figuras && cap.figuras[k]).filter(Boolean);
+  const resolucao = b.figFim && cap.figuras ? cap.figuras[b.figFim] : null;
 
   return (
     <Dobra
@@ -508,6 +509,12 @@ function Busca({ cap }) {
           {figs.map((f, i) => <Figura fig={f} key={i} />)}
         </div>
       ) : null}
+
+      {/* A resolução, no mesmo fôlego do problema. As duas telas acima são a
+          falha; sem esta, o melhor achado do caso termina sem mostrar o que
+          ele virou, e quem lê só a dobra da investigação sai sem ver a
+          correção. `figFim` é opcional: só o PCYES tem uma. */}
+      {resolucao ? <Figura fig={resolucao} /> : null}
     </Dobra>
   );
 }
@@ -1074,20 +1081,20 @@ function Abas({ itens, rotulo, id }) {
   );
 }
 
+/* Os módulos foram para aba em 29/08 porque empilhados mediam 8.233px, nove
+   telas, 24% da página. Voltaram a empilhar em 30/08 por uma medida que pesa
+   mais: com eles em aba, 13 das 32 imagens do caso não apareciam numa leitura
+   corrida, e entre elas estavam a home da V2, a página de produto, a busca da
+   V2 e o "Monte seu PC" inteiro. Triagem rola uma vez e não clica em aba, e um
+   caso de redesenho que não mostra a tela redesenhada perde mais do que ganha
+   encurtando. A peça `Abas` continua aqui, para blocos que sejam mesmo
+   alternativas do mesmo assunto — os três caminhos do "Monte seu PC" são. */
 function Modulos({ cap }) {
   const lista = cap.modulos || [];
   if (!lista.length) return null;
   return (
     <Dobra label="Os módulos" larga>
-      <Abas
-        id="mod"
-        rotulo="Os módulos"
-        itens={lista.map((m) => ({
-          chave: m.k,
-          rotulo: m.k,
-          conteudo: <Modulo mod={m} figuras={cap.figuras} emAba />,
-        }))}
-      />
+      {lista.map((m) => <Modulo mod={m} figuras={cap.figuras} key={m.k} />)}
     </Dobra>
   );
 }
@@ -1264,16 +1271,26 @@ function Aprendi({ cap }) {
   );
 }
 
-function NaoAchou({ id, ir }) {
+/* Qualquer endereço que não casa com uma rota cai aqui, então a página não
+   pode falar como se todo endereço errado fosse um capítulo: /contato dizia
+   "O capítulo 'contato' não existe". Também parou de repetir na tela o que
+   veio na URL — devolver a entrada do visitante em tipo de 64px dá ao erro
+   um destaque que ele não merece, e o caminho errado ele já tem na barra. */
+function NaoAchou({ ir }) {
   return (
     <div className="v2-corpo-claro" data-clara="1">
       <section className="v2-wrap v2-caso-abre">
         <div className="v2-caso-duas">
-          <Label>Caso</Label>
+          <Label>Erro 404</Label>
           <div className="v2-caso-coluna">
-            <h1 className="v2-caso-ato">{`O capítulo "${id}" não existe.`}</h1>
+            <h1 className="v2-caso-ato">Esse endereço não existe.</h1>
+            <p className="v2-corpo v2-caso-p">
+              Ou ele mudou de lugar, ou nunca esteve aqui. Os quatro casos, o
+              método e o resto do site continuam na home.
+            </p>
             <div className="v2-caso-pills">
               <Pill onClick={() => ir("/")}>Voltar para a home</Pill>
+              <Pill onClick={() => ir("/#casos")}>Ver os casos</Pill>
             </div>
           </div>
         </div>
@@ -1282,9 +1299,28 @@ function NaoAchou({ id, ir }) {
   );
 }
 
+const dois = (n) => String(n).padStart(2, "0");
+
 export default function Caso({ id, ir }) {
   const cap = chapterById(id);
-  if (!cap) return <NaoAchou id={id} ir={ir} />;
+  if (!cap) return <NaoAchou ir={ir} />;
+
+  /* `tem` lista as chaves de conteúdo que sustentam o movimento. Se nenhuma
+     existe, o movimento inteiro sai — capa incluída. Cada componente já sabe
+     se apaga sozinho; o que faltava era a capa saber. */
+  const movimentos = [
+    { t: "O problema", tem: ["problema", "funil", "gesto"],
+      corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></> },
+    { t: "A investigação", tem: ["investigacao", "busca", "citacao"],
+      corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></> },
+    { t: "A resposta", tem: ["decisoes", "recusei", "ponte", "solucao", "sistema", "vocabulario", "modulos", "calendario"],
+      corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></> },
+    { t: "O resultado", tem: ["antesDepois", "resultado", "aprendi"],
+      corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></> },
+  ].filter((m) => m.tem.some((k) => {
+    const v = cap[k];
+    return Array.isArray(v) ? v.length > 0 : v != null;
+  }));
 
   return (
     <>
@@ -1298,31 +1334,23 @@ export default function Caso({ id, ir }) {
         <Abertura cap={cap} />
         <Resumo cap={cap} />
 
-        {/* Os quatro movimentos. A régua com cruz só existe na virada. */}
-        <CapaCapitulo n="01" t="O problema" />
-        <Problema cap={cap} />
-        <Funil cap={cap} />
-        <Gesto cap={cap} />
-
-        <CapaCapitulo n="02" t="A investigação" />
-        <Investigacao cap={cap} />
-        <Busca cap={cap} />
-        <Citacao cap={cap} />
-
-        <CapaCapitulo n="03" t="A resposta" />
-        <Decisoes cap={cap} />
-        <Recusei cap={cap} />
-        <Ponte cap={cap} />
-        <Solucao cap={cap} />
-        <Sistema cap={cap} />
-        <Vocabulario cap={cap} />
-        <Modulos cap={cap} />
-        <Calendario cap={cap} />
-
-        <CapaCapitulo n="04" t="O resultado" />
-        <AntesDepois cap={cap} />
-        <Resultado cap={cap} />
-        <Aprendi cap={cap} />
+        {/* Os movimentos, numerados pelo que o caso tem.
+         *
+         * Eram quatro capas fixas, e a capa saía mesmo quando o movimento
+         * inteiro estava vazio: o Oderço não tem `investigacao`, `busca` nem
+         * `citacao`, então ele anunciava "MOVIMENTO 02 / 04 · A investigação"
+         * em tela cheia e emendava na capa seguinte, sem uma linha no meio.
+         * Buraco visível justamente na seção que mais se lê num caso de UX.
+         *
+         * Agora cada movimento declara o que o sustenta. Sem conteúdo, não
+         * há capa, e o denominador acompanha: o Oderço lê 01/03 a 03/03, e
+         * quem tem os quatro segue em 01/04 a 04/04. */}
+        {movimentos.map(({ t, corpo }, i) => (
+          <React.Fragment key={t}>
+            <CapaCapitulo n={dois(i + 1)} t={t} de={dois(movimentos.length)} />
+            {corpo}
+          </React.Fragment>
+        ))}
         <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
       </CampoDeVoo>
     </>
