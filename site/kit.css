@@ -328,7 +328,10 @@
 .v2-campo-aviao img { transform: translate(-50%, -50%); }
 .v2-campo-lua   { mix-blend-mode: screen; }
 .v2-campo-lua   img { left: 13%; top: 24%; width: 26%; }
-.v2-campo-aviao img { left: 48%; top: 40%; width: 14%; }
+/* Descido de top 40% para 53%: em 40% ele cruzava por baixo da segunda metade
+   do dito, e as duas coisas disputavam a mesma faixa. A faixa livre e a que
+   sobra entre o pe do texto e a crista do morro da frente. */
+.v2-campo-aviao img { left: 44%; top: 53%; width: 14%; }
 
 /* Os morros ancoram embaixo e sangram nas duas bordas. O `bottom` negativo
    nao e recorte: e enquadramento. Sem ele os morros comem 60% da altura e
@@ -347,11 +350,21 @@
    da frase virando geometria. Por isso ela nasce no mesmo gesto das reguas do
    indice do metodo, desenhando-se da direita para a esquerda quando entra —
    do lado alinhado para o lado solto. */
+/* `left` E `right`, e nao `right` + `max-width`.
+
+   Um bloco absoluto com so um lado ancorado e shrink-to-fit: ele encolhe para
+   o conteudo. Medido em 1440 com `right` + `max-width: min(46ch, 70%)`, a
+   caixa saia com 414px enquanto a linha mais longa pedia 893px — as duas
+   metades quebravam em tres linhas cada e o dito engolia a cena.
+
+   Com os dois lados presos a largura vira definida (70% da secao menos a
+   goteira), cada metade cabe em uma linha em toda a escala de display, e a
+   quebra deixa de ser acidente. */
 .v2-campo-dito {
   position: absolute;
   top: var(--v2-s6);
+  left: 30%;
   right: var(--v2-gutter);
-  max-width: min(46ch, 70%);
 }
 .v2-campo-frase {
   margin: 0;

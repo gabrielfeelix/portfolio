@@ -982,12 +982,31 @@
 }
 .v2-tra-item[data-vivo="1"] .v2-tra-nome { color: var(--v2-ink); }
 
+/* As duas linhas abaixo estavam na mono, em caixa alta, com o tracking de
+   cromo (0.14em). Sairam de la, e o motivo esta escrito em tokens.css: a Geist
+   Mono e a voz do CROMO — indice de secao, carimbo, relogio, rotulo — e nunca
+   corpo, nunca titulo.
+
+   O `.v2-tra-pe` e uma FRASE ("Onde vi um time de produto por dentro"). Frase
+   e corpo, entao ela nunca deveria ter sido mono. E o `.v2-tra-papel` e uma
+   linha de metadado de ate 60 caracteres; em caixa alta com 1.68px entre cada
+   letra ela vira parede, e em 390px de largura quebra em duas.
+
+   Caixa alta com tracking largo funciona em tres palavras e falha em quinze:
+   a caixa alta tira o perfil das palavras, que e por onde o olho reconhece
+   forma sem soletrar, e o tracking desmancha a palavra em letras soltas. Junto
+   com a mono, que ja da a mesma largura para o i e para o m, o resultado le
+   como codigo — foi o "tecnico demais" e o "parece italico" do Gabriel.
+
+   Voltam para a Switzer em caixa de sentenca, que e a voz de conteudo do site.
+   A hierarquia entre elas nao se perde porque nao dependia da fonte: o papel e
+   `muted`, o texto e `ink`, e o pe ganha um filete no accent que o marca como
+   nota sem precisar de outra familia. */
 .v2-tra-papel {
   margin: var(--v2-s1) 0 var(--v2-s3);
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  text-transform: uppercase;
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+  line-height: 1.5;
   color: var(--v2-muted);
 }
 .v2-tra-sep { color: var(--v2-rule); }
@@ -995,10 +1014,11 @@
 
 .v2-tra-pe {
   margin: var(--v2-s3) 0 0;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  text-transform: uppercase;
+  padding-left: var(--v2-s2);
+  border-left: 2px solid var(--v2-accent);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.5;
+  max-width: 52ch;
   color: var(--v2-muted);
 }
 
@@ -1008,10 +1028,27 @@
 
 /* ---------------- respiro mobile, dobras 5 a 8 ---------------- */
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .v2-tra-item { padding: var(--v2-s4) 0; }
-  .v2-tra-marca { min-height: 96px; }
-  .v2-tra-logo { max-height: 52px; max-width: 180px; }
+
+  /* O painel da esquerda SAI no retrato, e nao so encolhe.
+
+     Ele existe para o efeito de desktop: a coluna fica presa enquanto a lista
+     rola ao lado, e a marca troca de quadro conforme o item entra. Isso pede
+     duas colunas lado a lado. No retrato nao ha "ao lado" — a .v2-presa vira
+     uma coluna so e o sticky ja e solto em kit.css, entao o painel simplesmente
+     senta no topo, congelado no primeiro item, mostrando marca, periodo e
+     "001 / 003" que o item logo abaixo repete inteiro. Medido em 390x844: era
+     um bloco de ~300px que so dizia de novo o que vinha na sequencia, e era o
+     "fica repetitivo, rolagem meio nada a ver" do Gabriel.
+
+     O cabecalho da dobra fica: ele tambem mora na coluna esquerda e nao tem
+     nada a ver com o mecanismo. Some so o que era instrumento do sticky.
+
+     `data-vivo` continua ligado, entao o item em tela continua acendendo o
+     numero no accent. Esse pedaco do efeito sobrevive sem precisar do painel. */
+  .v2-tra-marca,
+  .v2-tra-conta { display: none; }
 }
 
 

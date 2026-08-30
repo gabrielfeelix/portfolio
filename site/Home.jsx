@@ -637,7 +637,7 @@ function OndeEstive({ ir }) {
                 className="v2-tra-marca-in"
                 initial={quieto ? { opacity: 0 } : { opacity: 0, y: 10, filter: "blur(6px)" }}
                 animate={quieto ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: quieto ? 0.2 : 0.7, ease }}
+                transition={{ duration: quieto ? 0.2 : 0.45, ease }}
               >
                 {marca ? (
                   <img className="v2-tra-logo" src={marca} alt={`Marca da ${atual.name}`} draggable="false" />

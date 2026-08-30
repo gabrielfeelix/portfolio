@@ -186,7 +186,7 @@ function Menu({ aberto, fechar, ir, rota }) {
           initial={{ clipPath: "inset(0 0 100% 0)" }}
           animate={{ clipPath: "inset(0 0 0% 0)" }}
           exit={{ clipPath: "inset(0 0 100% 0)" }}
-          transition={{ duration: 0.56, ease }}
+          transition={{ duration: 0.42, ease }}
         >
           <nav className="v2-menu-links" aria-label="Seções">
             {LINKS.map((l, i) => (
@@ -217,7 +217,7 @@ function Menu({ aberto, fechar, ir, rota }) {
             className="v2-menu-pe"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.16 + LINKS.length * 0.06, duration: 0.5, ease }}
+            transition={{ delay: 0.16 + LINKS.length * 0.06, duration: 0.38, ease }}
           >
             <a className="v2-menu-email" href={c.email.href}>{c.email.display}</a>
             <ul className="v2-menu-social">

@@ -43,8 +43,14 @@ export const ease = [0.44, 0, 0.56, 1];
    O deslocamento cai junto, de 24 para 12px, e isso é parte da mesma medição:
    na referência os elementos andam de 6 a 10px. Bloco grande andando muito lê
    como slide; o que se quer é a letra assentando. */
-export const dur = 0.6;
-export const passo = 0.07;
+/* 29/08, segunda calibragem. 0.6s com 70ms de passo ainda somava com o Lenis
+   e a home inteira lia cansativa depois da hero — foi a queixa do Gabriel. O
+   problema nao era uma revelacao ser lenta, era CADA UMA ser um pouco lenta e
+   a pagina ter muitas: o cansaco e cumulativo, nao pontual.
+
+   Vale a mesma regra de antes: o que se quer e a letra assentando, nao slide. */
+export const dur = 0.44;
+export const passo = 0.05;
 
 /* A curva da revelação é a mesma da entrada de página — ajustada contra os
    pontos medidos no fuel, erro .038 contra .237 do que havia antes. Fica
@@ -56,7 +62,7 @@ export const easeRevela = [0.4, 0, 0.2, 1];
    O tween da launchfolio: `ease: [0.4, 0, 0.2, 1]` em 0.6s, usado lá com
    atrasos longos (até 1.8s) para o pé de um hero entrar depois da headline.
    É o sotaque que faltava na V2, que entrava com tudo junto. */
-export const tweenLaunch = { duration: 0.6, ease: [0.4, 0, 0.2, 1] };
+export const tweenLaunch = { duration: 0.44, ease: [0.4, 0, 0.2, 1] };
 
 /* Entrada tardia obediente ao sistema: em reduced-motion sobra a opacidade,
    e mesmo ela entra sem o atraso longo. */
@@ -72,7 +78,7 @@ export function useTardio(delay = 1.4) {
    suficiente para o olho acompanhar em vez de notar. É a tradução do
    `{type: "spring", bounce: 0, duration: 3}` da referência, encurtado
    porque a V2 tem mais dobras por página do que ela. */
-export const longa = { type: "spring", bounce: 0, duration: 0.9 };
+export const longa = { type: "spring", bounce: 0, duration: 0.65 };
 
 /* 3. rise
    Entrada padrão de bloco. `i` é a posição entre irmãos e gera o stagger. */
@@ -147,7 +153,7 @@ export function useMaskLine() {
              font-size, entao 30% vale em qualquer viewport. */
           initial: { clipPath: "inset(0 0 100% 0)", y: "0.12em" },
           animate: { clipPath: "inset(0 0 -30% 0)", y: 0 },
-          transition: { duration: 0.7, ease: easeRevela, delay: 0.1 + i * 0.08 },
+          transition: { duration: 0.5, ease: easeRevela, delay: 0.1 + i * 0.06 },
         };
 }
 
@@ -199,8 +205,15 @@ export function useSticky() {
 
      new Lenis({ duration: 2.0 })
 
-   Dois segundos, contra o default de 1.0 da biblioteca. É um valor ALTO de
-   propósito, e é dele que vem a sensação de peso que ele pediu. O easing é o
+   Dois segundos, contra o default de 1.0 da biblioteca. Era o valor daqui até
+   29/08, e é de onde vinha a sensação de peso que ele pediu.
+
+   Baixou para 1.35 no mesmo dia, junto com as revelações. O motivo está
+   anotado no topo deste arquivo e vale repetir: os dois tempos SOMAM. A
+   rolagem chega devagar no lugar E a revelação começa devagar, então cada
+   dobra cobra duas esperas. Cortar só as revelações deixaria metade do
+   problema de pé. Ainda é 35% acima do default da biblioteca, então o peso
+   continua lá — só parou de ser espera. O easing é o
    default do Lenis, `t => min(1, 1.001 - 2^(-10t))` — que é o mesmo
    easeOutExpo das entradas de página, e isso não é coincidência nem economia:
    é o site inteiro falando uma curva só.
@@ -213,7 +226,7 @@ export function useSticky() {
      página rola por trás de qualquer coisa que cubra a tela.
    - reduced-motion desliga tudo. Scroll suave é movimento, e quem pediu para
      nada se mover não ganha exceção por ser bonito. */
-export function useScrollSuave({ duracao = 2.0, ligado = true } = {}) {
+export function useScrollSuave({ duracao = 1.35, ligado = true } = {}) {
   const quieto = useReducedMotion();
 
   useEffect(() => {
@@ -355,8 +368,8 @@ export function rolarPara(alvo, { imediato = false } = {}) {
    texto. O texto chega e para; a foto continua respirando por baixo dele. Com
    as duas iguais, a foto vira parte do mesmo gesto e some. */
 const ENTRADA_EASE = [0.4, 0, 0.2, 1];
-const ENTRADA_TEXTO = { duration: 0.6, ease: ENTRADA_EASE };
-const ENTRADA_FOTO = { duration: 1.4, ease: ENTRADA_EASE };
+const ENTRADA_TEXTO = { duration: 0.45, ease: ENTRADA_EASE };
+const ENTRADA_FOTO = { duration: 1.0, ease: ENTRADA_EASE };
 
 /* O deslocamento encolhe com a ordem: 10, 10, 8, 6, e para em 6. Medido na
    referência (Text 1 = 10px, Text 2 = 8px, Text 3 = 6px). */
@@ -1181,7 +1194,7 @@ export function useNaAltura(total, faixa = "-45% 0px -45% 0px") {
    Nao usa whileInView de proposito: e useInView + animate, porque no motion
    v13 valor dentro de mask-image nao interpola por whileInView (mesma
    armadilha do clipPath, anotada em useMaskLine). */
-export function useEscrita({ duracao = 0.8, atraso = 0.1 } = {}) {
+export function useEscrita({ duracao = 0.58, atraso = 0.08 } = {}) {
   const ref = useRef(null);
   const quieto = useReducedMotion();
   const naTela = useInView(ref, { once: true, amount: 0.55 });
@@ -1216,7 +1229,7 @@ export function useRevelar() {
           initial: { opacity: 0, y: 10 },
           whileInView: { opacity: 1, y: 0 },
           viewport: { once: true, amount: 0.3 },
-          transition: { duration: 0.55, ease: easeRevela, delay: i * 0.06 },
+          transition: { duration: 0.4, ease: easeRevela, delay: i * 0.05 },
         };
 }
 
@@ -1247,7 +1260,7 @@ export function useCortina() {
              pela borda antes da revelacao. Ver .v2-titulo-janela. */
           initial: { y: "118%" },
           animate: dentro ? { y: 0 } : { y: "118%" },
-          transition: { duration: 0.7, ease: easeRevela, delay: i * 0.06 },
+          transition: { duration: 0.5, ease: easeRevela, delay: i * 0.05 },
         };
   return { ref, props };
 }
@@ -1256,7 +1269,7 @@ export function useCortina() {
    Número que sobe de 0 até `ate` quando a dobra entra. O DOM da viper serve
    `0 +` parado, prova de que o valor final é escrito por JS; em
    reduced-motion o valor entra pronto, sem contagem. */
-export function useContador(ate, duracao = 1.6) {
+export function useContador(ate, duracao = 1.1) {
   const ref = useRef(null);
   const quieto = useReducedMotion();
   const [valor, setValor] = useState(quieto ? ate : 0);
