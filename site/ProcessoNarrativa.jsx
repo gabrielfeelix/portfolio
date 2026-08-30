@@ -337,143 +337,174 @@ function Diamante({ fases }) {
 }
 
 
-/* --------------------------------------------------- o esboço e a grade */
+/* ----------------------------------------- o rabisco e o protótipo de baixa */
 
-/* A mesma tela, duas vezes: à mão e depois no esquadro.
+/* A mesma tela, duas vezes: à mão, e depois montada.
  *
  * O Gabriel pediu o rabiscoframe e o wireframe de volta. Os dois moravam numa
  * seção recusada em 30/08 e nunca chegaram a ser commitados — procurei em todo
- * o histórico, por seis grafias, e não existe blob deles em lugar nenhum.
- * Este par é redesenhado do zero.
+ * o histórico, por seis grafias, e não existe blob deles. Redesenhados do zero.
  *
- * A tela é GENÉRICA, e isso é o requisito e não uma economia. A versão antiga
- * mostrava uma tela do Monte seu PC e foi recusada justamente por obrigar o
- * leitor a saber o que aquele produto era. Aqui não há marca, não há texto
- * legível e não há produto: barra, bloco de mídia, linhas e um botão, que é a
- * forma que qualquer tela tem antes de ter conteúdo.
+ * O lado direito NÃO é um wireframe de caixas: é um protótipo de baixa
+ * fidelidade, com o pedido dele — "contornos certos de botão, dos inputs, algo
+ * um pouquinho mais trabalhado". A diferença entre os dois quadros deixa de
+ * ser "torto contra reto" e passa a ser "bloco contra componente", que é o que
+ * de fato acontece entre um rabisco e a primeira tela navegável.
  *
- * As duas metades saem da MESMA lista de peças. É o que garante que elas sejam
- * a mesma tela: se fossem dois desenhos separados, a passagem de uma para a
- * outra viraria "duas telas parecidas" em vez de "esta tela, depois". */
+ * A tela é GENÉRICA por requisito, e não por economia: a versão antiga
+ * mostrava uma tela do Monte seu PC e foi recusada por obrigar o leitor a
+ * saber o que aquele produto era. Aqui não há marca nem texto legível.
+ *
+ * As duas metades saem da MESMA lista de peças, com o mesmo x/y/w/h. É o que
+ * garante que sejam a mesma tela em vez de duas telas parecidas: o que muda de
+ * um quadro para o outro é só COMO cada peça é desenhada. */
 const TELA = [
-  { x: 0,   y: 0,   w: 400, h: 34,  cheio: true },
-  { x: 0,   y: 54,  w: 168, h: 128, midia: true },
-  { x: 188, y: 60,  w: 212, h: 10 },
-  { x: 188, y: 84,  w: 212, h: 10 },
-  { x: 188, y: 108, w: 160, h: 10 },
-  { x: 188, y: 132, w: 190, h: 10 },
-  { x: 0,   y: 202, w: 118, h: 36, acao: true },
-  { x: 140, y: 208, w: 260, h: 10 },
-  { x: 140, y: 230, w: 210, h: 10 },
-  { x: 0,   y: 264, w: 400, h: 36,  cheio: true },
+  { k: "barra",  x: 0,   y: 0,   w: 400, h: 36 },
+  { k: "midia",  x: 0,   y: 58,  w: 168, h: 124 },
+  { k: "titulo", x: 188, y: 58,  w: 200, h: 16 },
+  { k: "linha",  x: 188, y: 86,  w: 212, h: 8 },
+  { k: "linha",  x: 188, y: 102, w: 176, h: 8 },
+  { k: "campo",  x: 188, y: 126, w: 212, h: 34 },
+  { k: "acao",   x: 188, y: 172, w: 116, h: 34 },
+  { k: "linha",  x: 0,   y: 198, w: 168, h: 8 },
+  { k: "linha",  x: 0,   y: 214, w: 132, h: 8 },
+  { k: "rodape", x: 0,   y: 248, w: 400, h: 52 },
 ];
 
-/* O tremido é DETERMINÍSTICO, e não `Math.random`. Com aleatório o desvio
+/* O tremido é DETERMINÍSTICO, e não `Math.random`: com aleatório o desvio
    mudaria a cada render do React e o rabisco ficaria tremendo enquanto a
-   pessoa rola, que é o oposto de um desenho a mão parado no papel. */
+   pessoa rola, que é o oposto de um desenho parado no papel. */
 function tremido(n) {
   const s = Math.sin(n * 127.1) * 43758.5453;
   return (s - Math.floor(s)) * 2 - 1;
 }
 
-/* Um retângulo à mão livre: quatro traços independentes, cada um com o meio
-   fugindo alguns pixels do reto e a ponta passando um pouco do canto. É o que
-   a mão faz, e é o que o olho lê como rascunho sem precisar de filtro de
-   textura nem de fonte manuscrita. */
-function aMao(x, y, w, h, k = 1) {
-  const t = (i) => tremido(x + y * 7 + w * 13 + h * 17 + i * 31) * 2.8 * k;
-  const o = (i) => tremido(x * 3 + y + i * 53) * 3.2 * k;
-  const L = (x1, y1, x2, y2, i) =>
-    `M${(x1 - o(i)).toFixed(1)} ${(y1 - o(i + 1)).toFixed(1)}` +
-    ` Q${((x1 + x2) / 2 + t(i)).toFixed(1)} ${((y1 + y2) / 2 + t(i + 2)).toFixed(1)}` +
-    ` ${(x2 + o(i + 3)).toFixed(1)} ${(y2 + o(i + 4)).toFixed(1)}`;
-  /* Peça baixa vira UM traço solto, e não um retângulo fino de quatro lados.
+/* Uma peça à mão livre. Contorno de quatro traços para o que tem área; um
+   risco solto para o que é linha de texto.
 
-     Num rabiscoframe de verdade a linha de texto é um risco: ninguém contorna
-     uma linha de texto. Desenhadas como retângulo de 10px de altura elas liam
-     como tubos, e o quadro inteiro perdia a cara de papel. O contorno fica
-     para as peças que têm área — barra, mídia, botão, rodapé. */
-  if (h <= 14) {
+   Num rabiscoframe de verdade ninguém contorna uma linha de texto — ela é um
+   risco. Desenhadas como retângulo de 8px de altura elas liam como tubos e o
+   quadro perdia a cara de papel. */
+function aMao({ k, x, y, w, h }) {
+  const t = (i) => tremido(x + y * 7 + w * 13 + h * 17 + i * 31) * 2.8;
+  const o = (i) => tremido(x * 3 + y + i * 53) * 3.2;
+  const n = (v) => v.toFixed(1);
+  if (k === "linha" || k === "titulo") {
     const my = y + h / 2;
-    return [
-      `M${(x - o(1)).toFixed(1)} ${(my + t(1)).toFixed(1)}` +
-      ` C${(x + w * 0.3).toFixed(1)} ${(my + t(3) * 1.6).toFixed(1)}` +
-      ` ${(x + w * 0.7).toFixed(1)} ${(my + t(7) * 1.6).toFixed(1)}` +
-      ` ${(x + w + o(9)).toFixed(1)} ${(my + t(11)).toFixed(1)}`,
-    ];
+    return [`M${n(x - o(1))} ${n(my + t(1))} C${n(x + w * 0.3)} ${n(my + t(3) * 1.6)}` +
+            ` ${n(x + w * 0.7)} ${n(my + t(7) * 1.6)} ${n(x + w + o(9))} ${n(my + t(11))}`];
   }
-  return [
-    L(x, y, x + w, y, 1),
-    L(x + w, y, x + w, y + h, 5),
-    L(x + w, y + h, x, y + h, 9),
-    L(x, y + h, x, y, 13),
+  const L = (x1, y1, x2, y2, i) =>
+    `M${n(x1 - o(i))} ${n(y1 - o(i + 1))} Q${n((x1 + x2) / 2 + t(i))} ${n((y1 + y2) / 2 + t(i + 2))}` +
+    ` ${n(x2 + o(i + 3))} ${n(y2 + o(i + 4))}`;
+  const lados = [
+    L(x, y, x + w, y, 1), L(x + w, y, x + w, y + h, 5),
+    L(x + w, y + h, x, y + h, 9), L(x, y + h, x, y, 13),
   ];
+  if (k === "midia") {
+    lados.push(`M${x + 6} ${y + 6} L${x + w - 6} ${y + h - 6}`);
+    lados.push(`M${x + w - 6} ${y + 6} L${x + 6} ${y + h - 6}`);
+  }
+  return lados;
+}
+
+/* Uma peça montada. Cada tipo vira o componente que ele é — é aqui que o
+   quadro deixa de ser wireframe e vira protótipo de baixa. */
+function Peca({ k, x, y, w, h }) {
+  const R = (px, py, pw, ph, r, cls) => (
+    <rect className={cls} x={px} y={py} width={pw} height={ph} rx={r} />
+  );
+  if (k === "barra") {
+    return (
+      <g>
+        {R(x, y, w, h, 4, "v2-pn-p-chapa")}
+        {R(x + 12, y + 11, 14, 14, 3, "v2-pn-p-marca")}
+        {[0, 1, 2].map((i) => R(x + 44 + i * 34, y + 15, 26 - i * 3, 6, 3, "v2-pn-p-tinta"))}
+        {R(x + w - 60, y + 10, 48, 16, 8, "v2-pn-p-pilula")}
+      </g>
+    );
+  }
+  if (k === "midia") {
+    return (
+      <g>
+        {R(x, y, w, h, 5, "v2-pn-p-caixa")}
+        <path className="v2-pn-p-cruz"
+              d={`M${x} ${y} L${x + w} ${y + h} M${x + w} ${y} L${x} ${y + h}`} />
+      </g>
+    );
+  }
+  if (k === "campo") {
+    return (
+      <g>
+        {R(x, y, w, h, 5, "v2-pn-p-campo")}
+        {R(x + 12, y + h / 2 - 3, 92, 7, 3, "v2-pn-p-tinta")}
+        {/* o cursor: é ele que diz "isto se digita", e é o detalhe que separa
+            um input de um retângulo arredondado qualquer */}
+        <line className="v2-pn-p-cursor" x1={x + 112} y1={y + 9} x2={x + 112} y2={y + h - 9} />
+      </g>
+    );
+  }
+  if (k === "acao") {
+    return (
+      <g>
+        {R(x, y, w, h, 5, "v2-pn-p-acao")}
+        {R(x + w / 2 - 26, y + h / 2 - 3, 52, 7, 3, "v2-pn-p-acao-t")}
+      </g>
+    );
+  }
+  if (k === "rodape") {
+    return (
+      <g>
+        {R(x, y, w, h, 4, "v2-pn-p-chapa")}
+        {[0, 1, 2].map((c) => (
+          <g key={c}>
+            {R(x + 16 + c * 128, y + 14, 54, 6, 3, "v2-pn-p-tinta")}
+            {R(x + 16 + c * 128, y + 28, 82, 5, 3, "v2-pn-p-tinta-fraca")}
+          </g>
+        ))}
+      </g>
+    );
+  }
+  return R(x, y, w, h, 3, k === "titulo" ? "v2-pn-p-titulo" : "v2-pn-p-tinta");
 }
 
 function EsbocoEGrade() {
   const rise = useRise();
   const cena = React.useRef(null);
-  /* Sem cena `sticky`, ao contrário dos dois desenhos de Double Diamond. Eles
-     precisam de rolagem presa porque o percurso é longo e tem que ser
-     assistido; este par é um antes-e-depois, e prender duas telas de rolagem
-     para mostrar dois quadros parados seria rolagem morta. Ele desenha durante
-     a própria entrada. */
+  /* Sem cena `sticky`, ao contrário dos dois desenhos de Double Diamond: eles
+     têm percurso longo e precisam ser assistidos, e este par é um
+     antes-e-depois. Prender duas telas de rolagem para mostrar dois quadros
+     parados seria rolagem morta. Ele desenha durante a própria entrada. */
   const { progresso, quieto } = useTracado(cena, { offset: ["start 88%", "center 42%"] });
   const mao = useTrecho(progresso, 0, 0.52);
-  const regua = useTrecho(progresso, 0.5, 0.95);
+  const montado = useTrecho(progresso, 0.5, 0.95);
 
   return (
     <motion.figure className="v2-pn-telas" ref={cena} {...rise(0)}>
       <svg viewBox="0 0 1000 368" role="img"
-           aria-label="A mesma tela desenhada duas vezes: primeiro à mão, com traço torto, e depois no esquadro, com as mesmas peças alinhadas numa grade.">
-        {/* à mão */}
+           aria-label="A mesma tela duas vezes: primeiro rabiscada à mão, com traço torto e blocos vazios, e depois montada como protótipo de baixa fidelidade, com barra de navegação, campo de formulário e botão.">
         <g transform="translate(20 20)">
           {TELA.map((p, i) =>
-            aMao(p.x, p.y, p.w, p.h).map((d, j) => (
+            aMao(p).map((d, j) => (
               <motion.path className="v2-pn-mao" key={`${i}-${j}`} d={d}
                            style={quieto ? undefined : { pathLength: mao.traco }} />
             ))
           )}
-          {/* a cruz do bloco de mídia, que é como se rabisca "aqui vai imagem" */}
-          {(() => {
-            const m = TELA.find((p) => p.midia);
-            return [
-              `M${m.x + 4} ${m.y + 4} L${m.x + m.w - 4} ${m.y + m.h - 4}`,
-              `M${m.x + m.w - 4} ${m.y + 4} L${m.x + 4} ${m.y + m.h - 4}`,
-            ].map((d) => (
-              <motion.path className="v2-pn-mao" key={d} d={d}
-                           style={quieto ? undefined : { pathLength: mao.traco }} />
-            ));
-          })()}
         </g>
 
-        {/* a passagem: uma seta curta, na mono do site */}
-        <motion.g style={quieto ? undefined : { opacity: regua.traco }}>
+        <motion.g style={quieto ? undefined : { opacity: montado.traco }}>
           <path className="v2-pn-seta" d="M468 170 L532 170 M518 160 L532 170 L518 180" />
         </motion.g>
 
-        {/* no esquadro */}
-        <motion.g transform="translate(580 20)" style={quieto ? undefined : { opacity: regua.traco }}>
-          {TELA.map((p, i) => (
-            <rect
-              className={"v2-pn-grade" + (p.acao ? " is-acao" : "") + (p.cheio ? " is-cheio" : "")}
-              key={i} x={p.x} y={p.y} width={p.w} height={p.h}
-            />
-          ))}
-          {(() => {
-            const m = TELA.find((p) => p.midia);
-            return (
-              <path className="v2-pn-grade-cruz"
-                    d={`M${m.x} ${m.y} L${m.x + m.w} ${m.y + m.h} M${m.x + m.w} ${m.y} L${m.x} ${m.y + m.h}`} />
-            );
-          })()}
+        <motion.g transform="translate(580 20)" style={quieto ? undefined : { opacity: montado.traco }}>
+          {TELA.map((p, i) => <Peca key={i} {...p} />)}
         </motion.g>
 
         <text className="v2-pn-svg-k" x="20" y="356">Rabiscoframe</text>
-        <text className="v2-pn-svg-k" x="580" y="356">Wireframe</text>
+        <text className="v2-pn-svg-k" x="580" y="356">Protótipo de baixa</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para decidir onde.
+        As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para alguém tocar.
       </figcaption>
     </motion.figure>
   );
@@ -485,25 +516,34 @@ function EsbocoEGrade() {
 
    Ela desenha o título do bloco em vez de ilustrá-lo — "o tamanho da pesquisa
    acompanha o preço de errar" é uma afirmação sobre uma quantidade que cresce,
-   e uma quantidade que cresce se desenha como uma quantidade que cresce. Sem
-   ícone, sem metáfora. */
+   e quantidade que cresce se desenha como quantidade que cresce.
+
+   A primeira versão era um triângulo reto e o Gabriel achou estranha. O que
+   conserta é a curva: as duas bordas são bezier espelhadas em torno do eixo,
+   então a peça engrossa devagar no começo e acelera no fim, que é o
+   comportamento que a frase descreve. Um triângulo cresce em taxa constante e
+   diz outra coisa.
+
+   A ponta grossa fecha em arco e não em corte reto: cortada, a peça terminava
+   numa aresta vertical e lia como recorte de papel em vez de volume. */
 function EixoDoRisco() {
   const rise = useRise();
   const cena = React.useRef(null);
-  const { progresso, quieto } = useTracado(cena, { offset: ["start 88%", "center 50%"] });
+  const { progresso, quieto } = useTracado(cena, { offset: ["start 90%", "center 55%"] });
   const abre = useTrecho(progresso, 0, 0.9);
 
   return (
     <motion.figure className="v2-pn-risco" ref={cena} {...rise(0)}>
-      <svg viewBox="0 0 1000 150" role="img"
-           aria-label="Uma cunha que começa fina à esquerda, onde a decisão é barata de desfazer, e termina grossa à direita, onde é cara. A espessura é o tamanho da pesquisa.">
+      <svg viewBox="0 0 1000 200" role="img"
+           aria-label="Uma cunha curva que começa quase sem espessura à esquerda, onde a decisão é barata de desfazer, e engrossa até a direita, onde é cara. A espessura é o tamanho da pesquisa.">
+        <line className="v2-pn-risco-eixo" x1="60" y1="81" x2="946" y2="81" />
         <motion.g style={quieto ? undefined : { opacity: abre.traco, scaleX: abre.traco }}
-                  transform-origin="40 75">
-          <path className="v2-pn-cunha" d="M40 73 L960 24 L960 126 L40 77 Z" />
+                  transform-origin="60 81">
+          <path className="v2-pn-cunha"
+                d="M60 80 C360 79 640 52 930 16 Q980 81 930 146 C640 110 360 83 60 82 Z" />
         </motion.g>
-        <line className="v2-pn-eixo" x1="40" y1="75" x2="960" y2="75" />
-        <text className="v2-pn-svg-k" x="40" y="140">Barato de desfazer</text>
-        <text className="v2-pn-svg-k is-forte" x="960" y="140" textAnchor="end">Caro de desfazer</text>
+        <text className="v2-pn-svg-k" x="60" y="192">Barato de desfazer</text>
+        <text className="v2-pn-svg-k is-forte" x="946" y="192" textAnchor="end">Caro de desfazer</text>
       </svg>
       <figcaption className="v2-fig-leg">
         A espessura é quanto eu abro antes de decidir. Ela acompanha o preço de errar, e não o calendário.
@@ -529,69 +569,39 @@ function Dado({ l, v }) {
   );
 }
 
-/* O bloco, agora com duas formas de abrir e três larguras.
+/* O bloco: uma coluna de texto que troca de lado, e os componentes em largura
+   cheia por fora dela.
 
-   A forma de hoje (`col`) é olho sobre título sobre texto, tudo numa coluna, e
-   ela era a ÚNICA: os sete blocos abriam idênticos, no mesmo lugar, com o
-   mesmo espaçamento. `duas` é o `Cabecalho` do resto do site — título à
-   esquerda, o primeiro parágrafo à direita virando lead — e existe para que a
-   abertura não seja a mesma sete vezes seguidas.
+   A versão anterior partia o cabeçalho em duas colunas — título de um lado,
+   primeiro parágrafo do outro — e os parágrafos seguintes voltavam em largura
+   cheia embaixo. O Gabriel mandou print: dava texto pequeno, linha, linha,
+   título grande, linha, texto pequeno, e não se entendia a ordem de leitura.
+   O erro era meu e é de princípio: partir o cabeçalho quebra a coluna de
+   leitura no meio, e o olho perde onde continuar.
 
-   A largura sai por `data-larg` e não por classe porque ela é escolha de
-   pauta, não de conteúdo: o mesmo bloco muda de largura entre uma versão de
-   ritmo e outra. */
-function Bloco({ olho, t, lead, children, id, classe = "", forma = "col", larg = "wrap", lado = "esq" }) {
+   Agora é o contrário, e é o que ele pediu desde o começo citando a tese da
+   home: o bloco INTEIRO é uma coluna só, e ela hospeda-se à esquerda ou à
+   direita. A ordem de leitura nunca se parte — desce reto dentro da coluna.
+
+   O que fica FORA da coluna: figuras e grades. Elas atravessam a página toda,
+   e é essa diferença que dá o ritmo — texto estreito de um lado, componente
+   cheio, texto estreito do outro lado. */
+function Bloco({ olho, t, children, cheio, id, classe = "", larg = "wrap", lado = "esq" }) {
   const rise = useRise();
-  const cabeca = (
-    <>
-      <motion.p className="v2-pn-olho" {...rise(0)}>{olho}</motion.p>
-      {t ? <motion.h2 className="v2-pn-t" {...rise(1)}>{t}</motion.h2> : null}
-    </>
-  );
-
   return (
     <section
       className={"v2-pn-bloco v2-wrap" + (classe ? " " + classe : "")}
       id={id}
-      data-forma={forma}
       data-larg={larg}
       data-lado={lado}
     >
-      {forma === "duas" ? (
-        <div className="v2-pn-cabeca">
-          <div className="v2-pn-cabeca-esq">{cabeca}</div>
-          <div className="v2-pn-cabeca-dir">
-            {lead ? <motion.p className="v2-pn-lead" {...rise(2)}>{lead}</motion.p> : null}
-          </div>
-        </div>
-      ) : (
-        <>
-          {cabeca}
-          {lead ? <motion.p className="v2-pn-p" {...rise(2)}>{lead}</motion.p> : null}
-        </>
-      )}
-      {children}
-    </section>
-  );
-}
-
-/* A faixa de ato: a quebra de superfície da versão A.
-
-   Ela é DELIBERADAMENTE menor que a `CapaCapitulo` que saiu desta página em
-   30/08. Aquela era meia tela com título em display, e foi recusada quando
-   alternava com dois passos de texto cada. Esta é uma faixa fina, sangrando de
-   borda a borda, só com mono: número do ato, nome do ato, e nada mais. Ela não
-   apresenta um capítulo — ela marca que a página virou de assunto, que é o
-   problema real (13.600px sem uma troca de superfície). */
-function FaixaAto({ n, nome, de }) {
-  const rise = useRise();
-  return (
-    <motion.div className="v2-pn-ato" data-escuro-corpo="1" aria-hidden="true" {...rise(0)}>
-      <div className="v2-wrap v2-pn-ato-in">
-        <span className="v2-pn-ato-n">{n} / {de}</span>
-        <span className="v2-pn-ato-nome">{nome}</span>
+      <div className="v2-pn-col">
+        <motion.p className="v2-pn-olho" {...rise(0)}>{olho}</motion.p>
+        {t ? <motion.h2 className="v2-pn-t" {...rise(1)}>{t}</motion.h2> : null}
+        {children}
       </div>
-    </motion.div>
+      {cheio}
+    </section>
   );
 }
 
@@ -604,40 +614,29 @@ function Paras({ itens, i0 = 2, classe = "v2-pn-p" }) {
 
 /* ------------------------------------------------------------ o ritmo */
 
-/* A pauta de ritmo da página: uma linha por bloco, na ordem em que eles saem.
+/* A pauta: uma linha por bloco, na ordem em que eles saem.
 
-   Ela nasceu como três versões comparáveis (`?ritmo=a|b|c`) em 30/08 — atos
-   com faixa escura, alternância em zigue-zague, e esta. O Gabriel escolheu
-   esta; as outras duas e o seletor de URL saíram junto com a escolha.
+   Dois campos, e os dois são simples de propósito — a versão com três campos e
+   cabeçalho partido foi recusada por ilegível (ver a nota do Bloco).
 
-   O princípio é uma RAMPA, não um zigue-zague: a página abre recuada e
-   discreta e vai crescendo em largura e presença até o funil, que é o clímax.
-   A aposta é que o problema nunca foi "tudo igual" e sim "nada acelera" — uma
-   página que argumenta tem que ficar mais alta conforme se aproxima da
-   confissão.
+     larg  "estreita" | "wrap" | "larga"   a largura da coluna de texto
+     lado  "esq" | "dir"                   de que lado da página ela mora
 
-   Os campos:
-     forma  "col"  olho sobre título, coluna única
-            "duas" título à esquerda, primeiro parágrafo à direita como lead
-     larg   "estreita" recuado pela coluna de rótulo (220px), título em 12ch
-            "wrap"     a largura cheia da página
-            "larga"    título em 26ch, sem `balance`, correndo a coluna
+   A largura sobe do começo para o fim: a página abre estreita e discreta e vai
+   crescendo até o funil, que é o clímax. O lado alterna a cada bloco, que é o
+   gesto que o Gabriel pediu citando a tese da home.
 
-   A ordem das formas foi escolhida MEDINDO a largura do título bloco a bloco,
-   e não no olho: uma rampa com um degrau para baixo no meio não é rampa. Sai
-   587 · 612 · 713 · 853 · 918 · 1326 · 1326 numa janela de 1440.
-
-   Os dois últimos voltam para coluna única de propósito. Duas colunas é a
-   forma QUIETA — título e apoio dividem a linha — e a rampa tem que terminar
-   na mais alta: título largo, sozinho, sem nada ao lado. */
+   As duas coisas juntas dão o ritmo sem nenhuma quebra de superfície: a borda
+   do texto sai da esquerda, vai para a direita, volta, e a coluna vai ficando
+   mais larga a cada volta até tomar a página inteira no fim. */
 const RITMO = [
-  { forma: "duas", larg: "estreita" },
+  { larg: "estreita", lado: "esq" },
   { larg: "estreita", lado: "dir" },
-  { forma: "duas", lado: "dir" },
-  { forma: "duas", larg: "larga" },
-  {},
-  { larg: "larga" },
-  { larg: "larga" },
+  { larg: "wrap",     lado: "esq" },
+  { larg: "wrap",     lado: "dir" },
+  { larg: "larga",    lado: "esq" },
+  { larg: "larga",    lado: "dir" },
+  { larg: "larga",    lado: "esq" },
 ];
 
 /* ------------------------------------------------------------- página */
@@ -646,92 +645,71 @@ export function Narrativa() {
   const rise = useRise();
   const b = (i) => RITMO[i] || {};
 
-  /* Quando o bloco abre em duas colunas, o primeiro parágrafo sobe para a
-     coluna da direita e vira o lead. É o mesmo texto, noutro lugar — nenhuma
-     bloco reescreve nada. Devolve [lead, resto]. */
-  const parte = (i, itens) =>
-    b(i).forma === "duas" ? [itens[0], itens.slice(1)] : [null, itens];
-
-  /* FATORES e CURTO abrem por lista e não têm primeiro parágrafo para
-     promover: nesses dois o lead é o texto que hoje fecha o bloco. */
-  const rodape = (i, texto) => (b(i).forma === "duas" ? [texto, null] : [null, texto]);
-
-  const [abreLead, abrePs] = parte(0, ABRE.p);
-  const [fatLead, fatNota] = rodape(1, FATORES.nota);
-  const [riscoLead, riscoPs] = parte(2, RISCO.p);
-  const [curtoLead, curtoP] = rodape(3, CURTO.p);
-  const [longoLead, longoP] = rodape(4, LONGO.p);
-  const [nuncaLead, nuncaPs] = parte(5, NUNCA.p);
-  const [apostaLead, apostaPs] = parte(6, APOSTA.p);
-
-  /* A faixa de ato de cada bloco, quando a pauta pede uma. */
-  const ato = (i) => {
-    const a = b(i).ato;
-    return a ? <FaixaAto n={a[0]} de={a[1]} nome={a[2]} /> : null;
-  };
-
   return (
     <div className="v2-pn">
-      {ato(0)}
-      <Bloco olho={ABRE.olho} t={ABRE.t} id="como-eu-trabalho" lead={abreLead} {...b(0)}>
-        <Paras itens={abrePs} />
-        <DoisCaminhos />
+      <Bloco olho={ABRE.olho} t={ABRE.t} id="como-eu-trabalho" {...b(0)}
+             cheio={<DoisCaminhos />}>
+        <Paras itens={ABRE.p} />
       </Bloco>
 
-      {ato(1)}
-      <Bloco olho={FATORES.olho} t={FATORES.t} lead={fatLead} {...b(1)}>
-        <ol className="v2-pn-fatores">
-          {FATORES.itens.map((f, i) => (
-            <motion.li key={f.k} {...rise(i + 2)}>
-              <p className="v2-pn-fator-k">{f.k}</p>
-              <p className="v2-pn-fator-p">{f.p}</p>
-            </motion.li>
-          ))}
-        </ol>
-        {fatNota ? <motion.p className="v2-pn-nota" {...rise(5)}>{fatNota}</motion.p> : null}
+      <Bloco olho={FATORES.olho} t={FATORES.t} {...b(1)}
+             cheio={
+               <ol className="v2-pn-fatores">
+                 {FATORES.itens.map((f, i) => (
+                   <motion.li key={f.k} {...rise(i)}>
+                     <p className="v2-pn-fator-k">{f.k}</p>
+                     <p className="v2-pn-fator-p">{f.p}</p>
+                   </motion.li>
+                 ))}
+               </ol>
+             }>
+        <motion.p className="v2-pn-nota" {...rise(2)}>{FATORES.nota}</motion.p>
       </Bloco>
 
-      {ato(2)}
-      <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque" lead={riscoLead} {...b(2)}>
-        <Paras itens={riscoPs} />
-        <EixoDoRisco />
+      <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque" {...b(2)}
+             cheio={<EixoDoRisco />}>
+        <Paras itens={RISCO.p} />
       </Bloco>
 
-      {ato(3)}
-      <Bloco olho={CURTO.olho} t={CURTO.t} id="caminho-curto" lead={curtoLead} {...b(3)}>
-        <ol className="v2-pn-trilho">
-          {CURTO.paradas.map((p, i) => (
-            <motion.li key={p.n} {...rise(i + 2)}>
-              <span className="v2-pn-trilho-n">{p.n}</span>
-              <span className="v2-pn-trilho-t">{p.t}</span>
-              <span className="v2-pn-trilho-p">{p.p}</span>
-            </motion.li>
-          ))}
-        </ol>
-        {curtoP ? <motion.p className="v2-pn-p" {...rise(6)}>{curtoP}</motion.p> : null}
-        <EsbocoEGrade />
+      <Bloco olho={CURTO.olho} t={CURTO.t} id="caminho-curto" {...b(3)}
+             cheio={
+               <>
+                 <ol className="v2-pn-trilho">
+                   {CURTO.paradas.map((p, i) => (
+                     <motion.li key={p.n} {...rise(i)}>
+                       <span className="v2-pn-trilho-n">{p.n}</span>
+                       <span className="v2-pn-trilho-t">{p.t}</span>
+                       <span className="v2-pn-trilho-p">{p.p}</span>
+                     </motion.li>
+                   ))}
+                 </ol>
+                 <EsbocoEGrade />
+               </>
+             }>
+        <motion.p className="v2-pn-p" {...rise(2)}>{CURTO.p}</motion.p>
       </Bloco>
 
-      {ato(4)}
-      <Bloco olho={LONGO.olho} t={LONGO.t} id="caminho-longo" lead={longoLead} {...b(4)}>
-        {longoP ? <motion.p className="v2-pn-p" {...rise(2)}>{longoP}</motion.p> : null}
-        <Diamante fases={LONGO.fases} />
-        <Paras itens={LONGO.casos} i0={4} classe="v2-pn-p is-menor" />
+      <Bloco olho={LONGO.olho} t={LONGO.t} id="caminho-longo" {...b(4)}
+             cheio={<Diamante fases={LONGO.fases} />}>
+        <motion.p className="v2-pn-p" {...rise(2)}>{LONGO.p}</motion.p>
+        <Paras itens={LONGO.casos} i0={3} classe="v2-pn-p is-menor" />
       </Bloco>
 
-      {ato(5)}
-      <Bloco olho={NUNCA.olho} t={NUNCA.t} classe="is-destaque" lead={nuncaLead} {...b(5)}>
-        <Paras itens={nuncaPs} />
+      <Bloco olho={NUNCA.olho} t={NUNCA.t} classe="is-destaque" {...b(5)}>
+        <Paras itens={NUNCA.p} />
       </Bloco>
 
-      {ato(6)}
-      <Bloco olho={APOSTA.olho} t={APOSTA.t} id="a-aposta" classe="is-aposta" lead={apostaLead} {...b(6)}>
-        <Paras itens={apostaPs} />
-        <motion.dl className="v2-pn-dado" {...rise(5)}>
-          {APOSTA.dado.map((d) => <Dado key={d.l} {...d} />)}
-        </motion.dl>
-        <motion.p className="v2-pn-fonte" {...rise(6)}>{APOSTA.fonte}</motion.p>
-        <motion.p className="v2-pn-fecho" {...rise(7)}>{APOSTA.fecho}</motion.p>
+      <Bloco olho={APOSTA.olho} t={APOSTA.t} id="a-aposta" classe="is-aposta" {...b(6)}
+             cheio={
+               <>
+                 <motion.dl className="v2-pn-dado" {...rise(0)}>
+                   {APOSTA.dado.map((d) => <Dado key={d.l} {...d} />)}
+                 </motion.dl>
+                 <motion.p className="v2-pn-fonte" {...rise(1)}>{APOSTA.fonte}</motion.p>
+                 <motion.p className="v2-pn-fecho" {...rise(2)}>{APOSTA.fecho}</motion.p>
+               </>
+             }>
+        <Paras itens={APOSTA.p} />
       </Bloco>
     </div>
   );

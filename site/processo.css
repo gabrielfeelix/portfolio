@@ -147,7 +147,7 @@
 
 /* ==================================================== a pauta de ritmo
 
-   Cada bloco nasce com `data-forma`, `data-larg` e `data-lado`, e a pauta que
+   Cada bloco nasce com `data-larg` e `data-lado`, e a pauta que
    distribui os três está em RITMO, em ProcessoNarrativa.jsx. As regras abaixo
    são o que esses atributos significam.
 
@@ -159,135 +159,48 @@
    escura, alternância em zigue-zague, e esta). A faixa de ato sobreviveu no
    arquivo mas não é usada pela pauta atual. */
 
-/* --------------------------------------------- abertura em duas colunas */
+/* --------------------------------------------- a coluna que troca de lado */
 
-/* O `Cabecalho` do resto do site: título à esquerda, apoio à direita. A
-   proporção é a mesma de `.v2-cabecalho` em kit.css (1.35fr / 1fr), e não um
-   número novo — se esta página inventasse a própria grade de cabeçalho, ela
-   voltaria a ler como página avulsa, que é o diagnóstico de ANALISE-REFS.md. */
-.v2-pn-cabeca {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: var(--v2-s4) var(--v2-s6);
-  align-items: start;
-  margin-bottom: var(--v2-s5);
-}
-/* Desce o lead até a altura da segunda linha do título, senão ele boia ao lado
-   do topo de um display de 88px. Mesma correção de `.v2-cabecalho-dir`. */
-.v2-pn-cabeca-dir { padding-top: .5em; }
-.v2-pn-cabeca .v2-pn-t { margin-bottom: 0; }
+/* Uma coluna de leitura por bloco. Ela nunca se parte — o cabeçalho partido em
+   duas colunas foi recusado por ilegível, ver a nota do Bloco em
+   ProcessoNarrativa.jsx — e o que varia é a LARGURA dela e de que lado da
+   página ela se hospeda.
 
-.v2-pn-lead {
-  margin: 0;
-  font-size: var(--v2-t-lead);
-  line-height: 1.45;
-  letter-spacing: var(--v2-track-titulo);
-  color: var(--v2-muted);
-  max-width: 46ch;
-}
+   `--col` é a largura, e é o único número que os três degraus mudam. O resto
+   sai de graça: `margin-inline` decide o lado, e a coluna carrega o olho, o
+   título e o texto juntos, na ordem, de cima para baixo. */
+.v2-pn-col { max-width: var(--col, 100%); margin-bottom: var(--v2-s4); }
 
-/* ------------------------------------------------------------ larguras */
+.v2-pn-bloco[data-larg="estreita"] { --col: 620px; }
+.v2-pn-bloco[data-larg="wrap"]     { --col: 860px; }
+.v2-pn-bloco[data-larg="larga"]    { --col: 100%; }
 
-/* A borda esquerda é o que o olho segue enquanto rola: mover ela é o
-   dispositivo de ritmo mais barato que existe, e é o que a /sobre faz ao
-   alternar dobra cheia, coluna presa e capa sangrada.
+.v2-pn-bloco[data-lado="dir"] .v2-pn-col { margin-left: auto; margin-right: 0; }
+.v2-pn-bloco[data-lado="esq"] .v2-pn-col { margin-left: 0; margin-right: auto; }
 
-   O recuo é a coluna de rótulo do site (220px), não um número novo. */
-/* Os três degraus são medidos em `ch` como o resto do bloco, e não em px nem
-   em `--v2-medida`. A primeira tentativa usou `--v2-medida` (809px) para o
-   degrau largo e ela saiu ERRADA: medido no navegador a 1440, 1ch do título
-   dá 51px, então o padrão de 18ch já é 918px e a variante "larga" ficava 109px
-   mais ESTREITA que o bloco normal. Degraus: 12ch (612) · 18ch (918) · 26ch
-   (1326), que ainda cabe na coluna de 1360 a 1440.
+/* O título respira dentro da coluna e não passa dela. */
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-t { max-width: 11ch; }
+.v2-pn-bloco[data-larg="wrap"]     .v2-pn-t { max-width: 15ch; }
+.v2-pn-bloco[data-larg="larga"]    .v2-pn-t { max-width: 26ch; text-wrap: pretty; }
 
-   Nota de sistema: `.v2-titulo`, o título do resto do site, para em
-   `--v2-medida` = 809px. Os títulos desta página já nasceram mais largos que
-   os do site, e o degrau estreito é o único dos três que fica abaixo dele. */
-.v2-pn-bloco[data-larg="estreita"] {
-  padding-left: calc(var(--v2-gutter) + var(--v2-label-col));
-}
-.v2-pn-bloco[data-larg="estreita"] .v2-pn-t { max-width: 12ch; }
-.v2-pn-bloco[data-larg="estreita"] .v2-pn-p { max-width: var(--v2-medida-caso); }
+/* Blocos vizinhos que trocam de lado precisam de mais ar do que dois do mesmo
+   lado: sem isso a coluna da direita de um começa na altura do rodapé da
+   coluna da esquerda do outro, e as duas leem como uma página de duas colunas
+   — foi exatamente o que o print mostrou. */
+.v2-pn-bloco[data-lado="esq"] + .v2-pn-bloco[data-lado="dir"],
+.v2-pn-bloco[data-lado="dir"] + .v2-pn-bloco[data-lado="esq"] { padding-top: var(--v2-s5); }
 
-/* Os desenhos NÃO recuam com o texto. Eles são a mídia da página, e a regra do
-   site para dobra larga é a mídia encostar e só o texto respeitar a goteira. */
-.v2-pn-bloco[data-larg="estreita"] .v2-pn-cena {
-  margin-left: calc(var(--v2-label-col) * -1);
-}
-
-/* Larga: o título corre a coluna quase inteira, em linhas longas em vez de
-   empilhado. Só ele — o parágrafo continua na medida de leitura, porque linha
-   longa de corpo não é ritmo, é cansaço.
-
-   `balance` sai junto: ele é o que empurra o título de volta para um bloco
-   quadrado de três linhas curtas, que é justamente o formato do qual este
-   degrau existe para escapar. */
-.v2-pn-bloco[data-larg="larga"] .v2-pn-t {
-  max-width: 26ch;
-  text-wrap: pretty;
-}
-
-/* Largura e forma se anulavam quando vinham juntas: a grade de 1.35 por 1 do
-   cabeçalho de duas colunas devolvia o título a 713px, e um bloco
-   `larga` + `duas` saía mais estreito que um `wrap` + `col` (918). Na versão C
-   isso invertia a rampa bem no clímax. A grade abre quando o degrau é largo. */
-.v2-pn-bloco[data-larg="larga"] .v2-pn-cabeca {
-  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
-}
-
-/* O respiro anda com a largura, e é o quarto dispositivo de ritmo — hoje os
-   sete blocos são separados por 104px sem uma exceção. Recuado respira menos,
-   largo respira mais: na versão C isso faz a rampa acelerar também no branco,
-   e na B faz o zigue-zague ter fôlego irregular em vez de métrico. */
+/* O respiro anda com a largura, e é o terceiro dispositivo: os sete blocos
+   eram separados por 104px sem uma exceção. */
 .v2-pn-bloco[data-larg="estreita"] { padding-bottom: var(--v2-s5); }
 .v2-pn-bloco[data-larg="larga"]    { padding-bottom: var(--v2-s7); }
 
-/* --------------------------------------------------- o lado, esquerda/direita */
-
-/* O gesto que o Gabriel pediu, citando a tese da home (`.v2-tese-bloco.is-dir`,
-   em home.css): uma vez o texto está à esquerda, na outra à direita.
-
-   Aqui ele veste outra roupa, porque a página tem outra identidade. Na home
-   são dois blocos soltos que trocam de âncora. Aqui quem troca é a ESTRUTURA
-   do bloco: no cabeçalho de duas colunas o par título/apoio inverte de coluna,
-   e no bloco recuado o recuo muda de margem.
-
-   O parágrafo continua alinhado à esquerda nos dois casos. Texto corrido
-   alinhado à direita custa uma fixação a mais por linha, e o que ele pediu foi
-   o texto mudar de LADO, não de alinhamento. */
-
-/* Duas colunas, invertidas: o apoio vai para a esquerda e o título para a
-   direita. Por `order`, e não reescrevendo a grade, para os dois lados
-   herdarem qualquer ajuste futuro da proporção. */
-.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
-}
-.v2-pn-bloco[data-lado="dir"][data-larg="larga"] .v2-pn-cabeca {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
-}
-.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-esq { order: 2; }
-.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-dir { order: 1; }
-
-/* Recuado pela direita. O bloco inteiro anda, incluindo a régua do olho — é
-   ela que o olho segue de dobra em dobra, e recuar o texto deixando a régua
-   parada desfaria o gesto. */
-.v2-pn-bloco[data-lado="dir"][data-larg="estreita"] {
-  padding-left: var(--v2-gutter);
-  padding-right: calc(var(--v2-gutter) + var(--v2-label-col));
-}
-.v2-pn-bloco[data-lado="dir"][data-larg="estreita"] .v2-pn-cena {
-  margin-left: 0;
-  margin-right: calc(var(--v2-label-col) * -1);
-}
-
-
-/* ------------------------------------------ o esboço, a grade e o risco */
+/* -------------------------------- o rabisco, o protótipo e o eixo do risco */
 
 /* As duas figuras que quebram a sequência de dobras de texto. Elas seguem a
-   mesma gramática dos dois desenhos de Double Diamond — linha viva para o que
-   é percorrido, linha morta para o que dá contexto — e por isso NÃO ganham
-   painel cinza: na fase 6 o cinza passou a significar mídia fotográfica, e
-   desenho de linha em cima de papel branco é o que a página já faz. */
+   gramática dos desenhos de Double Diamond e por isso NÃO ganham painel
+   cinza: na fase 6 o cinza passou a significar mídia fotográfica, e desenho de
+   linha sobre papel branco é o que a página já faz. */
 
 .v2-pn-telas { margin: var(--v2-s5) 0 0; }
 .v2-pn-risco { margin: var(--v2-s4) 0 0; }
@@ -295,38 +208,60 @@
 .v2-pn-risco svg { width: 100%; height: auto; display: block; overflow: visible; }
 
 /* O traço à mão. Mais fino que a rota dos diamantes e com ponta redonda: é
-   lápis, e lápis não tem a mesma presença de um percurso. */
+   lápis, e lápis não tem a presença de um percurso. */
 .v2-pn-mao {
   fill: none;
   stroke: var(--v2-ink);
   stroke-width: 2;
-  stroke-opacity: .62;
+  stroke-opacity: .6;
   stroke-linecap: round;
 }
 
-/* No esquadro. Contorno e nada de preenchimento, salvo a barra e o rodapé, que
-   são as duas peças que num wireframe de verdade vêm chapadas. */
-.v2-pn-grade {
+/* O protótipo de baixa. A escada de tinta é o que faz o quadro ler como
+   interface e não como grade de retângulos: chapa quase invisível ao fundo,
+   texto em dois pesos, contorno só onde existe caixa de verdade (mídia e
+   campo), e o acento reservado à ação. */
+.v2-pn-p-chapa      { fill: var(--v2-ink); fill-opacity: .045; }
+.v2-pn-p-marca      { fill: var(--v2-ink); fill-opacity: .34; }
+.v2-pn-p-titulo     { fill: var(--v2-ink); fill-opacity: .32; }
+.v2-pn-p-tinta      { fill: var(--v2-ink); fill-opacity: .15; }
+.v2-pn-p-tinta-fraca{ fill: var(--v2-ink); fill-opacity: .09; }
+.v2-pn-p-caixa {
   fill: none;
   stroke: var(--v2-ink);
+  stroke-opacity: .38;
   stroke-width: 1.5;
-  stroke-opacity: .55;
 }
-.v2-pn-grade.is-cheio { fill: var(--v2-ink); fill-opacity: .07; }
-/* A ação é o único elemento em vermelho dos dois quadros. O acento marca
-   decisão no site inteiro, e num wireframe a decisão é o botão. */
-.v2-pn-grade.is-acao {
-  fill: var(--v2-accent);
-  fill-opacity: .12;
-  stroke: var(--v2-accent);
-  stroke-opacity: .8;
-}
-.v2-pn-grade-cruz {
+.v2-pn-p-cruz {
   fill: none;
   stroke: var(--v2-ink);
+  stroke-opacity: .22;
   stroke-width: 1;
-  stroke-opacity: .3;
 }
+.v2-pn-p-campo {
+  fill: var(--v2-paper);
+  stroke: var(--v2-ink);
+  stroke-opacity: .42;
+  stroke-width: 1.5;
+}
+/* O cursor piscando é o que diz "isto se digita". Sem ele o campo é só um
+   retângulo arredondado, que é o que o Gabriel chamou de wireframe. */
+.v2-pn-p-cursor {
+  stroke: var(--v2-accent);
+  stroke-width: 1.5;
+  stroke-opacity: .9;
+}
+.v2-pn-p-pilula {
+  fill: var(--v2-accent);
+  fill-opacity: .1;
+  stroke: var(--v2-accent);
+  stroke-opacity: .55;
+  stroke-width: 1.25;
+}
+/* A ação é o único elemento chapado em vermelho dos dois quadros. O acento
+   marca decisão no site inteiro, e num protótipo a decisão é o botão. */
+.v2-pn-p-acao   { fill: var(--v2-accent); fill-opacity: .92; }
+.v2-pn-p-acao-t { fill: #fff; fill-opacity: .9; }
 
 .v2-pn-seta {
   fill: none;
@@ -337,15 +272,22 @@
 }
 
 /* A cunha do risco. Preenchida E contornada: preenchida porque é uma
-   quantidade e quantidade se lê por área; contornada porque a 10% de tinta,
-   sozinha, ela lia como mancha de gradiente em vez de objeto desenhado. */
+   quantidade e quantidade se lê por área; contornada porque a 11% de tinta,
+   sozinha, ela lia como mancha de gradiente em vez de peça desenhada. */
 .v2-pn-cunha {
   fill: var(--v2-ink);
-  fill-opacity: .11;
+  fill-opacity: .1;
   stroke: var(--v2-ink);
   stroke-width: 1;
-  stroke-opacity: .34;
+  stroke-opacity: .3;
   stroke-linejoin: round;
+}
+/* O eixo atravessa a cunha inteira e é o que dá a ela um lugar de onde crescer:
+   sem ele a peça flutuava e era parte do "estranho". */
+.v2-pn-risco-eixo {
+  stroke: var(--v2-ink);
+  stroke-opacity: .25;
+  stroke-width: 1;
 }
 
 
@@ -402,9 +344,13 @@
   letter-spacing: var(--v2-track-cromo);
   text-transform: uppercase;
 }
+/* 16px e nao os 12 do rotulo. Ao lado de um titulo de 88px, 12px lia como
+   letra miuda de contrato — o Gabriel mandou print dizendo que nao dava para
+   entender nada. Os 12px continuam sendo o tamanho do CROMO (o `-k` em mono),
+   que e rotulo e nao leitura. */
 .v2-pn-fator-p {
   margin: 0;
-  font-size: var(--v2-t-label);
+  font-size: var(--v2-t-corpo);
   line-height: 1.55;
   color: var(--v2-muted);
 }
@@ -440,7 +386,7 @@
   letter-spacing: var(--v2-track-titulo);
 }
 .v2-pn-trilho-p {
-  font-size: var(--v2-t-label);
+  font-size: var(--v2-t-corpo);
   line-height: 1.55;
   color: var(--v2-muted);
 }
@@ -557,7 +503,7 @@
 }
 .v2-pn-fases ul { list-style: none; margin: 0; padding: 0; }
 .v2-pn-fases ul li {
-  font-size: var(--v2-t-label);
+  font-size: var(--v2-t-corpo);
   line-height: 1.5;
   color: var(--v2-muted);
   padding: 3px 0;
@@ -578,25 +524,17 @@
      o cabeçalho empilha e a borda esquerda volta para a goteira. O que
      sobrevive no celular é a faixa de ato, que é a única das três que
      funciona em uma coluna. */
-  .v2-pn-cabeca {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--v2-s3);
-    margin-bottom: var(--v2-s4);
-  }
-  .v2-pn-cabeca-dir { padding-top: 0; }
-  .v2-pn-cabeca .v2-pn-t { margin-bottom: 0; }
-  .v2-pn-bloco[data-larg="estreita"] { padding-left: var(--v2-gutter); }
-  .v2-pn-bloco[data-larg="estreita"] .v2-pn-t,
-  .v2-pn-bloco[data-larg="larga"] .v2-pn-t { max-width: none; }
-  .v2-pn-bloco[data-larg="estreita"] .v2-pn-cena { margin-left: 0; }
+  .v2-pn-bloco[data-larg] .v2-pn-t { max-width: none; }
 
   /* A alternância esquerda/direita também desmonta: numa coluna só não há dois
      lados para alternar, e inverter a ordem do cabeçalho empilhado colocaria o
      apoio ANTES do título que ele apoia. */
-  .v2-pn-bloco[data-lado="dir"][data-larg="estreita"] { padding-right: var(--v2-gutter); }
-  .v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-esq,
-  .v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-dir { order: 0; }
-  .v2-pn-bloco[data-lado="dir"][data-larg="estreita"] .v2-pn-cena { margin-right: 0; }
+  /* Numa tela de 390px nao ha dois lados para alternar: a coluna e a pagina, e
+     os tres degraus de largura viram um so. */
+  .v2-pn-bloco { --col: 100% !important; }
+  .v2-pn-bloco .v2-pn-col { margin-inline: 0; }
+  .v2-pn-bloco[data-lado="esq"] + .v2-pn-bloco[data-lado="dir"],
+  .v2-pn-bloco[data-lado="dir"] + .v2-pn-bloco[data-lado="esq"] { padding-top: 0; }
 
   /* Os dois quadros do esboço viram faixa rolável pelo mesmo motivo dos
      desenhos de diamante: em 390px cada tela mediria 150px de largura e as
