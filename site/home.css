@@ -1130,21 +1130,23 @@
    nunca grudadas ao mesmo tempo em 200 quadros.
 
    Quem regula ONDE as duas param e a margem da ultima linha, logo acima. */
-.v2-pilha { padding: 0 0 40vh; }
+/* Era `0 0 40vh`, e os 40vh nao compravam nada.
 
-/* Os dois resets do curso precisam vir DEPOIS da regra acima: mesma
-   especificidade, entao quem ganha e a ordem no arquivo. Medido em 29/08 com
-   eles la em cima, onde eram letra morta — o celular ficava com 338px e o
-   reduced-motion com 360px de vao morto embaixo da pilha.
+   O retangulo que prende uma linha grudada e a caixa de CONTEUDO da .v2-pilha,
+   e padding fica de fora dela — e o que o comentario logo acima ja dizia. Com
+   quatro casos sao duas linhas: a linha 0 gruda enquanto a linha 1 sobe, e a
+   caixa de conteudo acaba junto com a linha 1. Nao ha terceira linha para
+   pagar curso, entao os 40vh eram 432px de vao morto em tela de 1080, e era a
+   queixa do Gabriel de que os casos ficavam longe demais dos numeros.
 
-   Nos dois casos a pilha vira `position: relative` e nao ha grude nenhum para
-   pagar: o curso viraria so um buraco antes da proxima dobra. */
-@media (max-width: 860px) {
-  .v2-pilha { padding-bottom: var(--v2-s6); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .v2-pilha { padding-bottom: var(--v2-s6); }
-}
+   Os 104px que sobram nao sao curso, sao soltura: dao folga para a linha 0
+   desgrudar antes da dobra acabar, em vez de largar de uma vez. Com eles o vao
+   ate a proxima dobra fica em 312px (104 daqui + 104 do pe desta dobra + 104
+   do topo da seguinte), que e o mesmo ritmo de qualquer outra emenda do site.
+
+   E o mesmo valor no desktop, no celular e em reduced-motion, entao os dois
+   @media que existiam aqui viraram letra morta e sairam. */
+.v2-pilha { padding: 0 0 var(--v2-s6); }
 .v2-linha-casos { padding-inline: 0; }
 
 /* ---- numeros ---- */
