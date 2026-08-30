@@ -274,30 +274,71 @@ function CasoHero({ cap }) {
 
 /* Régua de metadados. É a única dobra da página sem label lateral: ela É a
    legenda do hero, e um rótulo em cima repetiria isso. */
-function Ficha({ cap }) {
+/* A entrada do capítulo, numa peça só.
+
+   Eram três faixas soltas empilhadas entre o hero e o primeiro movimento — a
+   ficha, o resumo e o caminho de leitura —, cada uma com a própria régua e
+   104px de vão entre elas. Somadas, ocupavam uma tela inteira para entregar
+   seis linhas de texto, e o efeito era o oposto do pretendido: a informação
+   não lia como bloco, lia como sobra flutuando entre dobras. O Gabriel leu
+   exatamente assim, e tinha razão.
+
+   Agora é um bloco fechado, com hierarquia declarada dentro dele:
+
+     1. o RESULTADO abre, grande, porque é a única linha da dobra que responde
+        a pergunta que traz alguém a um portfólio — o trabalho dessa pessoa
+        move alguma coisa? Antes ele era a segunda de duas células de mesmo
+        peso, e empatava com a descrição do projeto;
+     2. o O QUÊ vem ao lado, menor, porque é contexto do resultado e não
+        concorrente dele;
+     3. a ficha desce para uma linha de cromo, que é o que ela é: papel,
+        superfície, período e preço de leitura são dados de catálogo, não
+        argumento;
+     4. o caminho de leitura fecha, porque é a última decisão que o leitor
+        toma antes de começar.
+
+   Uma régua só no topo, e filetes internos separando os três andares. */
+function Abre({ cap, curto, trocar }) {
   const rise = useRise();
-  const celulas = [
+  const t = cap.tldr || {};
+  const ficha = [
     ["Papel", cap.role],
     ["Superfície", cap.surface],
     ["Período", cap.periodo],
-    /* O preço da leitura, declarado antes de ser cobrado. `minutos` era medido
-       em volume/data.jsx desde sempre e não chegava à tela: o capítulo 01 pede
-       19 minutos e abria sem avisar. Numa triagem que dá quatro minutos ao site
-       inteiro, isso lê como quem não sabe editar. Declarado, lê como quem sabe
-       o que custa ler o que escreveu. */
     ["Leitura", cap.minutos ? `${cap.minutos} min` : null],
   ].filter(([, v]) => v);
 
   return (
-    <section className="v2-wrap v2-caso-abre" aria-label="Ficha do projeto">
-      <dl className="v2-ficha">
-        {celulas.map(([rot, val], i) => (
-          <motion.div className="v2-ficha-cel" key={rot} {...rise(i)}>
-            <dt className="v2-ficha-l">{rot}</dt>
-            <dd className="v2-ficha-v">{val}</dd>
-          </motion.div>
-        ))}
-      </dl>
+    <section className="v2-wrap v2-abre" aria-label="Resumo do projeto">
+      <motion.div className="v2-abre-cartao" {...rise(0)}>
+        {t.resultado || t.oque ? (
+          <div className="v2-abre-topo">
+            {t.resultado ? (
+              <div className="v2-abre-forte">
+                <p className="v2-abre-l">O resultado</p>
+                <p className="v2-abre-r">{t.resultado}</p>
+              </div>
+            ) : null}
+            {t.oque ? (
+              <div className="v2-abre-oque">
+                <p className="v2-abre-l">O quê</p>
+                <p className="v2-abre-o">{t.oque}</p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <dl className="v2-abre-ficha">
+          {ficha.map(([rot, val]) => (
+            <div className="v2-abre-cel" key={rot}>
+              <dt className="v2-abre-fl">{rot}</dt>
+              <dd className="v2-abre-fv">{val}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <Caminho cap={cap} curto={curto} trocar={trocar} />
+      </motion.div>
     </section>
   );
 }
@@ -367,32 +408,6 @@ function Abertura({ cap }) {
   );
 }
 
-/* ================================================================ resumo */
-
-/* `tldr.papel` não entra: a ficha logo acima já responde isso, e a V1 tinha
-   cortado a mesma duplicação pelo mesmo motivo (ver volume/Capitulo.jsx).
-
-   Fase 6: o painel cinza saiu. Duas células com régua em cima é a mesma
-   informação sem fingir que o resumo é mídia. */
-function Resumo({ cap }) {
-  const rise = useRise();
-  const t = cap.tldr;
-  if (!t) return null;
-  const celulas = [["O quê", t.oque], ["Resultado", t.resultado]].filter(([, v]) => v);
-
-  return (
-    <Dobra label="Resumo" larga>
-      <div className="v2-resumo">
-        {celulas.map(([rot, val], i) => (
-          <motion.div className="v2-resumo-cel" key={rot} {...rise(i)}>
-            <p className="v2-resumo-l">{rot}</p>
-            <p className="v2-resumo-v">{val}</p>
-          </motion.div>
-        ))}
-      </div>
-    </Dobra>
-  );
-}
 
 /* =============================================================== problema */
 
@@ -1417,10 +1432,8 @@ export default function Caso({ id, ir }) {
             pessoa acabou de ler "Leitura · 19 min", e a escolha tem que estar
             onde o preço aparece, não três dobras abaixo. */}
         <span id="v2-caso-corpo" />
-        <Ficha cap={cap} />
-        <Caminho cap={cap} curto={curto} trocar={trocar} />
+        <Abre cap={cap} curto={curto} trocar={trocar} />
         <Abertura cap={cap} />
-        <Resumo cap={cap} />
 
         {/* Os movimentos, numerados pelo que o caso tem.
          *

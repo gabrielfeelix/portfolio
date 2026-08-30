@@ -59,7 +59,7 @@ const CHAPTERS = [
     premise: "Uma vitrine que ficou bonita e ficou lenta de comprar.",
     role: "UX/UI Designer, responsável pelo projeto",
     surface: "E-commerce · Magento",
-    periodo: "6 meses · publicação prevista para outubro/2026",
+    periodo: "6 meses · design entregue, publicação prevista para outubro/2026",
     year: "2026",
     fact: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
     /* Quanto o capítulo cobra, em minutos, e é medido, não estimado: 3.593
@@ -1131,7 +1131,7 @@ const COMPANIES = [
         "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado para o time de desenvolvimento só para tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
       ] },
       { k: "A primeira vez que testei de verdade", p: [
-        "Foi o único lugar onde testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
+        "Testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
         "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou para sempre meu jeito de escrever rótulo e de ordenar campo.",
       ] },
       { k: "E olhei o trabalho de outra pessoa", p: [
