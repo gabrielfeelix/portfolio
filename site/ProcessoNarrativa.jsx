@@ -337,6 +337,181 @@ function Diamante({ fases }) {
 }
 
 
+/* --------------------------------------------------- o esboço e a grade */
+
+/* A mesma tela, duas vezes: à mão e depois no esquadro.
+ *
+ * O Gabriel pediu o rabiscoframe e o wireframe de volta. Os dois moravam numa
+ * seção recusada em 30/08 e nunca chegaram a ser commitados — procurei em todo
+ * o histórico, por seis grafias, e não existe blob deles em lugar nenhum.
+ * Este par é redesenhado do zero.
+ *
+ * A tela é GENÉRICA, e isso é o requisito e não uma economia. A versão antiga
+ * mostrava uma tela do Monte seu PC e foi recusada justamente por obrigar o
+ * leitor a saber o que aquele produto era. Aqui não há marca, não há texto
+ * legível e não há produto: barra, bloco de mídia, linhas e um botão, que é a
+ * forma que qualquer tela tem antes de ter conteúdo.
+ *
+ * As duas metades saem da MESMA lista de peças. É o que garante que elas sejam
+ * a mesma tela: se fossem dois desenhos separados, a passagem de uma para a
+ * outra viraria "duas telas parecidas" em vez de "esta tela, depois". */
+const TELA = [
+  { x: 0,   y: 0,   w: 400, h: 34,  cheio: true },
+  { x: 0,   y: 54,  w: 168, h: 128, midia: true },
+  { x: 188, y: 60,  w: 212, h: 10 },
+  { x: 188, y: 84,  w: 212, h: 10 },
+  { x: 188, y: 108, w: 160, h: 10 },
+  { x: 188, y: 132, w: 190, h: 10 },
+  { x: 0,   y: 202, w: 118, h: 36, acao: true },
+  { x: 140, y: 208, w: 260, h: 10 },
+  { x: 140, y: 230, w: 210, h: 10 },
+  { x: 0,   y: 264, w: 400, h: 36,  cheio: true },
+];
+
+/* O tremido é DETERMINÍSTICO, e não `Math.random`. Com aleatório o desvio
+   mudaria a cada render do React e o rabisco ficaria tremendo enquanto a
+   pessoa rola, que é o oposto de um desenho a mão parado no papel. */
+function tremido(n) {
+  const s = Math.sin(n * 127.1) * 43758.5453;
+  return (s - Math.floor(s)) * 2 - 1;
+}
+
+/* Um retângulo à mão livre: quatro traços independentes, cada um com o meio
+   fugindo alguns pixels do reto e a ponta passando um pouco do canto. É o que
+   a mão faz, e é o que o olho lê como rascunho sem precisar de filtro de
+   textura nem de fonte manuscrita. */
+function aMao(x, y, w, h, k = 1) {
+  const t = (i) => tremido(x + y * 7 + w * 13 + h * 17 + i * 31) * 2.8 * k;
+  const o = (i) => tremido(x * 3 + y + i * 53) * 3.2 * k;
+  const L = (x1, y1, x2, y2, i) =>
+    `M${(x1 - o(i)).toFixed(1)} ${(y1 - o(i + 1)).toFixed(1)}` +
+    ` Q${((x1 + x2) / 2 + t(i)).toFixed(1)} ${((y1 + y2) / 2 + t(i + 2)).toFixed(1)}` +
+    ` ${(x2 + o(i + 3)).toFixed(1)} ${(y2 + o(i + 4)).toFixed(1)}`;
+  /* Peça baixa vira UM traço solto, e não um retângulo fino de quatro lados.
+
+     Num rabiscoframe de verdade a linha de texto é um risco: ninguém contorna
+     uma linha de texto. Desenhadas como retângulo de 10px de altura elas liam
+     como tubos, e o quadro inteiro perdia a cara de papel. O contorno fica
+     para as peças que têm área — barra, mídia, botão, rodapé. */
+  if (h <= 14) {
+    const my = y + h / 2;
+    return [
+      `M${(x - o(1)).toFixed(1)} ${(my + t(1)).toFixed(1)}` +
+      ` C${(x + w * 0.3).toFixed(1)} ${(my + t(3) * 1.6).toFixed(1)}` +
+      ` ${(x + w * 0.7).toFixed(1)} ${(my + t(7) * 1.6).toFixed(1)}` +
+      ` ${(x + w + o(9)).toFixed(1)} ${(my + t(11)).toFixed(1)}`,
+    ];
+  }
+  return [
+    L(x, y, x + w, y, 1),
+    L(x + w, y, x + w, y + h, 5),
+    L(x + w, y + h, x, y + h, 9),
+    L(x, y + h, x, y, 13),
+  ];
+}
+
+function EsbocoEGrade() {
+  const rise = useRise();
+  const cena = React.useRef(null);
+  /* Sem cena `sticky`, ao contrário dos dois desenhos de Double Diamond. Eles
+     precisam de rolagem presa porque o percurso é longo e tem que ser
+     assistido; este par é um antes-e-depois, e prender duas telas de rolagem
+     para mostrar dois quadros parados seria rolagem morta. Ele desenha durante
+     a própria entrada. */
+  const { progresso, quieto } = useTracado(cena, { offset: ["start 88%", "center 42%"] });
+  const mao = useTrecho(progresso, 0, 0.52);
+  const regua = useTrecho(progresso, 0.5, 0.95);
+
+  return (
+    <motion.figure className="v2-pn-telas" ref={cena} {...rise(0)}>
+      <svg viewBox="0 0 1000 368" role="img"
+           aria-label="A mesma tela desenhada duas vezes: primeiro à mão, com traço torto, e depois no esquadro, com as mesmas peças alinhadas numa grade.">
+        {/* à mão */}
+        <g transform="translate(20 20)">
+          {TELA.map((p, i) =>
+            aMao(p.x, p.y, p.w, p.h).map((d, j) => (
+              <motion.path className="v2-pn-mao" key={`${i}-${j}`} d={d}
+                           style={quieto ? undefined : { pathLength: mao.traco }} />
+            ))
+          )}
+          {/* a cruz do bloco de mídia, que é como se rabisca "aqui vai imagem" */}
+          {(() => {
+            const m = TELA.find((p) => p.midia);
+            return [
+              `M${m.x + 4} ${m.y + 4} L${m.x + m.w - 4} ${m.y + m.h - 4}`,
+              `M${m.x + m.w - 4} ${m.y + 4} L${m.x + 4} ${m.y + m.h - 4}`,
+            ].map((d) => (
+              <motion.path className="v2-pn-mao" key={d} d={d}
+                           style={quieto ? undefined : { pathLength: mao.traco }} />
+            ));
+          })()}
+        </g>
+
+        {/* a passagem: uma seta curta, na mono do site */}
+        <motion.g style={quieto ? undefined : { opacity: regua.traco }}>
+          <path className="v2-pn-seta" d="M468 170 L532 170 M518 160 L532 170 L518 180" />
+        </motion.g>
+
+        {/* no esquadro */}
+        <motion.g transform="translate(580 20)" style={quieto ? undefined : { opacity: regua.traco }}>
+          {TELA.map((p, i) => (
+            <rect
+              className={"v2-pn-grade" + (p.acao ? " is-acao" : "") + (p.cheio ? " is-cheio" : "")}
+              key={i} x={p.x} y={p.y} width={p.w} height={p.h}
+            />
+          ))}
+          {(() => {
+            const m = TELA.find((p) => p.midia);
+            return (
+              <path className="v2-pn-grade-cruz"
+                    d={`M${m.x} ${m.y} L${m.x + m.w} ${m.y + m.h} M${m.x + m.w} ${m.y} L${m.x} ${m.y + m.h}`} />
+            );
+          })()}
+        </motion.g>
+
+        <text className="v2-pn-svg-k" x="20" y="356">Rabiscoframe</text>
+        <text className="v2-pn-svg-k" x="580" y="356">Wireframe</text>
+      </svg>
+      <figcaption className="v2-fig-leg">
+        As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para decidir onde.
+      </figcaption>
+    </motion.figure>
+  );
+}
+
+/* ---------------------------------------------------------- o eixo do risco */
+
+/* A cunha: fina onde errar é barato, grossa onde errar é caro.
+
+   Ela desenha o título do bloco em vez de ilustrá-lo — "o tamanho da pesquisa
+   acompanha o preço de errar" é uma afirmação sobre uma quantidade que cresce,
+   e uma quantidade que cresce se desenha como uma quantidade que cresce. Sem
+   ícone, sem metáfora. */
+function EixoDoRisco() {
+  const rise = useRise();
+  const cena = React.useRef(null);
+  const { progresso, quieto } = useTracado(cena, { offset: ["start 88%", "center 50%"] });
+  const abre = useTrecho(progresso, 0, 0.9);
+
+  return (
+    <motion.figure className="v2-pn-risco" ref={cena} {...rise(0)}>
+      <svg viewBox="0 0 1000 150" role="img"
+           aria-label="Uma cunha que começa fina à esquerda, onde a decisão é barata de desfazer, e termina grossa à direita, onde é cara. A espessura é o tamanho da pesquisa.">
+        <motion.g style={quieto ? undefined : { opacity: abre.traco, scaleX: abre.traco }}
+                  transform-origin="40 75">
+          <path className="v2-pn-cunha" d="M40 73 L960 24 L960 126 L40 77 Z" />
+        </motion.g>
+        <line className="v2-pn-eixo" x1="40" y1="75" x2="960" y2="75" />
+        <text className="v2-pn-svg-k" x="40" y="140">Barato de desfazer</text>
+        <text className="v2-pn-svg-k is-forte" x="960" y="140" textAnchor="end">Caro de desfazer</text>
+      </svg>
+      <figcaption className="v2-fig-leg">
+        A espessura é quanto eu abro antes de decidir. Ela acompanha o preço de errar, e não o calendário.
+      </figcaption>
+    </motion.figure>
+  );
+}
+
 /* ------------------------------------------------------------- pedaços */
 
 /* O número do funil, subindo. `useContador` já existe em motion.js e é o
@@ -365,7 +540,7 @@ function Dado({ l, v }) {
    A largura sai por `data-larg` e não por classe porque ela é escolha de
    pauta, não de conteúdo: o mesmo bloco muda de largura entre uma versão de
    ritmo e outra. */
-function Bloco({ olho, t, lead, children, id, classe = "", forma = "col", larg = "wrap" }) {
+function Bloco({ olho, t, lead, children, id, classe = "", forma = "col", larg = "wrap", lado = "esq" }) {
   const rise = useRise();
   const cabeca = (
     <>
@@ -380,6 +555,7 @@ function Bloco({ olho, t, lead, children, id, classe = "", forma = "col", larg =
       id={id}
       data-forma={forma}
       data-larg={larg}
+      data-lado={lado}
     >
       {forma === "duas" ? (
         <div className="v2-pn-cabeca">
@@ -456,8 +632,8 @@ function Paras({ itens, i0 = 2, classe = "v2-pn-p" }) {
    na mais alta: título largo, sozinho, sem nada ao lado. */
 const RITMO = [
   { forma: "duas", larg: "estreita" },
-  { larg: "estreita" },
-  { forma: "duas" },
+  { larg: "estreita", lado: "dir" },
+  { forma: "duas", lado: "dir" },
   { forma: "duas", larg: "larga" },
   {},
   { larg: "larga" },
@@ -518,6 +694,7 @@ export function Narrativa() {
       {ato(2)}
       <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque" lead={riscoLead} {...b(2)}>
         <Paras itens={riscoPs} />
+        <EixoDoRisco />
       </Bloco>
 
       {ato(3)}
@@ -532,6 +709,7 @@ export function Narrativa() {
           ))}
         </ol>
         {curtoP ? <motion.p className="v2-pn-p" {...rise(6)}>{curtoP}</motion.p> : null}
+        <EsbocoEGrade />
       </Bloco>
 
       {ato(4)}

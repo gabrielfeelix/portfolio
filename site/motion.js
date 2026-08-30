@@ -1073,7 +1073,40 @@ function cortina(alturas, lados, forcado) {
     }
   }
 
-  return op;
+  /* A rampa, e ela conserta um pisca que estava no ar.
+
+     A nota no topo desta função diz que o corte acontece com o avião já fora
+     da caixa dos dois lados, "então não há fade a fazer". Isso vale para a
+     PRIMEIRA regra e só. A segunda — o teleporte — dispara pela corrida de
+     amostras forçadas, que é uma propriedade do percurso, e não olha onde o
+     avião está: ela apaga com ele no meio do quadro.
+
+     Medido na home a 1440x900, varrendo de 120 em 120px: das quatro trocas de
+     visibilidade do percurso, TRÊS acontecem com o avião dentro da tela —
+     apaga em x:1103 y:31, acende em x:541 y:13, e acende em x:1248 y:241, que
+     é a dobra "O ajuste" de onde veio a queixa.
+
+     Entre duas amostras vizinhas há ~24px de rolagem numa home de 10.907px, e
+     `useTransform` interpola só esse intervalo: em rolagem normal isso é um
+     quadro. Por isso lia como sumiço, e não como saída.
+
+     A rampa espalha a transição por K amostras de cada lado do trecho
+     apagado, começando pelo lado VISÍVEL — o avião perde tinta antes de
+     sumir e ganha depois de voltar. K = 2% das amostras dá ~190px de rolagem,
+     que é distância suficiente para o olho ler desaparecimento em vez de
+     corte. Onde a regra 1 já cortava fora do quadro a rampa não custa nada:
+     ninguém vê apagar o que está recortado. */
+  const K = Math.max(3, Math.round(op.length * 0.02));
+  const rampa = op.slice();
+  for (let i = 0; i < op.length; i++) {
+    if (op[i] !== 1) continue;
+    let d = K;
+    for (let j = 1; j <= K; j++) {
+      if (op[i - j] === 0 || op[i + j] === 0) { d = j; break; }
+    }
+    rampa[i] = d / K;
+  }
+  return rampa;
 }
 
 export function useVoo(refCaixa, variante = "home") {

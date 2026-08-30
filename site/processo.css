@@ -1,9 +1,8 @@
 /* Página /processo.
-   Quase tudo aqui é reuso: hero de home.css, dobra de três colunas, capa de
-   capítulo, ficha, figura e grade de casos de case.css. O que este arquivo
-   acrescenta são cinco peças que só esta página tem: o registro dos seis
-   passos no hero, a frase de movimento na capa de capítulo, o número em
-   display na margem, o "de relance" e o fecho. */
+   Quase tudo aqui é reuso: hero de home.css, ficha, figura e grade de casos de
+   case.css. O que este arquivo acrescenta são as peças que só esta página tem:
+   a pauta de ritmo dos sete blocos, os dois desenhos de Double Diamond, o par
+   esboço/wireframe, a cunha do risco e o fecho. */
 
 
 /* ------------------------------------------------------------- a aposta */
@@ -146,15 +145,19 @@
 .v2-pn-bloco.is-aposta .v2-pn-t { max-width: 22ch; }
 
 
-/* ============================================== as três pautas de ritmo
+/* ==================================================== a pauta de ritmo
 
-   Tudo abaixo só entra quando a pauta pede (`?ritmo=a|b|c`). Sem parâmetro na
-   URL, todo bloco nasce `data-forma="col" data-larg="wrap"`, que é a página de
-   hoje, e nenhuma destas regras casa. Ver PAUTAS em ProcessoNarrativa.jsx.
+   Cada bloco nasce com `data-forma`, `data-larg` e `data-lado`, e a pauta que
+   distribui os três está em RITMO, em ProcessoNarrativa.jsx. As regras abaixo
+   são o que esses atributos significam.
 
-   O que elas atacam: os sete blocos abrem idênticos — mesmo olho, mesma régua,
-   mesmo título de 88px, mesma largura, mesmos 104px de respiro — e não há uma
-   troca de superfície em ~13.600px de corpo claro. */
+   O problema que elas resolvem: os sete blocos abriam idênticos — mesmo olho,
+   mesma régua, mesmo título de 88px, mesma largura, mesmos 104px de respiro. A
+   forma escolhida é uma rampa: a página abre recuada e cresce até o funil.
+
+   Três versões foram montadas e comparadas rolando em 30/08 (atos com faixa
+   escura, alternância em zigue-zague, e esta). A faixa de ato sobreviveu no
+   arquivo mas não é usada pela pauta atual. */
 
 /* --------------------------------------------- abertura em duas colunas */
 
@@ -238,6 +241,113 @@
    e na B faz o zigue-zague ter fôlego irregular em vez de métrico. */
 .v2-pn-bloco[data-larg="estreita"] { padding-bottom: var(--v2-s5); }
 .v2-pn-bloco[data-larg="larga"]    { padding-bottom: var(--v2-s7); }
+
+/* --------------------------------------------------- o lado, esquerda/direita */
+
+/* O gesto que o Gabriel pediu, citando a tese da home (`.v2-tese-bloco.is-dir`,
+   em home.css): uma vez o texto está à esquerda, na outra à direita.
+
+   Aqui ele veste outra roupa, porque a página tem outra identidade. Na home
+   são dois blocos soltos que trocam de âncora. Aqui quem troca é a ESTRUTURA
+   do bloco: no cabeçalho de duas colunas o par título/apoio inverte de coluna,
+   e no bloco recuado o recuo muda de margem.
+
+   O parágrafo continua alinhado à esquerda nos dois casos. Texto corrido
+   alinhado à direita custa uma fixação a mais por linha, e o que ele pediu foi
+   o texto mudar de LADO, não de alinhamento. */
+
+/* Duas colunas, invertidas: o apoio vai para a esquerda e o título para a
+   direita. Por `order`, e não reescrevendo a grade, para os dois lados
+   herdarem qualquer ajuste futuro da proporção. */
+.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+}
+.v2-pn-bloco[data-lado="dir"][data-larg="larga"] .v2-pn-cabeca {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+}
+.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-esq { order: 2; }
+.v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-dir { order: 1; }
+
+/* Recuado pela direita. O bloco inteiro anda, incluindo a régua do olho — é
+   ela que o olho segue de dobra em dobra, e recuar o texto deixando a régua
+   parada desfaria o gesto. */
+.v2-pn-bloco[data-lado="dir"][data-larg="estreita"] {
+  padding-left: var(--v2-gutter);
+  padding-right: calc(var(--v2-gutter) + var(--v2-label-col));
+}
+.v2-pn-bloco[data-lado="dir"][data-larg="estreita"] .v2-pn-cena {
+  margin-left: 0;
+  margin-right: calc(var(--v2-label-col) * -1);
+}
+
+
+/* ------------------------------------------ o esboço, a grade e o risco */
+
+/* As duas figuras que quebram a sequência de dobras de texto. Elas seguem a
+   mesma gramática dos dois desenhos de Double Diamond — linha viva para o que
+   é percorrido, linha morta para o que dá contexto — e por isso NÃO ganham
+   painel cinza: na fase 6 o cinza passou a significar mídia fotográfica, e
+   desenho de linha em cima de papel branco é o que a página já faz. */
+
+.v2-pn-telas { margin: var(--v2-s5) 0 0; }
+.v2-pn-risco { margin: var(--v2-s4) 0 0; }
+.v2-pn-telas svg,
+.v2-pn-risco svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* O traço à mão. Mais fino que a rota dos diamantes e com ponta redonda: é
+   lápis, e lápis não tem a mesma presença de um percurso. */
+.v2-pn-mao {
+  fill: none;
+  stroke: var(--v2-ink);
+  stroke-width: 2;
+  stroke-opacity: .62;
+  stroke-linecap: round;
+}
+
+/* No esquadro. Contorno e nada de preenchimento, salvo a barra e o rodapé, que
+   são as duas peças que num wireframe de verdade vêm chapadas. */
+.v2-pn-grade {
+  fill: none;
+  stroke: var(--v2-ink);
+  stroke-width: 1.5;
+  stroke-opacity: .55;
+}
+.v2-pn-grade.is-cheio { fill: var(--v2-ink); fill-opacity: .07; }
+/* A ação é o único elemento em vermelho dos dois quadros. O acento marca
+   decisão no site inteiro, e num wireframe a decisão é o botão. */
+.v2-pn-grade.is-acao {
+  fill: var(--v2-accent);
+  fill-opacity: .12;
+  stroke: var(--v2-accent);
+  stroke-opacity: .8;
+}
+.v2-pn-grade-cruz {
+  fill: none;
+  stroke: var(--v2-ink);
+  stroke-width: 1;
+  stroke-opacity: .3;
+}
+
+.v2-pn-seta {
+  fill: none;
+  stroke: var(--v2-muted);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* A cunha do risco. Preenchida E contornada: preenchida porque é uma
+   quantidade e quantidade se lê por área; contornada porque a 10% de tinta,
+   sozinha, ela lia como mancha de gradiente em vez de objeto desenhado. */
+.v2-pn-cunha {
+  fill: var(--v2-ink);
+  fill-opacity: .11;
+  stroke: var(--v2-ink);
+  stroke-width: 1;
+  stroke-opacity: .34;
+  stroke-linejoin: round;
+}
+
 
 /* ------------------------------------------------------- a faixa de ato */
 
@@ -479,6 +589,24 @@
   .v2-pn-bloco[data-larg="estreita"] .v2-pn-t,
   .v2-pn-bloco[data-larg="larga"] .v2-pn-t { max-width: none; }
   .v2-pn-bloco[data-larg="estreita"] .v2-pn-cena { margin-left: 0; }
+
+  /* A alternância esquerda/direita também desmonta: numa coluna só não há dois
+     lados para alternar, e inverter a ordem do cabeçalho empilhado colocaria o
+     apoio ANTES do título que ele apoia. */
+  .v2-pn-bloco[data-lado="dir"][data-larg="estreita"] { padding-right: var(--v2-gutter); }
+  .v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-esq,
+  .v2-pn-bloco[data-lado="dir"] .v2-pn-cabeca-dir { order: 0; }
+  .v2-pn-bloco[data-lado="dir"][data-larg="estreita"] .v2-pn-cena { margin-right: 0; }
+
+  /* Os dois quadros do esboço viram faixa rolável pelo mesmo motivo dos
+     desenhos de diamante: em 390px cada tela mediria 150px de largura e as
+     peças de 10px de altura sumiriam. */
+  .v2-pn-telas svg { min-width: 700px; }
+  .v2-pn-telas {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
   .v2-pn-ato { margin: var(--v2-s5) 0; }
   .v2-pn-ato-in {
     flex-direction: column;
