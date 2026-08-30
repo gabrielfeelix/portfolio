@@ -24,7 +24,7 @@ import os
 from PIL import Image
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENT = os.path.join(RAIZ, "uploads")
+ENT = os.path.join(RAIZ, "_fontes/campo")   # saiu de uploads/ em 30/08: aquela pasta e publicada pelo build
 SAI = os.path.join(RAIZ, "volume/assets/campo")
 os.makedirs(SAI, exist_ok=True)
 

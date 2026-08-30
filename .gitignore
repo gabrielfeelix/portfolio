@@ -23,4 +23,10 @@ site/posts.gerado.js
 # arte de origem das camadas do campo: 4,9MB de PNG que so servem
 # para reprocessar. As camadas publicadas sao volume/assets/campo/*.webp
 # (304KB), geradas por tools/camadas-campo.py.
-uploads/*-parallax.png
+#
+# Mudaram de uploads/ para _fontes/campo/ em 30/08: o motivo do ignore era o
+# peso, e ele valia so para o git. build.mjs sincroniza uploads/ inteira para
+# dist/, entao TODA arte de origem que morasse la era publicada junto — 25MB
+# de PNG e mp4 servidos para pintar imagens que ja existem em webp. _fontes/
+# nao e copiada pelo build, entao o que mora la fica no repo e sai do deploy.
+_fontes/campo/*-parallax.png
