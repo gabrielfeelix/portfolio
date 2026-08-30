@@ -1,163 +1,139 @@
-# Handoff — 30/08/2026, noite
+# Handoff — 30/08/2026, madrugada
 
-Substitui o conteúdo anterior deste arquivo (handoff da manhã de 30/08, cujo
-"próximo passo" era refazer os dois desenhos de Double Diamond — feito).
-`HANDOFF-V2.md`, `HANDOFF-2026-08-29.md` e `HANDOFF-2026-08-29-noite.md` são de
-sessões passadas: se conflitarem com este, este vale.
+Substitui o handoff da noite de 30/08. `HANDOFF-V2.md`, `HANDOFF-2026-08-29.md`
+e `HANDOFF-2026-08-29-noite.md` são de sessões passadas: se conflitarem com
+este, este vale.
 
-**Nada foi commitado.** Leia a seção "O acidente" antes de mexer em CSS.
-
----
-
-## LEIA PRIMEIRO — o acidente do processo.css
-
-Nesta sessão eu rodei um regex multilinha guloso em `site/processo.css` para
-apagar CSS morto, e ele comeu de "corpo narrativo" até o fim do arquivo: **794
-linhas viraram 81.** Não houve recuperação possível — o arquivo nunca tinha
-sido commitado, `dist/site.css` já tinha sido rebuildado por cima, não havia
-stash nem blob solto no git, e o histórico local do VS Code não tinha entrada
-porque as edições vieram todas da linha de comando.
-
-O arquivo foi **reconstruído**, e há duas categorias dentro dele:
-
-- **Idêntico ao que era** — desenhos, cena `sticky`, avião, fases, halo dos
-  rótulos SVG, media query. O texto desses estava na conversa.
-- **Reescrito do zero** — `.v2-pn-bloco`, `-olho`, `-t`, `-p`, `-nota`,
-  `-fatores`, `-fator-k/p`, `-trilho*`, `.is-destaque`, `.is-aposta`. Vieram
-  da sessão que escreveu a narrativa e o original se perdeu. Seguem os tokens
-  e a gramática da página e batem com o que estava na tela, mas **não são
-  valor por valor o que existia.**
-
-Há um aviso com esse mesmo conteúdo no topo do bloco em `processo.css`. Se
-algo parecer fora do lugar em relação a 29/08, é ali que se procura.
-
-**Consequência prática: commite cedo.** Se o CSS estivesse commitado, o erro
-teria custado um `git checkout`.
+Tudo commitado. O acidente do `processo.css` (regex guloso que comeu 794 linhas
+em 30/08) continua documentado no topo do bloco "corpo narrativo" daquele
+arquivo — se algo parecer fora do lugar em relação a 29/08, é ali que se
+procura.
 
 ---
 
-## Onde estamos
+## O que esta sessão fez
 
-`/processo` é uma narrativa em 7 seções, 13.637px, build limpo, zero erro de
-runtime ou de console.
+**A /processo ganhou ritmo.** Ela tinha uma forma só: os sete blocos abriam
+idênticos — mesmo olho, mesma régua, mesmo título de 88px, mesma largura,
+mesmos 104px de respiro — e não havia troca de superfície em 13.600px. Três
+pautas foram montadas e comparadas rolando (atos com faixa escura, alternância
+em zigue-zague, crescendo). O Gabriel escolheu o **crescendo**, e as outras
+duas saíram junto com o seletor `?ritmo=`.
+
+A pauta está em `RITMO`, no meio de `site/ProcessoNarrativa.jsx`. Dois campos
+por bloco, largura e lado, e as três coisas sobem juntas do começo ao fim:
 
 ```
- M site/Processo.jsx          casca: hero, corpo, fecho, grade
- M site/processo.css          reconstruído (ver acima)
- M site/motion.js             primitivas novas no fim do arquivo
- M docs/HANDOFF.md            este arquivo
-?? site/ProcessoNarrativa.jsx o corpo inteiro, copy + desenhos
-?? uploads/processo-hero.png
+bloco    largura   lado   título
+ABRE     estreita  esq    40px
+FATORES  estreita  dir    40px
+RISCO    wrap      esq    72px
+CURTO    wrap      dir    72px
+LONGO    larga     esq    88px
+NUNCA    larga     dir    88px
+APOSTA   larga     esq    88px
 ```
 
-### O que esta sessão entregou
+**O bloco é uma coluna só, e ela troca de lado.** A primeira tentativa partia o
+cabeçalho em duas colunas (título de um lado, primeiro parágrafo do outro) e o
+Gabriel mandou print: texto pequeno, linha, título grande, linha, sem ordem de
+leitura possível. Partir o cabeçalho quebra a coluna no meio. Agora a leitura
+desce reta dentro da coluna, e o que atravessa a página são as figuras e as
+grades — é essa diferença que dá o ritmo.
 
-**Os dois desenhos de Double Diamond, refeitos.** `DoisCaminhos` e `Diamante`
-em `ProcessoNarrativa.jsx`. O traço se desenha na rolagem e o avião vermelho do
-site corre na ponta dele, pela mesma mecânica do `Voo` (`offset-path` +
-`offsetDistance`). Em `DoisCaminhos` os dois aviões correm juntos: na mesma
-rolagem o do caminho curto já pousou e o do longo ainda está no primeiro
-diamante — é o argumento da página em uma imagem. Em `Diamante` cada diamante
-abre a partir do nó da esquerda, e as três verticais caem nos quartos da grade
-de fases logo abaixo, o que faz desenho e lista serem um objeto só.
+**Quatro defeitos de escala, todos achados MEDINDO e não no olho:**
 
-**Primitivas novas em `motion.js`** (no fim do arquivo, todas documentadas):
-`useTracado`, `useTrecho`, e a função `curva`.
+- `--v2-t-painel` é apelido de `--v2-t-secao`, então os números do funil saíam
+  com os mesmos 88px dos sete títulos. Foram para `--v2-t-dado` (112).
+- a frase de fecho estava em `--v2-t-frase` = `--v2-t-lead`, os mesmos 24px de
+  todo parágrafo. Foi para `--v2-t-movimento` (72).
+- o degrau "larga" nasceu usando `--v2-medida` (809px) e saía mais ESTREITO que
+  o padrão de 18ch (918px), porque 1ch do título dá 51px a 1440.
+- título de 88px em coluna de 620px virava torre de sete linhas. O tamanho
+  agora sobe com a coluna: 40 / 72 / 88, todos tokens que já existiam.
 
-**O avião de fundo saiu do `/processo`.** `CampoDeVoo` virou `<div>` em
-`Processo.jsx`; um segundo avião cruzando o fundo confundia qual seguir. A
-partitura `processo` continua em `motion.js` caso volte. As outras páginas
-(Home, Sobre, Case, Blog, Post) mantêm o delas.
+**O hero parou de vender prazo.** Dizia "Do objetivo ao protótipo, em dias" e
+listava seis passos numa ordem fixa — o contrário do que a página argumenta.
+Hoje é "Meu processo muda. / O critério não." A orientação que gerou a moldura
+de velocidade foi **revogada** em `docs/superpowers/plans/2026-08-28-home-v2-redesign.md`,
+com o motivo escrito lá para nenhuma sessão futura reintroduzir.
 
-**Os três números do funil sobem** (`useContador`, o mesmo da home), com
-separador pt-BR.
+**Duas figuras novas**, ambas genéricas por requisito (a versão antiga mostrava
+o Monte seu PC e foi recusada por obrigar o leitor a saber o que era aquilo):
+
+- `EsbocoEGrade` — a mesma tela duas vezes, rabiscoframe à mão e protótipo de
+  baixa montado (barra de navegação, campo com cursor, botão no acento). As
+  duas metades saem da MESMA lista de peças, com o mesmo x/y/w/h.
+- `EixoDoRisco` — a cunha que engrossa da esquerda para a direita.
+
+Os originais nunca foram commitados: procurei em todo o histórico, por seis
+grafias. Morreram na mesma sessão que perdeu o CSS.
+
+---
+
+## AS TAREFAS EM ABERTO
+
+**1. O avião da home, e ele já foi mexido duas vezes.**
+Estado: a `cortina` em `motion.js` agora só troca a visibilidade com o avião
+fora do quadro — cada trecho apagado é aparado até as duas pontas caírem em
+amostras com `lados !== 0`, e trecho que acontece inteiro dentro da tela deixa
+de ser apagado.
+
+Medido a 1440x900, de 60 em 60px: sobram 6 trocas, todas a ≤30px de uma borda
+(x:1398, x:-120, x:-23, x:-188, x:1445, x:1468). As que o Gabriel printou
+(x:1248 e x:541, no meio da tela) sumiram.
+
+**Se ele ainda ver o avião sumir, o próximo passo NÃO é opacidade.** Duas
+tentativas por opacidade já falharam (corte seco, depois rampa de 240px). O
+problema real é o percurso: há trechos que gastam muito arco com pouca altura,
+e `offset-distance` anda em arco enquanto a tabela anda em altura. O conserto
+seria em `rotaDoVoo`, redesenhando esses trechos para saírem pela borda em vez
+de atravessarem o quadro.
+
+**2. `site/copy.js:103` ainda diz "Do objetivo ao protótipo clicável em dias".**
+Está VIVA, na dobra 04 da home. É o mesmo jargão que ele mandou parar. Foi
+perguntado duas vezes e não foi respondido — não mexer sem ele confirmar,
+porque é a home.
+
+**3. `volume/data.jsx:948` tem o mesmo jargão, mas é texto morto.**
+`PROCESSO()` deixou de ser renderizado quando o registro saiu do hero. Limpar
+quando for conveniente.
+
+**4. A cunha do risco é a peça de que eu tenho menos certeza.**
+Ele pediu para deixá-la "mais bonita e harmônica" e ela foi refeita com bordas
+em bezier e ponta em arco. Mas ela é a única figura abstrata da página — as
+outras mostram coisa concreta. Se ele reclamar de novo, o caminho é remover, e
+não continuar ajustando.
+
+**5. A sessão que fez isto tudo chegou a ~300k tokens.**
+Foi oferecido handoff duas vezes e ele optou por seguir. Este arquivo serve
+como ponto de partida para uma sessão nova.
 
 ---
 
 ## Decisões que NÃO devem ser relitigadas
 
-**1. A moldura da página** (herdada, e continua valendo). "Todas as etapas são
-cortáveis" foi como o Gabriel descreveu o próprio processo. Escrito assim numa
-página que existe para conseguir entrevista, lê como "pulo pesquisa quando
-aperta", que é a acusação que derruba portfólio de UX. A literatura sustenta a
-prática e não a frase: Erika Hall (*Just Enough Research*) manda priorizar as
-suposições de maior risco; a mesma literatura é clara em que pular pesquisa por
-completo dispara a chance de fracasso. Então a página diz que **o tamanho da
-pesquisa acompanha o preço de errar**, que o prazo decide quanto ele tem e não
-onde gasta, e há um bloco explícito ("O que não cai") dizendo que **nunca é
-zero**. Não reverter para a frase original.
+1. **A moldura da página.** "Todas as etapas são cortáveis" foi como ele
+   descreveu, mas escrito assim lê como "pulo pesquisa quando aperta", que é a
+   acusação que derruba portfólio de UX. A página diz que o tamanho da pesquisa
+   acompanha o preço de errar, e há um bloco explícito dizendo que nunca é zero.
 
-**2. A cena `sticky`, e o orçamento que a justifica.** As duas figuras moram em
-`.v2-pn-cena` (230vh / 210vh) com palco `.v2-pn-palco` de 100vh. Parece
-exagero e não é: solta, uma figura de 460px numa tela de 900 só fica visível
-por ~810px de rolagem, e nesse orçamento **não cabem ao mesmo tempo** (a) lento,
-(b) terminar antes de o leitor passar e (c) começar do zero na entrada. Quatro
-tentativas de achar uma janela boa medindo a figura falharam, cada uma perdendo
-uma das três. Presa, a rolagem disponível vira a altura da cena, que é um
-número que a gente escolhe. O dial é a altura em `processo.css`.
+2. **Prazo não é argumento de venda.** Em lugar nenhum do site. Ver a
+   orientação revogada no plano de 28/08.
 
-**3. Movimento sem paradas.** Existiu um `comCurva(t, paradas)` que repartia a
-rota e parava o avião em cada parada do caminho curto e na cintura do diamante.
-Lia como anda-pausa-anda-pausa e foi recusado. Hoje é `curva`: trapézio com
-rampas suaves — arranca, cruza a maior parte em velocidade constante, freia.
-Trapézio e não cúbica porque a cúbica tem pico de 1,5x a média bem no meio do
-percurso, e o avião dá uma arrancada bem na hora em que o olho o acompanha.
+3. **A cena `sticky` dos dois diamantes** (230vh / 210vh). Quatro tentativas de
+   achar janela boa medindo a figura falharam.
 
-**4. Nada de print de produto acabado nesta página.** Havia dois prints do
-Monte seu PC no caminho longo. Print de produto numa página sobre processo
-mostra o que ficou, que é a parte que não é o assunto. Foram removidos e não
-devem voltar.
+4. **Movimento sem paradas.** `curva` é trapézio com rampas suaves. Trapézio e
+   não cúbica: a cúbica tem pico de 1,5x a média no meio do percurso.
 
----
+5. **Nada de print de produto acabado nesta página.**
 
-## O próximo passo, e é uma conversa antes de ser código
-
-**O Gabriel acha que a página se apoia demais em exemplo real.** Palavras dele:
-"vc ta dando mt exemplo meu real... vc ta dando numeros, falando nome de
-empresas, etc. eles nem sabem oq é e quem é cada empresa". O que ele quer é
-falar **como faz, como funciona um processo curto/longo, e ser criativo**.
-
-Não é reescrita geral. Fora do fecho, nome real aparece em três lugares:
-
-1. `FATORES.nota` — "PCYES e Oderço foram onde deu tempo de fazer o completo";
-2. `LONGO.casos` — os dois parágrafos de Oderço e PCYES;
-3. o bloco `APOSTA` inteiro — a confissão do checkout, os três números do
-   funil (50.399 / 808 / 223) e a fonte do GA4.
-
-O resto da página (`ABRE`, `RISCO`, `CURTO`, `LONGO.fases`, `NUNCA`) já é só
-método, sem empresa nenhuma.
-
-**A tensão que precisa ser resolvida com ele, não sozinho:** o handoff anterior
-registrava a confissão do PCYES como decisão deliberada e como "o que a página
-tem de único", e por isso ela é o fecho e não uma nota de rodapé. Tirar os
-números tira também isso. Pode ser a escolha certa mesmo assim — mas é dele.
-
-Ele disse "ainda vou querer mexer em coisas nessa página", então **não execute
-essa reescrita sem perguntar.**
-
----
-
-## O que deixar para trás
-
-- **A seção "A mesma tela, três vezes"** (rabiscoframe → wireframe →
-  formulário ao vivo). Ele gostou muito do rabiscoframe e do wireframe, e
-  recusou a seção inteira: o formulário exigia saber o que é o Monte seu PC, e
-  depois de reescrito para perguntar a situação do leitor ele recusou de novo
-  e pediu para remover. Já apagada do JSX e do CSS. **Se a ideia voltar, o
-  elogio era ao rabisco/wireframe desenhado em SVG, não ao formulário.**
-- A discussão de janela de rolagem por posição da figura: resolvida pela cena.
-- Os prints de comparação e o histórico de token hygiene desta sessão.
-
-## O que mais falta (menor, herdado)
-
-Batidas 2, 3, 5 e 6 têm componente tipográfico mas nenhuma imagem — e agora
-nenhuma seção tem imagem, já que os dois prints saíram. Material disponível:
-35 imagens do PCYES com legenda já escrita em `volume/data.jsx`, 22 do
-Locarmais. As legendas são verbatim — não reescrever. Mas ver a direção nova
-acima antes de sair colocando print.
+6. **Nada específico de empresa nas figuras.** Genérico é requisito.
 
 ---
 
 Para entrar no assunto: ler `site/ProcessoNarrativa.jsx` do começo. O cabeçalho
-dele documenta a copy e o ângulo em detalhe, e cada componente tem o porquê
-das decisões em cima.
+documenta a copy e o ângulo, e cada componente tem o porquê das decisões em
+cima. `site/processo.css` documenta a pauta de ritmo e os quatro defeitos de
+escala.

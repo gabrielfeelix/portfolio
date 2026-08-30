@@ -178,10 +178,25 @@
 .v2-pn-bloco[data-lado="dir"] .v2-pn-col { margin-left: auto; margin-right: 0; }
 .v2-pn-bloco[data-lado="esq"] .v2-pn-col { margin-left: 0; margin-right: auto; }
 
-/* O título respira dentro da coluna e não passa dela. */
-.v2-pn-bloco[data-larg="estreita"] .v2-pn-t { max-width: 11ch; }
-.v2-pn-bloco[data-larg="wrap"]     .v2-pn-t { max-width: 15ch; }
-.v2-pn-bloco[data-larg="larga"]    .v2-pn-t { max-width: 26ch; text-wrap: pretty; }
+/* O TAMANHO do título sobe junto com a coluna, e isto é uma correção.
+
+   Eu tinha deixado os sete títulos em `--v2-t-secao` (88px em desktop) e
+   apertado a coluna para 620px. O Gabriel mandou print: "Me perguntam qual é o
+   meu processo esperando resposta de uma linha" saía em SETE linhas de 88px,
+   uma torre de ~620px de altura por 560 de largura. Display grande dentro de
+   coluna estreita não é ênfase, é parede.
+
+   Os três degraus são tokens que já existem — 40 no caso, 56/72 no movimento,
+   88 na seção —, então nada de novo entra na escala. E o efeito é melhor do
+   que só consertar: a rampa agora acelera em tipo além de largura, que é
+   exatamente o que a pauta quer dizer.
+
+   `max-width` sai dos dois primeiros degraus: quem limita a linha ali é a
+   própria coluna, e um `ch` por cima dela só criaria uma segunda regra
+   disputando com a primeira. */
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-t { font-size: var(--v2-t-caso-ato); max-width: none; }
+.v2-pn-bloco[data-larg="wrap"]     .v2-pn-t { font-size: var(--v2-t-movimento); max-width: none; }
+.v2-pn-bloco[data-larg="larga"]    .v2-pn-t { font-size: var(--v2-t-secao); max-width: 26ch; text-wrap: pretty; }
 
 /* Blocos vizinhos que trocam de lado precisam de mais ar do que dois do mesmo
    lado: sem isso a coluna da direita de um começa na altura do rodapé da

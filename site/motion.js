@@ -1073,40 +1073,36 @@ function cortina(alturas, lados, forcado) {
     }
   }
 
-  /* A rampa, e ela conserta um pisca que estava no ar.
+  /* NENHUMA troca de visibilidade acontece com o avião dentro do quadro.
 
-     A nota no topo desta função diz que o corte acontece com o avião já fora
-     da caixa dos dois lados, "então não há fade a fazer". Isso vale para a
-     PRIMEIRA regra e só. A segunda — o teleporte — dispara pela corrida de
-     amostras forçadas, que é uma propriedade do percurso, e não olha onde o
-     avião está: ela apaga com ele no meio do quadro.
+     Esta é a segunda tentativa. A primeira espalhou a transição numa rampa de
+     ~240px de rolagem, e o Gabriel mandou print de novo: o avião continuava
+     sumindo, agora desbotando até o branco no meio da tela. Fade não conserta
+     — ele só faz o sumiço durar mais. O que a nota no topo desta função sempre
+     afirmou é que o corte acontece com o avião JÁ FORA da caixa, e isso nunca
+     foi verdade para a segunda regra: o teleporte dispara por uma propriedade
+     do percurso e nunca olhou onde o avião estava.
 
-     Medido na home a 1440x900, varrendo de 120 em 120px: das quatro trocas de
-     visibilidade do percurso, TRÊS acontecem com o avião dentro da tela —
-     apaga em x:1103 y:31, acende em x:541 y:13, e acende em x:1248 y:241, que
-     é a dobra "O ajuste" de onde veio a queixa.
+     Agora olha. Cada trecho apagado é aparado para dentro até as duas pontas
+     caírem em amostras que estão fora da caixa (`lados !== 0`). O que sobra de
+     visível nas bordas volta a acender. Se o trecho inteiro acontece dentro do
+     quadro, ele deixa de ser apagado: o avião cruza rápido, e cruzar rápido é
+     muito melhor do que evaporar.
 
-     Entre duas amostras vizinhas há ~24px de rolagem numa home de 10.907px, e
-     `useTransform` interpola só esse intervalo: em rolagem normal isso é um
-     quadro. Por isso lia como sumiço, e não como saída.
-
-     A rampa espalha a transição por K amostras de cada lado do trecho
-     apagado, começando pelo lado VISÍVEL — o avião perde tinta antes de
-     sumir e ganha depois de voltar. K = 2% das amostras dá ~190px de rolagem,
-     que é distância suficiente para o olho ler desaparecimento em vez de
-     corte. Onde a regra 1 já cortava fora do quadro a rampa não custa nada:
-     ninguém vê apagar o que está recortado. */
-  const K = Math.max(3, Math.round(op.length * 0.02));
-  const rampa = op.slice();
+     O preço é assumido: parte do teleporte de 29/08 volta a ser visível nas
+     bordas dos trechos. A troca é deliberada — some é pior que corre. */
   for (let i = 0; i < op.length; i++) {
-    if (op[i] !== 1) continue;
-    let d = K;
-    for (let j = 1; j <= K; j++) {
-      if (op[i - j] === 0 || op[i + j] === 0) { d = j; break; }
-    }
-    rampa[i] = d / K;
+    if (op[i] !== 0) continue;
+    const ini = i;
+    while (i + 1 < op.length && op[i + 1] === 0) i++;
+    let a = ini;
+    let b = i;
+    while (a <= b && lados[a] === 0) a++;
+    while (b >= a && lados[b] === 0) b--;
+    for (let k = ini; k <= i; k++) op[k] = k >= a && k <= b ? 0 : 1;
   }
-  return rampa;
+
+  return op;
 }
 
 export function useVoo(refCaixa, variante = "home") {
