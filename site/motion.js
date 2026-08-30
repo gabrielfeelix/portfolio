@@ -1396,3 +1396,103 @@ export function useCamadas(velocidades) {
   });
   return { ref, estilos, quieto };
 }
+
+/* 20. rota
+   O traço se desenhando na rolagem, com o avião do site correndo na ponta.
+
+   É a mecânica do Voo (`offset-path` + `offsetDistance`) aplicada a um
+   desenho em vez de à página inteira: lá o percurso é invisível e o avião é
+   a figura; aqui o percurso É a figura, e o avião só marca onde o leitor
+   está nele.
+
+   Duas peças porque duas rotas de comprimentos diferentes precisam andar no
+   mesmo scroll e chegar em tempos diferentes — que é o argumento inteiro do
+   desenho de /processo. `useTracado` mede a figura uma vez; `useTrecho`
+   recorta uma janela desse progresso por rota. Chamar `useTrecho` em nível
+   de componente, nunca dentro de map: o número de rotas é fixo. */
+/* A janela de rolagem é a CENA, e não a figura.
+
+   As três versões anteriores tentaram achar uma janela boa medindo a posição
+   da própria figura na tela, e todas bateram no mesmo teto: uma figura de
+   460px numa tela de 900 só fica visível durante ~810px de rolagem. Nesse
+   orçamento não cabem as três coisas ao mesmo tempo —
+
+     lento  +  terminar antes de o leitor passar  +  nada já traçado na entrada
+
+   — e trocar uma pela outra foi exatamente o que aconteceu: apertar a janela
+   deixou o avião a 2x a velocidade do dedo; abrir a janela antes da figura
+   entregou o desenho meio pronto (e, na tela do Gabriel, praticamente pronto)
+   antes de ele chegar na seção.
+
+   O orçamento é que estava errado, não a repartição dele. A figura agora mora
+   numa cena alta com um palco `sticky`: ela sobe até o meio da tela, TRAVA
+   ali, e o traço acontece inteiro com ela parada e centralizada. A rolagem
+   disponível deixa de ser a altura da figura e passa a ser a altura da cena,
+   que é um número que a gente escolhe — 230vh em `processo.css`, dos quais
+   130vh são de traço.
+
+   Com isso as três voltam a caber: começa em zero quando o leitor chega,
+   termina antes de a cena soltar, e leva 1165px de rolagem para fazer isso. */
+export function useTracado(ref, { offset = ["start start", "end end"] } = {}) {
+  const quieto = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset });
+  /* A mola tira o serrilhado do trackpad do traço, que num stroke fino
+     aparece muito mais que num transform. Rígida e amortecida: ela alisa,
+     não atrasa — com bounce o avião passa do fim e volta. */
+  const suave = useSpring(scrollYProgress, { stiffness: 150, damping: 34, mass: 0.5 });
+  return { progresso: suave, quieto };
+}
+
+/* A curva do percurso: arranca, cruza, freia.
+
+   Trapézio com rampas suaves, e não uma cúbica de ponta a ponta. Os dois
+   aceleram e desaceleram; a diferença é o miolo. A cúbica está sempre mudando
+   de velocidade, então ela tem um pico de 1,5x a média bem no meio do
+   caminho — o avião parece dar uma arrancada na hora em que o olho está
+   acompanhando ele. O trapézio cruza a maior parte da rota em velocidade
+   constante, o que baixa o pico para 1,4x e, principalmente, faz o movimento
+   ler como um veículo em viagem em vez de um elástico.
+
+   `a` é a fração da rota gasta em cada rampa. Em 0,3 sobra 40% de cruzeiro.
+
+   Aqui morava um `comCurva(t, paradas)` que repartia a rota em trechos e dava
+   a curva inteira a cada um: o avião parava de vez em cada parada do caminho
+   curto e na cintura do duplo diamante. Lia como anda-pausa-anda-pausa, e o
+   Gabriel recusou. A pausa resolvia um problema de velocidade que a cena
+   `sticky` já tinha resolvido antes, por outro caminho: com 1165px de rolagem
+   disponíveis não é mais preciso truncar o movimento para ele caber. */
+const RAMPA = 0.3;
+
+function curva(t) {
+  const a = RAMPA;
+  const vmax = 1 / (1 - a);
+  /* integral do smoothstep 3u²-2u³, que é u³ - u⁴/2: rampa sem quina nem na
+     velocidade nem na aceleração */
+  const sobe = (u) => u * u * u - (u ** 4) / 2;
+  if (t < a) return vmax * a * sobe(t / a);
+  if (t > 1 - a) return 1 - vmax * a * sobe((1 - t) / a);
+  return vmax * (a / 2 + (t - a));
+}
+
+/* Recorta [inicio, fim] do progresso e devolve o que o desenho consome:
+   `traco` para `pathLength`, `passo` para `offsetDistance` e `opacidade` para
+   o avião. Os dois primeiros saem do MESMO valor já curvado, senão o avião
+   descola da ponta da linha que ele deveria estar puxando.
+
+   `pousa` apaga o avião na chegada. Sem isso ele fica empilhado em cima do nó
+   final e os dois viram um borrão vermelho e preto — e o desenho quer dizer
+   "chegou", que é o nó cheio, não "está parado ali". */
+export function useTrecho(progresso, inicio = 0, fim = 1, { pousa = false } = {}) {
+  const cru = useTransform(progresso, [inicio, fim], [0, 1]);
+  const t = useTransform(cru, curva);
+  const passo = useTransform(t, (v) => `${v * 100}%`);
+  /* O avião não existe antes de a rota começar: sem isto ele fica pousado no
+     ponto de partida durante a rolagem inteira que antecede a figura. */
+  const entra = [inicio, inicio + Math.max(0.01, (fim - inicio) * 0.06)];
+  const opacidade = useTransform(
+    progresso,
+    pousa ? [...entra, fim - (fim - inicio) * 0.08, fim] : entra,
+    pousa ? [0, 1, 1, 0] : [0, 1],
+  );
+  return { traco: t, passo, opacidade };
+}

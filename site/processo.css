@@ -5,275 +5,339 @@
    passos no hero, a frase de movimento na capa de capítulo, o número em
    display na margem, o "de relance" e o fecho. */
 
-/* ---------------- hero ---------------- */
 
-/* A capa do hero do método: a mesa no escuro, o tablet com a matriz CSD acesa,
-   as folhas atrás e o lápis vermelho. Ver o comentário de `ProcessoHero` em
-   Processo.jsx para por que é esta arte e não outra.
+/* ------------------------------------------------------------- a aposta */
 
-   A arte é 2,33:1 e o hero é `100svh`, então a caixa vai de 2,36 em 2560x1080
-   a 0,44 no celular. O `cover` sempre come largura, e o que ele come primeiro
-   é o preto da esquerda — que é de graça, porque é justamente o vão que o
-   título ocupa. O que NÃO pode sair do quadro é o tablet, e é isso que os
-   `object-position` abaixo protegem, largura por largura.
-
-   As medidas saem da arte, não de gosto: o tablet mora entre 52% e 84% da
-   largura do arquivo, então o centro dele é 68%. */
-
-/* Herda de `.v2-hero-capa` em home.css, inclusive a sobra de 90px em cima e
-   embaixo que o parallax da home gasta. Aqui não há parallax, e a sobra só
-   aperta um pouco o corte vertical, que nesta arte é mesa vazia.
-
-   Os valores abaixo NÃO são gosto, são conta. Ancorar à direita (`100%`) foi a
-   primeira tentativa e é o contrário do que se quer: alinhar a borda direita
-   joga fora os 32% da esquerda, que são justamente o preto, e o tablet desliza
-   para o meio da caixa, atrás do H1 de 96px. A conta certa é achar o `p` que
-   põe o centro do tablet em 80% da caixa:
-
-     f = largura da caixa / largura da arte escalada   (fração visível)
-     p = (0,68 - 0,80·f) / (1 - f)                     (0,68 = centro do tablet)
-
-   1425x900  -> mostra 68% da arte -> p = 43%
-   1905x1080 -> mostra 76% da arte -> p = 31%
-   2545x1080 -> a arte fica menor que a caixa, não há corte horizontal */
-.v2-proc-hero .v2-hero-capa img { object-position: 31% center; }
-
-@media (max-width: 1600px) {
-  .v2-proc-hero .v2-hero-capa img { object-position: 43% center; }
-}
-
-/* No celular a caixa é 0,44 contra uma arte de 2,33: o `cover` corta 81% da
-   largura e sobra uma tira estreita. Em 100% essa tira pega o caderno e o
-   lápis e perde o tablet, que é o assunto. 68% é o centro do tablet. */
-@media (max-width: 760px) {
-  .v2-proc-hero .v2-hero-capa img { object-position: 68% center; }
-}
-
-/* O véu da home é uma elipse ancorada embaixo à esquerda, que é exatamente
-   onde moram o título, a premissa e o registro. Serve igual aqui, e por isso
-   é reuso e não peça nova. O que muda é a força: a arte da home é um céu
-   claro com avião, esta já nasce preta do lado do texto, e o véu da home por
-   cima dela fechava o pouco de matéria que existe embaixo do título. */
-.v2-proc-hero-veu { opacity: .72; }
-
-/* No celular o véu da home não dá conta. Lá a elipse basta porque a arte é céu
-   claro e uniforme; aqui o `cover` de 0,44 sobe o tablet ACESO para o meio do
-   quadro, e o H1 de 40px cai exatamente em cima dos blocos claros da matriz.
-   Elipse no canto não resolve isso: o problema é uma faixa inteira, não um
-   canto.
-
-   Então no estreito o véu troca de forma: uma subida do pé até 38% da altura,
-   que deixa o tablet inteiro visível em cima e devolve chão preto para o
-   título, a premissa e o registro, que moram todos na metade de baixo. */
-@media (max-width: 760px) {
-  .v2-proc-hero-veu {
-    opacity: 1;
-    background: linear-gradient(
-      to bottom,
-      rgba(10, 10, 10, 0) 0%,
-      rgba(10, 10, 10, .42) 30%,
-      rgba(10, 10, 10, .82) 52%,
-      rgba(10, 10, 10, .95) 72%
-    );
-  }
-}
-.v2-proc-hero-baixo { display: grid; gap: var(--v2-s4); }
-
-/* Um degrau abaixo do hero da home: o título são duas linhas de frase, não
-   três palavras, e a 144px ele não caberia em uma janela de 1280. É o mesmo
-   degrau que a página de caso usa, então as duas internas abrem igual. */
-.v2-proc-hero-h { font-size: var(--v2-t-caso-hero); }
-
-.v2-proc-premissa {
-  margin: 0;
-  max-width: var(--v2-medida-lead);
-  font-size: var(--v2-t-lead);
-  line-height: 1.35;
-  letter-spacing: -.01em;
-  color: rgba(255, 255, 255, .74);
-}
-
-/* O registro: os seis passos numa fileira, na mono.
-   Não é navegação e não tem link. É o sumário: quem contrata sabe o método
-   inteiro antes de rolar uma linha, e quem quer o detalhe rola, que é o gesto
-   que a página inteira pede. */
-.v2-proc-registro {
-  list-style: none;
-  margin: var(--v2-s2) 0 0;
-  padding: var(--v2-s3) 0 0;
-  border-top: 1px solid rgba(255, 255, 255, .18);
+/* O dado que fecha a página. Três números em display, e é o único lugar do
+   corpo claro que usa esse tamanho: é o fecho do argumento. */
+.v2-pn-dado {
+  margin: var(--v2-s5) 0 var(--v2-s2);
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--v2-s3);
 }
-
-.v2-proc-reg-cel { display: grid; gap: var(--v2-s1); align-content: start; }
-
-.v2-proc-reg-n {
+.v2-pn-dado > div { padding-top: 12px; border-top: 1px solid var(--v2-ink); }
+.v2-pn-dado dt {
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
   text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, .54);
+  color: var(--v2-muted);
+}
+.v2-pn-dado dd {
+  margin: 6px 0 0;
+  font-size: var(--v2-t-painel);
+  letter-spacing: var(--v2-track-display);
+  line-height: 1;
 }
 
-.v2-proc-reg-t {
-  font-size: var(--v2-t-corpo);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -.01em;
-  color: #fff;
-}
-
-/* A capa de capítulo entra aqui sem nada além do nome do movimento, igual à
-   da página de caso. A frase de `PROCESSO_CURTO` foi tentada embaixo do título
-   e saiu: ela é a CONDENSAÇÃO dos dois passos que vêm logo abaixo, então a
-   capa anunciava o que a dobra seguinte ia dizer, palavra por palavra. Quem
-   costura esta página à dobra 04 da home são os três títulos, que bastam. */
-
-/* ---------------- o número do passo ---------------- */
-
-/* Quatro dos seis passos não têm prova visual honesta, e a gramática de mídia
-   por contagem da página de caso já resolve o caso zero: o número em display
-   ocupa o lugar da imagem. Aqui ele mora na coluna de margem, alinhado ao topo
-   do texto, em mono e em cinza de marca d'água: é o grafismo desta página, e
-   é a razão de ela não precisar inventar ilustração para se sustentar.
-
-   `aria-hidden` no JSX, porque o número já está escrito no label da dobra
-   ("Passo 03") e um leitor de tela ouviria dois. */
-.v2-proc-n {
+.v2-pn-fonte {
   margin: 0;
   font-family: var(--v2-mono);
-  font-size: var(--v2-t-dado);
-  font-weight: 400;
-  line-height: .82;
-  letter-spacing: -.04em;
-  font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--v2-ink) 13%, transparent);
-}
-
-.v2-proc-n::before { content: attr(data-n); }
-
-/* ---------------- de relance ---------------- */
-
-/* O recap que na V1 morava no pé da página. Subiu para a margem da primeira
-   dobra: seis nomes numa olhada valem mais antes da leitura do que depois. */
-.v2-proc-relance {
-  list-style: none;
-  margin: var(--v2-s2) 0 0;
-  padding: 0;
-  display: grid;
-  gap: var(--v2-s1);
-  font-size: var(--v2-t-label);
-  line-height: 1.4;
+  font-size: var(--v2-t-cromo);
+  letter-spacing: 0.04em;
   color: var(--v2-muted);
 }
 
-.v2-proc-relance li {
-  display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
-  gap: var(--v2-s1);
+/* A última linha da página, e o argumento inteiro. */
+.v2-pn-fecho {
+  margin: var(--v2-s5) 0 0;
+  max-width: 26ch;
+  font-size: var(--v2-t-frase);
+  letter-spacing: var(--v2-track-titulo);
+  line-height: 1.18;
+  text-wrap: balance;
 }
 
-.v2-proc-relance span {
+
+/* ================================================== corpo narrativo
+
+   ATENÇÃO — parte deste bloco foi REESCRITA em 30/08, não restaurada.
+
+   Numa limpeza de CSS morto eu rodei um regex multilinha guloso neste arquivo
+   e ele apagou de "corpo narrativo" até o fim: 794 linhas viraram 81. O que
+   sumiu não estava em lugar nenhum — nunca foi commitado (nem por mim nem
+   pela sessão que escreveu a narrativa), o `dist/site.css` já tinha sido
+   rebuildado por cima, e o histórico local do VS Code não tinha o arquivo
+   porque as edições vieram da linha de comando.
+
+   Os desenhos, a cena `sticky` e as fases voltaram idênticos, porque eu tinha
+   o texto deles. As peças de texto abaixo (bloco, olho, título, parágrafo,
+   fatores, trilho) são AUTORAIS DESTA RECONSTRUÇÃO: elas seguem os tokens e a
+   gramática da página, e batem com o que estava na tela, mas não são o
+   arquivo original valor por valor. Se algo parecer fora do lugar em relação
+   a como estava antes, é aqui que se procura. */
+
+.v2-pn { padding: var(--v2-s6) 0 var(--v2-s7); }
+
+.v2-pn-bloco { padding-bottom: var(--v2-s6); }
+.v2-pn-bloco:last-child { padding-bottom: 0; }
+
+/* O olho: a mono em caixa alta, que é o cromo de seção do site inteiro. */
+.v2-pn-olho {
+  margin: 0 0 var(--v2-s2);
+  padding-top: 12px;
+  border-top: 1px solid var(--v2-ink);
   font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
-  font-variant-numeric: tabular-nums;
-  color: var(--v2-ink);
+  text-transform: uppercase;
+  color: var(--v2-muted);
 }
 
-/* ---------------- fecho ---------------- */
-
-/* Mesma chapa do "O que eu aprendi" da página de caso, e por isso reusa
-   `.v2-aprendi`. O que muda é o degrau: aqui a frase é a última coisa dita, e
-   ela é a única da dobra. */
-.v2-proc-fecho-p {
-  margin: 0;
-  max-width: var(--v2-medida);
-  font-size: var(--v2-t-movimento);
-  font-weight: 700;
-  line-height: 1.02;
+.v2-pn-t {
+  margin: 0 0 var(--v2-s4);
+  max-width: 18ch;
+  font-size: var(--v2-t-secao);
   letter-spacing: var(--v2-track-display);
-  color: #fff;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
-/* Vermelho sobre preto mede 4,27:1: reprova em corpo e passa em texto grande,
-   que é o mínimo de 3:1. Aqui a frase anda de 48 a 72px em peso 700, então
-   está dentro. Se o degrau cair, esta cor sai. Ver a tabela em tokens.css. */
-.v2-proc-fecho-forte { color: var(--v2-accent); }
-
-.v2-proc-fecho .v2-caso-pills { margin-top: var(--v2-s5); }
-
-/* ---------------- grade de quatro casos ---------------- */
-
-/* A página de caso fecha com três quadros e cabe em uma fileira. /processo
-   fecha com os quatro, e quatro em uma fileira de 1240px dão 310px cada: o
-   quadro fica menor que o cartão da home e a arte de capa deixa de ser
-   legível. Em dois por dois cada um mede 600px, que é maior que na home. */
-.v2-outros-grade.is-quatro {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--v2-s5) var(--v2-s4);
+.v2-pn-p {
+  margin: 0 0 var(--v2-s3);
+  max-width: var(--v2-medida-lead);
+  font-size: var(--v2-t-bloco);
+  line-height: 1.55;
+}
+.v2-pn-p.is-menor {
+  max-width: var(--v2-medida-caso);
+  font-size: var(--v2-t-corpo);
+  line-height: 1.6;
+  color: var(--v2-muted);
 }
 
-/* ---------------- respiro ---------------- */
-
-@media (max-width: 1320px) {
-  /* Mesmo ponto de virada da nota marginal em case.css: abaixo dele a coluna
-     de margem desce, e o número de 112px empilhado embaixo do parágrafo viraria
-     um segundo título. Ele encolhe para o degrau de leitura e vira marcador. */
-  .v2-proc-n {
-    font-size: var(--v2-t-caso-ato);
-    line-height: 1;
-    color: var(--v2-muted);
-  }
+.v2-pn-nota {
+  margin: var(--v2-s4) 0 0;
+  max-width: var(--v2-medida);
+  padding-left: var(--v2-s2);
+  border-left: 2px solid var(--v2-rule);
+  font-size: var(--v2-t-label);
+  line-height: 1.55;
+  color: var(--v2-muted);
 }
 
-@media (max-width: 1100px) {
-  /* Seis colunas abaixo de 1100 dão 160px cada, e "Protótipo navegável" quebra
-     em três linhas. Três por linha mantém o nome inteiro em duas. */
-  .v2-proc-registro { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--v2-s3); }
-}
-
-@media (max-width: 860px) {
-  .v2-proc-registro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .v2-proc-hero-baixo { gap: var(--v2-s3); }
-  .v2-outros-grade.is-quatro { grid-template-columns: 1fr; gap: var(--v2-s5); }
-  .v2-proc-fecho .v2-caso-pills { margin-top: var(--v2-s4); }
-}
-
-/* ---------------- densidade do passo ---------------- */
-
-/* A frase de cada passo é UMA linha de texto: em corpo de 16px ela pesava
-   menos que o rótulo da dobra, e a dobra inteira lia como título solto num
-   vão de 104px. No degrau de leitura ela sustenta o título de 40px e o número
-   de 112px que dividem a dobra com ela.
-
-   Não é degrau novo: é o mesmo `--v2-t-lead` do premissa do hero e da frase
-   de movimento. */
-.v2-proc-frase {
-  margin: 0;
+/* Os dois blocos que sustentam o argumento ficam maiores que o corpo: são as
+   duas frases que a página não quer que ninguém pule. */
+.v2-pn-bloco.is-destaque .v2-pn-t { max-width: 24ch; }
+.v2-pn-bloco.is-destaque .v2-pn-p {
   max-width: var(--v2-medida-caso);
   font-size: var(--v2-t-lead);
-  line-height: 1.3;
-  letter-spacing: -.01em;
-  color: var(--v2-ink);
+  line-height: 1.5;
+}
+.v2-pn-bloco.is-aposta .v2-pn-t { max-width: 22ch; }
+
+/* --------------------------------------------------------------- fatores */
+
+/* Três colunas com régua em cima, que é a gramática de dado do site: régua,
+   rótulo, texto. Sem caixa — na fase 6 o painel cinza passou a significar
+   mídia e só. */
+.v2-pn-fatores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+}
+.v2-pn-fatores > li { padding-top: 12px; border-top: 1px solid var(--v2-ink); }
+.v2-pn-fator-k {
+  margin: 0 0 10px;
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+}
+.v2-pn-fator-p {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  line-height: 1.55;
+  color: var(--v2-muted);
 }
 
-/* Passo a passo dentro de um movimento anda mais perto que dobra a dobra: os
-   104px de `.v2-dobra.v2-wrap` são a distância entre assuntos, e dois passos
-   do mesmo movimento são o mesmo assunto. Quem abre os 104 é a capa escura,
-   que já traz 168px de margem própria. */
-.v2-dobra.v2-wrap.v2-proc-passo { margin-top: var(--v2-s5); }
+/* ---------------------------------------------------------------- trilho */
 
-/* O primeiro passo depois de uma capa escura não precisa de margem: a capa já
-   termina em 168px de padding. */
-.v2-capitulo + .v2-proc-passo { margin-top: var(--v2-s6); }
+/* As quatro paradas do caminho curto. O número em mono e pequeno, e não em
+   display: elas são etapas de um percurso, não dados. */
+.v2-pn-trilho {
+  list-style: none;
+  margin: 0 0 var(--v2-s4);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--v2-s3);
+  counter-reset: parada;
+}
+.v2-pn-trilho > li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--v2-ink);
+}
+.v2-pn-trilho-n {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-accent);
+}
+.v2-pn-trilho-t {
+  font-size: var(--v2-t-corpo);
+  letter-spacing: var(--v2-track-titulo);
+}
+.v2-pn-trilho-p {
+  font-size: var(--v2-t-label);
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
 
-/* A frase do fecho tem sete palavras e quebra no meio: "até o ar" é a metade
-   que importa, e é ela que vai em vermelho, em linha própria. */
-.v2-proc-fecho-forte { display: block; }
+/* ------------------------------------------------------------- desenhos */
 
-/* A premissa do hero tem duas sentenças e 82 caracteres: sem `balance` a
-   segunda linha nasce com uma palavra. */
-.v2-proc-premissa { text-wrap: balance; }
+/* Os dois desenhos de Double Diamond. A gramática é uma só: linha viva para
+   o que é percorrido, linha morta para o que só dá contexto, e o vermelho
+   reservado ao avião — ele é o único elemento que se move, então é o único
+   que ganha a cor de acento. */
+
+/* A cena e o palco.
+
+   A figura sobe até o meio da tela, TRAVA ali, e o traço acontece inteiro com
+   ela parada. É o que resolve o desenho: solta, uma figura de 460px numa tela
+   de 900 só fica visível durante ~810px de rolagem, e nesse orçamento não dá
+   para ser lento, terminar antes de o leitor passar e ainda começar do zero na
+   entrada. Presa, a rolagem disponível vira a altura da cena, que é este
+   número aqui — 230vh, dos quais 130vh são de traço. */
+.v2-pn-cena { position: relative; height: 230vh; }
+.v2-pn-cena.is-dd { height: 210vh; }
+.v2-pn-palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Sem movimento não há o que assistir, e prender a tela por duas telas e meia
+   para mostrar um desenho parado é só rolagem morta. */
+@media (prefers-reduced-motion: reduce) {
+  .v2-pn-cena, .v2-pn-cena.is-dd { height: auto; }
+  .v2-pn-palco { position: static; height: auto; }
+}
+
+.v2-pn-desenho { margin: var(--v2-s5) 0 0; }
+.v2-pn-dd { margin: var(--v2-s5) 0; }
+.v2-pn-desenho svg,
+.v2-pn-dd svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+.v2-pn-rota {
+  fill: none;
+  stroke: var(--v2-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.v2-pn-rota.is-longa { stroke-width: 2; stroke-opacity: 0.55; }
+.v2-pn-rota.is-curta { stroke-width: 3.5; }
+.v2-pn-rota.is-dd    { stroke-width: 2; stroke-opacity: 0.75; }
+
+/* a metade não percorrida do duplo diamante: existe para a silhueta, e por
+   isso é a linha mais apagada do desenho */
+.v2-pn-fantasma {
+  fill: none;
+  stroke: var(--v2-ink);
+  stroke-width: 1.25;
+  stroke-opacity: 0.16;
+  stroke-linejoin: round;
+}
+
+.v2-pn-eixo { stroke: var(--v2-ink); stroke-width: 1.25; stroke-opacity: 0.2; }
+.v2-pn-eixo.is-forte { stroke-opacity: 0.4; }
+.v2-pn-guia {
+  stroke: var(--v2-ink);
+  stroke-width: 1;
+  stroke-opacity: 0.28;
+  stroke-dasharray: 3 4;
+}
+
+.v2-pn-no     { fill: var(--v2-ink); }
+.v2-pn-parada { fill: var(--v2-ink); }
+
+/* o avião é o mesmo da camada de voo do site, no mesmo vermelho: aqui ele
+   marca onde a leitura está dentro do percurso */
+.v2-pn-aviao { fill: var(--v2-accent); }
+
+/* O halo de papel: os rótulos ficam por cima do traço em alguns pontos do
+   desenho, e sem ele a linha atravessa a letra. `paint-order` é o que faz o
+   contorno ficar ATRÁS do preenchimento, senão o texto engorda. */
+.v2-pn-svg-k {
+  font-family: var(--v2-mono);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--v2-muted);
+  paint-order: stroke;
+  stroke: var(--v2-paper);
+  stroke-width: 7px;
+  stroke-linejoin: round;
+}
+.v2-pn-svg-k.is-forte { fill: var(--v2-ink); }
+
+/* o duplo diamante e as fases são um objeto só: as verticais do desenho caem
+   nos quartos desta grade, então a régua abaixo continua as linhas de cima */
+.v2-pn-fases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+.v2-pn-fases > li { padding-right: var(--v2-s3); }
+.v2-pn-fase-k {
+  margin: 0 0 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--v2-ink);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+}
+.v2-pn-fases ul { list-style: none; margin: 0; padding: 0; }
+.v2-pn-fases ul li {
+  font-size: var(--v2-t-label);
+  line-height: 1.5;
+  color: var(--v2-muted);
+  padding: 3px 0;
+}
+
+@media (max-width: 900px) {
+  .v2-pn { padding: var(--v2-s5) 0 var(--v2-s6); }
+  .v2-pn-bloco { padding-bottom: var(--v2-s5); }
+  .v2-pn-fatores,
+  .v2-pn-trilho,
+  .v2-pn-fases,
+  .v2-pn-dado { grid-template-columns: minmax(0, 1fr); }
+  .v2-pn-t { max-width: none; }
+  .v2-pn-fases > li { padding-right: 0; }
+
+  /* A cena encolhe junto: 230vh de tela de celular é muito mais rolagem
+     presa que 230vh de desktop, e o desenho é o mesmo. */
+  .v2-pn-cena { height: 170vh; }
+  .v2-pn-cena.is-dd { height: 160vh; }
+
+  /* Os dois desenhos viram faixa rolável, e pelo mesmo motivo em cada um.
+
+     Nos dois caminhos são os rótulos, que moram DENTRO do SVG: encolhidos
+     para 390px eles cairiam para 6px, então a faixa é de 620 e a mono sobe
+     junto, o que os devolve a 16px efetivos. No duplo diamante é a proporção:
+     cabe inteiro em 390px, mas 1016 por 268 dá uma faixa de 86px de altura,
+     fina demais para segurar a seção. Rolar de lado é pior que ler grande, e
+     melhor que as duas alternativas. */
+  .v2-pn-desenho svg { min-width: 620px; }
+  .v2-pn-dd svg { min-width: 560px; }
+  .v2-pn-desenho, .v2-pn-dd {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+  .v2-pn-svg-k { font-size: 26px; stroke-width: 12px; }
+}
