@@ -100,20 +100,45 @@ const PROVAS = {
 
 /* ------------------------------------------------------------------ hero */
 
-/* O mesmo hero preso e coberto da home e da página de caso, sem capa: método
-   não tem arte de capa, e stock aqui seria exatamente a "moldura bonita em
-   volta de foto chata" que docs/ANALISE-REFS.md descreve.
+/* O mesmo hero preso e coberto da home e da página de caso, agora COM capa.
  *
- * Quem preenche a tela é o registro dos seis passos no pé: ele é índice e é
- * grafismo ao mesmo tempo, na mono, que é a segunda voz do site. A pessoa sabe
- * o método inteiro antes de rolar uma linha, que é o que quem contrata quer. */
+ * A capa é a mesa do método no escuro: o tablet com a matriz CSD acesa, as
+ * folhas de pesquisa atrás e o lápis vermelho. Não é foto de banco e não
+ * afirma nada que não aconteceu — não tem gente, não tem mão, e a matriz é
+ * bloco de cor, não interface legível. Foi o terceiro caminho tentado: um
+ * curso de voo desenhado (recusado, "nada a ver") e um deserto (recusado,
+ * literal demais) vieram antes. Não reconstruir nenhum dos dois.
+ *
+ * A arte é 2,33:1 e o hero é altura de viewport, então a proporção varia de
+ * 2,36 em 2560x1080 até 0,44 no celular. Por isso `object-position` muda por
+ * largura em processo.css: o que não pode sair do quadro é o tablet, e o que
+ * sobra para o texto é o preto da esquerda, que o `cover` come primeiro.
+ *
+ * Sem `v2-halo`: o halo vermelho da home brigava com a luz quente que já vem
+ * de cima à direita na própria arte. O grão fica, que é o que costura foto ao
+ * resto do site.
+ *
+ * Quem preenche o pé continua sendo o registro dos seis passos: ele é índice e
+ * é grafismo ao mesmo tempo, na mono, que é a segunda voz do site. */
 function ProcessoHero() {
   const linha = useMaskLine();
   const capa = useCobertura();
   const passos = PROCESSO();
 
   return (
-    <section className="v2-hero v2-proc-hero v2-grao v2-halo" data-escuro="1" ref={capa.ref}>
+    <section className="v2-hero v2-proc-hero v2-grao" data-escuro="1" ref={capa.ref}>
+      <div className="v2-hero-capa" aria-hidden="true">
+        <img
+          src="/volume/assets/processo/hero.webp"
+          srcSet="/volume/assets/processo/hero-min.webp 1100w, /volume/assets/processo/hero.webp 1915w"
+          sizes="100vw"
+          alt=""
+          decoding="async"
+          fetchPriority="high"
+        />
+      </div>
+      <span className="v2-hero-veu v2-proc-hero-veu" aria-hidden="true" />
+
       <motion.div className="v2-wrap v2-hero-in" style={capa.style}>
         <motion.div className="v2-hero-topo" {...linha(0)}>
           <p className="v2-hero-papel">{HERO.olho}</p>

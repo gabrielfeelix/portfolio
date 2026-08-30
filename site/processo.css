@@ -7,10 +7,76 @@
 
 /* ---------------- hero ---------------- */
 
-/* O hero do método não tem capa. Método não tem screenshot, e stock aqui seria
-   a moldura bonita em volta de foto chata que docs/ANALISE-REFS.md descreve.
-   Quem preenche a tela é o registro dos seis passos, que é índice e grafismo
-   na mesma peça. */
+/* A capa do hero do método: a mesa no escuro, o tablet com a matriz CSD acesa,
+   as folhas atrás e o lápis vermelho. Ver o comentário de `ProcessoHero` em
+   Processo.jsx para por que é esta arte e não outra.
+
+   A arte é 2,33:1 e o hero é `100svh`, então a caixa vai de 2,36 em 2560x1080
+   a 0,44 no celular. O `cover` sempre come largura, e o que ele come primeiro
+   é o preto da esquerda — que é de graça, porque é justamente o vão que o
+   título ocupa. O que NÃO pode sair do quadro é o tablet, e é isso que os
+   `object-position` abaixo protegem, largura por largura.
+
+   As medidas saem da arte, não de gosto: o tablet mora entre 52% e 84% da
+   largura do arquivo, então o centro dele é 68%. */
+
+/* Herda de `.v2-hero-capa` em home.css, inclusive a sobra de 90px em cima e
+   embaixo que o parallax da home gasta. Aqui não há parallax, e a sobra só
+   aperta um pouco o corte vertical, que nesta arte é mesa vazia.
+
+   Os valores abaixo NÃO são gosto, são conta. Ancorar à direita (`100%`) foi a
+   primeira tentativa e é o contrário do que se quer: alinhar a borda direita
+   joga fora os 32% da esquerda, que são justamente o preto, e o tablet desliza
+   para o meio da caixa, atrás do H1 de 96px. A conta certa é achar o `p` que
+   põe o centro do tablet em 80% da caixa:
+
+     f = largura da caixa / largura da arte escalada   (fração visível)
+     p = (0,68 - 0,80·f) / (1 - f)                     (0,68 = centro do tablet)
+
+   1425x900  -> mostra 68% da arte -> p = 43%
+   1905x1080 -> mostra 76% da arte -> p = 31%
+   2545x1080 -> a arte fica menor que a caixa, não há corte horizontal */
+.v2-proc-hero .v2-hero-capa img { object-position: 31% center; }
+
+@media (max-width: 1600px) {
+  .v2-proc-hero .v2-hero-capa img { object-position: 43% center; }
+}
+
+/* No celular a caixa é 0,44 contra uma arte de 2,33: o `cover` corta 81% da
+   largura e sobra uma tira estreita. Em 100% essa tira pega o caderno e o
+   lápis e perde o tablet, que é o assunto. 68% é o centro do tablet. */
+@media (max-width: 760px) {
+  .v2-proc-hero .v2-hero-capa img { object-position: 68% center; }
+}
+
+/* O véu da home é uma elipse ancorada embaixo à esquerda, que é exatamente
+   onde moram o título, a premissa e o registro. Serve igual aqui, e por isso
+   é reuso e não peça nova. O que muda é a força: a arte da home é um céu
+   claro com avião, esta já nasce preta do lado do texto, e o véu da home por
+   cima dela fechava o pouco de matéria que existe embaixo do título. */
+.v2-proc-hero-veu { opacity: .72; }
+
+/* No celular o véu da home não dá conta. Lá a elipse basta porque a arte é céu
+   claro e uniforme; aqui o `cover` de 0,44 sobe o tablet ACESO para o meio do
+   quadro, e o H1 de 40px cai exatamente em cima dos blocos claros da matriz.
+   Elipse no canto não resolve isso: o problema é uma faixa inteira, não um
+   canto.
+
+   Então no estreito o véu troca de forma: uma subida do pé até 38% da altura,
+   que deixa o tablet inteiro visível em cima e devolve chão preto para o
+   título, a premissa e o registro, que moram todos na metade de baixo. */
+@media (max-width: 760px) {
+  .v2-proc-hero-veu {
+    opacity: 1;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 10, 10, 0) 0%,
+      rgba(10, 10, 10, .42) 30%,
+      rgba(10, 10, 10, .82) 52%,
+      rgba(10, 10, 10, .95) 72%
+    );
+  }
+}
 .v2-proc-hero-baixo { display: grid; gap: var(--v2-s4); }
 
 /* Um degrau abaixo do hero da home: o título são duas linhas de frase, não
