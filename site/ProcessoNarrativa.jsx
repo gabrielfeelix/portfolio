@@ -5,7 +5,7 @@
  * A versão anterior afirmava "São seis passos, na mesma ordem, em todo projeto
  * deste portfólio". O Gabriel corrigiu: o processo dele muda com o problema.
  * Um P.O. às vezes entrega a feature com o problema já validado pela
- * reclamação e pelo FAQ, e aí o caminho é curto; no PCYES e no Oderço deu
+ * reclamação e pelo FAQ, e aí o caminho é curto; no PCYES e na Locarmais deu
  * tempo de fazer o completo. A página estava afirmando o contrário do que ele
  * faz, e nenhum arranjo de layout conserta uma premissa falsa. Três tentativas
  * de rediagramar (índice preso, bandas alternadas, capas) foram recusadas
@@ -65,7 +65,7 @@ const FATORES = {
     { k: "Time", p: "Se eu divido a atividade com alguém ou toco sozinho. Dois designers mudam o que cabe na mesma semana." },
     { k: "O que já chegou validado", p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova é teatro." },
   ],
-  nota: "Quase todo lugar em que trabalhei era startup, e startup tem pressa. PCYES e Oderço foram onde deu tempo de fazer o completo.",
+  nota: "Quase todo lugar em que trabalhei era startup, e startup tem pressa. PCYES e Locarmais foram onde deu tempo de fazer o completo.",
 };
 
 const RISCO = {
@@ -95,7 +95,7 @@ const CURTO = {
 const LONGO = {
   olho: "Caminho longo",
   t: "Quando ninguém sabe ainda qual é o problema",
-  p: "É onde eu sigo Double Diamond, e é o que eu fiz no PCYES e no Oderço.",
+  p: "É onde eu sigo Double Diamond, e é o que eu fiz no PCYES e na Locarmais.",
   fases: [
     { k: "Descobrir", m: ["Matriz CSD", "Benchmarking", "Acompanhar a rotina real", "Analytics e gravação"] },
     { k: "Definir",   m: ["Recorte do problema", "Hipótese", "Objetivo, não lista de telas"] },
@@ -103,7 +103,7 @@ const LONGO = {
     { k: "Entregar",  m: ["Teste de usabilidade", "Ajusta", "Vai para o ar"] },
   ],
   casos: [
-    "No Oderço eu sentei junto do financeiro e acompanhei a conferência dia a dia antes de desenhar. O benchmarking ali foi de vocabulário: plataformas de conciliação já consolidadas, para não inventar termo novo onde já existe um.",
+    "Na Locarmais eu sentei junto do financeiro e acompanhei a conferência dia a dia antes de desenhar. O benchmarking ali foi de vocabulário: plataformas de conciliação já consolidadas, para não inventar termo novo onde já existe um.",
     "No PCYES o qualitativo e o quantitativo vieram separados de propósito. O Clarity respondeu o que as pessoas faziam, mapa de calor e gravação. O GA4 respondeu onde elas paravam.",
   ],
 };
