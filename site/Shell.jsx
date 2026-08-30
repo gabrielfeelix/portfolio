@@ -20,7 +20,7 @@ import { CONTATO, AUTOR } from "./content.js";
    O `href` continua real, então abrir em nova aba e copiar o link seguem
    funcionando: o `preventDefault` só vale para o clique comum. */
 const LINKS = [
-  { id: "casos",    rot: "Casos",    href: "/#casos",     rota: true },
+  { id: "casos",    rot: "Projetos", href: "/#casos",     rota: true },
   { id: "processo", rot: "Processo", href: "/processo",  rota: true },
   { id: "sobre",    rot: "Sobre",    href: "/sobre",     rota: true },
   { id: "blog",     rot: "Blog",     href: "/blog",      rota: true },
