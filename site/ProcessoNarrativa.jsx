@@ -354,14 +354,68 @@ function Dado({ l, v }) {
   );
 }
 
-function Bloco({ olho, t, children, id, classe = "" }) {
+/* O bloco, agora com duas formas de abrir e três larguras.
+
+   A forma de hoje (`col`) é olho sobre título sobre texto, tudo numa coluna, e
+   ela era a ÚNICA: os sete blocos abriam idênticos, no mesmo lugar, com o
+   mesmo espaçamento. `duas` é o `Cabecalho` do resto do site — título à
+   esquerda, o primeiro parágrafo à direita virando lead — e existe para que a
+   abertura não seja a mesma sete vezes seguidas.
+
+   A largura sai por `data-larg` e não por classe porque ela é escolha de
+   pauta, não de conteúdo: o mesmo bloco muda de largura entre uma versão de
+   ritmo e outra. */
+function Bloco({ olho, t, lead, children, id, classe = "", forma = "col", larg = "wrap" }) {
   const rise = useRise();
-  return (
-    <section className={"v2-pn-bloco v2-wrap" + (classe ? " " + classe : "")} id={id}>
+  const cabeca = (
+    <>
       <motion.p className="v2-pn-olho" {...rise(0)}>{olho}</motion.p>
       {t ? <motion.h2 className="v2-pn-t" {...rise(1)}>{t}</motion.h2> : null}
+    </>
+  );
+
+  return (
+    <section
+      className={"v2-pn-bloco v2-wrap" + (classe ? " " + classe : "")}
+      id={id}
+      data-forma={forma}
+      data-larg={larg}
+    >
+      {forma === "duas" ? (
+        <div className="v2-pn-cabeca">
+          <div className="v2-pn-cabeca-esq">{cabeca}</div>
+          <div className="v2-pn-cabeca-dir">
+            {lead ? <motion.p className="v2-pn-lead" {...rise(2)}>{lead}</motion.p> : null}
+          </div>
+        </div>
+      ) : (
+        <>
+          {cabeca}
+          {lead ? <motion.p className="v2-pn-p" {...rise(2)}>{lead}</motion.p> : null}
+        </>
+      )}
       {children}
     </section>
+  );
+}
+
+/* A faixa de ato: a quebra de superfície da versão A.
+
+   Ela é DELIBERADAMENTE menor que a `CapaCapitulo` que saiu desta página em
+   30/08. Aquela era meia tela com título em display, e foi recusada quando
+   alternava com dois passos de texto cada. Esta é uma faixa fina, sangrando de
+   borda a borda, só com mono: número do ato, nome do ato, e nada mais. Ela não
+   apresenta um capítulo — ela marca que a página virou de assunto, que é o
+   problema real (13.600px sem uma troca de superfície). */
+function FaixaAto({ n, nome, de }) {
+  const rise = useRise();
+  return (
+    <motion.div className="v2-pn-ato" data-escuro-corpo="1" aria-hidden="true" {...rise(0)}>
+      <div className="v2-wrap v2-pn-ato-in">
+        <span className="v2-pn-ato-n">{n} / {de}</span>
+        <span className="v2-pn-ato-nome">{nome}</span>
+      </div>
+    </motion.div>
   );
 }
 
@@ -372,19 +426,84 @@ function Paras({ itens, i0 = 2, classe = "v2-pn-p" }) {
   ));
 }
 
+/* ------------------------------------------------------------ o ritmo */
+
+/* A pauta de ritmo da página: uma linha por bloco, na ordem em que eles saem.
+
+   Ela nasceu como três versões comparáveis (`?ritmo=a|b|c`) em 30/08 — atos
+   com faixa escura, alternância em zigue-zague, e esta. O Gabriel escolheu
+   esta; as outras duas e o seletor de URL saíram junto com a escolha.
+
+   O princípio é uma RAMPA, não um zigue-zague: a página abre recuada e
+   discreta e vai crescendo em largura e presença até o funil, que é o clímax.
+   A aposta é que o problema nunca foi "tudo igual" e sim "nada acelera" — uma
+   página que argumenta tem que ficar mais alta conforme se aproxima da
+   confissão.
+
+   Os campos:
+     forma  "col"  olho sobre título, coluna única
+            "duas" título à esquerda, primeiro parágrafo à direita como lead
+     larg   "estreita" recuado pela coluna de rótulo (220px), título em 12ch
+            "wrap"     a largura cheia da página
+            "larga"    título em 26ch, sem `balance`, correndo a coluna
+
+   A ordem das formas foi escolhida MEDINDO a largura do título bloco a bloco,
+   e não no olho: uma rampa com um degrau para baixo no meio não é rampa. Sai
+   587 · 612 · 713 · 853 · 918 · 1326 · 1326 numa janela de 1440.
+
+   Os dois últimos voltam para coluna única de propósito. Duas colunas é a
+   forma QUIETA — título e apoio dividem a linha — e a rampa tem que terminar
+   na mais alta: título largo, sozinho, sem nada ao lado. */
+const RITMO = [
+  { forma: "duas", larg: "estreita" },
+  { larg: "estreita" },
+  { forma: "duas" },
+  { forma: "duas", larg: "larga" },
+  {},
+  { larg: "larga" },
+  { larg: "larga" },
+];
+
 /* ------------------------------------------------------------- página */
 
 export function Narrativa() {
   const rise = useRise();
+  const b = (i) => RITMO[i] || {};
+
+  /* Quando o bloco abre em duas colunas, o primeiro parágrafo sobe para a
+     coluna da direita e vira o lead. É o mesmo texto, noutro lugar — nenhuma
+     bloco reescreve nada. Devolve [lead, resto]. */
+  const parte = (i, itens) =>
+    b(i).forma === "duas" ? [itens[0], itens.slice(1)] : [null, itens];
+
+  /* FATORES e CURTO abrem por lista e não têm primeiro parágrafo para
+     promover: nesses dois o lead é o texto que hoje fecha o bloco. */
+  const rodape = (i, texto) => (b(i).forma === "duas" ? [texto, null] : [null, texto]);
+
+  const [abreLead, abrePs] = parte(0, ABRE.p);
+  const [fatLead, fatNota] = rodape(1, FATORES.nota);
+  const [riscoLead, riscoPs] = parte(2, RISCO.p);
+  const [curtoLead, curtoP] = rodape(3, CURTO.p);
+  const [longoLead, longoP] = rodape(4, LONGO.p);
+  const [nuncaLead, nuncaPs] = parte(5, NUNCA.p);
+  const [apostaLead, apostaPs] = parte(6, APOSTA.p);
+
+  /* A faixa de ato de cada bloco, quando a pauta pede uma. */
+  const ato = (i) => {
+    const a = b(i).ato;
+    return a ? <FaixaAto n={a[0]} de={a[1]} nome={a[2]} /> : null;
+  };
 
   return (
     <div className="v2-pn">
-      <Bloco olho={ABRE.olho} t={ABRE.t} id="como-eu-trabalho">
-        <Paras itens={ABRE.p} />
+      {ato(0)}
+      <Bloco olho={ABRE.olho} t={ABRE.t} id="como-eu-trabalho" lead={abreLead} {...b(0)}>
+        <Paras itens={abrePs} />
         <DoisCaminhos />
       </Bloco>
 
-      <Bloco olho={FATORES.olho} t={FATORES.t}>
+      {ato(1)}
+      <Bloco olho={FATORES.olho} t={FATORES.t} lead={fatLead} {...b(1)}>
         <ol className="v2-pn-fatores">
           {FATORES.itens.map((f, i) => (
             <motion.li key={f.k} {...rise(i + 2)}>
@@ -393,14 +512,16 @@ export function Narrativa() {
             </motion.li>
           ))}
         </ol>
-        <motion.p className="v2-pn-nota" {...rise(5)}>{FATORES.nota}</motion.p>
+        {fatNota ? <motion.p className="v2-pn-nota" {...rise(5)}>{fatNota}</motion.p> : null}
       </Bloco>
 
-      <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque">
-        <Paras itens={RISCO.p} />
+      {ato(2)}
+      <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque" lead={riscoLead} {...b(2)}>
+        <Paras itens={riscoPs} />
       </Bloco>
 
-      <Bloco olho={CURTO.olho} t={CURTO.t} id="caminho-curto">
+      {ato(3)}
+      <Bloco olho={CURTO.olho} t={CURTO.t} id="caminho-curto" lead={curtoLead} {...b(3)}>
         <ol className="v2-pn-trilho">
           {CURTO.paradas.map((p, i) => (
             <motion.li key={p.n} {...rise(i + 2)}>
@@ -410,21 +531,24 @@ export function Narrativa() {
             </motion.li>
           ))}
         </ol>
-        <motion.p className="v2-pn-p" {...rise(6)}>{CURTO.p}</motion.p>
+        {curtoP ? <motion.p className="v2-pn-p" {...rise(6)}>{curtoP}</motion.p> : null}
       </Bloco>
 
-      <Bloco olho={LONGO.olho} t={LONGO.t} id="caminho-longo">
-        <motion.p className="v2-pn-p" {...rise(2)}>{LONGO.p}</motion.p>
+      {ato(4)}
+      <Bloco olho={LONGO.olho} t={LONGO.t} id="caminho-longo" lead={longoLead} {...b(4)}>
+        {longoP ? <motion.p className="v2-pn-p" {...rise(2)}>{longoP}</motion.p> : null}
         <Diamante fases={LONGO.fases} />
         <Paras itens={LONGO.casos} i0={4} classe="v2-pn-p is-menor" />
       </Bloco>
 
-      <Bloco olho={NUNCA.olho} t={NUNCA.t} classe="is-destaque">
-        <Paras itens={NUNCA.p} />
+      {ato(5)}
+      <Bloco olho={NUNCA.olho} t={NUNCA.t} classe="is-destaque" lead={nuncaLead} {...b(5)}>
+        <Paras itens={nuncaPs} />
       </Bloco>
 
-      <Bloco olho={APOSTA.olho} t={APOSTA.t} id="a-aposta" classe="is-aposta">
-        <Paras itens={APOSTA.p} />
+      {ato(6)}
+      <Bloco olho={APOSTA.olho} t={APOSTA.t} id="a-aposta" classe="is-aposta" lead={apostaLead} {...b(6)}>
+        <Paras itens={apostaPs} />
         <motion.dl className="v2-pn-dado" {...rise(5)}>
           {APOSTA.dado.map((d) => <Dado key={d.l} {...d} />)}
         </motion.dl>

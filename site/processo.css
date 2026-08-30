@@ -24,11 +24,20 @@
   text-transform: uppercase;
   color: var(--v2-muted);
 }
+/* `--v2-t-dado`, e não `--v2-t-painel`.
+
+   O comentário acima dizia "é o único lugar do corpo claro que usa esse
+   tamanho" e estava errado: `--v2-t-painel` é apelido de `--v2-t-secao`, que é
+   o tamanho dos SETE títulos da página. Os três números do funil — o clímax do
+   argumento, a queda de 50.399 para 223 — saíam do mesmo degrau que qualquer
+   `<h2>`, e por isso não liam como chegada de nada. `--v2-t-dado` é o degrau
+   acima (112 contra 88 em desktop) e é o que a home já usa nos contadores. */
 .v2-pn-dado dd {
   margin: 6px 0 0;
-  font-size: var(--v2-t-painel);
+  font-size: var(--v2-t-dado);
   letter-spacing: var(--v2-track-display);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .v2-pn-fonte {
@@ -39,13 +48,22 @@
   color: var(--v2-muted);
 }
 
-/* A última linha da página, e o argumento inteiro. */
+/* A última linha da página, e o argumento inteiro.
+
+   Ela estava em `--v2-t-frase`, que é apelido de `--v2-t-lead`: os mesmos 24px
+   de TODO parágrafo da página. A frase que fecha o argumento não era maior que
+   nada, e só se distinguia por `max-width` e entrelinha.
+
+   `--v2-t-movimento` é o degrau certo, e não por ser o próximo: o token existe
+   justamente para "a única tipografia da dobra que não divide o espaço com
+   nada", que é literalmente o caso aqui. Em desktop ela sai a 72 contra os 88
+   dos títulos e os 24 do corpo — separada das duas pontas. */
 .v2-pn-fecho {
   margin: var(--v2-s5) 0 0;
-  max-width: 26ch;
-  font-size: var(--v2-t-frase);
-  letter-spacing: var(--v2-track-titulo);
-  line-height: 1.18;
+  max-width: 20ch;
+  font-size: var(--v2-t-movimento);
+  letter-spacing: var(--v2-track-display);
+  line-height: 1.06;
   text-wrap: balance;
 }
 
@@ -126,6 +144,132 @@
   line-height: 1.5;
 }
 .v2-pn-bloco.is-aposta .v2-pn-t { max-width: 22ch; }
+
+
+/* ============================================== as três pautas de ritmo
+
+   Tudo abaixo só entra quando a pauta pede (`?ritmo=a|b|c`). Sem parâmetro na
+   URL, todo bloco nasce `data-forma="col" data-larg="wrap"`, que é a página de
+   hoje, e nenhuma destas regras casa. Ver PAUTAS em ProcessoNarrativa.jsx.
+
+   O que elas atacam: os sete blocos abrem idênticos — mesmo olho, mesma régua,
+   mesmo título de 88px, mesma largura, mesmos 104px de respiro — e não há uma
+   troca de superfície em ~13.600px de corpo claro. */
+
+/* --------------------------------------------- abertura em duas colunas */
+
+/* O `Cabecalho` do resto do site: título à esquerda, apoio à direita. A
+   proporção é a mesma de `.v2-cabecalho` em kit.css (1.35fr / 1fr), e não um
+   número novo — se esta página inventasse a própria grade de cabeçalho, ela
+   voltaria a ler como página avulsa, que é o diagnóstico de ANALISE-REFS.md. */
+.v2-pn-cabeca {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--v2-s4) var(--v2-s6);
+  align-items: start;
+  margin-bottom: var(--v2-s5);
+}
+/* Desce o lead até a altura da segunda linha do título, senão ele boia ao lado
+   do topo de um display de 88px. Mesma correção de `.v2-cabecalho-dir`. */
+.v2-pn-cabeca-dir { padding-top: .5em; }
+.v2-pn-cabeca .v2-pn-t { margin-bottom: 0; }
+
+.v2-pn-lead {
+  margin: 0;
+  font-size: var(--v2-t-lead);
+  line-height: 1.45;
+  letter-spacing: var(--v2-track-titulo);
+  color: var(--v2-muted);
+  max-width: 46ch;
+}
+
+/* ------------------------------------------------------------ larguras */
+
+/* A borda esquerda é o que o olho segue enquanto rola: mover ela é o
+   dispositivo de ritmo mais barato que existe, e é o que a /sobre faz ao
+   alternar dobra cheia, coluna presa e capa sangrada.
+
+   O recuo é a coluna de rótulo do site (220px), não um número novo. */
+/* Os três degraus são medidos em `ch` como o resto do bloco, e não em px nem
+   em `--v2-medida`. A primeira tentativa usou `--v2-medida` (809px) para o
+   degrau largo e ela saiu ERRADA: medido no navegador a 1440, 1ch do título
+   dá 51px, então o padrão de 18ch já é 918px e a variante "larga" ficava 109px
+   mais ESTREITA que o bloco normal. Degraus: 12ch (612) · 18ch (918) · 26ch
+   (1326), que ainda cabe na coluna de 1360 a 1440.
+
+   Nota de sistema: `.v2-titulo`, o título do resto do site, para em
+   `--v2-medida` = 809px. Os títulos desta página já nasceram mais largos que
+   os do site, e o degrau estreito é o único dos três que fica abaixo dele. */
+.v2-pn-bloco[data-larg="estreita"] {
+  padding-left: calc(var(--v2-gutter) + var(--v2-label-col));
+}
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-t { max-width: 12ch; }
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-p { max-width: var(--v2-medida-caso); }
+
+/* Os desenhos NÃO recuam com o texto. Eles são a mídia da página, e a regra do
+   site para dobra larga é a mídia encostar e só o texto respeitar a goteira. */
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-cena {
+  margin-left: calc(var(--v2-label-col) * -1);
+}
+
+/* Larga: o título corre a coluna quase inteira, em linhas longas em vez de
+   empilhado. Só ele — o parágrafo continua na medida de leitura, porque linha
+   longa de corpo não é ritmo, é cansaço.
+
+   `balance` sai junto: ele é o que empurra o título de volta para um bloco
+   quadrado de três linhas curtas, que é justamente o formato do qual este
+   degrau existe para escapar. */
+.v2-pn-bloco[data-larg="larga"] .v2-pn-t {
+  max-width: 26ch;
+  text-wrap: pretty;
+}
+
+/* Largura e forma se anulavam quando vinham juntas: a grade de 1.35 por 1 do
+   cabeçalho de duas colunas devolvia o título a 713px, e um bloco
+   `larga` + `duas` saía mais estreito que um `wrap` + `col` (918). Na versão C
+   isso invertia a rampa bem no clímax. A grade abre quando o degrau é largo. */
+.v2-pn-bloco[data-larg="larga"] .v2-pn-cabeca {
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+}
+
+/* O respiro anda com a largura, e é o quarto dispositivo de ritmo — hoje os
+   sete blocos são separados por 104px sem uma exceção. Recuado respira menos,
+   largo respira mais: na versão C isso faz a rampa acelerar também no branco,
+   e na B faz o zigue-zague ter fôlego irregular em vez de métrico. */
+.v2-pn-bloco[data-larg="estreita"] { padding-bottom: var(--v2-s5); }
+.v2-pn-bloco[data-larg="larga"]    { padding-bottom: var(--v2-s7); }
+
+/* ------------------------------------------------------- a faixa de ato */
+
+/* A quebra de superfície da versão A. Fina e só em mono, de propósito: a
+   `CapaCapitulo` que saiu desta página em 30/08 era meia tela com título em
+   display, e foi recusada. Esta não apresenta um capítulo, ela avisa que a
+   página virou de assunto. */
+.v2-pn-ato {
+  background: var(--v2-ink);
+  color: #fff;
+  margin: var(--v2-s6) 0;
+}
+.v2-pn-ato-in {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s4);
+  padding-block: var(--v2-s4);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+}
+.v2-pn-ato-n {
+  color: var(--v2-accent);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+.v2-pn-ato-nome { color: rgba(255, 255, 255, .82); }
+
+/* O primeiro bloco depois de uma faixa não precisa dos 104px do `.v2-pn`: a
+   faixa já é a pausa. */
+.v2-pn-ato + .v2-pn-bloco { padding-top: 0; }
 
 /* --------------------------------------------------------------- fatores */
 
@@ -318,6 +462,29 @@
   .v2-pn-dado { grid-template-columns: minmax(0, 1fr); }
   .v2-pn-t { max-width: none; }
   .v2-pn-fases > li { padding-right: 0; }
+
+  /* As pautas de ritmo desmontam no celular, todas as três. Recuo de 220px e
+     grade de 1.35 por 1 numa tela de 390 não são ritmo, são coluna espremida:
+     o cabeçalho empilha e a borda esquerda volta para a goteira. O que
+     sobrevive no celular é a faixa de ato, que é a única das três que
+     funciona em uma coluna. */
+  .v2-pn-cabeca {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--v2-s3);
+    margin-bottom: var(--v2-s4);
+  }
+  .v2-pn-cabeca-dir { padding-top: 0; }
+  .v2-pn-cabeca .v2-pn-t { margin-bottom: 0; }
+  .v2-pn-bloco[data-larg="estreita"] { padding-left: var(--v2-gutter); }
+  .v2-pn-bloco[data-larg="estreita"] .v2-pn-t,
+  .v2-pn-bloco[data-larg="larga"] .v2-pn-t { max-width: none; }
+  .v2-pn-bloco[data-larg="estreita"] .v2-pn-cena { margin-left: 0; }
+  .v2-pn-ato { margin: var(--v2-s5) 0; }
+  .v2-pn-ato-in {
+    flex-direction: column;
+    gap: var(--v2-s1);
+    padding-block: var(--v2-s3);
+  }
 
   /* A cena encolhe junto: 230vh de tela de celular é muito mais rolagem
      presa que 230vh de desktop, e o desenho é o mesmo. */

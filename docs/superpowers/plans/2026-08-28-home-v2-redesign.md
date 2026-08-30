@@ -331,8 +331,17 @@ git commit -m "feat(v2): primitivas de pilha grudada e revelação por palavra"
 Em `v2/copy.js`, acrescentar. Sem travessão, sem palavra da moda:
 
 ```js
-export const DECLARACAO =
-  "Eu desenho para tirar o produto do slide. Objetivo primeiro, protótipo navegável em dias, e o que sobrevive ao contato com o usuário vai para o ar.";
+/* ORIENTAÇÃO REVOGADA em 30/08/2026, a pedido do Gabriel.
+
+   O texto que estava aqui vendia PRAZO ("protótipo navegável em dias"). Palavras
+   dele: "a gente tá muito focado em velocidade, eu quero ter qualidade não
+   velocidade... meu forte não é ficar fazendo tudo pra ontem".
+
+   Foi desta linha que a moldura de velocidade se espalhou: daqui para
+   `copy.js`, e de `copy.js` para o hero do /processo. Nenhuma sessão futura
+   deve reintroduzir prazo como argumento de venda em lugar nenhum do site.
+   O que ele quer defender é julgamento e qualidade — o tamanho do trabalho
+   acompanha o preço de errar, e não o calendário. */
 ```
 
 Os dois parágrafos de `MANIFESTO.colunas` continuam em `copy.js`: eles migram
@@ -607,9 +616,12 @@ Em `v2/copy.js`. As três frases condensam as seis etapas de `volume/data.jsx:87
 sem inventar processo novo:
 
 ```js
+/* ORIENTAÇÃO PARCIALMENTE REVOGADA em 30/08/2026 — ver a nota da DECLARACAO
+   acima. A frase do meio ("Do objetivo ao protótipo clicável em dias") vendia
+   prazo e não deve ser seguida nem reintroduzida. As outras duas continuam
+   válidas: elas falam de julgamento, que é o que a página defende. */
 export const PROCESSO_CURTO = [
   "Começo pelo objetivo, não pela lista de telas, e caço o que já funciona antes de desenhar.",
-  "Do objetivo ao protótipo clicável em dias, para a mesa tocar em vez de imaginar.",
   "Mostro cedo, corto o que não serve, e o protótipo vira produto no ar.",
 ];
 ```

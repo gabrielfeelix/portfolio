@@ -22,18 +22,31 @@ import { motion } from "motion/react";
 import { useRise, useMaskLine, useCobertura } from "./motion.js";
 import { Label, Pill } from "./Shell.jsx";
 import { GradeCasos, Lamina } from "./Kit.jsx";
-import { PROCESSO, CONTATO } from "./content.js";
-import { PROCESSO_CURTO } from "./copy.js";
+import { CONTATO } from "./content.js";
 import { Narrativa } from "./ProcessoNarrativa.jsx";
 
 /* ------------------------------------------------------------------ copy */
 
-/* volume/Processo.jsx · `.proc-h1` e `.splash-lead`, palavra por palavra. */
+/* O hero, reescrito em 30/08 a pedido do Gabriel. O que estava aqui vinha
+   verbatim de volume/Processo.jsx e vendia PRAZO: "Do objetivo ao protótipo,
+   em dias." Palavras dele: "eu quero ter qualidade não velocidade... meu forte
+   não é ficar fazendo tudo pra ontem".
+
+   Além do tom, havia um defeito de substância: o hero anunciava SEIS PASSOS
+   numa ordem fixa (o `v2-proc-registro`, que saiu junto) e o corpo da página
+   existe para argumentar exatamente o contrário — que o caminho muda com o
+   problema. O hero prometia uma lista que a página não entrega.
+
+   A frase nova diz o que a página defende, que é julgamento, e não repete
+   nenhum título do corpo: "o tamanho da pesquisa acompanha o preço de errar" é
+   o bloco RISCO e "alguém que vai usar mexe na tela antes de eu fechar" é o
+   NUNCA. Se o hero dissesse qualquer um dos dois, o leitor leria a mesma frase
+   duas vezes em meia rolagem. */
 const HERO = {
   olho: "O método",
-  linha1: "Do objetivo ao protótipo,",
-  linha2: "em dias.",
-  premissa: "Valido com quem vai usar antes de fechar a tela. O que não passa no teste eu corto.",
+  linha1: "Meu processo muda.",
+  linha2: "O critério não.",
+  premissa: "O caminho é outro a cada projeto. Escolher qual deles rodar é a decisão que eu tomo antes de abrir o Figma.",
 };
 
 /* volume/Processo.jsx · `.proc-msg`.
@@ -62,13 +75,10 @@ const FECHO = ["Eu vou junto", "até o ar."];
  * Sem `v2-halo`: o halo vermelho da home brigava com a luz quente que já vem
  * de cima à direita na própria arte. O grão fica, que é o que costura foto ao
  * resto do site.
- *
- * Quem preenche o pé continua sendo o registro dos seis passos: ele é índice e
- * é grafismo ao mesmo tempo, na mono, que é a segunda voz do site. */
+ */
 function ProcessoHero() {
   const linha = useMaskLine();
   const capa = useCobertura();
-  const passos = PROCESSO();
 
   return (
     <section className="v2-hero v2-proc-hero v2-grao" data-escuro="1" ref={capa.ref}>
@@ -98,17 +108,6 @@ function ProcessoHero() {
 
           <motion.p className="v2-proc-premissa" {...linha(3)}>{HERO.premissa}</motion.p>
 
-          {/* O registro. Não é navegação: é o sumário do método, e por isso
-              não tem link. Quem quer o detalhe rola, que é o gesto que a
-              página inteira pede. */}
-          <motion.ol className="v2-proc-registro" {...linha(4)}>
-            {passos.map((s) => (
-              <li className="v2-proc-reg-cel" key={s.n}>
-                <span className="v2-proc-reg-n">{`( 00${Number(s.n)} )`}</span>
-                <span className="v2-proc-reg-t">{s.t}</span>
-              </li>
-            ))}
-          </motion.ol>
         </div>
       </motion.div>
     </section>
