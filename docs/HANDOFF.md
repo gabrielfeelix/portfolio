@@ -1,139 +1,181 @@
-# Handoff — 30/08/2026, madrugada
+# Handoff — 31/08/2026, madrugada
 
-Substitui o handoff da noite de 30/08. `HANDOFF-V2.md`, `HANDOFF-2026-08-29.md`
-e `HANDOFF-2026-08-29-noite.md` são de sessões passadas: se conflitarem com
-este, este vale.
+Substitui o handoff de 30/08. `HANDOFF-2026-08-30-triagem.md`, `HANDOFF-V2.md`,
+`HANDOFF-2026-08-29.md` e `HANDOFF-2026-08-29-noite.md` são de sessões passadas:
+se conflitarem com este, este vale.
 
-Tudo commitado. O acidente do `processo.css` (regex guloso que comeu 794 linhas
-em 30/08) continua documentado no topo do bloco "corpo narrativo" daquele
-arquivo — se algo parecer fora do lugar em relação a 29/08, é ali que se
-procura.
+`HANDOFF-I18N-EN.md` **não** é passado: é a sessão de inglês que rodou em
+paralelo nesta mesma madrugada, no mesmo clone. Os dois valem juntos, e cada um
+cobre uma metade que a outra não tocou.
+
+Tudo commitado e no ar. Produção conferida às 00:50 de 31/08: dez rotas
+carregam sem erro de JS e sem 404 — home, sobre, processo, blog, quatro cases e
+as duas versões `?lang=en`.
 
 ---
 
 ## O que esta sessão fez
 
-**A /processo ganhou ritmo.** Ela tinha uma forma só: os sete blocos abriam
-idênticos — mesmo olho, mesma régua, mesmo título de 88px, mesma largura,
-mesmos 104px de respiro — e não havia troca de superfície em 13.600px. Três
-pautas foram montadas e comparadas rolando (atos com faixa escura, alternância
-em zigue-zague, crescendo). O Gabriel escolheu o **crescendo**, e as outras
-duas saíram junto com o seletor `?ritmo=`.
+### A dobra "Outros projetos"
 
-A pauta está em `RITMO`, no meio de `site/ProcessoNarrativa.jsx`. Dois campos
-por bloco, largura e lado, e as três coisas sobem juntas do começo ao fim:
+Ela se chamava "Fora da estante" e abria com o nome dela na linha do cromo, em
+mono de 11px, e nada mais. Era a única dobra da home sem título de display — e
+por isso lia como rodapé da dobra anterior em vez de seção nova. Agora abre com
+`<Titulo>Outros projetos</Titulo>`, e o cromo volta a ser só régua
+(`( _07 ) PEÇAS ©26`).
 
-```
-bloco    largura   lado   título
-ABRE     estreita  esq    40px
-FATORES  estreita  dir    40px
-RISCO    wrap      esq    72px
-CURTO    wrap      dir    72px
-LONGO    larga     esq    88px
-NUNCA    larga     dir    88px
-APOSTA   larga     esq    88px
-```
+Ao crescer o título apareceu um defeito antigo: o `.v2-wrap` daquela seção é
+item de grid com `margin: 0 auto`, e **margem auto em grid cancela o stretch** —
+o bloco ficava com largura de conteúdo e centralizado, o único da página. Com
+uma linha de 11px isso mal aparecia. `.v2-fita-cabeca { width: 100% }` devolve.
 
-**O bloco é uma coluna só, e ela troca de lado.** A primeira tentativa partia o
-cabeçalho em duas colunas (título de um lado, primeiro parágrafo do outro) e o
-Gabriel mandou print: texto pequeno, linha, título grande, linha, sem ordem de
-leitura possível. Partir o cabeçalho quebra a coluna no meio. Agora a leitura
-desce reta dentro da coluna, e o que atravessa a página são as figuras e as
-grades — é essa diferença que dá o ritmo.
+### Onze capas de mockup fotográfico
 
-**Quatro defeitos de escala, todos achados MEDINDO e não no olho:**
+As peças tinham print de tela ou imagem nenhuma. Agora têm foto de aparelho num
+ambiente cuja cor sai da paleta do próprio app, que é o mesmo sistema das capas
+de caso. **Os onze ambientes são deliberadamente diferentes** — se repetirem,
+a fita lê como banco de imagem:
 
-- `--v2-t-painel` é apelido de `--v2-t-secao`, então os números do funil saíam
-  com os mesmos 88px dos sete títulos. Foram para `--v2-t-dado` (112).
-- a frase de fecho estava em `--v2-t-frase` = `--v2-t-lead`, os mesmos 24px de
-  todo parágrafo. Foi para `--v2-t-movimento` (72).
-- o degrau "larga" nasceu usando `--v2-medida` (809px) e saía mais ESTREITO que
-  o padrão de 18ch (918px), porque 1ch do título dá 51px a 1440.
-- título de 88px em coluna de 620px virava torre de sete linhas. O tamanho
-  agora sobe com a coluna: 40 / 72 / 88, todos tokens que já existiam.
+| Peça | Ambiente | Aparelho |
+|---|---|---|
+| Quanto Cobro | acrílico preto + neon menta | 2 celulares |
+| Isabella Pires | ateliê claro, madeira e plantas | monitor |
+| Kitamo | marinho + "KITAMO" em contorno | celular |
+| Worklife | metal perfurado + luz dourada | notebook + celular |
+| CT Argel Riboli | couro preto + facho vermelho | celular deitado |
+| Locarmais | apartamento, mesa magenta, chaves | notebook |
+| Deixei Aqui | concreto + faixa ciano de vaga | celular |
+| 4YU MKT | veludo violeta + halo | iPad |
+| Rodapé | ripado verde-musgo + disco terracota | celular |
+| Hub Oderço | alumínio escovado + reflexo azul | tablet |
+| Signamais | escritório em penumbra, persiana | monitor |
 
-**O hero parou de vender prazo.** Dizia "Do objetivo ao protótipo, em dias" e
-listava seis passos numa ordem fixa — o contrário do que a página argumenta.
-Hoje é "Meu processo muda. / O critério não." A orientação que gerou a moldura
-de velocidade foi **revogada** em `docs/superpowers/plans/2026-08-28-home-v2-redesign.md`,
-com o motivo escrito lá para nenhuma sessão futura reintroduzir.
+**Receita para instalar uma capa nova** (a mesma para todas):
 
-**Duas figuras novas**, ambas genéricas por requisito (a versão antiga mostrava
-o Monte seu PC e foi recusada por obrigar o leitor a saber o que era aquilo):
+1. O PNG do gerador chega em `/mnt/d/Downloads`, 1536×1024.
+2. Copiar para `_fontes/mockups/<id>-full.webp`, qualidade 95. Essa pasta fica
+   no git e o build **não** copia para o deploy.
+3. Gerar a capa com **800px de largura**, LANCZOS, qualidade 90, em
+   `volume/assets/projetos/<id>/cover.webp`.
+4. Em `volume/data.jsx`: `cover:` na peça e o id no começo do `PIECE_ORDER`.
 
-- `EsbocoEGrade` — a mesma tela duas vezes, rabiscoframe à mão e protótipo de
-  baixa montado (barra de navegação, campo com cursor, botão no acento). As
-  duas metades saem da MESMA lista de peças, com o mesmo x/y/w/h.
-- `EixoDoRisco` — a cunha que engrossa da esquerda para a direita.
+**Por que 800px e não os 1536 originais.** A capa é exibida a 380px. Com 1536, o
+navegador reduz 4×, e durante a animação da fita o Chrome baixa a qualidade do
+filtro para segurar o quadro — o resultado era capa serrilhada com a fita
+rodando, que foi a queixa. Em 800px a redução cai para 2× e o serrilhado some.
 
-Os originais nunca foram commitados: procurei em todo o histórico, por seis
-grafias. Morreram na mesma sessão que perdeu o CSS.
+**O que faz um prompt funcionar** (aprendido nas onze): cena horizontal
+1536×1024; celular em pé ou inclinado, **nunca deitado de lado**, ocupando ~80%
+da altura; ambiente com textura de verdade (ripado, concreto, couro, veludo,
+metal), nunca gradiente liso; no máximo duas cores tiradas do app; e um bloco
+explícito mandando remover marcas d'água e **não redesenhar a tela**. Variar o
+ângulo entre as peças, senão o conjunto ganha cara de IA.
+
+### O selo de status
+
+Chapa de vidro no alto do card, acesa o tempo todo (não depende de hover). "No
+ar" quando a peça tem destino publicado, "Em breve" quando não tem. O ponto é o
+**accent vermelho do site**, e não um verde de "online" que o portfólio não tem
+em lugar nenhum: luz vermelha é a convenção de no ar, e já é a cor da casa. Ele
+respira em 2,4s, e o pulso some em `prefers-reduced-motion` — a cor continua
+informando. Lê de `pieceStatus()`, em `volume/data.jsx`.
+
+### A fita alterna celular e tela grande
+
+Cinco capas de app entraram juntas e cinco celulares seguidos fazem o visitante
+concluir "ele faz app" antes de chegar no primeiro site. `pieceProjects()` zipa
+duas filas, mantendo a ordem do `PIECE_ORDER` dentro de cada uma.
+
+**O zip roda depois do filtro de capa**, e essa é a parte que erra se for
+esquecida: a fita descarta peça sem foto, então alternar antes intercala
+fantasmas e os celulares se colam de novo.
+
+### Botões da fita
+
+- O filete em mono virou `Pill secundario escuro` — o mesmo botão da hero. O
+  card cresceu de 340×212 para **380×237**, mesma proporção, porque a pílula
+  ocupa 34px de chapa onde antes havia uma linha de texto.
+- `Pill` ganhou `inerte` (vira `<span>`, sem seta) e `is-sem-seta` (esconde o
+  `dot`, que sem o avião fica um círculo vazio na frente do rótulo).
+- **Peça com dois destinos**: `links.prod` mais `pieceDestinoExtra()`. Só o
+  Signamais usa — o protótipo é o principal e o sistema oficial entra em
+  segundo plano, porque exige login e não saiu igual ao proposto.
+- `destino: "proto"` finalmente é **lido**: link de Vercel pode ser produto no
+  ar ou protótipo hospedado, e chamar protótipo de "Ver no ar" é a mentira que
+  o volume já recusou no Rodapé. Muda Signamais, Worklife e Traxium.
+
+### As abas do case voltaram a rolar
+
+O trilho de `Abas` (`site/Case.jsx`) mede 2.688px contra 925px de caixa nos
+cases longos, ou seja **sempre** precisa rolar — e não rolava, nem com Shift nem
+com o deslize lateral do trackpad. O `data-lenis-prevent` que o `motion.js`
+espalha impede o Lenis de sequestrar, e ainda assim o scroll nativo horizontal
+não acontecia.
+
+A rolagem passa a ser feita à mão, num listener `wheel` não passivo. Três
+cuidados que quebram em silêncio se removidos: `passive: false`, senão
+`preventDefault` é ignorado; só intercepta quando a roda **andou** alguma coisa,
+para o scroll voltar a ser da página na ponta; e roda vertical sem Shift nunca é
+roubada.
+
+### Traxium fora de produção
+
+Não bastava não ter capa. `sobre`, `desc` e o link do protótipo viajavam dentro
+do `data.js` servido em produção — a tese inteira do produto e uma URL pública,
+legíveis para quem abrisse o arquivo, mesmo com a peça invisível na fita. **Peça
+escondida não era peça privada.**
+
+Removidos: os dois textos, o link, as três frases em inglês no `i18n.jsx`, e
+`hidden: true`. Sobrou a casca com o id. Conferido em produção: zero ocorrências
+de `traxium-prototipo`, "torre de controle", "EUDR" e "desmatada". O texto
+original está no histórico do git — `git log -p volume/data.jsx`.
+
+O nome "Traxium" e a logo **continuam** em `COMPANIES`, que é a trajetória de
+onde ele trabalhou. Não expõe a ideia, expõe o cliente. Decisão em aberto.
+
+### Checkout Oderço
+
+`hidden: true`. Com o Hub ali do lado, dois cartões da mesma conta seguidos
+faziam a dobra parecer portfólio de um cliente só. Confirmado que não será
+usado.
 
 ---
 
-## AS TAREFAS EM ABERTO
+## Armadilhas que custaram tempo aqui
 
-**1. O avião da home, e ele já foi mexido duas vezes.**
-Estado: a `cortina` em `motion.js` agora só troca a visibilidade com o avião
-fora do quadro — cada trecho apagado é aparado até as duas pontas caírem em
-amostras com `lados !== 0`, e trecho que acontece inteiro dentro da tela deixa
-de ser apagado.
+**`dist/uploads/` é apagado a cada `npm run build`.** Dois arquivos que o
+Gabriel deixou lá foram destruídos por builds de outra sessão. Arte de origem
+vai em `_fontes/`, que nenhum build toca.
 
-Medido a 1440x900, de 60 em 60px: sobram 6 trocas, todas a ≤30px de uma borda
-(x:1398, x:-120, x:-23, x:-188, x:1445, x:1468). As que o Gabriel printou
-(x:1248 e x:541, no meio da tela) sumiram.
+**Ele salva tudo em `/mnt/d/Downloads`** (o `D:\Downloads` do Windows). Quando
+disser "deixei lá", é ali — não em `uploads/`.
 
-**Se ele ainda ver o avião sumir, o próximo passo NÃO é opacidade.** Duas
-tentativas por opacidade já falharam (corte seco, depois rampa de 240px). O
-problema real é o percurso: há trechos que gastam muito arco com pouca altura,
-e `offset-distance` anda em arco enquanto a tabela anda em altura. O conserto
-seria em `rotaDoVoo`, redesenhando esses trechos para saírem pela borda em vez
-de atravessarem o quadro.
+**Outra sessão trabalha neste mesmo clone.** Nesta madrugada ela mexeu em
+`Home.jsx`, `Shell.jsx`, `Case.jsx`, `build.mjs` e no i18n inteiro, ao mesmo
+tempo. Antes de commitar, conferir o diff **por arquivo**: um `git add -A`
+levou quatro sondas de debug (`_dbg.mjs`, `_rota.mjs`, `.porta`) para dentro de
+um commit. O `.gitignore` agora cobre `_*.mjs`, com exceção explícita para
+`_v3.mjs`, que é do projeto.
 
-**2. `site/copy.js:103` ainda diz "Do objetivo ao protótipo clicável em dias".**
-Está VIVA, na dobra 04 da home. É o mesmo jargão que ele mandou parar. Foi
-perguntado duas vezes e não foi respondido — não mexer sem ele confirmar,
-porque é a home.
-
-**3. `volume/data.jsx:948` tem o mesmo jargão, mas é texto morto.**
-`PROCESSO()` deixou de ser renderizado quando o registro saiu do hero. Limpar
-quando for conveniente.
-
-**4. A cunha do risco é a peça de que eu tenho menos certeza.**
-Ele pediu para deixá-la "mais bonita e harmônica" e ela foi refeita com bordas
-em bezier e ponta em arco. Mas ela é a única figura abstrata da página — as
-outras mostram coisa concreta. Se ele reclamar de novo, o caminho é remover, e
-não continuar ajustando.
-
-**5. A sessão que fez isto tudo chegou a ~300k tokens.**
-Foi oferecido handoff duas vezes e ele optou por seguir. Este arquivo serve
-como ponto de partida para uma sessão nova.
+**Playwright não anexa modificadores ao `mouse.wheel`.** Testar Shift+scroll com
+`keyboard.down("Shift")` dá falso negativo; use `dispatchEvent(new WheelEvent(…,
+{ shiftKey: true }))`.
 
 ---
 
-## Decisões que NÃO devem ser relitigadas
+## O que sobrou
 
-1. **A moldura da página.** "Todas as etapas são cortáveis" foi como ele
-   descreveu, mas escrito assim lê como "pulo pesquisa quando aperta", que é a
-   acusação que derruba portfólio de UX. A página diz que o tamanho da pesquisa
-   acompanha o preço de errar, e há um bloco explícito dizendo que nunca é zero.
+**Traxium.** A capa não foi feita e a peça está fora de produção a pedido do
+Gabriel, por conta de dados sensíveis. Quando puder voltar, o texto está no
+histórico e o `hidden` sai.
 
-2. **Prazo não é argumento de venda.** Em lugar nenhum do site. Ver a
-   orientação revogada no plano de 28/08.
+**O i18n está em andamento.** Subiu junto no commit `082022b` a pedido dele,
+para que o disco e o ar batessem. Na home, `?lang=en` ainda devolve a hero em
+português. Isso é da sessão paralela — ver `HANDOFF-I18N-EN.md`.
 
-3. **A cena `sticky` dos dois diamantes** (230vh / 210vh). Quatro tentativas de
-   achar janela boa medindo a figura falharam.
+**A memória do deploy tem uma ponta solta já anotada:** `PROJECTS` aponta a peça
+`portfolio` para `portfolio-volume.vercel.app`, que é a versão antiga. O deploy
+oficial é `gabrielfelix-ux.4yu.com.br`.
 
-4. **Movimento sem paradas.** `curva` é trapézio com rampas suaves. Trapézio e
-   não cúbica: a cúbica tem pico de 1,5x a média no meio do percurso.
-
-5. **Nada de print de produto acabado nesta página.**
-
-6. **Nada específico de empresa nas figuras.** Genérico é requisito.
-
----
-
-Para entrar no assunto: ler `site/ProcessoNarrativa.jsx` do começo. O cabeçalho
-documenta a copy e o ângulo, e cada componente tem o porquê das decisões em
-cima. `site/processo.css` documenta a pauta de ritmo e os quatro defeitos de
-escala.
+**Nada mais pendente.** Working tree limpo, `main` sincronizada com
+`origin/main`, nenhuma das quatro branches tem commit fora da main.

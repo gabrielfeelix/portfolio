@@ -36,6 +36,11 @@ site/posts.gerado.js
 # nao e copiada pelo build, entao o que mora la fica no repo e sai do deploy.
 _fontes/campo/*-parallax.png
 
-# scripts de depuracao temporarios das sessoes (Playwright, sondas de rota)
+# Scripts de depuracao temporarios das sessoes (sondas de Playwright, testes de
+# rota). Eles nascem na raiz, sao usados uma vez e morrem — e ja escaparam para
+# um commit por um `git add -A`.
+# `_v3.mjs` e do projeto, e nao sonda: a excecao existe para o padrao nao
+# engolir ele se o arquivo algum dia sair do indice.
 _*.mjs
+!_v3.mjs
 .porta
