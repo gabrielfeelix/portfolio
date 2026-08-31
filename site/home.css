@@ -1007,8 +1007,20 @@
   display: block;
   width: auto;
   height: auto;
-  max-height: 72px;
-  max-width: 240px;
+  /* 72 virou 96 em 30/08, e a arte foi aparada no mesmo passo.
+
+     O Gabriel viu a marca da Locarmais minúscula na dobra da trajetória, e a
+     causa não era o CSS: `locarmais.png` era um quadrado de 240 com a tinta
+     ocupando 157x164, ou seja 32% do arquivo era respiro. Com `max-height:
+     72px` o arquivo media 72 e a MARCA media 49. O de Oderço tem o problema
+     menor e o mesmo tipo, então os dois foram aparados até a tinta, com 2% de
+     folga, e os originais estão em _fontes/logos/.
+
+     Aparados, os 72px passariam a valer de verdade, o que já resolvia. O
+     limite subiu para 96 porque a chapa tem 115px de altura e sobrava espaço:
+     agora a marca ocupa a chapa em vez de flutuar no meio dela. */
+  max-height: 96px;
+  max-width: 260px;
   object-fit: contain;
   object-position: left center;
 }
