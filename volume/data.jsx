@@ -1375,6 +1375,7 @@ const PROJECTS = [
     desc: "Calcula o valor da hora de quem cobra por hora",
     marca: "/volume/assets/marcas/produto/quantocobro.png",
     sobre: "Todo freelancer trava na mesma pergunta, e não é técnica: quanto custa. A conta usual começa no preço e torce para sobrar. Esta começa no que precisa sobrar e volta até o preço, descontando o tempo que ninguém paga: proposta, reunião, imprevisto, férias. Cada recebimento já separa o imposto pela faixa real, não pela alíquota cheia. Sem login e sem servidor, porque renda alheia não é dado que eu queira guardar.", destino: "loja",
+    cover: "/volume/assets/projetos/quantocobro/cover.webp",
     links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.quantocobro" } },
   { id: "deixeiaqui", title: "Deixei Aqui", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
     desc: "Marca onde o carro ficou e devolve o caminho de volta",
@@ -1448,7 +1449,7 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    fita corre da esquerda para a direita, então o começo é o único lugar que o
    visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
    esse lugar. */
-const PIECE_ORDER = ["argel", "deixeiaqui", "rodape", "signamais", "dropchina", "4yu", "kitamo-app", "remoctrl", "traxium"];
+const PIECE_ORDER = ["quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "4yu", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
