@@ -115,12 +115,30 @@ function sorteia(ch, semente) {
   return null;   // espaço, pontuação, acento: não se mexe
 }
 
-/* Os tempos. O total é curto de propósito: isto acontece na chegada de uma
-   página, e uma página que demora a ficar legível é uma página quebrada, por
-   mais bonito que seja o motivo. */
-const ESCADA = 26;    // atraso de um elemento para o seguinte, de cima para baixo
-const ABERTURA = 150; // quanto cada elemento leva para começar a assentar
-const VARRIDA = 260;  // da primeira letra à última, dentro de um elemento
+/* Os tempos, e eles foram achados por tentativa, entre dois erros conhecidos.
+
+   ERRO 1, ~950ms com cascata larga: "ficou mt estranho". Com quase um segundo
+   e um degrau grande entre elementos, dá tempo de LER o texto embaralhado — e
+   texto embaralhado que se deixa ler não lê como transição, lê como página
+   corrompida. A pessoa passa a duvidar do site em vez de perceber que ele
+   trocou de idioma.
+
+   ERRO 2, ~350ms: "ta tao rapido q n da pra ler nada". No outro extremo o
+   efeito acontece antes de ser percebido, e o custo é o mesmo por outro
+   caminho — se ninguém vê, ele não anuncia coisa nenhuma e o clique volta a
+   parecer um reload seco.
+
+   O ponto entre os dois é ~650ms, e a régua para achá-lo é: tem que dar para
+   ver o MOVIMENTO e não dar para ler o RUÍDO. O degrau entre elementos é
+   pequeno de propósito — o bastante para o efeito ter direção (de cima para
+   baixo) sem virar uma onda atravessando a tela, que era metade do erro 1.
+
+   E vale deixar escrito por que este efeito é pequeno de propósito: o assunto
+   é a TRADUÇÃO. Isto aqui é só a marca de que ela aconteceu. */
+const ESCADA = 10;    // atraso de um elemento para o seguinte, de cima para baixo
+const ABERTURA = 110; // quanto cada elemento leva para começar a assentar
+const VARRIDA = 380;  // da primeira letra à última, dentro de um elemento
+const JITTER = 110;   // o empurrão pseudoaleatório por posição
 const TETO = 4000;    // caracteres, no máximo: acima disso o custo por quadro aparece
 
 /* Quem entra no efeito: o texto que está NA TELA no momento da chegada.
@@ -191,7 +209,7 @@ export function decodeDeChegada() {
          por posição: reto demais, a palavra resolve como uma cortina lateral e
          some a leitura de que são letras se decidindo uma a uma. */
       const desvio = ((c * 2654435761) % 97) / 97;
-      quando[c] = base + ABERTURA + (c / Math.max(1, n - 1)) * VARRIDA + desvio * 90;
+      quando[c] = base + ABERTURA + (c / Math.max(1, n - 1)) * VARRIDA + desvio * JITTER;
     }
     return { ...alvo, quando };
   });
@@ -211,11 +229,13 @@ export function decodeDeChegada() {
       let mexeu = false;
       for (let c = 0; c < fim.length; c++) {
         if (t >= quando[c]) { saida += fim[c]; continue; }
-        /* O glifo é re-sorteado a cada ~2 quadros e não a cada quadro: a 60Hz,
-           trocar todo quadro vira cintilação e some a leitura de que são
-           letras. A semente mistura o índice para as posições não piscarem em
-           uníssono. */
-        const g = sorteia(fim[c], embaralhaSemente((((t / 32) | 0) * 2654435761 + c * 40503) | 0));
+        /* O glifo é re-sorteado a cada ~50ms, e não a cada quadro. A 60Hz,
+           trocar todo quadro vira cintilação branca e some a leitura de que são
+           letras — e num efeito de meio segundo isso pesa mais que num longo:
+           cada posição mostra três ou quatro glifos no total, então cada um
+           precisa durar o bastante para ser lido como letra. A semente mistura
+           o índice para as posições não piscarem em uníssono. */
+        const g = sorteia(fim[c], embaralhaSemente((((t / 50) | 0) * 2654435761 + c * 40503) | 0));
         if (g === null) { saida += fim[c]; continue; }
         saida += g;
         mexeu = true;
