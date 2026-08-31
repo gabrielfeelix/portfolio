@@ -103,6 +103,56 @@ export function Pill({ children, href, onClick, escuro = false, seta = true, ext
   );
 }
 
+/* Troca de idioma.
+
+   Na barra larga fica À ESQUERDA do "Falar comigo", que é onde o Gabriel
+   pediu; no telefone, dentro do menu, porque abaixo de 860px a `.v2-nav-cta`
+   inteira sai da tela e o menu passa a ser a única navegação que existe.
+
+   O rótulo é o idioma de DESTINO, não o atual. "EN" num site em português diz
+   para onde o clique leva; "PT" ligado enquanto o site já está em PT pareceria
+   estado, e estado não se clica.
+
+   Não tem prop `escuro` como o Pill tem, e é de propósito: o Pill precisa de
+   uma porque ele pinta a própria chapa, e chapa não se inverte sozinha. Este
+   aqui é só texto em `color: inherit`, então o `is-escuro` do <header> — e o
+   branco do painel do menu — já chegam nele por herança. Uma prop aqui seria
+   um segundo lugar para a mesma verdade ficar desatualizada.
+
+   `window.toggleLang()` mora em volume/i18n.jsx e faz salvar + recarregar: a
+   troca muta os globais de conteúdo ANTES do primeiro render, então não existe
+   trocar sem reload. O guard é para o caso de o app subir sem o i18n (dev com
+   o script fora de ordem): melhor um clique morto que a página inteira quebrar. */
+export function TrocaIdioma({ aoTrocar, trocar }) {
+  const en = typeof window !== "undefined" && window.LANG === "en";
+  return (
+    <button
+      type="button"
+      className="v2-lang"
+      /* O rótulo visível e o aria-label estão os dois no idioma de destino, e
+         não no idioma da página — sem este `lang`, o leitor de tela soletra
+         "Switch to English" com fonética portuguesa. */
+      lang={en ? "pt-BR" : "en"}
+      aria-label={en ? "Mudar para português" : "Switch to English"}
+      onClick={() => {
+        if (aoTrocar) aoTrocar();
+        /* `trocar` é a travessia com véu e decode, que vem do App. O
+           `toggleLang` cru é a rede de segurança: se um dia este botão for
+           montado fora da árvore que passa a prop, ele ainda troca o idioma —
+           sem efeito, mas funcionando. Botão de navegação que não navega é o
+           pior dos dois defeitos possíveis aqui. */
+        if (trocar) trocar();
+        else if (typeof window.toggleLang === "function") window.toggleLang();
+      }}
+    >
+      <span className="v2-lang-rot">
+        {en ? "PT" : "EN"}
+        <span className="v2-lang-traco" aria-hidden="true" />
+      </span>
+    </button>
+  );
+}
+
 /* Label de seção: quadrado accent mais texto. Abre toda dobra. */
 export function Label({ children }) {
   return (
@@ -162,7 +212,7 @@ function Hamburguer({ aberto, onClick }) {
   );
 }
 
-function Menu({ aberto, fechar, ir, rota }) {
+function Menu({ aberto, fechar, ir, rota, trocarIdioma }) {
   const painel = useRef(null);
   const c = CONTATO();
   /* Deixou de ser só rede social em 30/08, quando o currículo entrou: o menu
@@ -237,6 +287,11 @@ function Menu({ aberto, fechar, ir, rota }) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.16 + LINKS.length * 0.06, duration: 0.38, ease }}
           >
+            {/* Primeira linha do pé, e não a última: a troca de idioma é irmã dos
+                links acima dela, não do carimbo de copyright. `fechar` vem junto
+                porque o toggle recarrega a página — sem ele, o menu ficaria
+                aberto por um quadro sobre a página nova. */}
+            <TrocaIdioma aoTrocar={fechar} trocar={trocarIdioma} />
             <a className="v2-menu-email" href={c.email.href}>{c.email.display}</a>
             <ul className="v2-menu-social">
               {atalhos.map((k) => (
@@ -271,7 +326,7 @@ function linkDaRota(id, rota) {
   return false;
 }
 
-export function Nav({ sobreEscuro, ir, rota }) {
+export function Nav({ sobreEscuro, ir, rota, trocarIdioma }) {
   const [encolhida, setEncolhida] = useState(false);
   const [menu, setMenu] = useState(false);
   const fechar = useCallback(() => setMenu(false), []);
@@ -333,11 +388,12 @@ export function Nav({ sobreEscuro, ir, rota }) {
       </nav>
 
       <div className="v2-nav-cta">
+        <TrocaIdioma trocar={trocarIdioma} />
         <Pill href={CONTATO().whatsapp.href} escuro={sobreEscuro} externo>Falar comigo</Pill>
       </div>
 
       <Hamburguer aberto={menu} onClick={() => setMenu((v) => !v)} />
-      <Menu aberto={menu} fechar={fechar} ir={ir} rota={rota} />
+      <Menu aberto={menu} fechar={fechar} ir={ir} rota={rota} trocarIdioma={trocarIdioma} />
     </header>
   );
 }

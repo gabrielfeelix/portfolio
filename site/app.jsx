@@ -3,7 +3,7 @@
  * React vem do vendor UMD da V1; i18n e data.js publicam o conteúdo em window;
  * este arquivo lê tudo por content.js. Nada de texto é duplicado. */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { chapterById } from "./content.js";
 import { Nav, Rodape } from "./Shell.jsx";
@@ -16,6 +16,7 @@ import Blog from "./Blog.jsx";
 import Post from "./Post.jsx";
 import { porSlug } from "./blog.js";
 import { Cortina, useTravessia } from "./Travessia.jsx";
+import { decodeDeChegada, trocarIdioma } from "./idioma.js";
 import { Cursor } from "./Cursor.jsx";
 
 /* --- roteamento ---
@@ -215,6 +216,20 @@ function App() {
    *
    * Então a barra vira número e o cálculo desconta ela. Recalcula no resize
    * porque a barra some quando a página encolhe. */
+  /* Se esta carga é a chegada de uma troca de idioma, o texto que está na tela
+     nasce embaralhado e se resolve no idioma novo. Toda a conta está em
+     idioma.js; aqui só o gancho.
+
+     Roda numa `useLayoutEffect` e não numa `useEffect` porque a diferença é o
+     efeito inteiro: layout roda ANTES de o navegador pintar, então o primeiro
+     quadro que a pessoa vê já é o embaralhado. Com `useEffect` a página pinta
+     uma vez com o texto final e só então embaralha — ou seja, a pessoa lê a
+     resposta antes da pergunta.
+
+     Sem dependências e sem limpeza: acontece uma vez por carga, e a carga
+     inteira dura menos que o efeito não duraria. */
+  useLayoutEffect(() => { decodeDeChegada(); }, []);
+
   useEffect(() => {
     const mede = () => {
       const barra = window.innerWidth - document.documentElement.clientWidth;
@@ -342,7 +357,7 @@ function App() {
       <div className="v2-shell">
         <Cortina fase={fase} />
         <Cursor />
-        <Nav sobreEscuro={sobreEscuro} ir={ir} rota={rota} />
+        <Nav sobreEscuro={sobreEscuro} ir={ir} rota={rota} trocarIdioma={trocarIdioma} />
         <main>
           {rota.tipo === "home" ? <Home ir={ir} />
             : rota.tipo === "processo" ? <Processo ir={ir} />

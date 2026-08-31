@@ -26,8 +26,8 @@ const DIST = path.join(ROOT, "dist");
  */
 
 // Os dois arquivos de conteúdo, transpilados individualmente (bundle:false)
-// para continuarem scripts clássicos de escopo global. A ORDEM importa no
-// HTML: i18n define LANG e t(), data usa os dois.
+// para continuarem scripts clássicos de escopo global. Esta lista é só o que
+// transpilar; a ordem que importa é a das tags, em buildHtml().
 const CONTEUDO = ["i18n.jsx", "data.jsx"];
 
 /* A limpeza NÃO leva a mídia junto.
@@ -287,14 +287,30 @@ async function inline() {
 async function buildHtml() {
   const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
   const estiloInline = await inline();
-  // A ordem é o contrato: React global, depois i18n e data (que publicam em
-  // window), só então o app, que lê window.CHAPTERS. `defer` preserva a ordem
-  // entre eles e não trava o parser.
+  /* A ordem é o contrato: React global, depois DATA e só então I18N, e por
+     último o app, que lê window.CHAPTERS. `defer` preserva a ordem entre eles
+     e não trava o parser.
+
+     DATA ANTES DE I18N, e isto já foi ao contrário: i18n.jsx declara LANG e
+     t(), então parecia óbvio que ele viesse primeiro. Só que o corpo dele
+     MUTA `CHAPTERS` e `PROJECTS`, que quem declara é data.jsx. Rodando antes,
+     ele estourava `CHAPTERS is not defined` na primeira linha do bloco EN e
+     morria ali — em português ninguém via, porque o bloco inteiro está dentro
+     de um `if (LANG === "en")` que nunca abria. Em inglês, NENHUM espelho era
+     aplicado: o site carregava em PT com <html lang="en">, e nem `window.LANG`
+     chegava a ser publicado, porque o Object.assign do fim do arquivo ficava
+     depois da exceção.
+
+     Invertido não quebra nada em data.jsx: os três `t()` e o único `LANG` de
+     lá estão todos dentro de corpo de função, resolvidos na hora da chamada e
+     não na hora do load. E os dois continuam sendo scripts clássicos, que
+     dividem o mesmo escopo léxico global — é por isso que i18n.jsx alcança o
+     `const CHAPTERS` do outro arquivo por referência nua. */
   const tags = [
     `<script defer src="/vendor/react.production.min.js"></script>`,
     `<script defer src="/vendor/react-dom.production.min.js"></script>`,
-    `<script defer src="/volume/i18n.js"></script>`,
     `<script defer src="/volume/data.js"></script>`,
+    `<script defer src="/volume/i18n.js"></script>`,
     `<script defer src="/app.js"></script>`,
   ].join("\n");
   const html = tpl

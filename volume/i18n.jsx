@@ -1,6 +1,8 @@
 /* =====================================================================
    VOLUME — i18n.jsx
-   Loaded right after data.jsx. Detects the language (localStorage
+   Loaded right AFTER data.jsx, and the order is load-bearing: the EN block
+   below mutates CHAPTERS and PROJECTS, which data.jsx is the one to declare.
+   Detects the language (localStorage
    vol-lang, default pt), exposes LANG + t(pt, en), and, when EN, mutates
    the content globals IN PLACE (they are lexical consts shared across the
    classic scripts, so window-swapping wouldn't reach bare references).

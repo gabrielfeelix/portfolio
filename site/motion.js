@@ -16,12 +16,18 @@ import {
 } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Lenis from "lenis";
+import { ehChegadaDeIdioma } from "./idioma.js";
 
 /* 1. spring
    Default de tudo que responde a hover, clique ou drag.
 
    Fase 6: damping caiu de 70 para 60. A referência usa os dois; 60 tem um
    retorno a mais, que é o que se sente no botão e some em 70. */
+/* O conjunto vazio de props de animação. Devolvido pelas primitivas de entrada
+   quando esta carga é a chegada de uma troca de idioma — ver idioma.js. É uma
+   função e não um objeto porque as primitivas são chamadas como `sobe(i)`. */
+const PARADO = () => ({});
+
 export const spring = { type: "spring", stiffness: 200, damping: 60, mass: 1 };
 
 /* 2. ease
@@ -106,6 +112,7 @@ export function subir(i = 0) {
 /* Versão obediente ao sistema: em reduced-motion sobra só a opacidade. */
 export function useSubir() {
   const quieto = useReducedMotion();
+  if (ehChegadaDeIdioma()) return PARADO;
   return (i = 0) =>
     quieto
       ? {
@@ -120,6 +127,7 @@ export function useSubir() {
 /* Versão obediente ao sistema: em reduced-motion sobra só a opacidade. */
 export function useRise() {
   const quieto = useReducedMotion();
+  if (ehChegadaDeIdioma()) return PARADO;
   return (i = 0) =>
     quieto
       ? {
@@ -136,6 +144,12 @@ export function useRise() {
    usada em texto corrido vira ruído. */
 export function useMaskLine() {
   const quieto = useReducedMotion();
+  /* Igual às outras primitivas de entrada: numa chegada de troca de idioma o
+     herói não se revela de novo. Aqui isso importa MAIS que nas outras, e um
+     print mostrou por quê: o clip-path abria a headline em 500ms enquanto o
+     decode já tinha assentado nela, então o efeito inteiro rodava dentro de uma
+     faixa fechada e o que se via era um H1 vazio. */
+  if (ehChegadaDeIdioma()) return PARADO;
   return (i = 0) =>
     quieto
       ? {
@@ -379,6 +393,18 @@ function desloca(i) {
 
 export function useEntrada() {
   const quieto = useReducedMotion();
+
+  /* Numa chegada de troca de idioma a página não entra: ela já estava aberta,
+     e quem se mexe é só o texto, decodificando. A conta inteira está no
+     comentário de `ehChegadaDeIdioma`, em idioma.js.
+
+     `PARADO` é o objeto vazio: sem `initial` e sem `animate`, o motion renderiza
+     o elemento como ele é. Um `animate` para o estado final ainda custaria um
+     quadro de transição, e um quadro é exatamente o que faz o decode começar
+     atrás de um fade. */
+  if (ehChegadaDeIdioma()) {
+    return { sobe: PARADO, linha: PARADO, foto: PARADO };
+  }
 
   /* Em reduced-motion sobra um fade curto: a pessoa pediu para nada se MOVER,
      e sem nenhuma marca a troca de rota volta a ser o corte seco que a

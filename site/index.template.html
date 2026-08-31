@@ -82,8 +82,9 @@
 
 <div id="v2-root"></div>
 
-<!-- Ordem obrigatória: React global, depois i18n e data (que publicam em
-     window), depois o app, que lê window.CHAPTERS. -->
+<!-- Ordem obrigatória: React global, depois data e i18n NESTA ordem (i18n
+     muta os globais que data declara), depois o app, que lê window.CHAPTERS.
+     A conta inteira está no comentário de buildHtml(), em build.mjs. -->
 <!--SCRIPTS-->
 <!--ANALYTICS-->
 </body>
