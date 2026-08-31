@@ -52,7 +52,13 @@ function escreverURL({ tag, q }) {
   if (q) p.set("q", q);
   const busca = p.toString();
   try {
-    window.history.replaceState(null, "", "/blog" + (busca ? `?${busca}` : ""));
+    /* `url("/blog")` e não "/blog" cru: esta linha reescreve o endereço a cada
+       letra digitada na busca, então um caminho fixo aqui APAGAVA o prefixo de
+       idioma — clicar em Blog dentro da versão inglesa pousava em /en/blog e
+       um quadro depois voltava para /blog, em português. Foi o único lugar do
+       site que desfazia uma navegação já feita, e por isso o mais difícil de
+       ver: a URL certa chegava a existir. */
+    window.history.replaceState(null, "", url("/blog") + (busca ? `?${busca}` : ""));
   } catch (e) { /* file:// e afins; a tela continua certa, só a URL não acompanha */ }
 }
 
