@@ -215,8 +215,40 @@ async function bundleAnalytics() {
   });
 }
 
+/* O measurement ID fica escrito aqui, e não numa env, de propósito: ele é
+   público (vai no HTML de toda página) e é fixo. Numa env, esquecer de
+   definir na Vercel derrubaria a medição em silêncio, e a falta só apareceria
+   semanas depois num relatório vazio. O Clarity fica em env porque o ID dele
+   ainda pode mudar de projeto. */
+const GA4_ID = "G-5VPYQ2C9RT"; // "Portfólio Gabriel Felix", properties/552169302
+
 function analyticsSnippet() {
   const vercel = `\n<script defer src="/analytics.js"></script>`;
+
+  /* Propriedade GA4 só do portfólio, separada da "Propriedade - 4YU": é a
+     regra do playbook do 4yu, uma propriedade por produto. Com o portfólio
+     despejando junto com os apps, "usuários ativos" viraria um número que não
+     responde nada — e dado misturado não se separa depois.
+
+     `send_page_view: false` não é preferência. O site é uma SPA, e o
+     page_view automático do GA4 dispara no history change, antes de o React
+     atualizar `document.title`: cada página entraria no relatório com o
+     título da anterior. O disparo automático foi desligado também do lado do
+     fluxo de dados (Enhanced Measurement → page changes), e quem manda o
+     evento é o efeito de rota de site/app.jsx, depois do título pronto.
+
+     Este bloco sai antes dos `defer` de <!--SCRIPTS--> na execução, mesmo
+     estando depois deles no HTML: script inline roda durante o parse e defer
+     só roda no fim. Por isso `window.gtag` já existe quando o app monta. */
+  const ga4 = `
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA4_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "${GA4_ID}", { send_page_view: false });
+</script>`;
+
   const id = process.env.CLARITY_ID;
   const clarity = id
     ? `
@@ -226,7 +258,7 @@ function analyticsSnippet() {
   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${id}");
 </script>`
     : "<!-- Clarity disabled: set CLARITY_ID env to enable -->";
-  return vercel + "\n" + clarity;
+  return vercel + "\n" + ga4 + "\n" + clarity;
 }
 
 /* ------------------------------ o site ------------------------------ */

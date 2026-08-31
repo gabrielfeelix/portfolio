@@ -383,6 +383,24 @@ function App() {
       por('meta[property="og:image"]', "content", imagem);
       por('meta[name="twitter:image"]', "content", imagem);
     }
+
+    /* O page_view sai DAQUI, e no fim do efeito, por um motivo de ordem: o
+       automático do GA4 dispara no history change, que acontece antes de o
+       React chegar neste ponto — cada página seria contada com o título da
+       anterior. Por isso ele está desligado no fluxo de dados (Enhanced
+       Measurement → page changes) e o evento é mandado à mão, depois de
+       `document.title` e do canônico já estarem certos.
+
+       `page_location` usa `url`, o canônico, e não `location.href`: o href
+       traz utm e outros parâmetros de campanha, que o GA4 já lê por conta
+       própria e que aqui só fragmentariam o relatório de páginas — a mesma
+       página apareceria em várias linhas. */
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "page_view", {
+        page_title: titulo,
+        page_location: url,
+      });
+    }
   }, [rota]);
 
   if (erro) {
