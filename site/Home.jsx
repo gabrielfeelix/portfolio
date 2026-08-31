@@ -34,7 +34,7 @@ import { Pill } from "./Shell.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Campo, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
-  casos, pieceProjects, pieceCover, pieceDestino,
+  casos, pieceProjects, pieceCover, pieceDestino, pieceStatus,
 } from "./content.js";
 import { HERO, DECLARACAO, METODO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
 import { FERRAMENTAS } from "./ferramentas.js";
@@ -738,6 +738,7 @@ function Pecas() {
 
   const item = (p, dobra) => {
     const destino = pieceDestino(p);
+    const status = pieceStatus(p);
     return (
       <div
         className="v2-fita-item"
@@ -745,6 +746,16 @@ function Pecas() {
         aria-hidden={dobra ? "true" : undefined}
       >
         <img src={pieceCover(p)} alt={dobra ? "" : p.title} loading="lazy" decoding="async" draggable="false" />
+        {/* O selo fica FORA do foco: ele e a unica coisa do card que precisa
+            ser lida sem passar o ponteiro. Numa fita de dez peças, saber quais
+            estao no ar e a informacao que separa "portfolio" de "vitrine", e
+            ela nao pode depender de hover. */}
+        {status ? (
+          <span className="v2-fita-selo" data-ar={status.ar ? "1" : undefined}>
+            <span className="v2-fita-selo-ponto" aria-hidden="true" />
+            {status.rotulo}
+          </span>
+        ) : null}
         <div className="v2-fita-foco">
           <h3 className="v2-fita-tit">{p.title}</h3>
           {p.desc ? <p className="v2-fita-desc">{p.desc}</p> : null}
@@ -767,16 +778,11 @@ function Pecas() {
             >
               {destino.rotulo}
             </Pill>
-          ) : p.embreve ? (
-            /* Peça sem destino normalmente sai sem botão nenhum. "Em breve" é
-               a exceção declarada no dado: a peça está pronta o bastante para
-               mostrar a capa, e ainda não tem para onde levar. `inerte` deixa
-               a pílula virar <span> — botão que não leva a lugar nenhum é pior
-               que a ausência dele. */
-            <Pill secundario escuro inerte aria-hidden={dobra ? "true" : undefined}>
-              Em breve
-            </Pill>
           ) : null}
+          {/* "Em breve" nao tem botao: quem diz isso agora e o selo no topo do
+              card, e ele fica visivel o tempo todo. Repetir a mesma palavra
+              numa pilula ao passar o ponteiro era dizer duas vezes a mesma
+              coisa no mesmo cartao. */}
         </div>
       </div>
     );

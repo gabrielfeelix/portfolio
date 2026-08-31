@@ -935,6 +935,60 @@
   overflow: hidden;
 }
 
+/* O selo de status, no alto do card e sempre aceso.
+ *
+ * Ele e chapa de vidro sobre a foto: fundo escuro translucido com desfoque,
+ * porque as capas vao de concreto claro a couro preto e um selo de cor fixa
+ * sumiria em metade delas. O desfoque garante contraste em qualquer uma.
+ *
+ * O ponto vermelho e o accent do site, e nao um verde de "online" que o
+ * portfolio nao tem em lugar nenhum: luz vermelha E a convencao de no ar,
+ * herdada do estudio, e ela ja e a cor da casa. "Em breve" perde o vermelho e
+ * fica com um ponto apagado — a diferenca entre os dois estados se le pela
+ * COR do ponto antes de se ler pela palavra. */
+.v2-fita-selo {
+  position: absolute;
+  top: var(--v2-s2);
+  left: var(--v2-s2);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px 5px 9px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: var(--v2-r-pill);
+  background: rgba(11, 11, 12, .52);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .88);
+  pointer-events: none;
+}
+
+.v2-fita-selo-ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .38);
+}
+
+/* No ar: o ponto acende e respira. O halo e sombra, nao borda, para o circulo
+   nao engordar no meio da animacao. */
+.v2-fita-selo[data-ar="1"] .v2-fita-selo-ponto {
+  background: var(--v2-accent);
+  box-shadow: 0 0 0 0 rgba(228, 35, 27, .55);
+  animation: v2-selo-pulsa 2.4s ease-out infinite;
+}
+
+@keyframes v2-selo-pulsa {
+  0%   { box-shadow: 0 0 0 0 rgba(228, 35, 27, .55); }
+  70%  { box-shadow: 0 0 0 6px rgba(228, 35, 27, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(228, 35, 27, 0); }
+}
+
 /* A pilula dentro do card. Ela ja vem pronta do kit; aqui so entra o respiro
    que separa o botao do resumo, porque o `gap` de 6px do foco e medida de
    linha de texto e ficaria apertado debaixo de uma chapa. */
@@ -986,6 +1040,7 @@
 @media (prefers-reduced-motion: reduce) {
   .v2-fita-trilho { animation: none; }
   .v2-fita { overflow-x: auto; }
+  .v2-fita-selo[data-ar="1"] .v2-fita-selo-ponto { animation: none; }
   .v2-fita-item,
   .v2-fita-foco,
   .v2-fita-foco .v2-pill,
@@ -1464,11 +1519,17 @@
 /* O efeito do porto: a foto cresce ao longo do curso da dobra e cruza por cima
    do nome. O nome fica atras, em display grande; a foto e a camada da frente.
    `overflow: hidden` na janela para a foto nao vazar quando esta em 0.55. */
+/* 86vh centralizava a figura numa caixa bem mais alta que ela: a 460px de
+   largura o recorte tem 613px de altura, entao numa janela de 900 sobravam
+   ~80px de folga em cima e outros 80 embaixo, e essa folga de baixo somava
+   com a margem do texto. A frase de assinatura caia longe demais da figura.
+   72vh mantem o curso de rolagem que o efeito do porto usa e devolve a frase
+   para perto de quem ela descreve. */
 .v2-sobre {
   position: relative;
   display: grid;
   place-items: center;
-  height: 86vh;
+  height: 72vh;
   overflow: hidden;
 }
 .v2-sobre-nome {
@@ -1495,9 +1556,13 @@
 }
 .v2-sobre-foto img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
+/* s5 e nao s6: somada a folga que a caixa da figura ja deixa embaixo, a
+   margem de 104px afastava a frase do desenho a ponto de os dois lerem como
+   dobras diferentes. Sao a mesma coisa — a figura e quem assina, a frase diz
+   o que ele faz. */
 .v2-sobre-texto {
   max-width: var(--v2-medida);
-  margin: var(--v2-s6) auto 0;
+  margin: var(--v2-s5) auto 0;
   padding: 0 var(--v2-gutter);
   text-align: center;
 }
@@ -1535,7 +1600,9 @@
 }
 
 @media (max-width: 900px) {
-  .v2-sobre { height: 60vh; }
+  /* mesma razao do desktop: a 68vw a figura tem ~354px numa tela de 390, e
+     60vh de caixa deixavam ~150px de folga sobrando antes da frase. */
+  .v2-sobre { height: 50vh; }
   /* 62vw cobria o nome inteiro e sobrava G...L */
   /* 44vw davam 172px numa tela de 390: a foto lia como miniatura ao lado de um
      nome de 64px, e a dobra que devia ser a assinatura da home era a mais

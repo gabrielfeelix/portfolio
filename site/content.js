@@ -36,6 +36,7 @@ export const projTag   = (p) => (window.projTag ? window.projTag(p) : "");
 export const pieceLink = (p) => (window.pieceLink ? window.pieceLink(p) : null);
 export const pieceCover = (p) => (window.pieceCover ? window.pieceCover(p) : null);
 export const pieceDestino = (p) => (window.pieceDestino ? window.pieceDestino(p) : null);
+export const pieceStatus = (p) => (window.pieceStatus ? window.pieceStatus(p) : null);
 
 export function chapterById(id) {
   return CHAPTERS().find((c) => c.id === id) || null;

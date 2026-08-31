@@ -1307,7 +1307,11 @@ const PROJECTS = [
     links: { vercel: "https://gabrielfelix-ux.4yu.com.br/", figma: null } },
 
   /* ---- outras peças: entram no índice e linkam pro próprio trabalho -- */
-  { id: "oderco-checkout", shots: ["/volume/assets/projetos/checkout/s1.webp"],
+  /* Fora da fita a pedido do Gabriel em 30/08: a vitrine ja carrega Hub e
+     Checkout do mesmo cliente, e dois cartoes da Oderco seguidos faziam a
+     dobra parecer portfolio de uma conta so. `hidden` tira da fita e mantem
+     a peca no dado. */
+  { id: "oderco-checkout", hidden: true, shots: ["/volume/assets/projetos/checkout/s1.webp"],
     title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,
     desc: "Checkout B2B por nota fiscal, em etapas com revisão",
     marca: "/volume/assets/marcas/mono/oderco.png",
@@ -1433,6 +1437,17 @@ function pieceDestino(p) {
   return null;
 }
 
+/* O selo do card: "No ar" quando a peca tem destino publicado, "Em breve"
+   quando ela ainda nao tem. Peca sem destino E sem `embreve` nao ganha selo —
+   selo em branco seria ruido.
+   Fica aqui, e nao na Fita, porque a promessa e do dado: quem decide se algo
+   esta no ar e o link, nao o componente. */
+function pieceStatus(p) {
+  if (pieceDestino(p)) return { rotulo: "No ar", ar: true };
+  if (p.embreve) return { rotulo: "Em breve", ar: false };
+  return null;
+}
+
 /* tag shown on a project cover: chapters carry their CAP number */
 function projTag(p) {
   const piece = LANG === "en" ? "PIECE" : "PEÇA";   // LANG: i18n.jsx, resolved at call time
@@ -1458,7 +1473,33 @@ function pieceProjects() {
      aparece é ter imagem, não ter para onde apontar. */
   const lista = PROJECTS.filter((p) => !p.hidden && !isCase(p));
   const rank = (p) => { const i = PIECE_ORDER.indexOf(p.id); return i < 0 ? PIECE_ORDER.length : i; };
-  return lista.slice().sort((a, b) => rank(a) - rank(b) || lista.indexOf(a) - lista.indexOf(b));
+  const ordenada = lista.slice().sort((a, b) => rank(a) - rank(b) || lista.indexOf(a) - lista.indexOf(b));
+
+  /* Alternancia celular / tela grande, pedida em 30/08.
+     As cinco capas de app entraram juntas no topo, e cinco fotos de celular
+     seguidas liam como uma serie so — o visitante conclui "ele faz app" antes
+     de chegar no primeiro site. Zipando as duas filas, cada mockup de celular
+     e seguido por um de monitor, e a fita conta as duas coisas ao mesmo tempo.
+     A ordem DENTRO de cada fila continua sendo a do PIECE_ORDER, entao a regra
+     de "capa nova abre a fita" sobrevive: ela abre a fila dela.
+
+     O zip roda SO sobre quem tem capa, e essa e a parte que erra se for
+     esquecida: a fita descarta peca sem foto, entao alternar antes de filtrar
+     intercala fantasmas. Na primeira tentativa a ordem saiu Quanto Cobro,
+     Signamais, Kitamo, Argel, Deixei Aqui, Rodape — as pecas de tela que
+     deveriam separar os celulares nao tinham capa e sumiam no filtro
+     seguinte, deixando quatro celulares colados. */
+  const temCapa = (p) => !!pieceCover(p);
+  const comCapa = ordenada.filter(temCapa);
+  const semCapa = ordenada.filter((p) => !temCapa(p));
+  const celular = comCapa.filter((p) => p.cat === "mobile");
+  const tela = comCapa.filter((p) => p.cat !== "mobile");
+  const zip = [];
+  for (let i = 0; i < Math.max(celular.length, tela.length); i++) {
+    if (celular[i]) zip.push(celular[i]);
+    if (tela[i]) zip.push(tela[i]);
+  }
+  return zip.concat(semCapa);
 }
 function projDescriptor(p) {
   if (!p.chapterId) return "";
@@ -1735,4 +1776,4 @@ function CompanyLogo({ company, kind = "qsc", dark = false }) {
   return <span className={`${kind}-logo-mark`}>{company.name}</span>;
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, pieceCover, pieceDestino, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, pieceCover, pieceDestino, pieceStatus, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
