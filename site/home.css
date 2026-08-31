@@ -801,6 +801,15 @@
   overflow: hidden;
 }
 
+/* A cabeca da dobra (cromo + titulo) e um item de grid com `margin: 0 auto`
+   vindo do .v2-wrap, e margem auto em grid CANCELA o stretch: o item passa a
+   ter largura de conteudo e fica centrado. Com so a linha de cromo isso mal
+   aparecia; com um titulo de 88px em cima, a dobra inteira virava a unica
+   centrada da pagina, e a largura do titulo passava a depender de quanto o
+   cromo mede — texto maior quebraria em lugar aleatorio. `width: 100%` devolve
+   o stretch e a cabeca volta a comecar na goteira, como toda outra dobra. */
+.v2-fita-cabeca { width: 100%; }
+
 /* O padding e o espaco que a peca ampliada ocupa: `overflow: hidden` segura o
    laco na horizontal e cortaria os 10px que o scale acrescenta em cima e
    embaixo. */
@@ -823,15 +832,19 @@
 
 .v2-fita-grupo { display: flex; gap: var(--v2-s2); }
 
-/* 340x212 contra os 280x176 de antes: o Gabriel pediu "um pouquinho mais
-   altos", e o raio passa a ser o mesmo dos cards de caso (--v2-cartao-raio),
-   para as duas dobras lerem como o mesmo kit. */
+/* 380x237, mesma proporcao dos 340x212 anteriores (1.604). O card cresceu
+   11% em 30/08 porque a acao virou pilula: o filete em mono ocupava a altura
+   de uma linha de texto e a pilula ocupa 34px de chapa, entao titulo, resumo
+   de duas linhas e botao nao cabiam mais nos 212. Crescer proporcionalmente
+   preserva o corte das capas, que sao todas 3:2.
+   O raio e o mesmo dos cards de caso (--v2-cartao-raio), para as duas dobras
+   lerem como o mesmo kit. */
 .v2-fita-item {
   position: relative;
   display: block;
   flex: none;
-  width: 340px;
-  height: 212px;
+  width: 380px;
+  height: 237px;
   border-radius: var(--v2-cartao-raio);
   overflow: hidden;
   background: var(--v2-card);
@@ -922,29 +935,27 @@
   overflow: hidden;
 }
 
-/* Acao em filete, nao em botao cheio: e uma peca extra, e botao solido aqui
-   pesaria mais que o CTA dos casos, que e o primario da dobra. */
-/* O alvo de toque tinha 78 por 22px, e 22 é metade do mínimo confortável.
-   Num dedo isso é um link que se erra. A área cresce por padding e por
-   `min-height`, sem mexer no tamanho da letra: o sublinhado continua colado no
-   texto, e o que aumenta é só o que o dedo alcança. */
-.v2-fita-acao {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  margin-top: 0;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  color: #FFF;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, .55);
-  padding-bottom: 2px;
-  transition: border-color .2s ease;
-}
+/* A pilula dentro do card. Ela ja vem pronta do kit; aqui so entra o respiro
+   que separa o botao do resumo, porque o `gap` de 6px do foco e medida de
+   linha de texto e ficaria apertado debaixo de uma chapa. */
+.v2-fita-foco .v2-pill-wrap { margin-top: 4px; }
 
-.v2-fita-acao:hover { border-bottom-color: #FFF; }
+/* "Em breve" nao e clique: a pilula inerte perde o ponteiro e baixa o
+   contorno, para ler como estado e nao como acao disponivel.
+   O `dot` sai junto com a seta: sem ela ele fica um circulo vazio na frente
+   do rotulo, que le como icone faltando. Saindo o dot, o padding da esquerda
+   iguala o da direita e a pilula volta a ser simetrica. */
+.v2-pill-wrap.is-inerte .v2-pill {
+  cursor: default;
+  padding-left: calc(var(--v2-s3) - 1px);
+}
+.v2-pill-wrap.is-inerte .v2-pill-dot { display: none; }
+.v2-pill-wrap.is-inerte.is-secundario.is-escuro .v2-pill {
+  border-color: rgba(255, 255, 255, .22);
+}
+.v2-pill-wrap.is-inerte.is-secundario.is-escuro .v2-pill-rot {
+  color: rgba(255, 255, 255, .62);
+}
 
 /* -50% e exatamente uma copia do grupo: o laco fecha sem costura. */
 @keyframes v2-fita-anda {
@@ -968,7 +979,7 @@
    uma fila parada — que foi a leitura do Gabriel, "no mobile ficam fixos".
    A 26s a peca atravessa a tela em tempo de ser notada. */
 @media (max-width: 620px) {
-  .v2-fita-item { width: 268px; height: 168px; }
+  .v2-fita-item { width: 300px; height: 187px; }
   .v2-fita-trilho { animation-duration: 26s; }
 }
 
@@ -977,7 +988,8 @@
   .v2-fita { overflow-x: auto; }
   .v2-fita-item,
   .v2-fita-foco,
-  .v2-fita-acao { transition: none; }
+  .v2-fita-foco .v2-pill,
+  .v2-fita-foco .v2-pill-dot { transition: none; }
   /* a camada ainda acende; o que sai e o movimento */
   .v2-fita-item:hover,
   .v2-fita-item:focus-within { transform: none; }

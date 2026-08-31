@@ -61,8 +61,15 @@ function Aviao() {
    troca de seta no mesmo tempo. O rótulo vira branco quando o filler passa
    por baixo dele: branco sobre #E4231B mede 4.51:1, que passa AA em texto
    normal. Se o accent mudar, esse par volta para medição. */
-export function Pill({ children, href, onClick, escuro = false, seta = true, externo = false, secundario = false }) {
-  const Tag = href ? "a" : "button";
+/* `inerte` é o botão que não leva a lugar nenhum: vira <span>, perde a seta e
+   perde o hover. Ele existe para a peça que já tem capa e ainda não tem
+   destino ("Em breve"), que antes era um rótulo solto em mono — duas
+   gramáticas para a mesma vaga dentro do card. Como <span>, ele não entra na
+   ordem de tabulação e não promete clique.
+   `resto` passa adiante o que a fita precisa e a pílula não tem por que
+   conhecer: `tabIndex` e `aria-label` da cópia do laço. */
+export function Pill({ children, href, onClick, escuro = false, seta = true, externo = false, secundario = false, inerte = false, ...resto }) {
+  const Tag = inerte ? "span" : href ? "a" : "button";
   // Link para fora abre em aba nova, e `noopener` impede que a página de
   // destino alcance esta por window.opener.
   const fora = href && externo
@@ -70,14 +77,21 @@ export function Pill({ children, href, onClick, escuro = false, seta = true, ext
     : null;
   return (
     <motion.div
-      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "") + (secundario ? " is-secundario" : "")}
-      whileTap={{ scale: 0.98 }}
+      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "") + (secundario ? " is-secundario" : "") + (inerte ? " is-inerte" : "")}
+      whileTap={inerte ? undefined : { scale: 0.98 }}
       transition={spring}
     >
-      <Tag className="v2-pill" href={href} onClick={onClick} type={href ? undefined : "button"} {...fora}>
+      <Tag
+        className="v2-pill"
+        href={inerte ? undefined : href}
+        onClick={inerte ? undefined : onClick}
+        type={!inerte && !href ? "button" : undefined}
+        {...(inerte ? null : fora)}
+        {...resto}
+      >
         <span className="v2-pill-filler" aria-hidden="true" />
         <span className="v2-pill-dot" aria-hidden="true">
-          {seta ? (
+          {seta && !inerte ? (
             <span className="v2-pill-janela">
               <span className="v2-pill-fita"><Aviao /><Aviao /></span>
             </span>

@@ -748,12 +748,17 @@ function Pecas() {
         <div className="v2-fita-foco">
           <h3 className="v2-fita-tit">{p.title}</h3>
           {p.desc ? <p className="v2-fita-desc">{p.desc}</p> : null}
+          {/* A ação era um filete em mono, e era a única peça do site que
+              inventava um botão só para si: a mesma vaga no card de caso já é
+              servida pela pílula. Trocada pela `Pill secundario escuro`, que é
+              literalmente o botão de contorno branco da hero — um botão a
+              menos para manter, e o card passa a ler como o resto do kit. */}
           {destino ? (
-            <a
-              className="v2-fita-acao"
+            <Pill
+              secundario
+              escuro
               href={destino.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              externo
               /* a cópia do laço não pode receber Tab: sem isto cada peça
                  apareceria duas vezes na lista de links */
               tabIndex={dobra ? -1 : undefined}
@@ -761,7 +766,16 @@ function Pecas() {
               aria-label={`${destino.rotulo}: ${p.title}, abre em nova aba`}
             >
               {destino.rotulo}
-            </a>
+            </Pill>
+          ) : p.embreve ? (
+            /* Peça sem destino normalmente sai sem botão nenhum. "Em breve" é
+               a exceção declarada no dado: a peça está pronta o bastante para
+               mostrar a capa, e ainda não tem para onde levar. `inerte` deixa
+               a pílula virar <span> — botão que não leva a lugar nenhum é pior
+               que a ausência dele. */
+            <Pill secundario escuro inerte aria-hidden={dobra ? "true" : undefined}>
+              Em breve
+            </Pill>
           ) : null}
         </div>
       </div>
@@ -769,8 +783,17 @@ function Pecas() {
   };
 
   return (
-    <section className="v2-fita-secao" id="pecas" aria-label="Outras peças">
-      <div className="v2-wrap"><Cromo n="07" nome="Fora da estante" carimbo="©26" /></div>
+    <section className="v2-fita-secao" id="pecas" aria-label="Outros projetos">
+      {/* A dobra abria com o nome dela na mono do cromo, e so: "Fora da
+          estante" tinha o tamanho de uma legenda de 11px sustentando uma
+          secao inteira. Toda outra dobra da home abre com cromo + titulo de
+          display; esta era a unica que nao abria, e por isso lia como rodape
+          da anterior em vez de secao nova. O cromo continua sendo a regua
+          (indice, nome curto, carimbo) e o titulo passa a ser titulo. */}
+      <div className="v2-wrap v2-fita-cabeca">
+        <Cromo n="07" nome="Peças" carimbo="©26" />
+        <Titulo>Outros projetos</Titulo>
+      </div>
       <div className="v2-fita">
         <div className="v2-fita-trilho">
           <div className="v2-fita-grupo">{comFoto.map((p) => item(p, false))}</div>
