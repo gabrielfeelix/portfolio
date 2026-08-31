@@ -1355,16 +1355,17 @@ const PROJECTS = [
      Regra do briefing: nome sem destino frustra quem clica. Basta
      preencher `links.vercel` e o item volta a aparecer sozinho. */
   { id: "rodape", title: "Rodapé", cat: "mobile", domain: "App · Android", fav: false, chapterId: null,
-    /* A descrição dizia "publicado na Play Store" e o link entrega um
-       arquivo do Figma. O app não está publicado: existe só uma fase de
-       teste fechado, e teste fechado não é publicação. Num volume cuja
-       tese é "entrego produto no ar", prometer loja e cumprir protótipo
-       contradiz o argumento na própria vitrine, então a descrição passa
-       a dizer o que o link realmente abre. Quando sair da fase de teste,
-       trocar `links.figma` pelo link da loja e pôr `destino: "loja"`. */
-    desc: "App de clube de leitura, desenhado no Figma",
-    sobre: "Clube de leitura é uma combinação frágil de livro, data e gente, e quase sempre morre no grupo de mensagem, onde a escolha do próximo título se perde entre memes. O app segura as três coisas no mesmo lugar, com a leitura em andamento sempre à vista e o comentário por capítulo atrás de uma barreira de spoiler. Desenhado no Figma, ainda em teste fechado.", destino: "figma",
-    links: { vercel: null, figma: "https://www.figma.com/design/1ruVWABUF6B5VibTVF430q/Untitled?node-id=0-1&t=OK5Z4v9Mv4likK9K-1" } },
+    /* A descrição dizia "publicado na Play Store" e o app não está: existe só
+       uma fase de teste fechado, e teste fechado não é publicação. Num volume
+       cuja tese é "entrego produto no ar", prometer loja e cumprir protótipo
+       contradiz o argumento na própria vitrine.
+       O link do Figma saiu a pedido do Gabriel em 30/08: por enquanto a peça
+       entra pela capa e diz "Em breve". Quando a loja abrir, preencher
+       `links.play` e apagar `embreve` — o botão volta sozinho. */
+    desc: "Clube de leitura com encontro marcado e comentário por capítulo",
+    sobre: "Clube de leitura é uma combinação frágil de livro, data e gente, e quase sempre morre no grupo de mensagem, onde a escolha do próximo título se perde entre memes. O app segura as três coisas no mesmo lugar, com a leitura em andamento sempre à vista e o comentário por capítulo atrás de uma barreira de spoiler. Ainda em teste fechado.",
+    cover: "/volume/assets/projetos/rodape/cover.webp", embreve: true,
+    links: { vercel: null, figma: null } },
   /* Os dois apps do Posfácio ("um que lembra onde estacionei o carro, outro
      que ajuda a calcular quanto cobrar por hora") estavam contados em prosa e
      não existiam como peça. São os únicos trabalhos do volume publicados numa
@@ -1379,6 +1380,7 @@ const PROJECTS = [
     desc: "Marca onde o carro ficou e devolve o caminho de volta",
     marca: "/volume/assets/marcas/produto/deixeiaqui.png",
     sobre: "Desenhar a seta é fácil. O difícil é admitir que o GPS morre exatamente onde você esquece o carro: subsolo de shopping, garagem de aeroporto, prédio de muitos andares. Então o app mostra o quanto confia no próprio sinal e troca de estratégia sozinho. Sinal firme, siga a seta. Sinal ruim, a foto do pilar e o número do andar assumem. Apontar com falsa certeza seria pior que não apontar.", destino: "loja",
+    cover: "/volume/assets/projetos/deixeiaqui/cover.webp",
     links: { vercel: null, figma: null, play: "https://play.google.com/store/apps/details?id=com.fouryuapps.deixeiaqui" } },
   { id: "remoctrl", title: "Remoctrl", cat: "desktop", domain: "Web app · Controle de TV", fav: false, chapterId: null,
     desc: "Controle de Smart TV Roku pelo navegador, sem instalar nada",
@@ -1397,7 +1399,9 @@ const PROJECTS = [
   { id: "web2design", title: "Web2Design", cat: "web", domain: "Ferramenta · Design", fav: false, chapterId: null,
     desc: "Extensão + plugin Figma: a web vira camada editável", links: { vercel: null, figma: null } },
   { id: "argel", title: "CT Argel Riboli", cat: "mobile", domain: "App · Boxe", fav: false, chapterId: null,
-    desc: "Gestão de CT de boxe: plataforma e app do aluno", links: { vercel: null, figma: null } },
+    desc: "Gestão de CT de boxe: plataforma e app do aluno",
+    cover: "/volume/assets/projetos/argel/cover.webp", embreve: true,
+    links: { vercel: null, figma: null } },
   { id: "solar-site", title: "Solar Buy-Side", cat: "web", domain: "Website · LP", fav: false, chapterId: null,
     desc: "Landing de captação", links: { vercel: null, figma: null } },
   { id: "4yu", title: "4YU MKT", cat: "web", domain: "Website · LP", fav: false, chapterId: null,
@@ -1438,9 +1442,13 @@ function projTag(p) {
 /* the reading spine: 4 chapters then the extra, in order */
 function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id === id)).filter(Boolean); }
 /* everything else — the Outras peças index */
-/* A vitrine das outras peças tem ordem editorial: as seis primeiras são
-   escolha do Gabriel; o resto segue a ordem em que está em PROJECTS. */
-const PIECE_ORDER = ["signamais", "dropchina", "4yu", "kitamo-app", "remoctrl", "traxium"];
+/* A vitrine das outras peças tem ordem editorial: as primeiras são escolha do
+   Gabriel; o resto segue a ordem em que está em PROJECTS.
+   REGRA (30/08): capa nova entra SEMPRE no topo desta lista, nunca no fim. A
+   fita corre da esquerda para a direita, então o começo é o único lugar que o
+   visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
+   esse lugar. */
+const PIECE_ORDER = ["argel", "deixeiaqui", "rodape", "signamais", "dropchina", "4yu", "kitamo-app", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
