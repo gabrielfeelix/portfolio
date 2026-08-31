@@ -1202,6 +1202,25 @@ function Abas({ itens, rotulo, id }) {
   const [ativo, setAtivo] = React.useState(0);
   const refs = React.useRef([]);
   const trilho = React.useRef(null);
+  /* `transborda` decide se a dica faz sentido, e é medido, não presumido: com
+     três abas curtas o trilho cabe inteiro e não há nada para descobrir.
+     `jaRolou` apaga a dica depois do primeiro uso. */
+  const [transborda, setTransborda] = React.useState(false);
+  const [jaRolou, setJaRolou] = React.useState(false);
+  const [fino, setFino] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = trilho.current;
+    if (!el) return undefined;
+    setFino(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+    const medir = () => setTransborda(el.scrollWidth > el.clientWidth + 8);
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    const aoRolar = () => { if (el.scrollLeft > 4) setJaRolou(true); };
+    el.addEventListener("scroll", aoRolar, { passive: true });
+    return () => { ro.disconnect(); el.removeEventListener("scroll", aoRolar); };
+  }, [itens]);
 
   /* Rolagem horizontal na roda do mouse.
    *
@@ -1246,6 +1265,65 @@ function Abas({ itens, rotulo, id }) {
     return () => el.removeEventListener("wheel", naRoda);
   }, [itens]);
 
+  /* Arrastar o trilho com o mouse, além do Shift+roda.
+   *
+   * Existe porque Shift+roda depende do navegador entregar o evento do jeito
+   * esperado, e isso varia por sistema e por mouse — o Gabriel relatou o
+   * gesto rolando a página em vez do trilho num ambiente onde os testes
+   * automatizados passam. Em vez de perseguir a diferença, o trilho ganha um
+   * caminho que não depende de modificador nenhum: pegar e puxar, que é o
+   * mesmo gesto do dedo no celular.
+   *
+   * O limiar de 4px é o que separa arrastar de clicar: sem ele, todo clique
+   * numa aba viraria um micro-arrasto e a aba nunca trocaria. Só depois de
+   * passar dele o clique seguinte é engolido, e é por isso que a supressão
+   * vive num ref lido no `onClick` da aba, e não num estado. */
+  const arrasto = React.useRef({ ativo: false, x: 0, base: 0, moveu: false });
+  const engoleClique = React.useRef(false);
+
+  React.useEffect(() => {
+    const el = trilho.current;
+    if (!el) return undefined;
+
+    const desce = (e) => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      /* Cada gesto começa limpo. Sem esta linha a supressão de clique fica
+         pendurada depois de um arrasto e engole o PRÓXIMO clique, que já é
+         outro gesto — arrastar o trilho e depois clicar numa aba não trocava
+         de aba. Só o clique que encerra o próprio arrasto deve morrer. */
+      engoleClique.current = false;
+      arrasto.current = { ativo: true, x: e.clientX, base: el.scrollLeft, moveu: false };
+    };
+    const move = (e) => {
+      const a = arrasto.current;
+      if (!a.ativo) return;
+      const d = e.clientX - a.x;
+      if (!a.moveu && Math.abs(d) < 4) return;
+      if (!a.moveu) {
+        a.moveu = true;
+        el.setPointerCapture && el.setPointerCapture(e.pointerId);
+        el.classList.add("is-arrastando");
+      }
+      el.scrollLeft = a.base - d;
+      e.preventDefault();
+    };
+    const sobe = () => {
+      const a = arrasto.current;
+      if (a.moveu) engoleClique.current = true;
+      a.ativo = false;
+      el.classList.remove("is-arrastando");
+    };
+
+    el.addEventListener("pointerdown", desce);
+    el.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", sobe);
+    return () => {
+      el.removeEventListener("pointerdown", desce);
+      el.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", sobe);
+    };
+  }, [itens]);
+
   if (!itens || itens.length < 2) return itens && itens.length ? itens[0].conteudo : null;
 
   const foca = (i) => {
@@ -1263,6 +1341,21 @@ function Abas({ itens, rotulo, id }) {
 
   return (
     <>
+      {/* A dica só aparece quando o trilho REALMENTE transborda, e só em
+          ponteiro fino: no celular o trilho se arrasta com o dedo, que é
+          gesto que ninguém precisa aprender, e a linha ali seria ruído. Ela
+          também some assim que a pessoa rola o trilho pela primeira vez —
+          instrução que continua na tela depois de cumprida vira decoração.
+
+          `aria-hidden` porque quem usa teclado tem as setas, que já estão
+          anunciadas pelo papel de tablist, e quem usa leitor de tela não
+          rola com a roda do mouse. */}
+      {transborda && fino && !jaRolou ? (
+        <p className="v2-abas-dica" aria-hidden="true">
+          {t("Segure Shift e role para ver as outras abas",
+             "Hold Shift and scroll to see the other tabs")}
+        </p>
+      ) : null}
       <div className="v2-abas-trilho" role="tablist" aria-label={rotulo} onKeyDown={tecla} ref={trilho}>
         {itens.map((it, i) => (
           <button
@@ -1275,7 +1368,12 @@ function Abas({ itens, rotulo, id }) {
             tabIndex={i === ativo ? 0 : -1}
             ref={(el) => { refs.current[i] = el; }}
             className="v2-aba"
-            onClick={() => setAtivo(i)}
+            /* Um arrasto que termina em cima de uma aba não é um clique nela:
+               sem esta guarda, puxar o trilho trocava de aba ao soltar. */
+            onClick={() => {
+              if (engoleClique.current) { engoleClique.current = false; return; }
+              setAtivo(i);
+            }}
           >
             <span className="v2-aba-n">{String(i + 1).padStart(2, "0")}</span>
             {it.rotulo}
@@ -1398,6 +1496,11 @@ function Comparador({ par, i = 0 }) {
       <div
         className="v2-comp-caixa"
         ref={caixa}
+        /* A proporção do par vai como variável para o CSS reservar a altura
+           antes de a imagem chegar. Sem ela vale o piso de 16/10 da folha —
+           o que importa é nunca nascer com altura zero, porque o corpo
+           crescendo depois é o que faz o avião reamostrar a rota inteira. */
+        style={par.ar ? { "--v2-comp-ar": par.ar.replace("/", " / ") } : undefined}
         onPointerDown={(e) => { arrastando.current = true; daPagina(e.clientX); }}
       >
         <img className="v2-comp-depois" src={par.depois} alt="" loading="lazy" decoding="async" />

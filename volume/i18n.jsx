@@ -377,6 +377,7 @@ if (LANG === "en") {
                 "Script errors inside checkout is the number I defend hardest: it comes from session recording, which filters bots at the source, and the cut is exactly the screen I worked on."],
             par: {
               antes: "/volume/assets/projetos/pcyes/v12-vermelho.webp",
+              ar: "1800/923",
               depois: "/volume/assets/projetos/pcyes/v12-verde.webp",
               rotuloAntes: "V1", rotuloDepois: "V1.2",
               /* 60% e nao o meio: medido na propria imagem, a faixa que muda

@@ -666,6 +666,18 @@
   border-radius: var(--v2-r-print);
   overflow: hidden;
   background: var(--v2-paper);
+  /* Piso de proporção, sobrescrito inline por toda figura que declara `ar`.
+
+     Ele existe para o caso que sempre volta: uma figura entra sem `ar` e a
+     moldura nasce com altura zero. O estrago não é o pulo — é que o corpo da
+     página muda de altura quando a imagem chega, o ResizeObserver do avião
+     dispara, e a rota dele é reamostrada em 420 pontos de SVG, ~166ms de
+     thread travada. No capítulo do PCYES eram dez dessas por rolagem, quase
+     cinco segundos de página travando na mão de quem lê.
+
+     8/5 é a proporção da esmagadora maioria das capturas do site (1600x1000),
+     então errar por aqui erra pouco. */
+  aspect-ratio: 8 / 5;
 }
 
 .v2-fig-moldura img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1258,6 +1270,30 @@
 }
 .v2-abas-trilho::-webkit-scrollbar { display: none; }
 
+/* A dica de rolagem lateral. Vive acima do trilho, na voz de cromo do site
+   (mono, caixa alta, track largo) e no cinza de apoio: ela informa uma vez e
+   não pode competir com os rótulos das abas. Só é renderizada quando o
+   trilho transborda de verdade, em ponteiro fino, e some no primeiro
+   arrasto — ver o componente Abas. */
+.v2-abas-dica {
+  margin: var(--v2-s5) 0 calc(var(--v2-s2) * -1);
+  font-family: var(--v2-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+/* O trilho vira "pegável" só onde arrastar existe, que é no mouse: no toque o
+   dedo já rola nativamente e um cursor de agarrar ali não significa nada. */
+@media (hover: hover) and (pointer: fine) {
+  .v2-abas-trilho { cursor: grab; }
+  .v2-abas-trilho.is-arrastando { cursor: grabbing; scroll-snap-type: none; }
+  /* Durante o arrasto o texto não pode selecionar, senão puxar o trilho pinta
+     os rótulos de azul em vez de rolar. */
+  .v2-abas-trilho.is-arrastando * { user-select: none; }
+}
+
 .v2-aba {
   flex: 0 0 auto;
   scroll-snap-align: start;
@@ -1449,6 +1485,19 @@
   touch-action: pan-y;
   cursor: ew-resize;
   user-select: none;
+  /* Reserva a altura ANTES de a imagem chegar.
+
+     Sem isto a caixa nasce com altura zero e cresce quando o par carrega, e
+     o custo disso não é o pulo visual: o corpo da página inteira muda de
+     altura, o ResizeObserver do avião dispara, e a rota dele é reamostrada
+     em 420 pontos — 166ms de thread travada, por imagem. Numa página de
+     35.000px com quatro comparadores, foi assim que a rolagem do capítulo
+     do PCYES passou a travar dez vezes.
+
+     A proporção é sobrescrita inline por quem sabe a do próprio par; esta é
+     só o piso, na proporção de captura de tela de 16/10 que os pares do
+     capítulo usam. */
+  aspect-ratio: var(--v2-comp-ar, 16 / 10);
 }
 
 .v2-comp-caixa img { display: block; width: 100%; height: auto; }
