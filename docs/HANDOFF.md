@@ -8,6 +8,12 @@ se conflitarem com este, este vale.
 paralelo nesta mesma madrugada, no mesmo clone. Os dois valem juntos, e cada um
 cobre uma metade que a outra não tocou.
 
+`HANDOFF-2026-08-31-medicao.md` também não é passado, e é MAIS NOVO que este:
+cobre a manhã e a tarde do mesmo dia — prévia de link, GA4, banner de
+consentimento, o resultado da V1.2 no case do PCYES e desempenho. Onde os dois
+falarem da mesma coisa, aquele vale. `HANDOFF-PRERENDER.md` é a tarefa seguinte,
+ainda não executada.
+
 Tudo commitado e no ar. Produção conferida às 00:50 de 31/08: dez rotas
 carregam sem erro de JS e sem 404 — home, sobre, processo, blog, quatro cases e
 as duas versões `?lang=en`.
