@@ -298,7 +298,7 @@ function CasoHero({ cap }) {
         toma antes de começar.
 
    Uma régua só no topo, e filetes internos separando os três andares. */
-function Abre({ cap, curto, trocar }) {
+function Abre({ cap }) {
   const rise = useRise();
   const t = cap.tldr || {};
   const ficha = [
@@ -337,7 +337,6 @@ function Abre({ cap, curto, trocar }) {
           ))}
         </dl>
 
-        <Caminho cap={cap} curto={curto} trocar={trocar} />
       </motion.div>
     </section>
   );
@@ -361,26 +360,75 @@ function Abre({ cap, curto, trocar }) {
 
    Só aparece onde a economia é real (ver `minutosCurto` em volume/data.jsx).
    Em capítulo de 3 minutos não há escolha a oferecer, e a página não oferece. */
+/* As duas ilustrações da escolha.
+
+   Elas desenham a mesma coisa: a pilha de blocos do capítulo. A da esquerda
+   tem todos em tinta; a da direita tem os mesmos blocos, nas mesmas posições,
+   com os do meio apagados para filete.
+
+   Isso não é decoração, é a explicação do mecanismo. O caminho curto não é um
+   resumo escrito à parte — é este texto, filtrado —, e o par de desenhos diz
+   isso antes de qualquer legenda: mesma forma, menos peças. Quem olha entende
+   que não vai perder um conteúdo diferente, vai pular trecho. */
+const BLOCOS = [
+  { y: 4,  w: 46, t: "t" }, { y: 12, w: 62, t: "t" }, { y: 20, w: 54, t: "t" },
+  { y: 30, w: 72, t: "f" },
+  { y: 48, w: 58, t: "t" }, { y: 56, w: 66, t: "t" },
+  { y: 64, w: 40, t: "t" },
+  { y: 74, w: 72, t: "f" },
+  { y: 92, w: 50, t: "t" }, { y: 100, w: 64, t: "t" },
+];
+/* Os que sobrevivem ao corte: a abertura, a decisão e o desfecho. É o mesmo
+   recorte que `movimentos` faz no JSX, desenhado. */
+const FICAM = new Set([0, 1, 3, 8, 9]);
+
+function ArteCaminho({ curto }) {
+  return (
+    <svg viewBox="0 0 80 112" className="v2-esc-arte" aria-hidden="true" focusable="false">
+      {BLOCOS.map((b, i) => {
+        const vivo = !curto || FICAM.has(i);
+        const comum = { x: 4, y: b.y, width: b.w, rx: b.t === "f" ? 1.5 : 1 };
+        return b.t === "f" ? (
+          <rect key={i} {...comum} height={12}
+            className={vivo ? "v2-esc-fig" : "v2-esc-fig is-fora"} />
+        ) : (
+          <rect key={i} {...comum} height={3.4}
+            className={vivo ? "v2-esc-lin" : "v2-esc-lin is-fora"} />
+        );
+      })}
+      {/* A seta do salto, só no curto: marca o trecho que sai. */}
+      {curto ? (
+        <path d="M74 34 L74 68 M70.5 63.5 L74 68 L77.5 63.5" className="v2-esc-salto" />
+      ) : null}
+    </svg>
+  );
+}
+
 function Caminho({ cap, curto, trocar }) {
   if (!cap.minutos || !cap.minutosCurto) return null;
   const opcoes = [
-    { k: false, r: "Capítulo inteiro", m: cap.minutos },
-    { k: true, r: "Só o essencial", m: cap.minutosCurto },
+    { k: false, r: "O capítulo inteiro", m: cap.minutos,
+      d: "A investigação, o funil, o sistema e as provas. Tudo que sustenta a decisão." },
+    { k: true, r: "Só o essencial", m: cap.minutosCurto,
+      d: "O problema, o que eu decidi e o que aconteceu. O mesmo texto, sem os desvios." },
   ];
   return (
-    <section className="v2-wrap v2-caminho" aria-label="Como você quer ler">
-      <p className="v2-caminho-l">Como você quer ler</p>
-      <div className="v2-caminho-op" role="group">
+    <section className="v2-wrap v2-esc" aria-labelledby="v2-esc-t">
+      <p className="v2-esc-olho">Como você quer ler</p>
+      <h2 className="v2-esc-t" id="v2-esc-t">Quanto tempo você tem?</h2>
+      <div className="v2-esc-cards" role="group" aria-labelledby="v2-esc-t">
         {opcoes.map((o) => (
           <button
             key={String(o.k)}
             type="button"
-            className="v2-caminho-b"
+            className="v2-esc-card"
             aria-pressed={curto === o.k}
             onClick={() => trocar(o.k)}
           >
-            <span className="v2-caminho-r">{o.r}</span>
-            <span className="v2-caminho-m">{o.m} min</span>
+            <span className="v2-esc-quadro"><ArteCaminho curto={o.k} /></span>
+            <span className="v2-esc-min">{o.m} min</span>
+            <span className="v2-esc-nome">{o.r}</span>
+            <span className="v2-esc-d">{o.d}</span>
           </button>
         ))}
       </div>
@@ -1048,7 +1096,7 @@ function Modulo({ mod, figuras, emAba = false }) {
             <motion.li key={c.t} {...rise(Math.min(i, 3))}>
               <Figura fig={figuras && figuras[c.fig]} />
               <p className="v2-cam-para">{c.para}</p>
-              <h5 className="v2-cam-t">{c.t}</h5>
+              <h5 className="v2-esc-t">{c.t}</h5>
               <p className="v2-corpo">{c.p}</p>
             </motion.li>
           ))}
@@ -1432,7 +1480,13 @@ export default function Caso({ id, ir }) {
             pessoa acabou de ler "Leitura · 19 min", e a escolha tem que estar
             onde o preço aparece, não três dobras abaixo. */}
         <span id="v2-caso-corpo" />
-        <Abre cap={cap} curto={curto} trocar={trocar} />
+        <Abre cap={cap} />
+        {/* A escolha ganhou dobra própria em 30/08. Dentro do bloco de entrada
+            ela era um par de pills apertado entre a ficha e a abertura, e a
+            decisão mais importante que o leitor toma na página chegava com
+            cara de controle de formulário. Aqui ela é um momento: pergunta
+            grande, dois cartões, e a ilustração explicando o mecanismo. */}
+        <Caminho cap={cap} curto={curto} trocar={trocar} />
         <Abertura cap={cap} />
 
         {/* Os movimentos, numerados pelo que o caso tem.
@@ -1457,8 +1511,8 @@ export default function Caso({ id, ir }) {
             deveria precisar procurar como ler o resto: a oferta vem no ponto
             em que ele acabou de terminar, que é onde a vontade existe. */}
         {curto ? (
-          <section className="v2-wrap v2-caminho v2-caminho-fim">
-            <p className="v2-caminho-l">Você leu a versão de {cap.minutosCurto} min</p>
+          <section className="v2-wrap v2-esc-fim">
+            <p>Você leu a versão de {cap.minutosCurto} min</p>
             <Pill onClick={() => trocar(false)}>Ler o capítulo inteiro · {cap.minutos} min</Pill>
           </section>
         ) : null}

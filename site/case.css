@@ -398,15 +398,6 @@
   line-height: 1.4;
 }
 
-/* Dentro do bloco o caminho perde a régua e a margem próprias: quem separa
-   os andares aqui é o filete da ficha logo acima. */
-.v2-abre-cartao .v2-caminho {
-  max-width: none;
-  margin-top: 0;
-  padding-top: var(--v2-s3);
-  border-top: 1px solid var(--v2-rule);
-}
-
 @media (max-width: 900px) {
   .v2-abre { padding-top: var(--v2-s5); }
   /* O resultado passa a abrir sozinho: lado a lado numa tela estreita as duas
@@ -419,22 +410,26 @@
   .v2-abre-ficha { grid-template-columns: 1fr; }
 }
 
-/* ---------------- o caminho de leitura ----------------
+/* ---------------- a escolha de leitura ----------------
 
-   Fica logo abaixo da ficha e usa a mesma régua horizontal dela: as duas são
-   a mesma faixa de serviço do capítulo — uma diz o que é o projeto, a outra
-   diz quanto ele custa para ler. Por isso não ganha caixa, sombra nem cor:
-   é cromo, não conteúdo, e uma caixa aqui competiria com a abertura logo
-   abaixo, que é a primeira coisa que deveria puxar o olho. */
-.v2-caminho {
+   Era um par de pills dentro do bloco de entrada, e o Gabriel resumiu bem: as
+   duas opções ele adorou, o layout de botão ele odiou. Tinha razão — é a
+   decisão mais importante que o leitor toma na página, e chegava com cara de
+   controle de formulário espremido entre a ficha e a abertura.
+
+   Agora é uma dobra: pergunta grande e centrada, e dois cartões com desenho
+   dentro. O desenho não é enfeite. Os dois mostram a MESMA pilha de blocos do
+   capítulo, nas mesmas posições; no da direita os do meio viram filete e uma
+   seta marca o salto. É o mecanismo explicado antes da legenda — o caminho
+   curto não é outro texto, é este com trechos pulados. */
+.v2-esc {
   margin: 0 auto;
   max-width: var(--v2-caso-larga);
-  padding-top: var(--v2-s3);
-  margin-top: var(--v2-s4);
-  border-top: 1px solid var(--v2-rule);
+  padding-block: var(--v2-s7) var(--v2-s6);
+  text-align: center;
 }
 
-.v2-caminho-l {
+.v2-esc-olho {
   margin: 0 0 var(--v2-s2);
   font-family: var(--v2-mono);
   font-size: var(--v2-t-label);
@@ -443,148 +438,122 @@
   color: var(--v2-muted);
 }
 
-.v2-caminho-op {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--v2-s2);
+.v2-esc-t {
+  margin: 0 auto var(--v2-s5);
+  max-width: 16ch;
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.025em;
 }
 
-/* O botão não escolhido é contorno; o escolhido é chapa. É a única diferença,
-   e basta: são duas opções, e a pergunta que o leitor faz é "em qual eu
-   estou", não "quantas existem". */
-.v2-caminho-b {
+/* Duas colunas de mesma largura: as opções são pares, e qualquer desequilíbrio
+   aqui sugeriria que uma delas é a recomendada. Não é — a escolha é do
+   leitor, e o site não tem opinião sobre quanto tempo ele tem. */
+.v2-esc-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s4);
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+.v2-esc-card {
   display: flex;
-  align-items: baseline;
-  gap: var(--v2-s2);
-  padding: var(--v2-s2) var(--v2-s3);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v2-s1);
+  padding: var(--v2-s4);
   border: 1px solid var(--v2-rule);
-  border-radius: 999px;
-  background: transparent;
+  border-radius: var(--v2-r-print);
+  background: var(--v2-paper);
   color: var(--v2-ink);
   font: inherit;
+  text-align: left;
   cursor: pointer;
-  transition: background .18s ease, border-color .18s ease, color .18s ease;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
 }
 
-.v2-caminho-b:hover { border-color: var(--v2-ink); }
+.v2-esc-card:hover { border-color: var(--v2-ink); transform: translateY(-2px); }
+.v2-esc-card:focus-visible { outline: 2px solid var(--v2-accent); outline-offset: 3px; }
 
-.v2-caminho-b[aria-pressed="true"] {
+/* O escolhido inverte. Chapa cheia é o único estado que não deixa dúvida sobre
+   em qual dos dois você está, e aqui isso importa: o corpo da página muda
+   conforme a escolha, então ler o estado errado é ler a página errada. */
+.v2-esc-card[aria-pressed="true"] {
   background: var(--v2-ink);
   border-color: var(--v2-ink);
   color: #fff;
 }
 
-.v2-caminho-r { font-weight: 600; }
+.v2-esc-quadro {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--v2-s3);
+}
 
-.v2-caminho-m {
+.v2-esc-arte { display: block; width: 88px; height: auto; }
+
+/* As peças do desenho herdam a cor do cartão, então a inversão do estado
+   escolhido leva a ilustração junto sem uma regra a mais. */
+.v2-esc-lin, .v2-esc-fig { fill: currentColor; }
+.v2-esc-fig { opacity: .82; }
+.v2-esc-lin.is-fora, .v2-esc-fig.is-fora { fill: none; stroke: currentColor; stroke-width: .7; opacity: .3; }
+.v2-esc-salto { fill: none; stroke: var(--v2-accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.v2-esc-card[aria-pressed="true"] .v2-esc-salto { stroke: #fff; }
+
+.v2-esc-min {
   font-family: var(--v2-mono);
   font-size: var(--v2-t-label);
   letter-spacing: var(--v2-track-cromo);
   opacity: .7;
 }
 
-/* A saída, no fim do caminho curto. Empurrada para longe do "aprendi" que
-   vem logo acima, senão lê como se fosse parte dele. */
-.v2-caminho-fim {
-  margin-top: var(--v2-s6);
+.v2-esc-nome {
+  font-size: var(--v2-t-bloco);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -.015em;
+}
+
+.v2-esc-d {
+  margin-top: var(--v2-s1);
+  font-size: var(--v2-t-label);
+  line-height: 1.5;
+  opacity: .72;
+}
+
+/* A saída, no fim do caminho curto. */
+.v2-esc-fim {
+  margin: var(--v2-s7) auto 0;
+  max-width: var(--v2-caso-larga);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--v2-s3);
-}
-
-.v2-caminho-fim .v2-caminho-l { margin-bottom: 0; }
-
-.v2-ficha-l {
-  margin: 0 0 var(--v2-s1);
-  font-size: var(--v2-t-label);
-  color: var(--v2-muted);
-}
-
-.v2-ficha-v {
-  margin: 0;
-  font-size: var(--v2-t-corpo);
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-/* ---------------- resumo ---------------- */
-
-/* Sem painel cinza: cinza agora significa mídia e nada mais. Duas células
-   com régua em cima dizem a mesma coisa sem fingir que o resumo é imagem. */
-.v2-resumo {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--v2-s4);
-}
-
-.v2-resumo-cel {
-  min-width: 0;
   padding-top: var(--v2-s3);
   border-top: 1px solid var(--v2-rule);
 }
 
-.v2-resumo-l {
-  margin: 0 0 var(--v2-s2);
+.v2-esc-fim p {
+  margin: 0;
+  font-family: var(--v2-mono);
   font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
   color: var(--v2-muted);
 }
 
-.v2-resumo-v {
-  margin: 0;
-  font-size: var(--v2-t-bloco);
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -.01em;
-}
-
-/* ---------------- utilidades da pagina ---------------- */
-
-.v2-caso-medida { max-width: var(--v2-medida-caso); min-width: 0; }
-
-.v2-fonte {
-  margin: 0;
-  font-size: var(--v2-t-label);
-  color: var(--v2-muted);
-  line-height: 1.5;
-}
-
-/* Nota de rodape de dobra: regua fina a esquerda, sem caixa. */
-.v2-nota {
-  margin-top: var(--v2-s3);
-  padding-left: var(--v2-s3);
-  border-left: 2px solid var(--v2-rule);
-}
-
-/* O buraco que o modulo resolve. Uma frase, marcada com o accent em grafismo
-   e nunca em texto: accent sobre papel reprova AA em corpo. */
-.v2-buraco {
-  margin: 0 0 var(--v2-s3);
-  padding-left: var(--v2-s3);
-  border-left: 2px solid var(--v2-accent);
-  font-size: var(--v2-t-corpo);
-  font-weight: 500;
-}
-
-.v2-bloco { margin-top: var(--v2-s6); }
-
-.v2-bloco-t {
-  margin: 0 0 var(--v2-s2);
-  font-size: var(--v2-t-bloco);
-  font-weight: 700;
-  letter-spacing: -.01em;
-  line-height: 1.2;
-}
-
-.v2-token,
-.v2-formula {
-  display: inline-block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: var(--v2-t-label);
-  padding: 2px var(--v2-s1);
-  border-radius: 6px;
-  background: var(--v2-superficie);
+@media (max-width: 720px) {
+  .v2-esc { padding-block: var(--v2-s6) var(--v2-s5); }
+  /* Empilha: lado a lado num telefone o cartão fica estreito demais para
+     hospedar desenho e três linhas de texto. */
+  .v2-esc-cards { grid-template-columns: 1fr; gap: var(--v2-s3); }
+  .v2-esc-card { flex-direction: row; align-items: center; gap: var(--v2-s3); flex-wrap: wrap; }
+  .v2-esc-quadro { width: auto; margin-bottom: 0; flex: none; }
+  .v2-esc-arte { width: 56px; }
+  .v2-esc-d { flex: 1 0 100%; margin-top: 0; }
 }
 
 /* ---------------- mídia ---------------- */
@@ -1709,10 +1678,6 @@
      de 46svh num celular já é meia tela. */
   .v2-capitulo { margin-top: var(--v2-s6); padding-block: var(--v2-s6); min-height: 40svh; }
   .v2-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
-  /* As duas opções de leitura empilham: lado a lado elas encolhem abaixo do
-     tamanho em que o rótulo e o tempo cabem na mesma linha. */
-  .v2-caminho-op { flex-direction: column; align-items: stretch; }
-  .v2-caminho-b { justify-content: space-between; }
   .v2-resumo { grid-template-columns: 1fr; gap: var(--v2-s3); }
 
   /* Uma coluna so: tudo que era duas colunas empilha, e a coluna presa
