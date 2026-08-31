@@ -1,0 +1,91 @@
+/* As fontes, servidas pelo próprio site.
+ *
+ * Eram três folhas externas — api.fontshare.com e fonts.googleapis.com, mais
+ * os arquivos em cdn.fontshare.com e fonts.gstatic.com. Quatro origens de
+ * terceiro para escrever texto, e todas no caminho crítico: um <link
+ * rel="stylesheet"> bloqueia a renderização, e o navegador só descobre QUAL
+ * arquivo de fonte baixar depois de buscar e ler esse CSS. São dois
+ * DNS + TLS em série antes da primeira letra aparecer.
+ *
+ * Medido no celular em 4G lento: 1.740ms de renderização bloqueada e FCP de
+ * 4,0s. Servindo daqui, o CSS já vem dentro do site.css que a página busca de
+ * qualquer jeito, e os dois pesos da primeira tela são pré-carregados no
+ * <head> — o navegador começa a baixar a fonte junto com o CSS, e não depois
+ * dele.
+ *
+ * O ganho não é só de rede. Desde 2020 o cache do navegador é particionado
+ * por site, então a Switzer que alguém já baixou em outro site é baixada de
+ * novo aqui de qualquer forma: a vantagem clássica do CDN compartilhado não
+ * existe mais.
+ *
+ * `font-display: swap` em todas: o texto aparece na fonte de sistema e troca
+ * quando a real chega. O contrário — texto invisível esperando a fonte — é
+ * exatamente o que arrasta o FCP.
+ *
+ * Licenças: Switzer é da Indian Type Foundry, distribuída pela Fontshare para
+ * uso pessoal e comercial. Geist Mono (Vercel) e Bad Script são SIL OFL. As
+ * três permitem hospedagem própria.
+ *
+ * Para atualizar, rode `node tools/baixar-fontes.mjs`.
+ */
+
+/* ---- Switzer: a voz de conteúdo. Hero, título, lead, corpo. ---- */
+@font-face {
+  font-family: "Switzer";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/volume/fonts/v2/switzer-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Switzer";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/volume/fonts/v2/switzer-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Switzer";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/volume/fonts/v2/switzer-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Switzer";
+  font-style: normal;
+  /* 700 cobre também o 800 que o CSS pede em alguns lugares: a Fontshare não
+     serve um 800 nesta família, e o navegador sintetiza a partir do 700 —
+     que é o que já acontecia com as folhas externas. */
+  font-weight: 700 800;
+  font-display: swap;
+  src: url("/volume/fonts/v2/switzer-700.woff2") format("woff2");
+}
+
+/* ---- Geist Mono: a voz de cromo. Índice, carimbo, rótulo, número. ---- */
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/volume/fonts/v2/geistmono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/volume/fonts/v2/geistmono-500.woff2") format("woff2");
+}
+
+/* ---- Bad Script: só a assinatura da dobra 06, e nada mais. ----
+   Não é pré-carregada de propósito: são 34 KB para uma frase que mora no fim
+   da home, e disputar a primeira tela por ela seria pagar caro pelo lugar
+   errado. `swap` cobre o resto. */
+@font-face {
+  font-family: "Bad Script";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/volume/fonts/v2/badscript-400.woff2") format("woff2");
+}

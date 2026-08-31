@@ -67,16 +67,24 @@
 <link rel="icon" href="/uploads/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" sizes="180x180" href="/uploads/favicon-180.png">
 
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap">
+<!-- As fontes são servidas pelo próprio site desde 31/08. Eram três folhas
+     de terceiro (api.fontshare.com, fonts.googleapis.com) mais os arquivos em
+     cdn.fontshare.com e fonts.gstatic.com: quatro origens no caminho crítico,
+     cada uma com DNS e TLS próprios, e o navegador só descobria QUAL arquivo
+     baixar depois de ler o CSS remoto. Medido no celular em 4G lento:
+     1.740ms de renderização bloqueada. As @font-face agora moram em
+     site/fontes.css, dentro do site.css que a página busca de qualquer jeito.
 
-<!-- Segunda voz tipográfica: a mono só carrega o cromo (índice de seção,
+     Só os dois pesos da primeira tela são pré-carregados. Preload é uma fila
+     de prioridade, não um "carregue tudo antes": pré-carregar as sete fontes
+     faria elas competirem entre si e com o CSS, e o efeito se anula. A mono
+     do cromo e a cursiva da assinatura chegam com `swap`, no tempo delas.
+
+     Segunda voz tipográfica: a mono só carrega o cromo (índice de seção,
      carimbo de ano, relógio, número de contador, rótulo). Nunca corpo, nunca
      título. Ver docs/ANALISE-REFS.md, mecanismo M1. -->
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="preload" as="font" type="font/woff2" href="/volume/fonts/v2/switzer-700.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/volume/fonts/v2/switzer-400.woff2" crossorigin>
 
 <link rel="stylesheet" href="/site.css">
 

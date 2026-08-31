@@ -254,13 +254,35 @@ function analyticsSnippet() {
      Este bloco sai antes dos `defer` de <!--SCRIPTS--> na execução, mesmo
      estando depois deles no HTML: script inline roda durante o parse e defer
      só roda no fim. Por isso `window.gtag` já existe quando o app monta. */
+  /* O gtag.js é BAIXADO DEPOIS do load, e nenhum evento se perde nisso.
+     `window.gtag` é a função inline daqui, que só empilha em `dataLayer`; o
+     arquivo do Google chega depois e processa a fila inteira de uma vez. O
+     page_view que o efeito de rota manda durante o carregamento fica lá
+     esperando.
+
+     O motivo é peso: o gtag.js são 153 KB, o maior recurso de terceiro da
+     página, e no 4G lento do teste de celular ele disputava banda com a
+     fonte e o CSS da primeira tela. Medição não pode custar a métrica que
+     ela existe para observar. */
   const ga4 = `
-<script async src="https://www.googletagmanager.com/gtag/js?id=${GA4_ID}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){ dataLayer.push(arguments); }
   gtag("js", new Date());
   gtag("config", "${GA4_ID}", { send_page_view: false });
+  (function () {
+    var carregar = function () {
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=${GA4_ID}";
+      document.head.appendChild(s);
+    };
+    var ocioso = function () {
+      (window.requestIdleCallback || function (f) { setTimeout(f, 400); })(carregar, { timeout: 4000 });
+    };
+    if (document.readyState === "complete") ocioso();
+    else window.addEventListener("load", ocioso, { once: true });
+  })();
 </script>`;
 
   /* O Clarity deixou de ser injetado aqui e passou a ser carregado por
@@ -340,7 +362,10 @@ const appOpcoes = (dev) => ({
 
 async function buildCss() {
   // Um arquivo só, na ordem em que os tokens precisam existir antes do resto.
-  const ordem = ["tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css", "cursor.css"];
+  /* `fontes.css` vem PRIMEIRO: as @font-face precisam existir antes de
+     qualquer regra que use as famílias, e o navegador começa a resolver as
+     fontes assim que lê o topo da folha. */
+  const ordem = ["fontes.css", "tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css", "cursor.css"];
   const partes = [];
   for (const css of ordem) {
     const src = path.join(ROOT, "site", css);

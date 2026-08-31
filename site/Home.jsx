@@ -113,6 +113,39 @@ function Hero({ paraCasos }) {
      caso, anotada em v2/Case.jsx. */
   const { scrollY } = useScroll();
   const desloca = useTransform(scrollY, [0, 900], [0, 90]);
+
+  /* O vídeo da capa só entra depois que a página terminou de carregar.
+   *
+   * Ele pesa 834 KB em webm, e `autoPlay` faz o navegador buscar o arquivo
+   * inteiro mesmo com `preload="metadata"` — a dica só vale enquanto ninguém
+   * mandou tocar. Num 4G lento de 1,6 Mbps isso é ~4,2s de banda disputando
+   * com a fonte, o CSS e o JS que a primeira tela precisa. Medido no
+   * PageSpeed do celular: FCP 4,0s, LCP 6,7s, nota 34.
+   *
+   * O que aparece antes é o poster, que é o primeiro quadro do próprio vídeo
+   * e pesa 78 KB. Visualmente a troca não existe; o que muda é a ordem em que
+   * a rede é usada. `requestIdleCallback` depois do load garante que ele só
+   * comece quando não houver mais nada disputando.
+   *
+   * Em reduced-motion nada disso roda: ali o vídeo nunca entra. */
+  const [videoLiberado, setVideoLiberado] = React.useState(false);
+  React.useEffect(() => {
+    if (quieto) return undefined;
+    let vivo = true;
+    let ocioso = 0;
+    const libera = () => {
+      const agenda = window.requestIdleCallback || ((f) => setTimeout(f, 200));
+      ocioso = agenda(() => { if (vivo) setVideoLiberado(true); }, { timeout: 2500 });
+    };
+    if (document.readyState === "complete") libera();
+    else window.addEventListener("load", libera, { once: true });
+    return () => {
+      vivo = false;
+      window.removeEventListener("load", libera);
+      if (ocioso && window.cancelIdleCallback) window.cancelIdleCallback(ocioso);
+    };
+  }, [quieto]);
+
   return (
     <section className="v2-hero v2-grao v2-halo" id="v2-hero" data-escuro="1" ref={capa.ref}>
       {/* A capa. Fica atras de tudo, e o `.v2-grao` do hero ja poe os filhos
@@ -122,8 +155,17 @@ function Hero({ paraCasos }) {
           a arte parada. Video em loop e movimento, e quem pediu para nada se
           mover nao ganha excecao por ser bonito. */}
       <div className="v2-hero-capa" aria-hidden="true">
-        {quieto ? (
-          <img src="/volume/assets/hero/capa.webp" alt="" decoding="async" />
+        {quieto || !videoLiberado ? (
+          /* O poster entra como imagem de verdade até o vídeo ser liberado.
+             É o primeiro quadro do próprio vídeo, então a troca não muda
+             nada na tela — o que muda é quando os 834 KB saem da rede. */
+          <motion.img
+            style={quieto ? undefined : { y: desloca }}
+            src={quieto ? "/volume/assets/hero/capa.webp" : "/volume/assets/hero/capa-poster.webp"}
+            alt=""
+            decoding="async"
+            fetchPriority="high"
+          />
         ) : (
           <motion.video
             style={{ y: desloca }}
@@ -132,7 +174,7 @@ function Hero({ paraCasos }) {
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
           >
             <source src="/volume/assets/hero/capa.webm" type="video/webm" />
             <source src="/volume/assets/hero/capa.mp4" type="video/mp4" />
