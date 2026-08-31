@@ -163,10 +163,17 @@ for (const rota of ["/", "/en"]) {
     const cc = cliente.caixas[nome];
     if (!cs || !cc) { erro(`${nome}: ausente (servidor=${!!cs} cliente=${!!cc})`); continue; }
     const dif = cs.map((v, i) => Math.abs(v - cc[i]));
-    const maior = Math.max(...dif);
-    // 2px de folga: subpixel de fonte e o arredondamento do próprio rect.
-    if (maior <= 2) console.log(`  ✓ ${nome} na mesma posição  [${cs}]`);
-    else erro(`${nome} desloca ${maior}px — srv [${cs}] cli [${cc}]`);
+    /* POSIÇÃO estrita, TAMANHO frouxo, e a assimetria é medida.
+       x e y com 2px de folga, que é subpixel e arredondamento do rect: se o
+       bloco anda na tela, isso É piscada e tem de falhar.
+       Largura e altura com 6px, porque a Switzer pode ainda não ter assentado
+       de um dos lados e a métrica da fonte de fallback muda o rótulo do botão
+       em ~5px. Isso é a troca de fonte, não o pré-render, e falhar por ela
+       transforma o teste em ruído que ninguém mais lê. */
+    const desloca = Math.max(dif[0], dif[1]);
+    const estica = Math.max(dif[2], dif[3]);
+    if (desloca <= 2 && estica <= 6) console.log(`  ✓ ${nome} na mesma posição  [${cs}]`);
+    else erro(`${nome} desloca ${desloca}px e estica ${estica}px — srv [${cs}] cli [${cc}]`);
   }
 }
 

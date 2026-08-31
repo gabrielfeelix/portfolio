@@ -24,7 +24,7 @@
  * este arquivo decide é layout, ritmo e hierarquia. */
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { m as motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRise, useCobertura, useEntrada, ease } from "./motion.js";
 import { Label, Regua, Pill } from "./Shell.jsx";
 /* A gramática de página interna mora no kit desde 29/08, quando /processo

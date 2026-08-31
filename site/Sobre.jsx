@@ -30,7 +30,7 @@
  */
 
 import React from "react";
-import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform, useSpring, useMotionValue } from "motion/react";
+import { m as motion, AnimatePresence, useReducedMotion, useScroll, useTransform, useSpring, useMotionValue } from "motion/react";
 import {
   useMaskLine, useCobertura, useRise, useRevelar, useTardio, useEscrita, useNaAltura,
 } from "./motion.js";

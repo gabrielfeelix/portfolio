@@ -37,7 +37,7 @@
  */
 
 import React from "react";
-import { motion, useTransform } from "motion/react";
+import { m as motion, useTransform } from "motion/react";
 import { useRise, useTracado, useTrecho, useContador, AVIAO_D } from "./motion.js";
 import { t, espelho } from "./i18n.js";
 import * as EN from "./processo.en.js";

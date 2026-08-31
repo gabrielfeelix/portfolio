@@ -26,7 +26,7 @@
  *    banco de imagem. */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Dobra, Titulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
 import { useParallax, useRise, useSubir } from "./motion.js";
 import {

@@ -71,12 +71,27 @@ export const easeRevela = [0.4, 0, 0.2, 1];
 export const tweenLaunch = { duration: 0.44, ease: [0.4, 0, 0.2, 1] };
 
 /* Entrada tardia obediente ao sistema: em reduced-motion sobra a opacidade,
-   e mesmo ela entra sem o atraso longo. */
+   e mesmo ela entra sem o atraso longo.
+
+   A opacidade inicial é 0.06 e NÃO zero, e o motivo é medido, não estético.
+   O Chrome exclui do Largest Contentful Paint tudo que está em `opacity: 0`:
+   enquanto o subtítulo do hero — que é o elemento de LCP da home, 15.255px² —
+   nascia invisível, o LCP não era o momento em que ele pintava, era montagem
+   do React + os 1,4s deste atraso + a animação. Nenhuma otimização de rede ou
+   de HTML alcança isso, porque não é a página que está lenta: é o navegador
+   se recusando a contar o que ninguém pode ver.
+
+   Com 0.06 o navegador passa a contá-lo no primeiro quadro. Seis por cento de
+   branco sobre a capa escura do hero é fantasma, não texto — e a animação que
+   importa, que é a subida de 16px com a opacidade abrindo, continua igual: ela
+   só começa de 0.06 em vez de 0.
+
+   Se algum dia isto voltar a 0, o LCP volta a ser refém do atraso. */
 export function useTardio(delay = 1.4) {
   const quieto = useReducedMotion();
   return quieto
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.2 } }
-    : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { ...tweenLaunch, delay } };
+    ? { initial: { opacity: 0.06 }, animate: { opacity: 1 }, transition: { duration: 0.2 } }
+    : { initial: { opacity: 0.06, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { ...tweenLaunch, delay } };
 }
 
 /* 2b. longa

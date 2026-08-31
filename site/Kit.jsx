@@ -11,7 +11,7 @@
  */
 
 import React, { useState } from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { useRevelar, useCortina, useParallax, useCamadas, useContador, useRise, useSubir, useVoo, AVIAO_D, dur, easeRevela } from "./motion.js";
 import { Label, Regua, Lamina } from "./Shell.jsx";
 

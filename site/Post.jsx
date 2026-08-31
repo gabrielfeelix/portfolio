@@ -21,7 +21,7 @@
  *    num JSON separado (ver blog.mjs). */
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { Dobra, Titulo, CampoDeVoo } from "./Kit.jsx";
 import { Pill } from "./Shell.jsx";
 import { useParallax, useRise, useSubir } from "./motion.js";

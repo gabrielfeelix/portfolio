@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
+import { m as motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 
 /* O VENTO. O cursor do site.
 

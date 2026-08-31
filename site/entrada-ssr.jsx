@@ -44,6 +44,7 @@
 
 import React from "react";
 import { renderToString } from "react-dom/server.browser";
+import { LazyMotion, domAnimation } from "motion/react";
 import { Nav } from "./Shell.jsx";
 import { Hero } from "./Home.jsx";
 
@@ -53,12 +54,16 @@ const nada = () => {};
 
 function Pagina() {
   return (
-    <div className="v2-shell">
-      <Nav sobreEscuro={false} ir={nada} rota={{ tipo: "home", path: "/" }} trocarIdioma={nada} />
-      <main>
-        <Hero paraCasos={nada} />
-      </main>
-    </div>
+    /* O MESMO provedor do cliente. Sem ele o `m.*` do Hero não renderiza no
+       servidor, e o build quebra em vez de escrever HTML errado. */
+    <LazyMotion features={domAnimation} strict>
+      <div className="v2-shell">
+        <Nav sobreEscuro={false} ir={nada} rota={{ tipo: "home", path: "/" }} trocarIdioma={nada} />
+        <main>
+          <Hero paraCasos={nada} />
+        </main>
+      </div>
+    </LazyMotion>
   );
 }
 

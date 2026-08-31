@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { useRise, useMaskLine, useCobertura } from "./motion.js";
 import { Label, Pill } from "./Shell.jsx";
 import { GradeCasos, Lamina } from "./Kit.jsx";

@@ -4,7 +4,7 @@
  * quando o hero sai da tela: é o mesmo elemento, não dois. */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m as motion } from "motion/react";
 import { ease, spring, useLamina, AVIAO_D } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
 import { t, url } from "./i18n.js";

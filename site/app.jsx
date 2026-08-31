@@ -19,6 +19,7 @@ import { Cortina, useTravessia } from "./Travessia.jsx";
 import { decodeDeChegada, trocarIdioma } from "./idioma.js";
 import { t, EN, url } from "./i18n.js";
 import { Cursor } from "./Cursor.jsx";
+import { LazyMotion, domAnimation } from "motion/react";
 
 /* --- roteamento ---
    /            → home
@@ -413,6 +414,25 @@ function App() {
 
   try {
     return (
+      /* LazyMotion carrega SÓ o conjunto `domAnimation` do Motion, e isso é
+         a metade do bundle: o import cheio traz drag, pan e layout, que este
+         site não usa em lugar nenhum — o comparador de arrastar do caso é
+         feito na mão, com evento de ponteiro, e não existe uma prop `layout`
+         no repositório. `domAnimation` entrega animação, saída, hover, tap,
+         foco e whileInView, que é tudo que os 271 usos de `m.*` pedem.
+
+         Os arquivos importam `{ m as motion }`, e o alias é deliberado: todo
+         o código continua escrevendo `<motion.div>`, sem nenhuma troca de
+         tag. Chamar o import de `m`, que é a convenção do Motion, colidia com
+         variáveis que já existiam — `SistemaMotion({ m })` em Case.jsx e
+         `Marca({ m })` em Home.jsx sombreariam o componente e quebrariam a
+         renderização, o que já aconteceu uma vez aqui.
+
+         `strict` é o que impede a regressão: com ele, usar o `motion` DE
+         VERDADE (o import cheio) estoura em vez de recarregar o pacote
+         inteiro em silêncio, que é como esta economia se perderia sem
+         ninguém notar. */
+      <LazyMotion features={domAnimation} strict>
       <div className="v2-shell">
         <Cortina fase={fase} />
         <Cursor />
@@ -427,6 +447,7 @@ function App() {
         </main>
         <Rodape />
       </div>
+      </LazyMotion>
     );
   } catch (e) {
     // Falha de conteúdo (uma chave que data.jsx parou de publicar) aparece

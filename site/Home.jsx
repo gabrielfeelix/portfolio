@@ -24,7 +24,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { m as motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
   spring, ease, easeRevela, dur, passo, useTardio, useRise, useMaskLine, useCobertura,
   usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
