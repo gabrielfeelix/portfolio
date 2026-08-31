@@ -1393,11 +1393,15 @@ const PROJECTS = [
     desc: "Controle de Smart TV Roku pelo navegador, sem instalar nada",
     sobre: "O controle da TV sumiu e o aplicativo oficial exige instalar, criar conta e estar na mesma conta da casa. Isto abre no navegador, acha a Roku na rede e controla. Nada para instalar, nada para cadastrar.", destino: "ar",
     links: { vercel: "https://remoctrl.vercel.app/", figma: null } },
-  { id: "traxium", title: "Traxium", cat: "saas", domain: "SaaS", fav: false, chapterId: null,
-    desc: "Compliance agrologístico de exportação: EUDR, IDTF e TRACES NT",
-    marca: "/volume/assets/marcas/mono/traxium.svg",
-    sobre: "Vender grão para a Europa deixou de ser questão de preço e virou questão de prova: é preciso demonstrar que a carga não nasceu em área desmatada, e a exigência chega por três frentes que não conversam entre si, EUDR, IDTF e TRACES NT. A torre de controle põe as três no mesmo lote e responde a única pergunta que o exportador faz de manhã: este embarque sai hoje ou não sai.", destino: "proto",
-    links: { vercel: "https://traxium-prototipo.vercel.app/Torre%20de%20Controle%20v2.dc.html", figma: null } },
+  /* Fora de produção a pedido do Gabriel em 31/08. Não era só questão de não
+     ter capa: `sobre`, `desc` e o link do protótipo viajavam dentro do
+     data.js servido em produção, ou seja, a tese inteira do produto e uma URL
+     pública ficavam legíveis para quem abrisse o arquivo, mesmo com a peça
+     invisível na fita. Some o que descreve a ideia e some o endereço; sobra a
+     casca, que existe só para o id continuar resolvendo.
+     Quando puder voltar, o texto está no histórico deste arquivo. */
+  { id: "traxium", hidden: true, title: "Traxium", cat: "saas", domain: "SaaS", fav: false, chapterId: null,
+    desc: "", links: { vercel: null, figma: null } },
   { id: "dropchina", title: "DropChina", cat: "ecommerce", domain: "E-commerce · Shopify", fav: false, chapterId: null,
     desc: "Loja Shopify com catálogo montado por script",
     marca: "/volume/assets/marcas/produto/dropchina.png",
