@@ -44,3 +44,13 @@ _fontes/campo/*-parallax.png
 _*.mjs
 !_v3.mjs
 .porta
+
+# Análise com dado bruto de cliente. NUNCA versionar: este repositório é
+# público, e o documento traz receita, contagem de pedidos, ticket médio e
+# número de pedido do PCYES — dado da operação de um cliente, não do
+# portfólio. O que pode ir ao ar é o que o case CONTA, escrito no
+# volume/data.jsx; a planilha por trás fica fora.
+# Vale a lição do Traxium, em docs/HANDOFF.md: peça escondida não é peça
+# privada. Arquivo no repo é arquivo publicado.
+docs/analise-v1-*.md
+docs/analise-*-bruta.md
