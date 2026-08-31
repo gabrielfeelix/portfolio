@@ -1,7 +1,10 @@
 # Handoff — 30/08/2026, sessão de triagem de contratação
 
 Contexto para quem pega amanhã. Tudo abaixo está em `main`, buildado e verificado
-no navegador. Último commit desta sessão: `f41102f`.
+no navegador. Último commit desta sessão: `4e977b0`.
+
+**Leia `docs/VOZ.md` antes de escrever qualquer prosa neste repositório.** Ele é
+normativo e nasceu no fim deste dia.
 
 ---
 
@@ -29,6 +32,17 @@ Nota inicial: **8/10 para pleno**. O que segurava não era conteúdo, era embala
 | Antes/depois do Oderço (cadastro antigo real × LP nova) | ✅ |
 | Mídia saiu da linguagem V1 (trama e chapa fora, filete e raio próprio) | ✅ |
 | Arte de origem saiu de `uploads/` para `_fontes/` (deploy 30MB → 2,2MB) | ✅ |
+| **Voz:** `docs/VOZ.md` aberto, e o aforismo varrido de home, /processo e /sobre | ✅ |
+| Dobra 04 da home refeita: era autoelogio, virou a tese dos dois caminhos | ✅ |
+| "Casos" virou "Projetos" em todo rótulo visível | ✅ |
+| A cunha do risco virou gráfico de duas curvas, com o cruzamento medido | ✅ |
+| Fatores viraram ficha com ícone; a nota que citava projeto por nome saiu | ✅ |
+| Grade do fim: 3 projetos sorteados, nunca o que está aberto | ✅ |
+| Mídia dos prints: trama e chapa V1 fora, filete e `--v2-r-print` | ✅ |
+| Mobile 390px: pé do cartão empilha, véu da fita fecha, alvo de toque 78×44 | ✅ |
+| Hero do projeto: Figma virou secundário; convite ao protótipo no fim da leitura | ✅ |
+| Botões do canal (YouTube primário, TikTok secundário) na /sobre | ✅ |
+| Logos aparados até a tinta: a marca da Locarmais dobrou de tamanho | ✅ |
 
 **Distribuição de leitura do portfólio:** era 19/7/4/3/2 min, virou **19/7/7/6/2**.
 
@@ -112,7 +126,26 @@ e isso é assunto do case. Ele reclamou explicitamente de agentes serem
 "fissurados" em puxar o erro do checkout para todo lugar — aquela história é
 material de case, não de home.
 
-### 5. 🟢 FOUC na entrada do capítulo
+### 5. 🟡 As rotas ainda dizem `/case/`
+
+A renomeação de "casos" para "projetos" foi feita em todo rótulo que aparece na
+tela, e **parou nas URLs de propósito**. `/case/<id>` continua.
+
+O motivo: elas estão no `sitemap.xml`, no canonical de cada página, no
+`llms.txt` e em todo link que o Gabriel já mandou para alguém — e ele está
+mandando este portfólio para recrutador esta semana. Trocar sem redirecionar
+quebra o que já circula.
+
+Se for para fazer, o pacote é: rota nova em `app.jsx`, redirect 301 de
+`/case/*` para `/projeto/*` no `vercel.json`, `sitemap` e `llms.txt`
+regenerados, e o canonical acompanhando. É tarefa com verificação própria, não
+um replace.
+
+Ficaram também, e não são erro, os "caso" que são português normal: "nos dois
+casos eu acho que escolhi certo", "errar a grafia é o caso comum". Trocar
+aquilo por "projeto" quebraria a frase.
+
+### 6. 🟢 FOUC na entrada do capítulo
 
 O Gabriel viu a segunda dobra renderizar sem estilo uma vez. Não reproduzi:
 5 casos locais e 3 no ar, todos corretos, `site.css` com 895 regras, zero falha
@@ -123,7 +156,7 @@ mitigação, se quiserem eliminar a chance: inline do CSS crítico da `.v2-abre`
 `<head>`, como já é feito com a cortina de troca de página (ver `inline` em
 `build.mjs`).
 
-### 6. 🟢 Assets em `uploads/` que ficaram
+### 7. 🟢 Assets em `uploads/` que ficaram
 
 `favicon.png` (1,5 MB) e `gabrielfelix-foto.*` (364 KB) continuam sendo
 publicados porque **`legado-v1/` ainda os referencia**. Movê-los quebraria a V1
@@ -151,6 +184,21 @@ token separado a pedido do Gabriel.
 
 **A figura que sangra de borda a borda** (`.v2-fig.is-sangra`) segue com canto
 reto: quem toca as duas bordas da janela não tem canto para arredondar.
+
+**Os cartões da fita "Fora da estante"** começam em x=0 e sangram nas duas
+bordas. Uma auditoria apontou isso como defeito de mobile; é o desenho de uma
+fita em marquee, que precisa entrar e sair do quadro para o laço não ter
+costura. Recuar as bordas ali cria dois começos falsos.
+
+**Os logos em `volume/assets/logos/`** foram aparados até a tinta em 30/08, e é
+por isso que `max-height` finalmente significa o tamanho da marca. Se um logo
+novo entrar com respiro dentro do arquivo, ele vai parecer pequeno de novo e a
+correção é na arte, não no CSS. Os originais estão em `_fontes/logos/`.
+
+**A frase "opinião sobre imagem estática costuma ser gosto"** e as outras da
+lista de protegidos do `VOZ.md` não entram na varredura de aforismo. Elas dizem
+uma coisa que aconteceu ou que ele pensa; as que saíram diziam o quanto ele é
+bom.
 
 ---
 
@@ -181,3 +229,23 @@ antes/depois para detectar corrida.
   afirmar.
 - **Colisão de classe é real.** `v2-cam-*` bateu com o `.v2-caminhos` do PCYES e
   o título saiu sem centrar. Antes de criar prefixo novo, `grep` nele.
+
+- **Voz.** `docs/VOZ.md` é normativo, e a régua é uma linha: escreva como você
+  explicaria para um colega, em voz alta, sem plateia. O molde mais caro é o
+  mais difícil de ver — frase sem ninguém dentro, tipo "o tamanho da pesquisa
+  acompanha o preço de errar": sem sujeito humano, sem substantivo concreto,
+  soa sábia e não informa nada.
+- **A home informa como ele trabalha; o projeto referencia o trabalho.** Citar
+  projeto por nome numa dobra generalista é referência de serviço prestado, e
+  isso é assunto do case. Foi por isso que "e é o que eu fiz no PCYES e na
+  Locarmais" saiu do caminho longo, e que a nota dos fatores saiu inteira.
+- **Antes de criar prefixo de classe, `grep` nele.** `v2-cam-` bateu com o
+  `.v2-caminhos` do PCYES e o título da dobra saiu sem centrar, porque a regra
+  deles vinha depois no arquivo e vencia por ordem de cascata.
+- **Resultado de outro agente se confere antes de aplicar.** Das cinco queixas
+  de mobile que chegaram por auditoria externa, três eram reais, uma estava
+  errada no diagnóstico e certa no sintoma, e uma era desenho e não defeito.
+- **Diagnostique antes de mexer no CSS.** O logo pequeno era respiro dentro do
+  PNG, não regra apertada. O parágrafo que não alargava tinha um `max-width`
+  vencendo a coluna. O gráfico que "esticava" era `scaleX` deformando o grupo.
+  Nos três, mexer no sintoma teria escondido a causa.
