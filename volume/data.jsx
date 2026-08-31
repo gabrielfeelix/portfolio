@@ -1045,6 +1045,11 @@ const CONTATO = {
   linkedin:  { label: "LinkedIn", display: "/in/gabrielfeelix", href: "https://www.linkedin.com/in/gabrielfeelix/" },
   instagram: { label: "Instagram", display: "@gaabriel.feelix", href: "https://www.instagram.com/gaabriel.feelix/" },
   tiktok:    { label: "TikTok", display: "@mangudosanimes", href: "https://www.tiktok.com/@mangudosanimes" },
+  /* O canal no YouTube, que é onde o Mangudos mora inteiro — o TikTok é o
+     recorte dele. Entrou em 30/08, junto dos dois botões da dobra "Fora da
+     tela" na /sobre. Fica em CONTATO e não solto no componente pela mesma
+     regra dos outros canais: endereço de contato mora num lugar só. */
+  youtube:   { label: "YouTube", display: "@Mangudosanimes1404", href: "https://www.youtube.com/@Mangudosanimes1404" },
   /* O currículo em PDF. Entrou em 30/08: o site tinha WhatsApp, e-mail e
      LinkedIn e nenhum arquivo para anexar. Quem faz triagem precisa subir um
      PDF no ATS, e sem ele o portfólio inteiro depende de a pessoa ter tempo

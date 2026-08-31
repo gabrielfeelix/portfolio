@@ -1,3 +1,13 @@
+/* Os botões do canal, na dobra "Fora da tela". Herdam o vão do par de pills
+   do fecho e quebram para a linha de baixo no telefone. */
+.v2-sb-fora-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s2);
+  margin-top: var(--v2-s4);
+}
+
 
 /* ---------------- a ficha do topo ----------------
 

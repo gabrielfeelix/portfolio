@@ -500,6 +500,22 @@ function ForaDaTela() {
               </motion.p>
             )
           )}
+          {/* Os dois botões do canal.
+
+              O "tá aqui" no meio do parágrafo continua onde estava, porque ele
+              é do texto: quem está lendo a frase sobre mangá pode querer ir na
+              hora. Mas link dentro de parágrafo é para quem lê, e boa parte de
+              quem chega nesta dobra está passando o olho — para essa pessoa o
+              canal não existia.
+
+              YouTube é o primário porque é onde o canal mora inteiro; o TikTok
+              é o recorte dele. Os dois rótulos dizem coisas diferentes de
+              propósito: repetir "ver o canal" nos dois faria a pessoa achar
+              que são o mesmo destino. */}
+          <motion.div className="v2-sb-fora-acoes" {...rise(SOBRE_FORA.length)}>
+            {c.youtube ? <Pill href={c.youtube.href} externo>Ver o canal no YouTube</Pill> : null}
+            {c.tiktok ? <Pill href={c.tiktok.href} externo secundario>Os cortes no TikTok</Pill> : null}
+          </motion.div>
         </div>
         <figure className="v2-sb-fora-fig">
           <img
