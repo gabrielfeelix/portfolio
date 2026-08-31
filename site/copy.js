@@ -86,7 +86,7 @@ export const DECLARACAO = [
   {
     olho: "O ajuste",
     frase: "A parte demorada do meu trabalho é o *ajuste*.",
-    nota: "É ajuste, e mais ajuste, e é a parte que eu não abro mão.",
+    nota: "É ajuste, e mais ajuste, e é onde eu prefiro gastar o tempo.",
   },
 ];
 
@@ -96,7 +96,7 @@ export const MANIFESTO = {
     "Quando o prazo aperta, eu mesmo implemento.",
   colunas: [
     "Gosto de colocar uma tela clicável na mão das pessoas cedo, porque opinião sobre imagem estática costuma ser gosto, e opinião sobre uma coisa que a pessoa tentou usar costuma ser informação.",
-    "Depois disso é ajuste, e mais ajuste. A parte demorada do meu trabalho é essa, e é a parte que eu não abro mão.",
+    "Depois disso é ajuste, e mais ajuste. É a parte demorada do meu trabalho, e é onde eu não corto tempo.",
   ],
 };
 
@@ -272,7 +272,7 @@ export const SOBRE_TRABALHO = {
     "opinião sobre imagem estática costuma ser gosto, e opinião sobre uma " +
     "coisa que a pessoa tentou usar costuma ser informação.",
   paras: [
-    "Depois disso é ajuste, e mais ajuste. A parte demorada do meu trabalho é essa, e é a parte que eu não abro mão.",
+    "Depois disso é ajuste, e mais ajuste. É a parte demorada do meu trabalho, e é onde eu não corto tempo.",
     "Nunca consegui pensar design e código como duas coisas separadas. Quando o prazo aperta, eu mesmo implemento.",
   ],
 };

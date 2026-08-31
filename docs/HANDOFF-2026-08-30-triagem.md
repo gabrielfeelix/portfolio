@@ -78,7 +78,7 @@ O item 2 acima é a saída mais barata. O segundo melhor é o Locarmais: as trê
 mudanças de comportamento **são** o resultado e mereciam número, nem que seja
 "de N planilhas para zero".
 
-### 4. 🟡 A voz da /processo — pendência nova, aberta no fim do dia
+### 4. ✅ A voz — RESOLVIDO no fim do dia, e virou norma
 
 O Gabriel reprovou a copy da dobra 04 da home por VOZ, não por conteúdo, e o
 diagnóstico dele vale para mais coisa que aquela dobra.
@@ -95,9 +95,15 @@ Exemplos que ele apontou, todos originais da /processo:
 - "Dias, não semanas"
 - "Quando a dúvida já morreu"
 
-A dobra da home já foi reescrita em português falado (ver METODO em
-`site/copy.js`, com a exceção anotada). **A /processo continua no tom antigo** e
-é a próxima candidata, se ele quiser uniformizar.
+**Feito.** A dobra 04 da home foi reescrita, a /processo teve seis frases
+trocadas e a /sobre uma. A régua virou documento: **`docs/VOZ.md`**, que é
+normativo e tem os moldes para procurar, a régua de seis pontos, a tabela de
+antes/depois aprovada, e a lista do que NÃO mexer.
+
+Leia `docs/VOZ.md` antes de escrever qualquer prosa nova neste repositório.
+
+A /sobre estava quase toda limpa — é a escrita mais humana do site e serve de
+referência de tom. Só `SOBRE_TRABALHO.paras[0]` tinha o vício.
 
 REGRA EDITORIAL que ele estabeleceu no mesmo momento, e que vale para o site
 inteiro: **a home informa COMO ele trabalha; o case referencia o trabalho.**

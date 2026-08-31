@@ -53,13 +53,13 @@ const ABRE = {
     "A minha tem duas.",
     "Já me entregaram feature com o problema pronto. O P.O. chegou com a reclamação na mão, o FAQ dizia onde doía, e a dúvida que uma pesquisa mataria já estava morta. Fui direto para o protótipo e validei na tela.",
     "E teve PCYES, onde eu passei semanas antes de desenhar a primeira caixa. Matriz CSD para separar o que a gente sabia do que a gente achava. Benchmarking para não inventar palavra que o mercado já usa. Um trimestre inteiro de GA4, 166.267 sessões, evento a evento. Gravação de sessão assistida inteira, sem pular.",
-    "As duas foram a escolha certa. Escolher qual é a parte do trabalho que não aparece na tela final.",
+    "Nos dois casos eu acho que escolhi certo. E escolher entre um e outro é boa parte do trabalho, mesmo que não apareça na tela final.",
   ],
 };
 
 const FATORES = {
   olho: "O que decide o tamanho",
-  t: "Três coisas, e nenhuma delas é vontade",
+  t: "Três coisas decidem: prazo, time, e o que já chegou provado",
   itens: [
     { k: "Prazo", p: "Se é para segunda-feira ou para daqui um mês. Ele decide quanto eu tenho, não onde eu gasto." },
     { k: "Time", p: "Se eu divido a atividade com alguém ou toco sozinho. Dois designers mudam o que cabe na mesma semana." },
@@ -70,7 +70,7 @@ const FATORES = {
 
 const RISCO = {
   olho: "Onde eu gasto",
-  t: "O tamanho da pesquisa acompanha o preço de errar.",
+  t: "Eu gasto mais tempo pesquisando quando errar sai caro.",
   p: [
     "Decisão barata de desfazer eu coloco no ar e olho o que acontece. Trocar a ordem de dois blocos numa página de baixo tráfego se responde melhor com gravação de sessão do que com estudo.",
     "Decisão cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu não chuto. Ali eu compro tempo antes, mesmo quando ninguém pediu.",
@@ -79,14 +79,14 @@ const RISCO = {
 
 const CURTO = {
   olho: "Caminho curto",
-  t: "Quando a dúvida já morreu",
+  t: "Quando as dúvidas já foram sanadas",
   paradas: [
     { n: "01", t: "Dado", p: "O que já existe de uso, reclamação e chamado." },
     { n: "02", t: "Hipótese", p: "Uma frase que dá para provar errada." },
     { n: "03", t: "Protótipo", p: "Clicável, para a mesa tocar em vez de imaginar." },
     { n: "04", t: "Validação", p: "Alguém que vai usar mexe nele antes de eu fechar." },
   ],
-  p: "Dias, não semanas. As etapas que faltam aqui não sumiram por pressa: elas matariam uma dúvida que já estava morta quando o problema chegou.",
+  p: "Aqui eu pulo etapa de propósito, e não por pressa. Se a reclamação já chegou repetida e o dado já mostra onde dói, refazer essa prova não me conta nada que eu ainda não saiba, e o tempo rende mais no protótipo e no ajuste.",
 };
 
 /* As quatro fases do Double Diamond, com os métodos que o Gabriel usa em cada
@@ -113,7 +113,7 @@ const NUNCA = {
   t: "Alguém que vai usar aquilo mexe na tela antes de eu fechar.",
   p: [
     "No caminho curto pode ser uma pessoa, quinze minutos, protótipo na mão. No longo é teste de usabilidade com roteiro.",
-    "Muda o tamanho. Nunca é zero, e é a única linha que eu não negocio.",
+    "O tamanho muda conforme o projeto, mas nunca chega a zero.",
   ],
 };
 
@@ -546,7 +546,8 @@ function EixoDoRisco() {
         <text className="v2-pn-svg-k is-forte" x="946" y="192" textAnchor="end">Caro de desfazer</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        A espessura é quanto eu abro antes de decidir. Ela acompanha o preço de errar, e não o calendário.
+        A espessura é o quanto eu abro antes de decidir. Quanto mais caro for desfazer, mais eu abro — o que manda
+        aqui é o risco da decisão, não a data de entrega.
       </figcaption>
     </motion.figure>
   );
