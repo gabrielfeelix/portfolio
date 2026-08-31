@@ -955,7 +955,7 @@ function PresoEsquerda({ passos, figuras }) {
 
   return (
     <div className="v2-preso">
-      <div className="v2-preso-media v2-textura" aria-hidden="true">
+      <div className="v2-preso-media" aria-hidden="true">
         <div className="v2-preso-palco">
           {passos.map((p, i) => {
             const f = figuras && figuras[p.fig];
@@ -1236,7 +1236,7 @@ function Comparador({ par, i = 0 }) {
   }, []);
 
   return (
-    <motion.figure className="v2-comp v2-textura" {...rise(i)}>
+    <motion.figure className="v2-comp" {...rise(i)}>
       <div
         className="v2-comp-caixa"
         ref={caixa}

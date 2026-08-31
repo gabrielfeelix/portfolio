@@ -390,7 +390,7 @@ export function Figura({ fig, className = "" }) {
   const rise = useRise();
   if (!fig || !fig.src) return null;
   return (
-    <motion.figure className={"v2-fig v2-textura " + className} {...rise(0)}>
+    <motion.figure className={"v2-fig " + className} {...rise(0)}>
       <span className="v2-fig-moldura" style={fig.ar ? { aspectRatio: fig.ar.replace("/", " / ") } : undefined}>
         <img src={fig.src} alt={fig.alt || ""} loading="lazy" decoding="async" />
       </span>

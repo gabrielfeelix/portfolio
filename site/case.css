@@ -589,9 +589,19 @@
 
 /* ---------------- mídia ---------------- */
 
-/* A mídia da página de caso. O painel `--v2-card` continua sendo o único
-   lugar onde o cinza aparece, com a textura de 5px dentro dele
-   (`.v2-textura`, em shell.css), nunca na página.
+/* A mídia da página de caso.
+
+   CORREÇÃO de uma regra que este arquivo anunciava até 30/08: o painel cinza
+   com a trama de 5px dentro dele era "o único lugar onde o cinza aparece", e
+   deixou de existir. Aquele tratamento veio da V1 inteiro — chapa, respiro de
+   24px, raio de seção e textura pontilhada — e ficou para trás quando a home,
+   o /processo e o /sobre passaram a apresentar mídia com filete e tipo. Toda
+   figura publicada saía com a cara da versão anterior do site.
+
+   A regra agora é uma linha: a imagem senta no papel, dentro de um filete de
+   1px. O filete não é enfeite — quase todo print aqui é interface de fundo
+   claro, e sem borda ele se dissolve no papel branco. Era o que a chapa
+   resolvia, e o filete resolve igual sem a gramática velha junto.
 
    Três larguras, e só três: sangra, meia e terço. Medido em 29/08 na página
    do PCYES, a mídia aparecia em cinco larguras diferentes no mesmo caso
@@ -606,11 +616,23 @@
 
    Medido no inventário do repositório: 18 das 30 figuras dos quatro casos
    são 16:10, então par e tríptico fecham sem sobra de proporção. */
+/* A moldura da figura saiu da linguagem da V1 em 30/08.
+
+   Ela vinha de lá inteira: chapa cinza com 24px de respiro em volta da
+   imagem, raio de seção, e a textura pontilhada de 5px por baixo — o mesmo
+   tratamento que a V1 dava a toda mídia. Só que o resto da V2 já não fala
+   assim há semanas: a home, o /processo e o /sobre apresentam imagem com
+   filete e tipo, sem chapa e sem trama, e os tokens de raio foram a zero.
+   O resultado é que todo print publicado saía com a cara da versão anterior
+   do próprio site, que é o pior lugar possível para uma inconsistência
+   dessas — o portfólio argumenta consistência na página ao lado.
+
+   Fica o filete. Ele não é decoração: quase todo print aqui é interface de
+   fundo claro, e sem borda um screenshot de tela branca se dissolve no papel
+   branco da página. Era esse o problema que a chapa cinza resolvia, e um
+   filete de 1px resolve igual sem trazer junto a gramática velha. */
 .v2-fig {
   margin: var(--v2-s4) 0 0;
-  padding: var(--v2-s3);
-  border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
 }
 
 /* Sangria. A figura fica FORA do `.v2-wrap`, filha direta de
@@ -638,6 +660,7 @@
 
 .v2-fig-moldura {
   display: block;
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-media);
   overflow: hidden;
   background: var(--v2-paper);
@@ -1161,11 +1184,14 @@
   top: 14svh;
 }
 
+/* O palco da coluna presa acompanha a figura: filete no lugar da chapa, pela
+   mesma razão. Ele era a terceira peça a carregar cinza e trama. */
 .v2-preso-palco {
   position: relative;
   aspect-ratio: 4 / 3;
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
+  background: var(--v2-paper);
   padding: var(--v2-s2);
   overflow: hidden;
 }
@@ -1406,9 +1432,6 @@
 .v2-comp {
   margin: var(--v2-s4) 0 0;
   margin-left: calc(-1 * (var(--v2-label-col) + var(--v2-s4)));
-  padding: var(--v2-s3);
-  border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
 }
 
 /* Abaixo de 900 a Dobra já empilha e não existe coluna de label para
@@ -1419,6 +1442,9 @@
 
 .v2-comp-caixa {
   position: relative;
+  /* O filete entra aqui pelo mesmo motivo da figura: as duas telas comparadas
+     são de fundo claro, e sem borda a de cima se dissolve no papel. */
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-media);
   overflow: hidden;
   background: var(--v2-paper);
