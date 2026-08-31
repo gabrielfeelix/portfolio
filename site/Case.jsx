@@ -1028,8 +1028,13 @@ function PresoEsquerda({ passos, figuras }) {
             const f = figuras && figuras[p.fig];
             if (!f || !f.src) return null;
             return (
+              /* A key leva o índice porque dois passos PODEM apontar para a
+                 mesma figura — é o caso da correção do checkout e da
+                 renomeação do frete, que acontecem na mesma tela. Só com
+                 `p.fig` o React via key repetida e mantinha uma imagem só,
+                 que nunca trocava de estado ativo. */
               <img
-                key={p.fig}
+                key={p.fig + "-" + i}
                 src={f.src}
                 alt=""
                 loading="lazy"
@@ -1070,12 +1075,43 @@ function Ponte({ cap }) {
   const p = cap.ponte;
   if (!p) return null;
   return (
+    <>
+      <Dobra
+        label={p.k}
+        larga
+        topo={<><Ato titulo={p.t} paras={p.p} />{p.buraco ? <p className="v2-buraco">{p.buraco}</p> : null}</>}
+      >
+        {p.passos ? <PresoEsquerda passos={p.passos} figuras={cap.figuras} /> : null}
+      </Dobra>
+      {p.efeito ? <PonteEfeito e={p.efeito} /> : null}
+    </>
+  );
+}
+
+/* O resultado da correção que já está no ar.
+ *
+ * Dobra separada, e não um rodapé da ponte, porque ela muda de assunto: a de
+ * cima mostra o que foi desenhado, esta mostra o que aconteceu depois. É o
+ * único bloco de resultado de operação do capítulo — a V2 ainda não publicou
+ * —, e por isso ele carrega a ressalva de atribuição junto, na margem. Um
+ * número que aparece sem o que ele não prova é um número que alguém derruba
+ * na primeira pergunta. */
+function PonteEfeito({ e }) {
+  const rise = useRise();
+  return (
     <Dobra
-      label={p.k}
-      larga
-      topo={<><Ato titulo={p.t} paras={p.p} />{p.buraco ? <p className="v2-buraco">{p.buraco}</p> : null}</>}
+      label={e.k}
+      topo={<Ato titulo={e.t} paras={e.p} />}
+      aside={<><Fonte>{e.fonte}</Fonte>
+        {e.ressalva ? <NotaMargem k={e.ressalvaK}>{e.ressalva}</NotaMargem> : null}</>}
     >
-      {p.passos ? <PresoEsquerda passos={p.passos} figuras={cap.figuras} /> : null}
+      <ul className="v2-dados is-apertada">
+        {(e.dados || []).map((d, i) => (
+          <motion.li key={d.l} {...rise(Math.min(i, 3))}>
+            <Dado mini texto={d.v} rotulo={d.l} nota={d.n} />
+          </motion.li>
+        ))}
+      </ul>
     </Dobra>
   );
 }

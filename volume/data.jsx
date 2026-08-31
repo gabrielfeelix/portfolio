@@ -68,7 +68,11 @@ const CHAPTERS = [
        chave que faz o atalho existir: capítulo sem `minutos` não ganha
        atalho, porque um atalho de 3 minutos num capítulo de 3 minutos
        seria mentira. Se o capítulo crescer, meça de novo e atualize. */
-    minutos: 19,
+    /* Remedido em 31/08 depois que a V1.2 ganhou o passo dos nomes e o bloco
+       de efeito: o capítulo cresceu 416 palavras, 8,7% sobre o que tinha, e
+       19 minutos viraram 21. Medir o delta é mais confiável do que recontar
+       do zero, porque a régua original conta só o caminho padrão. */
+    minutos: 21,
     /* O caminho curto, medido pela mesma régua: a espinha do capítulo
        (resumo, problema, decisões, solução, resultado e o que aprendi) soma
        451 palavras, contra 3761 do caminho inteiro.
@@ -78,30 +82,44 @@ const CHAPTERS = [
        capítulo de 3 minutos seria mentira. O corte é economia de 3 minutos ou
        mais — por isso ODEX, Oderço e Portfólio não têm este campo, e a página
        deles não oferece escolha nenhuma. */
-    minutosCurto: 2,
+    /* O caminho curto passou de 2 para 3: das mudanças desta sessão, só o
+       bloco `resultado` está nele, e ele ganhou o parágrafo do que já está no
+       ar — cerca de 500 palavras contra as 451 de antes. A economia continua
+       enorme (3 contra 21), então o atalho segue valendo. */
+    minutosCurto: 3,
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
-      resultado: "A direção oposta à do briefing foi a aprovada. Design entregue, no ar em outubro de 2026",
+      resultado: "A direção oposta à do briefing foi a aprovada. A correção de urgência já está no ar e mediu; a V2 entra em outubro de 2026",
     },
     /* ---- a nota do suporte, antes do Ato I --------------------------
        O capítulo foi desenhado mobile first e mostra telas de celular ao
        longo do caminho, mas as provas grandes são prints de desktop.
        Sem esta nota isso parece descuido; com ela, é decisão declarada.
 
-       Os números saem do GA4 da loja, 12 meses (27/ago/2025 a
-       26/ago/2026, 331.593 sessões). O bruto do período é 73,6% desktop
-       contra 26,2% mobile, mas junho e julho tiveram um pico de desktop
-       que cheira a tráfego não humano ou campanha desktop-only: o mix
-       dos meses sem esse pico é 60/40, e é esse que está aqui, porque é
-       o que se defende se alguém perguntar. Se remedir, atualize os dois
-       números E a linha do ticket. */
+       O mix ESTAVA errado aqui, e o comentário antigo já sabia: ele dizia
+       que o número justo era 60/40 e o dado logo abaixo seguia 70/30, que é
+       o bruto do 2º trimestre. E o bruto do trimestre é justamente o que não
+       serve, porque junho tem um pico de desktop que não é gente — no dia 9
+       de julho o tráfego caiu 76% e o site ficou 4x mais rápido no mesmo dia,
+       que é robô indo embora, não visitante.
+
+       Nos meses sem o pico o celular fica em 47 a 48%, então o número honesto
+       é meio a meio. Ele enfraquece a justificativa de mostrar prova em
+       desktop e por isso é tentador manter o 70/30 — mas fortalece a decisão
+       que o capítulo realmente defende, que foi desenhar mobile first: no 2º
+       trimestre o celular converteu MAIS que o computador (0,169% contra
+       0,138%) e rejeitou menos (49,2% contra 60,0%).
+
+       As sessões e o ticket seguem sendo os do 2º trimestre, que é o recorte
+       comparável do resto do capítulo. Se remedir, atualize os dois números,
+       a linha do ticket E esta explicação. */
     notaSuporte: {
       k: "Antes de começar",
-      p: "Este projeto foi desenhado mobile first, e você vai ver telas de celular ao longo do caminho. Mas 7 de cada 10 acessos da loja vinham do computador, então as provas grandes deste capítulo são prints de desktop.",
-      p2: "São 116.530 sessões no computador contra 50.352 no celular, com ticket médio de R$ 663 contra R$ 420. Quem monta o próprio PC compara ficha técnica, abre várias abas e decide na tela grande.",
-      fonte: "Google Analytics 4 · 2º trimestre de 2026 · 166.882 sessões",
-      desktop: 70, mobile: 30,
+      p: "Este projeto foi desenhado mobile first, e você vai ver telas de celular ao longo do caminho. O acesso da loja é meio a meio entre computador e celular, mas quem compra no computador gasta mais, então as provas grandes deste capítulo são prints de desktop.",
+      p2: "O ticket médio é de R$ 663 no computador contra R$ 420 no celular. Quem monta o próprio PC compara ficha técnica, abre várias abas e decide na tela grande. O celular, em compensação, converte mais e rejeita menos — foi por isso que o desenho começou por ele.",
+      fonte: "Google Analytics 4 · 2º trimestre de 2026 · meses sem o pico de tráfego automatizado",
+      desktop: 52, mobile: 48,
       lDesk: "computador", lMob: "celular",
     },
     /* ---- as figuras do capítulo -------------------------------------
@@ -516,7 +534,15 @@ const CHAPTERS = [
             p: "O módulo de pagamento do Magento falhava, e quando falhava sobravam dois meios e um vão maior que o próprio conteúdo, exatamente onde a compra acontece. Quem paga com cartão não via como pagar.",
             fig: "ckLento" },
           { k: "A correção", t: "Os quatro meios em uma linha só",
-            p: "Os quatro passaram a caber lado a lado e o frete condensou em três opções com um \u201cver mais\u201d. O mesmo checkout ficou 60% mais curto: 3421 pixels de altura contra 1366.",
+            p: "Os quatro passaram a caber lado a lado. No frete, a loja tinha acabado de ligar várias transportadoras e despejava mais de dez de uma vez: passei a mostrar as três principais por preço e relevância, e o resto foi para trás de um \u201cver mais\u201d que já abre fechado. O mesmo checkout ficou 60% mais curto: 3421 pixels de altura contra 1366.",
+            fig: "ckV12" },
+          /* A renomeação é passo próprio, e não uma linha dentro da correção
+             acima, porque é a decisão que melhor resume a tese do capítulo: o
+             que estava na tela era instrumentação vazando, não estética.
+             Reusa a figura da correção porque é literalmente a mesma tela — é
+             nela que os nomes aparecem. */
+          { k: "Os nomes", t: "\u201cNormal\u201d não é nome de entrega",
+            p: "Cada transportadora chegava à tela chamada de \u201cNormal\u201d, que era como o sistema as classificava por dentro. Ninguém escolhe entre quatro \u201cnormais\u201d: passaram a aparecer pelo nome real, Correios PAC, Correios SEDEX e o serviço de cada transportadora. Não economiza um pixel, e é a diferença entre uma lista que existe e uma lista que dá para usar.",
             fig: "ckV12" },
           { k: "A resposta", t: "Escolher passou a explicar",
             p: "Selecionar Pix abre o que acontece depois de finalizar, em três passos. A dúvida que fazia a pessoa sair do checkout virou resposta na própria tela.",
@@ -524,7 +550,44 @@ const CHAPTERS = [
           { k: "No celular", t: "A mesma decisão, na tela pequena",
             p: "No mobile a diferença fica literal: a V1.2 termina onde a V1 ainda tem um quarto de tela pela frente, para a mesma compra.",
             fig: "ckMobile" },
-        ] },
+        ],
+        /* ---- o efeito da V1.2 -----------------------------------------
+           Este bloco é a única coisa do capítulo inteiro que é resultado de
+           operação, e ele existe porque a V1.2 está no ar desde julho
+           enquanto a V2 só entra em outubro. Sem ele o capítulo descrevia
+           uma correção publicada e não dizia o que ela fez.
+
+           Os quatro números foram escolhidos por serem os que sobrevivem à
+           contestação, e não por serem os maiores. Ficaram DE FORA, de
+           propósito: site 4x mais rápido, rejeição de 55% para 34%, duração
+           de sessão de 134s para 235s e engajamento de 45% para 66%. Todos
+           esses co-ocorrem com 9 de julho, o dia em que o tráfego
+           automatizado parou (76% de queda de sessões e o servidor 4x mais
+           rápido no mesmo dia), e não com o deploy de 17 a 24 de julho.
+           Atribuí-los ao trabalho seria o tipo de número que cai na
+           primeira pergunta.
+
+           Também ficou de fora o apagão do cartão de fevereiro a março, que
+           é o dado mais forte que existe sobre esta loja (39 dias sem
+           nenhum pedido no cartão, p = 2,6 × 10⁻⁷, cerca de R$ 14 mil).
+           Ele termina em 16 de março e o deploy é de julho: não é resultado
+           deste trabalho, é o diagnóstico que justificou ele. Está contado
+           como diagnóstico no Ato I, e é lá que deve ficar. */
+        efeito: {
+          k: "O que aconteceu depois",
+          t: "A correção está no ar desde julho, e ela mediu",
+          p: ["A V2 ainda não publicou, mas a V1.2 sim, e um mês de operação já responde. Junto dela foi o botão de comprar, que era vermelho na vitrine e no carrinho e passou a verde no fim de julho.",
+              "O erro de script dentro do checkout é o número que eu mais defendo: vem de gravação de sessão, que filtra robô na origem, e o recorte é exatamente a tela onde eu mexi."],
+          dados: [
+            { v: "\u221215,6%", l: "erro de script no checkout", n: "57,9% das sessões para 48,9%" },
+            { v: "+28%", l: "adição ao carrinho por produto visto", n: "z = 5,40 · p < 0,0001" },
+            { v: "51/51", l: "pedidos no cartão concluídos", n: "nenhum cancelado no período" },
+            { v: "+91%", l: "mediana do ticket no cartão", n: "R$ 425 para R$ 812" },
+          ],
+          fonte: "GA4 e Microsoft Clarity · 27/jul a 30/ago de 2026 contra 1/fev a 7/jun · e o export de 792 pedidos do Magento",
+          ressalvaK: "O que este número não prova",
+          ressalva: "O checkout novo entrou entre 17 e 24 de julho e a cor mudou no dia 29. Cinco dias separam os dois, e nenhuma análise de dado observado consegue dizer qual dos dois moveu a adição ao carrinho. Subiu depois das duas, medido por produto visto em vez de por sessão justamente para o robô não entrar na conta. Separar de verdade exigiria um teste A/B com as duas cores no ar ao mesmo tempo.",
+        } },
     modulos: [
       { k: "Pré-venda", t: "Reserva com vaga contada e prazo na cara",
         buraco: "A PCYES vive de lançamento, edição limitada, coleção com o Maringá FC, e a V1 tratava tudo isso igual a qualquer outro produto: ou tinha estoque, ou sumia da vitrine.",
@@ -633,7 +696,8 @@ const CHAPTERS = [
     resultado: {
       t: "Entregue, com data marcada para outubro",
       p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada, o design saiu da minha mesa e a data ficou marcada.",
-          "Número de operação só passa a existir depois que a loja estiver no ar, e eu prefiro não apresentar número que não existe."],
+          "O que já está no ar é a V1.2, e ela mediu: menos erro de script no checkout, mais gente pondo no carrinho, e o cartão concluindo sem cancelamento. Os números estão no bloco dela, mais acima.",
+          "Da V2 eu não tenho número de operação, porque ela ainda não publicou, e prefiro não apresentar número que não existe. O que dá para dizer agora é o que vai ser medido quando ela entrar."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
               "Conclusão do checkout e abandono por etapa",
