@@ -700,6 +700,28 @@
 
 .v2-cartao-texto { display: grid; gap: 2px; min-width: 0; }
 
+/* No telefone o pé empilha, e isto é correção de um defeito medido.
+
+   O pé é um space-between de duas peças: o texto à esquerda e a linha de meta
+   à direita (`_01 · E-COMMERCE · 19 min`). A meta tem `flex: none`, então ela
+   nunca encolhe — e a 390px ela ficava com 205px dos 310 disponíveis, deixando
+   51px para o título. "Redesign do e-commerce" quebrava em "do e-" / "commerce"
+   num cartão que é a porta de entrada do trabalho.
+
+   O `19 min` que entrou em 30/08 tornou a meta ainda mais longa, então parte
+   do estrago é recente. Empilhado, o título ganha a largura inteira e a meta
+   desce para a própria linha, que é onde cromo deve ficar quando não cabe ao
+   lado. */
+@media (max-width: 560px) {
+  .v2-cartao-pe {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--v2-s1);
+  }
+  .v2-cartao-texto { width: 100%; }
+  .v2-cartao-dom { order: -1; }
+}
+
 .v2-cartao-t {
   margin: 0;
   font-size: var(--v2-t-bloco);
@@ -857,10 +879,15 @@
   justify-content: flex-end;
   gap: 6px;
   padding: var(--v2-s3);
+  /* O véu fechou mais em 30/08. Ele já existia, e não aguentava print claro:
+     no cartão do Kitamo, que é tipografia grande e clara, o rótulo caía em
+     cima do texto do próprio print e as duas camadas se liam juntas. .92/.74
+     resolvem fundo escuro e perdem para fundo com tinta grande. */
   background: linear-gradient(to top,
-    rgba(11, 11, 12, .92) 0%,
-    rgba(11, 11, 12, .74) 52%,
-    rgba(11, 11, 12, .30) 100%);
+    rgba(11, 11, 12, .96) 0%,
+    rgba(11, 11, 12, .88) 46%,
+    rgba(11, 11, 12, .62) 78%,
+    rgba(11, 11, 12, .34) 100%);
   color: #FFF;
   opacity: 0;
   /* escondida, ela nao pode interceptar o ponteiro; teclado nao depende
@@ -897,9 +924,16 @@
 
 /* Acao em filete, nao em botao cheio: e uma peca extra, e botao solido aqui
    pesaria mais que o CTA dos casos, que e o primario da dobra. */
+/* O alvo de toque tinha 78 por 22px, e 22 é metade do mínimo confortável.
+   Num dedo isso é um link que se erra. A área cresce por padding e por
+   `min-height`, sem mexer no tamanho da letra: o sublinhado continua colado no
+   texto, e o que aumenta é só o que o dedo alcança. */
 .v2-fita-acao {
   align-self: flex-start;
-  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 0;
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
   letter-spacing: var(--v2-track-cromo);
