@@ -475,6 +475,18 @@ export function Rodape() {
       </ul>
       <div className="v2-rodape-base">
         <span>{AUTOR()}</span>
+        {/* Revogar precisa ser tão fácil quanto consentir — é o que a LGPD
+            pede e é o que separa um banner honesto de um pedágio. Sem este
+            link, quem clicou uma vez ficava preso à escolha para sempre, e o
+            banner nunca mais aparecia para desfazer. `abrirConsentimento` é
+            definido em site/consent.js. */}
+        <button
+          type="button"
+          className="v2-rodape-medicao"
+          onClick={() => window.abrirConsentimento && window.abrirConsentimento()}
+        >
+          {t("Medição", "Measurement")}
+        </button>
         <span>UX · Product Designer</span>
       </div>
     </footer>

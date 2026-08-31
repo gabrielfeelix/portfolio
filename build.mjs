@@ -215,6 +215,20 @@ async function bundleAnalytics() {
   });
 }
 
+/* consent.js vai para o dist sozinho, fora do bundle do app: ele precisa ser
+   um <script> síncrono no HTML, executado antes do gtag, e nada que dependa do
+   React pode chegar antes dele. Passa pelo esbuild só para minificar. */
+async function buildConsent() {
+  await esbuild.build({
+    entryPoints: [path.join(ROOT, "site", "consent.js")],
+    outfile: path.join(DIST, "consent.js"),
+    bundle: false,
+    minify: true,
+    format: "iife",
+    target: ["es2018"],
+  });
+}
+
 /* O measurement ID fica escrito aqui, e não numa env, de propósito: ele é
    público (vai no HTML de toda página) e é fixo. Numa env, esquecer de
    definir na Vercel derrubaria a medição em silêncio, e a falta só apareceria
@@ -249,16 +263,26 @@ function analyticsSnippet() {
   gtag("config", "${GA4_ID}", { send_page_view: false });
 </script>`;
 
+  /* O Clarity deixou de ser injetado aqui e passou a ser carregado por
+     consent.js, e só depois de haver consentimento. O motivo é o que ele faz:
+     grava a sessão — mouse, clique, rolagem —, o que é bem mais sensível que
+     contar página, e ele não obedece ao Consent Mode do Google. Aqui sobra só
+     o ID, que o consent.js lê na hora de decidir. */
   const id = process.env.CLARITY_ID;
   const clarity = id
-    ? `
-<script type="text/javascript">
-  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${id}");
-</script>`
+    ? `<script>window.__CLARITY_ID=${JSON.stringify(id)};</script>`
     : "<!-- Clarity disabled: set CLARITY_ID env to enable -->";
-  return vercel + "\n" + ga4 + "\n" + clarity;
+
+  /* ORDEM, e ela é o ponto do bloco inteiro:
+       1. o ID do Clarity, que é só um dado;
+       2. consent.js SEM async/defer, que manda gtag('consent','default');
+       3. o gtag.
+     Invertendo 2 e 3, o GA4 dispara uma vez antes de saber o consentimento, e
+     o banner vira enfeite. Por isso consent.js é o único script síncrono do
+     site: ele tem de rodar entre uma coisa e outra, não "em algum momento". */
+  const consent = `<script src="/consent.js"></script>`;
+
+  return vercel + "\n" + clarity + "\n" + consent + "\n" + ga4;
 }
 
 /* ------------------------------ o site ------------------------------ */
@@ -394,6 +418,7 @@ async function buildOnce(dev = false) {
   await clean();
   await transpileConteudo();
   await bundleAnalytics();
+  await buildConsent();
   await copyVendor();
   await copyAssets();
   const posts = await buildBlog(dev);

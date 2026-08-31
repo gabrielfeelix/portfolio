@@ -838,6 +838,22 @@
   font-size: var(--v2-t-label);
 }
 
+/* O link que reabre o banner de medição. É <button> porque não navega para
+   lugar nenhum, e é desenhado como o texto vizinho para não virar um terceiro
+   peso na linha: ele precisa estar disponível, não chamar atenção. */
+.v2-rodape-medicao {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color .18s;
+}
+.v2-rodape-medicao:hover { color: #fff; }
+
 @media (max-width: 860px) {
   .v2-rodape-topo { grid-template-columns: 1fr; gap: var(--v2-s3); }
   /* No celular a dobra cheia vira armadilha: teclado, barra de endereço e
