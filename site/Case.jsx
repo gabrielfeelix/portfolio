@@ -1160,6 +1160,51 @@ function Modulo({ mod, figuras, emAba = false }) {
 function Abas({ itens, rotulo, id }) {
   const [ativo, setAtivo] = React.useState(0);
   const refs = React.useRef([]);
+  const trilho = React.useRef(null);
+
+  /* Rolagem horizontal na roda do mouse.
+   *
+   * O trilho tem `overflow-x: auto` e mede 2.688px contra 925px de caixa nos
+   * cases longos, então ele SEMPRE precisa rolar — e não rolava. Nem com
+   * Shift, nem com o deslize lateral do trackpad: medido em 31/08, o
+   * `scrollLeft` ficava em zero nos dois casos enquanto a página andava
+   * normalmente. Quem navega por teclado tinha as setas; quem usa mouse
+   * ficava sem as abas do fim, e elas nem apareciam cortadas — a máscara da
+   * direita as apaga.
+   *
+   * O `data-lenis-prevent` que o motion.js espalha não resolve: ele impede o
+   * Lenis de sequestrar, mas o scroll nativo horizontal continuava sem
+   * acontecer. Então a rolagem é feita à mão, o que também deixa o
+   * comportamento igual com e sem Lenis.
+   *
+   * Três cuidados:
+   * - `passive: false`, senão `preventDefault` é ignorado.
+   * - só intercepta quando a roda ANDOU alguma coisa: chegando na ponta, o
+   *   evento volta a ser da página, e a rolagem vertical não trava em cima
+   *   das abas.
+   * - roda vertical sem Shift nunca é roubada. Rolar a página com o ponteiro
+   *   por acaso sobre o trilho é o gesto mais comum que existe, e prendê-lo
+   *   seria pior que a falha que isto conserta. */
+  React.useEffect(() => {
+    const el = trilho.current;
+    if (!el) return;
+    const naRoda = (e) => {
+      if (el.scrollWidth <= el.clientWidth) return;
+      const lateral = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+        ? e.deltaX
+        : (e.shiftKey ? e.deltaY : 0);
+      if (!lateral) return;
+      const antes = el.scrollLeft;
+      el.scrollLeft = antes + lateral;
+      if (el.scrollLeft !== antes) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    el.addEventListener("wheel", naRoda, { passive: false });
+    return () => el.removeEventListener("wheel", naRoda);
+  }, [itens]);
+
   if (!itens || itens.length < 2) return itens && itens.length ? itens[0].conteudo : null;
 
   const foca = (i) => {
@@ -1177,7 +1222,7 @@ function Abas({ itens, rotulo, id }) {
 
   return (
     <>
-      <div className="v2-abas-trilho" role="tablist" aria-label={rotulo} onKeyDown={tecla}>
+      <div className="v2-abas-trilho" role="tablist" aria-label={rotulo} onKeyDown={tecla} ref={trilho}>
         {itens.map((it, i) => (
           <button
             key={it.chave}

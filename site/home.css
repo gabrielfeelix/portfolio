@@ -991,19 +991,51 @@
 
 /* A pilula dentro do card. Ela ja vem pronta do kit; aqui so entra o respiro
    que separa o botao do resumo, porque o `gap` de 6px do foco e medida de
-   linha de texto e ficaria apertado debaixo de uma chapa. */
-.v2-fita-foco .v2-pill-wrap { margin-top: 4px; }
+   linha de texto e ficaria apertado debaixo de uma chapa.
+
+   `flex-wrap` porque o card tem 332px uteis e duas pilulas nem sempre cabem
+   na mesma linha: quando nao couberem, a segunda desce em vez de espremer o
+   rotulo das duas. */
+.v2-fita-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* A pilula do kit foi desenhada para a hero, onde ela e a unica coisa da
+   linha. Dentro do card ela tem 332px de largura util e as vezes precisa
+   caber DUAS: em tamanho cheio, "Ver prototipo" e "Ver em producao" somavam
+   349px, quebravam linha e as duas chapas empilhadas comiam o card inteiro.
+   Aqui ela encolhe — a caixa e o alvo de toque diminuem, a letra continua a
+   mesma, e o par volta a caber lado a lado. 36px de altura ainda e alvo
+   confortavel para um botao que so aparece sob o ponteiro; no dedo a fita
+   vira rolagem e o card inteiro e o alvo. */
+.v2-fita-acoes .v2-pill {
+  min-height: 0;
+  gap: 7px;
+  padding: 4px 13px 4px 4px;
+}
+.v2-fita-acoes .is-secundario .v2-pill { padding: 3px 12px 3px 3px; }
+.v2-fita-acoes .is-sem-seta .v2-pill { padding-left: 13px; }
+.v2-fita-acoes .is-sem-seta.is-secundario .v2-pill { padding-left: 12px; }
+.v2-fita-acoes .v2-pill-dot { width: 28px; height: 28px; }
+.v2-fita-acoes .v2-pill-filler {
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+}
+.v2-fita-acoes .v2-pill:hover .v2-pill-filler,
+.v2-fita-acoes .v2-pill:focus-visible .v2-pill-filler { width: calc(100% - 8px); }
+.v2-fita-foco .v2-pill-wrap { margin-top: 0; }
 
 /* "Em breve" nao e clique: a pilula inerte perde o ponteiro e baixa o
    contorno, para ler como estado e nao como acao disponivel.
    O `dot` sai junto com a seta: sem ela ele fica um circulo vazio na frente
    do rotulo, que le como icone faltando. Saindo o dot, o padding da esquerda
    iguala o da direita e a pilula volta a ser simetrica. */
-.v2-pill-wrap.is-inerte .v2-pill {
-  cursor: default;
-  padding-left: calc(var(--v2-s3) - 1px);
-}
-.v2-pill-wrap.is-inerte .v2-pill-dot { display: none; }
+.v2-pill-wrap.is-inerte .v2-pill { cursor: default; }
 .v2-pill-wrap.is-inerte.is-secundario.is-escuro .v2-pill {
   border-color: rgba(255, 255, 255, .22);
 }

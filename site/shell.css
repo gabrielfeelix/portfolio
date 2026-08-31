@@ -244,6 +244,14 @@
   flex: none;
 }
 
+/* Pilula sem seta: o `dot` sai junto. Sem o aviao dentro dele, ele fica um
+   circulo vazio na frente do rotulo, que le como icone que nao carregou. E
+   com o dot fora, o padding da esquerda precisa igualar o da direita, senao a
+   pilula fica torta para dentro. */
+.v2-pill-wrap.is-sem-seta .v2-pill-dot { display: none; }
+.v2-pill-wrap.is-sem-seta .v2-pill { padding-left: var(--v2-s3); }
+.v2-pill-wrap.is-sem-seta.is-secundario .v2-pill { padding-left: calc(var(--v2-s3) - 1px); }
+
 /* A janela de 13px com a fita de dois aviões. No hover a fita anda meia
    largura: um avião sai, o outro entra. 13 e não 12 porque o avião é uma
    silhueta cheia e a seta era um traço: no mesmo tamanho de caixa ele lia

@@ -1492,7 +1492,7 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    fita corre da esquerda para a direita, então o começo é o único lugar que o
    visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
    esse lugar. */
-const PIECE_ORDER = ["locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "remoctrl", "traxium"];
+const PIECE_ORDER = ["isabella", "signamais", "locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "dropchina", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
