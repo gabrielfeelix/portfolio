@@ -165,12 +165,38 @@ async function buildSitemap(posts = []) {
     ...posts.map((p) => ({ loc: `/blog/${p.slug}`, pri: "0.7", mod: p.data })),
   ];
 
+  /* CADA rota entra DUAS vezes, uma por idioma, e as duas se declaram
+     traduções uma da outra por `xhtml:link`.
+   *
+     Sem os alternates o Google vê dois endereços com o mesmo desenho e o
+     mesmo assunto e trata um deles como duplicata — que é exatamente o
+     contrário do que se quer: a versão inglesa existe para ser encontrada por
+     quem procura em inglês. Com eles, ele entende que são a mesma página em
+     duas línguas e serve a certa para cada pessoa.
+   *
+     A regra de ouro do hreflang é que ele é RECÍPROCO: cada URL lista as duas,
+     inclusive a si mesma. Uma versão que aponta para a outra sem receber a
+     volta é ignorada em silêncio. Por isso o bloco de alternates é o mesmo nos
+     dois <url>, e não uma referência cruzada.
+   *
+     `x-default` é o português: é a língua da casa e o endereço sem prefixo,
+     que é o que já está indexado e circulando. */
+  const en = (loc) => (loc === "/" ? "/en" : "/en" + loc);
+  const alternates = (r) =>
+    `<xhtml:link rel="alternate" hreflang="pt-BR" href="${SITE}${r.loc}"/>` +
+    `<xhtml:link rel="alternate" hreflang="en" href="${SITE}${en(r.loc)}"/>` +
+    `<xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${r.loc}"/>`;
+
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    rotas.map((r) =>
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"` +
+    ` xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
+    rotas.flatMap((r) => [
       `  <url><loc>${SITE}${r.loc}</loc><lastmod>${r.mod}</lastmod>` +
-      `<priority>${r.pri}</priority></url>`).join("\n") +
+      `<priority>${r.pri}</priority>${alternates(r)}</url>`,
+      `  <url><loc>${SITE}${en(r.loc)}</loc><lastmod>${r.mod}</lastmod>` +
+      `<priority>${r.pri}</priority>${alternates(r)}</url>`,
+    ]).join("\n") +
     `\n</urlset>\n`;
   await writeFile(path.join(DIST, "sitemap.xml"), xml);
   if (!casos.length) console.warn("! sitemap sem casos: CASE_ORDER não foi lido de volume/data.jsx");

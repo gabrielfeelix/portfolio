@@ -29,7 +29,7 @@ import {
   porSlug, corpo, vizinhos, relacionados,
   dataLonga, dataCurta, rotuloTag,
 } from "./blog.js";
-import { t } from "./i18n.js";
+import { t, url } from "./i18n.js";
 
 const SITE = "https://gabrielfelix-ux.4yu.com.br";
 
@@ -122,7 +122,7 @@ function Cartao({ p, ir, rot }) {
   return (
     <a
       className="v2-post-vizinho"
-      href={`/blog/${p.slug}`}
+      href={url(`/blog/${p.slug}`)}
       onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
     >
       <span className="v2-post-vizinho-rot">{rot}</span>
@@ -168,7 +168,7 @@ export default function Post({ slug, ir }) {
           {t("O endereço ", "The address ")}<code>/blog/{slug}</code>{t(" não corresponde a nenhum post.", " doesn't match any post.")}
         </p>
         <div className="v2-post-404-cta">
-          <Pill href="/blog" onClick={(e) => { e.preventDefault(); ir("/blog"); }}>
+          <Pill href={url("/blog")} onClick={(e) => { e.preventDefault(); ir("/blog"); }}>
             {t("Ver todos os textos", "See every text")}
           </Pill>
         </div>
@@ -221,7 +221,7 @@ export default function Post({ slug, ir }) {
             <div className="v2-post-corpo">
               <p className="v2-erro">{erro}</p>
               <p>
-                <a href={`/blog/${p.slug}`} onClick={(e) => { e.preventDefault(); window.location.reload(); }}>
+                <a href={url(`/blog/${p.slug}`)} onClick={(e) => { e.preventDefault(); window.location.reload(); }}>
                   {t("Tentar de novo", "Try again")}
                 </a>
               </p>
@@ -239,7 +239,7 @@ export default function Post({ slug, ir }) {
               {t("UX / Product Designer. Desenho e construo: do protótipo navegável ao produto publicado.",
                  "UX / Product Designer. I design and I build: from the navigable prototype to the shipped product.")}
             </p>
-            <Pill href="/sobre" onClick={(e) => { e.preventDefault(); ir("/sobre"); }}>
+            <Pill href={url("/sobre")} onClick={(e) => { e.preventDefault(); ir("/sobre"); }}>
               {/* "Who I am" e não a terceira pessoa: é o mesmo rótulo do CTA da
                   dobra 06 da home, e o site fala em primeira pessoa em todo o
                   resto. Manter a voz importa mais que casar com o "Escrito por"
@@ -266,7 +266,7 @@ export default function Post({ slug, ir }) {
               <a
                 key={o.slug}
                 className="v2-post-perto-item"
-                href={`/blog/${o.slug}`}
+                href={url(`/blog/${o.slug}`)}
                 onClick={(e) => { e.preventDefault(); ir(`/blog/${o.slug}`); }}
               >
                 <span className="v2-post-perto-n">{String(i + 1).padStart(2, "0")}</span>

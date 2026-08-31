@@ -8,13 +8,57 @@
    classic scripts, so window-swapping wouldn't reach bare references).
    Toggle = save + reload: the swap must happen before first render.
    ===================================================================== */
+/* O IDIOMA MORA NA URL, e não mais no localStorage.
+ *
+ * Era localStorage até 31/08, e a troca foi feita por um motivo prático que
+ * anula qualquer conveniência: com o idioma guardado no navegador de quem
+ * visita, o LINK NÃO CARREGA O IDIOMA. Mandar 4yu.com.br/case/pcyes para um
+ * recrutador lá fora abria em português, porque a escolha estava na máquina
+ * errada — na do Gabriel, não na de quem recebe. Um site em inglês que não
+ * pode ser ENVIADO em inglês não serve para a coisa que ele existe para fazer.
+ *
+ * De quebra resolve o SEO: dois endereços é o que permite declarar `hreflang`,
+ * e sem endereço próprio o Google indexa uma versão só.
+ *
+ * O prefixo é `/en`. Qualquer outro caminho é português, que é o padrão — o
+ * português não ganha prefixo porque é a língua da casa e porque `/pt` mudaria
+ * todos os endereços que já estão indexados e circulando por aí. */
+const PREFIXO_EN = "/en";
 const LANG = (() => {
-  try { return localStorage.getItem("vol-lang") === "en" ? "en" : "pt"; } catch (e) { return "pt"; }
+  try {
+    const p = window.location.pathname;
+    return (p === PREFIXO_EN || p.indexOf(PREFIXO_EN + "/") === 0) ? "en" : "pt";
+  } catch (e) { return "pt"; }
 })();
 function t(pt, en) { return LANG === "en" ? en : pt; }
+
+/* O caminho sem o prefixo — o endereço "puro" da rota, que é o que o roteador
+   da V2 entende. `/en/case/pcyes` e `/case/pcyes` devolvem os dois
+   `/case/pcyes`. */
+function semPrefixo(caminho) {
+  const p = String(caminho || "/");
+  if (p === PREFIXO_EN) return "/";
+  if (p.indexOf(PREFIXO_EN + "/") === 0) return p.slice(PREFIXO_EN.length) || "/";
+  return p;
+}
+
+/* O mesmo endereço no outro idioma. */
+function comIdioma(caminho, lang) {
+  const puro = semPrefixo(caminho);
+  if (lang !== "en") return puro;
+  return puro === "/" ? PREFIXO_EN : PREFIXO_EN + puro;
+}
+
+/* Trocar de idioma é NAVEGAR, e continua sendo carga de página inteira: a
+   mutação do conteúdo abaixo acontece antes do primeiro render, e não existe
+   trocar sem isso. A diferença é que agora a barra de endereço acompanha, e o
+   que a pessoa copiar dali abre no idioma que ela está vendo.
+
+   `hash` e `search` viajam junto: quem está em /#casos e troca de idioma
+   continua na dobra dos casos, e não no topo. */
 function toggleLang() {
-  try { localStorage.setItem("vol-lang", LANG === "en" ? "pt" : "en"); } catch (e) {}
-  window.location.reload();
+  const alvo = comIdioma(window.location.pathname, LANG === "en" ? "pt" : "en");
+  window.location.assign(alvo + window.location.search + window.location.hash);
 }
 
 /* document chrome that lives outside React */
@@ -852,7 +896,7 @@ if (LANG === "en") {
     isabella: "Website · Architecture", "locarmais-site": "Website · Rent guarantee",
     signamais: "SaaS · Subscriptions", "locarmais-conciliacao": "SaaS · Management",
     odex: "Desktop and Web", "oderco-revenda": "Web · Landing page", pcyes: "E-commerce · Magento",
-    rodape: "App · Android", remoctrl: "Native app · Desktop", traxium: "SaaS",
+    rodape: "App · Android", remoctrl: "Native app · Desktop",
     quantocobro: "App · Android", deixeiaqui: "App · Android",
     dropchina: "E-commerce · Shopify", web2design: "Tool · Design", argel: "App · Boxing",
     "solar-site": "Website · LP", "4yu": "Website · LP", immo: "SaaS",
@@ -863,7 +907,6 @@ if (LANG === "en") {
        Roku, Shopify, Figma, EUDR/IDTF/TRACES NT e CNPJ ficam como estao —
        sao nomes proprios de produto e de norma. */
     remoctrl: "Control a Roku smart TV from the browser, nothing to install",
-    traxium: "Agro-logistics export compliance: EUDR, IDTF and TRACES NT",
     dropchina: "Shopify store with a catalogue built by script",
     web2design: "Extension plus Figma plugin: the web becomes an editable layer",
     argel: "Boxing gym management: platform and student app",
@@ -898,7 +941,6 @@ if (LANG === "en") {
     "quantocobro": "Every freelancer freezes at the same question, and it is not a technical one: what do I charge. The usual sum starts at the price and hopes something is left over. This one starts at what has to be left over and works back to the price, discounting the time nobody pays for: proposals, meetings, surprises, holidays. Each payment already sets tax aside at the real bracket, not the headline rate. No login and no server, because someone else's income is not data I want to keep.",
     "deixeiaqui": "Drawing the arrow is easy. The hard part is admitting that GPS dies exactly where you forget the car: mall basements, airport garages, tall buildings. So the app shows how much it trusts its own signal and switches strategy on its own. Strong signal, follow the arrow. Weak signal, the photo of the pillar and the floor number take over. Pointing with false confidence would be worse than not pointing.",
     "remoctrl": "The TV remote went missing and the official app wants you to install it, create an account and be on the same household. This one opens in the browser, finds the Roku on the network and controls it. Nothing to install, nothing to sign up for.",
-    "traxium": "Selling grain to Europe stopped being a question of price and became a question of proof: you have to show the cargo did not come from deforested land, and the requirement arrives through three fronts that do not talk to each other, EUDR, IDTF and TRACES NT. The control tower puts all three on the same lot and answers the only question the exporter asks in the morning, which is whether this shipment leaves today.",
     "dropchina": "A dropshipping catalogue ages too fast to be kept by hand: prices move, items vanish, spec sheets go stale. Here the ERP is the source of truth and a script pours the catalogue into the store, so no design hour is spent registering products. All of it goes to the two places that move sales: the product page and the path to the cart.",
     "web2design": "A sales-method landing page lives on one thing, which is convincing you in a single screen that there is a process behind the promise. The page puts the method before the testimonial, because whoever buys a method wants to see the method.",
   };
@@ -907,4 +949,4 @@ if (LANG === "en") {
   PROJECTS.forEach((p) => { if (PJ_DOMAIN_EN[p.id]) p.domain = PJ_DOMAIN_EN[p.id]; });
 }
 
-Object.assign(window, { LANG, t, toggleLang });
+Object.assign(window, { LANG, t, toggleLang, semPrefixo, comIdioma, PREFIXO_EN });

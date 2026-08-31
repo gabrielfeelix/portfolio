@@ -39,6 +39,20 @@ export const EN = LANG === "en";
  * some com a leitura das duas versões como texto. */
 export function t(pt, en) { return EN && en !== undefined ? en : pt; }
 
+/* O prefixo de idioma no endereço. Ver a nota longa no topo de
+   volume/i18n.jsx: o idioma mora na URL, então TODO link interno do site
+   precisa carregá-lo. Um `href="/sobre"` cru dentro da versão inglesa é uma
+   porta de saída silenciosa para o português.
+
+   Aceita âncora: `url("/#casos")` devolve `/en/#casos` no inglês. */
+export function url(caminho) {
+  const p = String(caminho || "/");
+  if (!EN || p.indexOf("/") !== 0 || p.indexOf("/en/") === 0 || p === "/en") return p;
+  if (p === "/") return "/en";
+  if (p.indexOf("/#") === 0) return "/en/" + p.slice(1);
+  return "/en" + p;
+}
+
 /* Sobrepõe o espelho EN sobre a copy PT, campo a campo e em profundidade.
  *
  * ISTO EXISTE POR CAUSA DE UM BUG CONHECIDO, e ele está documentado dentro do

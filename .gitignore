@@ -35,3 +35,7 @@ site/posts.gerado.js
 # de PNG e mp4 servidos para pintar imagens que ja existem em webp. _fontes/
 # nao e copiada pelo build, entao o que mora la fica no repo e sai do deploy.
 _fontes/campo/*-parallax.png
+
+# scripts de depuracao temporarios das sessoes (Playwright, sondas de rota)
+_*.mjs
+.porta

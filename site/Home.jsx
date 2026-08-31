@@ -37,7 +37,7 @@ import {
   casos, pieceProjects, pieceCover, pieceDestino, pieceDestinoExtra, pieceStatus,
 } from "./content.js";
 import { HERO, DECLARACAO, METODO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
-import { t } from "./i18n.js";
+import { t, url } from "./i18n.js";
 import { FERRAMENTAS } from "./ferramentas.js";
 
 /* ------------------------------------------------------------------ 1. hero */
@@ -346,7 +346,11 @@ function Cartao({ caso, i, ir }) {
     <article className="v2-cartao">
       <a
         className="v2-cartao-link"
-        href={href}
+        /* `href` puro vai para `ir`, que fala ROTA; o atributo recebe o
+           endereço com o prefixo de idioma, que é o que o navegador fala.
+           Sem isto o cartão de caso era a única porta da home inglesa que
+           devolvia a pessoa para o português. */
+        href={url(href)}
         onPointerEnter={puxaCapa}
         onPointerDown={puxaCapa}
         onFocus={puxaCapa}
@@ -551,7 +555,7 @@ function Metodo({ ir }) {
         titulo={<DuasCores fraca={t("Não é um processo.", "It is not one process.")} forte={t("São dois.", "It is two.")} />}
         lead={METODO.lead}
         /* Secundário, como antes: a home tem UM primário, e ele está na hero. */
-        cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>{t("Ver o método inteiro", "See the whole method")}</Pill>}
+        cta={<Pill href={url("/processo")} onClick={rota(ir, "/processo")} secundario>{t("Ver o método inteiro", "See the whole method")}</Pill>}
       />
       <div className="v2-met-par">
         {METODO.caminhos.map((c, i) => (
@@ -594,7 +598,7 @@ function OndeEstive({ ir }) {
                  caminho. A dobra 06, que é a da ilustração, NÃO ganha CTA: ela
                  é a assinatura da home e fechar com um botão a transformaria em
                  mais uma seção de conversão. */
-              cta={<Pill href="/sobre" onClick={rota(ir, "/sobre")} secundario>{t("Quem eu sou", "Who I am")}</Pill>}
+              cta={<Pill href={url("/sobre")} onClick={rota(ir, "/sobre")} secundario>{t("Quem eu sou", "Who I am")}</Pill>}
             />
             <div className="v2-tra-marca">
               {/* a chave remonta o bloco: é a troca que anima, e não a logo

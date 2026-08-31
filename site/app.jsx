@@ -17,7 +17,7 @@ import Post from "./Post.jsx";
 import { porSlug } from "./blog.js";
 import { Cortina, useTravessia } from "./Travessia.jsx";
 import { decodeDeChegada, trocarIdioma } from "./idioma.js";
-import { t } from "./i18n.js";
+import { t, EN, url } from "./i18n.js";
 import { Cursor } from "./Cursor.jsx";
 
 /* --- roteamento ---
@@ -46,8 +46,14 @@ function rotaDe(caminho) {
   return { tipo: "404", path: p };
 }
 
+/* O prefixo `/en` NÃO é rota: ele é o idioma, e quem o lê é volume/i18n.jsx,
+   antes de o app existir. Aqui ele é descascado para que exista UM roteador e
+   não dois — `/en/case/pcyes` e `/case/pcyes` são a mesma rota em idiomas
+   diferentes, e duplicar a tabela de rotas seria dobrar o lugar onde um
+   endereço novo pode ser esquecido. */
 function rotaAtual() {
-  return rotaDe(window.location.pathname);
+  const semP = window.semPrefixo || ((x) => x);
+  return rotaDe(semP(window.location.pathname));
 }
 
 /* Encurta uma descrição sem cortar palavra no meio. Prefere terminar numa
@@ -106,15 +112,21 @@ function useRota(atravessar) {
      significaria atravessar o hero inteiro em animação para chegar a uma
      dobra que a pessoa pediu direto. */
   const ir = useCallback((href) => {
+    /* `href` chega SEM prefixo, sempre: quem escreve link no site escreve
+       "/sobre", e é aqui que ele ganha o "/en" quando for o caso. Concentrar a
+       regra num ponto só é o que impede um link cru de escapar para o
+       português no meio da versão inglesa. */
     const [caminho, ancora] = String(href).split("#");
-    const mesmaPagina = window.location.pathname === caminho;
+    const endereco = url(href);
+    const semP = window.semPrefixo || ((x) => x);
+    const mesmaPagina = semP(window.location.pathname) === caminho;
     if (mesmaPagina && !ancora) return;
 
     /* Âncora dentro da própria página não é travessia: ninguém troca de
        página, e cobrir a tela para rolar 2000px seria mentir sobre o que
        aconteceu. Continua sendo rolagem suave, como sempre foi. */
     if (mesmaPagina) {
-      window.history.replaceState(null, "", href);
+      window.history.replaceState(null, "", endereco);
       const alvo = document.getElementById(ancora);
       if (alvo) rolarPara(alvo);
       return;
@@ -123,7 +135,7 @@ function useRota(atravessar) {
     /* Trocar de página, sim. A troca roda com a tela já coberta pela cortina;
        ver os tempos em Travessia.jsx. */
     atravessar(() => {
-      window.history.pushState(null, "", href);
+      window.history.pushState(null, "", endereco);
       setRota(rotaAtual());
 
       if (!ancora) {
@@ -329,7 +341,14 @@ function App() {
     }
 
     document.title = titulo;
-    const url = window.location.origin + caminho;
+    /* `caminho` é a rota PURA, sem idioma. Os três endereços abaixo saem dele:
+       o canônico é o desta versão, e os dois alternates apontam um para o
+       outro. Sem os alternates o Google trata as duas versões como páginas
+       concorrentes com o mesmo conteúdo em vez de traduções uma da outra. */
+    const base2 = window.location.origin;
+    const rotaPt = caminho;
+    const rotaEn = caminho === "/" ? "/en" : "/en" + caminho;
+    const url = base2 + (EN ? rotaEn : rotaPt);
 
     const por = (sel, attr, valor) => {
       if (valor == null) return;
@@ -339,6 +358,12 @@ function App() {
 
     por('meta[name="robots"]', "content", achou ? "index, follow" : "noindex, follow");
     por('link[rel="canonical"]', "href", url);
+    /* Os alternates são reescritos a cada rota, como o canônico. `x-default`
+       aponta para o português: é a língua da casa e o endereço sem prefixo,
+       que é o que já está indexado. */
+    por('link[rel="alternate"][hreflang="pt-BR"]', "href", base2 + rotaPt);
+    por('link[rel="alternate"][hreflang="en"]', "href", base2 + rotaEn);
+    por('link[rel="alternate"][hreflang="x-default"]', "href", base2 + rotaPt);
     /* O `og:locale` acompanha o idioma, e é o único metadado que ficava para
        trás: o `lang` do <html> já era trocado por volume/i18n.jsx, mas a
        prévia de link continuava se anunciando como pt_BR mesmo com a página

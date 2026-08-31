@@ -10,6 +10,13 @@
      site/app.jsx: é uma SPA estática e o HTML servido é o mesmo em todo
      endereço, então sem isso todo caso se anunciaria como se fosse a home. -->
 <link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/">
+
+<!-- As duas versões do site, uma apontando para a outra. São reescritas a cada
+     troca de rota junto com o canônico, em app.jsx. `x-default` é o português:
+     é a língua da casa, e o endereço sem prefixo é o que já está indexado. -->
+<link rel="alternate" hreflang="pt-BR" href="https://gabrielfelix-ux.4yu.com.br/">
+<link rel="alternate" hreflang="en" href="https://gabrielfelix-ux.4yu.com.br/en">
+<link rel="alternate" hreflang="x-default" href="https://gabrielfelix-ux.4yu.com.br/">
 <meta name="theme-color" content="#0B0B0C">
 
 <!-- Endereço inexistente numa SPA estática responde 200: o servidor devolve

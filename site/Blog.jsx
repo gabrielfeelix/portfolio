@@ -33,7 +33,7 @@ import {
   POSTS, tags, filtrar, destaque, dataCurta, rotuloTag,
   temFiltro, temBusca,
 } from "./blog.js";
-import { t } from "./i18n.js";
+import { t, url } from "./i18n.js";
 
 /* --- estado na URL -------------------------------------------------------
  *
@@ -97,7 +97,7 @@ function Destaque({ p, ir }) {
   return (
     <motion.a
       className="v2-post-destaque-capa"
-      href={`/blog/${p.slug}`}
+      href={url(`/blog/${p.slug}`)}
       onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
       {...subir(0)}
     >
@@ -187,7 +187,7 @@ function Card({ p, i, n, ir }) {
     <motion.a
       className="v2-post-card"
       data-formato={p.formato}
-      href={`/blog/${p.slug}`}
+      href={url(`/blog/${p.slug}`)}
       onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
       /* O resumo mora dentro da janela da capa, então ele vem antes do título
          no DOM e o nome acessível do link saía pelo resumo: "Recusei a minha

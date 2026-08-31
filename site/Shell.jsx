@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ease, spring, useLamina, AVIAO_D } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
-import { t } from "./i18n.js";
+import { t, url } from "./i18n.js";
 
 /* Todo link passa pelo roteador (`ir`), inclusive "Casos".
  *
@@ -261,7 +261,7 @@ function Menu({ aberto, fechar, ir, rota, trocarIdioma }) {
             {LINKS.map((l, i) => (
               <motion.a
                 key={l.id}
-                href={l.href}
+                href={url(l.href)}
                 className="v2-menu-link"
                 data-aqui={linkDaRota(l.id, rota) ? "1" : undefined}
                 aria-current={linkDaRota(l.id, rota) ? "page" : undefined}
@@ -361,7 +361,7 @@ export function Nav({ sobreEscuro, ir, rota, trocarIdioma }) {
     <header className={"v2-nav" + (sobreEscuro || menu ? " is-escuro" : "") + (encolhida && !menu ? " is-encolhida" : "")}>
       {/* Fase 7: o ponto accent depois do nome saiu. Era maneirismo, e
           nenhuma das cinco referências faz isso. */}
-      <a className="v2-nav-marca" href="/" onClick={ir ? (e) => { e.preventDefault(); ir("/"); } : undefined}>
+      <a className="v2-nav-marca" href={url("/")} onClick={ir ? (e) => { e.preventDefault(); ir("/"); } : undefined}>
         Gabriel Felix
       </a>
 
@@ -373,7 +373,7 @@ export function Nav({ sobreEscuro, ir, rota, trocarIdioma }) {
           return (
           <a
             key={l.id}
-            href={l.href}
+            href={url(l.href)}
             className="v2-nav-link"
             /* `data-aqui` é o desenho e `aria-current` é o mesmo fato dito para
                quem não vê o desenho. Os dois, sempre juntos. */

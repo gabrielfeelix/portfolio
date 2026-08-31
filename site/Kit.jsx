@@ -21,7 +21,7 @@ import { Label, Regua, Lamina } from "./Shell.jsx";
 export { Lamina };
 import { casos } from "./content.js";
 import { CAPAS_CHEIAS } from "./copy.js";
-import { t } from "./i18n.js";
+import { t, url } from "./i18n.js";
 
 /* ------------------------------------------------------------------ cromo */
 
@@ -503,7 +503,10 @@ export function GradeCasos({ excluir, cromo = t("Continue", "Keep going"), titul
             <motion.li key={c.id} {...rise(Math.min(i, 3))}>
               <a
                 className="v2-outro"
-                href={href}
+                /* `href` é a rota pura e vai para `ir` assim; quem põe o
+                   prefixo de idioma no atributo é `url`. Os dois precisam ser
+                   diferentes: o roteador fala rota, o navegador fala endereço. */
+                href={url(href)}
                 onClick={(e) => { e.preventDefault(); ir(href); }}
               >
                 <span className="v2-outro-quadro">
