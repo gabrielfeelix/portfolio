@@ -1355,7 +1355,7 @@ const PROJECTS = [
     marca: "/volume/assets/marcas/mono/signamais.svg",
     sobre: "Assinatura eletrônica é vendida por quem entende de lei para quem não entende, e o produto costuma sair com a cara do contrato em vez da cara de quem assina. Aqui a sequência é a óbvia: sobe o documento, escolhe quem assina, acompanha quem já assinou. O rigor jurídico continua todo lá, só que embaixo do capô, que é onde ele serve.", destino: "proto",
     cover: "/volume/assets/projetos/signamais/cover.webp",
-    links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null } },
+    links: { vercel: "https://notify-cleat-99358726.figma.site/", figma: null, prod: "https://www.signamais.com/login" } },
 
   /* ---- fora do índice até terem link publicado ----------------------
      Regra do briefing: nome sem destino frustra quem clica. Basta
@@ -1428,16 +1428,41 @@ function pieceLink(p) { return (p.links && (p.links.vercel || p.links.play || p.
    do Gabriel em 29/08 ("uma unica foto, e se abrir algo usa a mesma"). */
 function pieceCover(p) { return p.cover || (p.shots && p.shots[0]) || null; }
 
-/* Para onde a peca aponta, e COMO chamar isso. Os tres destinos prometem
-   coisas diferentes e um rotulo unico mentiria em dois deles: `vercel` e
-   produto no ar, `play` e loja de app, `figma` e arquivo de design. Peca sem
-   destino devolve null e o card sai sem botao. */
+/* Para onde a peca aponta, e COMO chamar isso. Os destinos prometem coisas
+   diferentes e um rotulo unico mentiria em quase todos: `vercel` e endereco
+   proprio, `play` e loja de app, `figma` e arquivo de design, `prod` e o
+   sistema oficial do cliente. Peca sem destino devolve null e o card sai sem
+   botao.
+
+   `destino: "proto"` desmancha a promessa do `vercel`: link de Vercel pode ser
+   produto no ar OU prototipo hospedado, e "Ver no ar" para prototipo e a
+   mesma mentira que o volume ja recusou no Rodape ("prometer loja e cumprir
+   prototipo contradiz o argumento na propria vitrine"). Quem sabe qual e o
+   dado, e ele ja dizia — o rotulo e que ignorava. */
 function pieceDestino(p) {
   const l = p.links || {};
-  if (l.vercel) return { href: l.vercel, rotulo: "Ver no ar" };
+  if (l.vercel) return { href: l.vercel, rotulo: p.destino === "proto" ? "Ver protótipo" : "Ver no ar" };
   if (l.play)   return { href: l.play,   rotulo: "Play Store" };
   if (l.figma)  return { href: l.figma,  rotulo: "Ver no Figma" };
+  if (l.prod)   return { href: l.prod,   rotulo: "Ver em produção" };
   return null;
+}
+
+/* O segundo botao, secundario. Existe para a peca que tem DUAS verdades: o
+   Signamais foi entregue como prototipo e depois construido pelo cliente, e o
+   sistema oficial existe mas exige login e nao saiu identico ao proposto.
+   Esconder o link seria omitir que a coisa virou produto; promove-lo a
+   primario seria mandar o visitante para uma tela de senha. Entao ele entra
+   ao lado, em segundo plano — que e exatamente o peso que ele tem.
+
+   Devolve null quando `prod` ja e o destino principal, senao a peca ganharia
+   o mesmo botao duas vezes. */
+function pieceDestinoExtra(p) {
+  const l = p.links || {};
+  if (!l.prod) return null;
+  const principal = pieceDestino(p);
+  if (!principal || principal.href === l.prod) return null;
+  return { href: l.prod, rotulo: "Ver em produção" };
 }
 
 /* O selo do card: "No ar" quando a peca tem destino publicado, "Em breve"
@@ -1467,7 +1492,7 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    fita corre da esquerda para a direita, então o começo é o único lugar que o
    visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
    esse lugar. */
-const PIECE_ORDER = ["4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "remoctrl", "traxium"];
+const PIECE_ORDER = ["locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
@@ -1779,4 +1804,4 @@ function CompanyLogo({ company, kind = "qsc", dark = false }) {
   return <span className={`${kind}-logo-mark`}>{company.name}</span>;
 }
 
-Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, pieceCover, pieceDestino, pieceStatus, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
+Object.assign(window, { PH, CHAPTERS, PROJECTS, CASE_ORDER, EXTRA_ID, CASE_IDS, isCase, caseProjects, pieceProjects, CertPlate, CertThumb, ALL_MARKS, pieceLink, pieceCover, pieceDestino, pieceDestinoExtra, pieceStatus, projTag, projDescriptor, projById, chapterFor, nextProjectId, PROCESSO, CONTATO, AUTOR, VOL, CATS, catLabel, COMPANIES, CERTS, Seal, useReveal, Beat, Brush, MorphWord, InkBlob, MangaPlate, ProtoLinks, sfxRo, CompanyLogo, BRAND_LOGOS, brandLogo, BrandPlate });
