@@ -1498,7 +1498,7 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    a semelhança deixa de ser leitura. Hub e Worklife entram na lista só para
    ficarem ANTES dele — sem rank explícito os dois caíam no fim por padrão e
    empurravam o Signamais de volta para perto da Isabella. */
-const PIECE_ORDER = ["isabella", "locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "hub-oderco", "ponto-admin", "signamais", "dropchina", "remoctrl", "traxium"];
+const PIECE_ORDER = ["isabella", "ponto-admin", "locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "hub-oderco", "signamais", "dropchina", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
