@@ -773,7 +773,7 @@ function rotaDoVoo(w, h, tese, alcance) {
    POR FORA e voltar pelo outro. Isso é só uma sequência de pontos bem
    afastados dos dois lados com pouca queda entre eles — a travessia atravessa
    a tela, mas gasta quase nenhuma rolagem. Quem apaga o rastro dela é
-   `tabelaPorAltura`, que esconde o avião entre duas saídas de lados opostos.
+   `amostrarPorAltura`, que esconde o avião entre duas saídas de lados opostos.
    Ver a regra da cortina lá embaixo. */
 function manobras(P, w, topo, sobra, base, fatia) {
   const em = (fx, u) => P.push([w * fx, topo + sobra * (base + u * fatia)]);
@@ -972,9 +972,33 @@ function rotaDaPagina(variante, w, h, alcance, janela) {
    rolagem controla a ALTURA do avião, e o comprimento de arco vira
    consequência, que é o que faz ele acompanhar quem está lendo.
 
-   Só funciona com Y crescente, e é por isso que as voltas descem. */
-function tabelaPorAltura(d, w) {
-  if (typeof document === "undefined" || !d) return null;
+   Só funciona com Y crescente, e é por isso que as voltas descem.
+
+   A AMOSTRAGEM É FATIADA, e isso não é detalhe de implementação.
+
+   Ela é a conta mais cara do site inteiro, e por muito: as 421 chamadas de
+   `getPointAtLength` num percurso de vinte mil pixels custam 2.500ms num
+   Pixel 5 com CPU 4x mais lenta, medido em 31/08. A caixa muda uma vez
+   durante o carregamento, quando as imagens chegam, então isso acontecia
+   duas vezes: 5.044ms de thread principal travada para posicionar uma
+   decoração que mora atrás de todo o conteúdo. Eram essas as duas tarefas
+   longas que respondiam pelo TBT inteiro da home.
+
+   O comentário anterior aqui dizia "166ms cada". Esse número era desktop
+   1440x900 sem throttle, e nunca foi refeito no celular — que é onde a nota
+   do PageSpeed é medida e onde a conta custa quinze vezes mais.
+
+   Adiar até o primeiro gesto de rolagem não resolveria: a conta cairia
+   inteira no pior momento possível, e a pessoa sentiria como travamento o
+   que hoje ela nem percebe. Fatiar resolve. O trabalho total é o mesmo, mas
+   o TBT só conta o que passa de 50ms POR TAREFA: nenhuma fatia chega perto
+   disso, então a mesma conta deixa de bloquear.
+
+   O preço é a tabela chegar alguns quadros depois, e ele é invisível: sem
+   tabela o `useTransform` já usa o mapeamento linear de reserva, e no topo da
+   página o percurso mal começou. */
+function amostrarPorAltura(d, w, pronto) {
+  if (typeof document === "undefined" || !d) { pronto(null); return () => {}; }
   const NS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(NS, "svg");
   svg.setAttribute("style", "position:absolute;width:0;height:0;overflow:hidden");
@@ -982,28 +1006,73 @@ function tabelaPorAltura(d, w) {
   path.setAttribute("d", d);
   svg.appendChild(path);
   document.body.appendChild(svg);
+
   let total = 0;
   try { total = path.getTotalLength(); } catch (_) { total = 0; }
+
+  const N = 420;
   const alturas = [];
   const distancias = [];
   const forcado = [];
   /* -1 saiu pela esquerda, +1 pela direita, 0 dentro da caixa. */
   const lados = [];
-  if (total > 0) {
-    /* Passo mínimo em vez de descartar as amostras que descem.
+  const borda = 24;
+  /* Passo mínimo em vez de descartar as amostras que descem.
 
-       Descartando, a volta da dobra 01 (que sobe) sumia da tabela inteira e o
-       avião cruzava ela num quadro só: a manobra que o Gabriel aprovou virava
-       um piscar. Forçando cada amostra a avançar pelo menos 45% do passo
-       médio, o trecho que sobe ganha uma fatia real da rolagem e a volta volta
-       a ser volta, sem quebrar o crescimento que a tabela exige. */
-    const N = 420;
+     Descartando, a volta da dobra 01 (que sobe) sumia da tabela inteira e o
+     avião cruzava ela num quadro só: a manobra que o Gabriel aprovou virava
+     um piscar. Forçando cada amostra a avançar pelo menos 45% do passo
+     médio, o trecho que sobe ganha uma fatia real da rolagem e a volta volta
+     a ser volta, sem quebrar o crescimento que a tabela exige. */
+  let minimo = 1;
+  if (total > 0) {
     const p0 = path.getPointAtLength(0);
     const pf = path.getPointAtLength(total);
-    const minimo = Math.max(1, ((pf.y - p0.y) / N) * 0.45);
-    const borda = 24;
-    let ultimo = -Infinity;
-    for (let i = 0; i <= N; i++) {
+    minimo = Math.max(1, ((pf.y - p0.y) / N) * 0.45);
+  }
+
+  let i = 0;
+  let ultimo = -Infinity;
+  let vivo = true;
+  let agendado = null;
+  const agendaOcioso = typeof window !== "undefined" && window.requestIdleCallback;
+  const cancelaOcioso = typeof window !== "undefined" && window.cancelIdleCallback;
+
+  const limpar = () => { if (svg.parentNode) svg.parentNode.removeChild(svg); };
+
+  const concluir = () => {
+    limpar();
+    if (!vivo) return;
+    if (alturas.length < 2) { pronto(null); return; }
+    const y0 = alturas[0];
+    const span = alturas[alturas.length - 1] - y0;
+    if (span <= 0) { pronto(null); return; }
+    pronto({
+      entradas: alturas.map((y) => (y - y0) / span),
+      saidas: distancias.map((f) => `${(f * 100).toFixed(3)}%`),
+      opacidades: cortina(alturas, lados, forcado),
+    });
+  };
+
+  const agendar = () => {
+    if (agendaOcioso) agendado = window.requestIdleCallback(fatia, { timeout: 500 });
+    else agendado = setTimeout(() => fatia(null), 0);
+  };
+
+  const fatia = (prazo) => {
+    agendado = null;
+    if (!vivo) return;
+    if (total <= 0) { concluir(); return; }
+    /* O orçamento da fatia sai do que o navegador diz que sobra do quadro,
+       limitado a 30ms. O teto é o que garante o ganho: o TBT só conta o que
+       passa de 50ms POR TAREFA, e uma fatia de 30ms mais a amostra que
+       estourou o prazo continua bem abaixo disso. O piso de 4ms existe para o
+       aparelho lento onde uma amostra sozinha já gasta o quadro inteiro — sem
+       ele a conta nunca avançaria. */
+    const sobra = prazo && typeof prazo.timeRemaining === "function" ? prazo.timeRemaining() : 8;
+    const orcamento = Math.max(4, Math.min(30, sobra - 4));
+    const t0 = performance.now();
+    while (i <= N) {
       const f = i / N;
       const pt = path.getPointAtLength(f * total);
       /* passo forcado SO quando o caminho anda para tras. Onde ele desce
@@ -1020,17 +1089,23 @@ function tabelaPorAltura(d, w) {
       alturas.push(y);
       distancias.push(f);
       lados.push(w > 0 && pt.x > w + borda ? 1 : pt.x < -borda ? -1 : 0);
+      i++;
+      if (performance.now() - t0 >= orcamento) break;
     }
-  }
-  document.body.removeChild(svg);
-  if (alturas.length < 2) return null;
-  const y0 = alturas[0];
-  const span = alturas[alturas.length - 1] - y0;
-  if (span <= 0) return null;
-  return {
-    entradas: alturas.map((y) => (y - y0) / span),
-    saidas: distancias.map((f) => `${(f * 100).toFixed(3)}%`),
-    opacidades: cortina(alturas, lados, forcado),
+    if (i > N) { concluir(); return; }
+    agendar();
+  };
+
+  agendar();
+
+  return () => {
+    vivo = false;
+    if (agendado !== null) {
+      if (agendaOcioso && cancelaOcioso) window.cancelIdleCallback(agendado);
+      else clearTimeout(agendado);
+      agendado = null;
+    }
+    limpar();
   };
 }
 
@@ -1220,27 +1295,24 @@ export function useVoo(refCaixa, variante = "home") {
       ? rotaDoVoo(caixa.w, caixa.h, caixa.tese, caixa.alcance)
       : rotaDaPagina(variante, caixa.w, caixa.h, caixa.alcance, caixa.janela);
   }, [caixa, variante]);
-  /* A tabela sai do render e vai para um efeito, um quadro depois.
+  /* A tabela sai do render e vai para um efeito, e de lá para fatias ociosas.
 
-     Ela amostra 420 pontos de um percurso de vinte mil pixels, e isso custa
-     166ms medidos numa janela de 1440x900. Dentro do `useMemo` esse custo caía
-     no MESMO quadro em que a página nova monta, e era ele — não o React — o
-     maior quadro travado da troca de rota: 169ms medidos. Numa página com
-     cortina isso aparece como a lâmina congelando no meio do gesto.
+     Dentro do `useMemo` o custo caía no MESMO quadro em que a página nova
+     monta, e era ele — não o React — o maior quadro travado da troca de rota:
+     169ms medidos numa janela de 1440x900. Numa página com cortina isso
+     aparece como a lâmina congelando no meio do gesto.
 
-     Fora do render, a página nova pinta primeiro e a tabela chega no quadro
-     seguinte. O preço é um quadro sem avião, e ele é invisível: o avião é
-     fundo, mora atrás de todo o conteúdo, e no primeiro quadro de uma página
-     nova ninguém rolou nada ainda — ele estaria no começo do percurso de
-     qualquer forma. */
+     Fora do render, a página nova pinta primeiro. Fatiada, ela não trava
+     quadro nenhum: o porquê e o tamanho real da conta estão em
+     `amostrarPorAltura`. O preço é o avião passar alguns quadros com o
+     mapeamento linear de reserva, e ele é invisível — o avião é fundo, mora
+     atrás de todo o conteúdo, e no primeiro quadro de uma página nova
+     ninguém rolou nada ainda: ele estaria no começo do percurso de qualquer
+     forma. */
   const [tabela, setTabela] = useState(null);
   useEffect(() => {
     if (!caminho) { setTabela(null); return undefined; }
-    let vivo = true;
-    const id = requestAnimationFrame(() => {
-      if (vivo) setTabela(tabelaPorAltura(caminho, caixa ? caixa.w : 0));
-    });
-    return () => { vivo = false; cancelAnimationFrame(id); };
+    return amostrarPorAltura(caminho, caixa ? caixa.w : 0, setTabela);
   }, [caminho, caixa]);
   const distancia = useTransform(
     suave,
