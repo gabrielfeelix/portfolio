@@ -24,7 +24,7 @@
  *   Maringá               ganha ", Brazil" na primeira aparição. Cidade que o
  *                         leitor não conhece sem país é ruído, e a aposição
  *                         curta é o que o handoff pede
- *   nomes próprios        Figma, Scrum, UEM, TT&T, Locarmais, Grupo Oderço,
+ *   nomes próprios        Figma, Scrum, UEM, TT&T, Locarmais, PCYES —
  *                         Double Diamond: ficam. Traduzir nome de empresa ou
  *                         de método é inventar coisa que não existe
  *
@@ -124,13 +124,14 @@ export const SOBRE_TRABALHO = {
    É a MESMA frase e tem que sair igual nos dois lugares: aqui ela aparece com
    a fonte visível, e frase sem caso é slogan. Mudou uma, muda a outra. */
 export const SOBRE_CITACAO = {
+  f: "PCYES V2 · Oderço Group · 2026",
   q: "I argued against the brief with session recordings in hand, and the opposite direction is the one that got approved.",
 };
 
 export const SOBRE_VIRADA = [
   "I was finishing a law degree at UEM when the pandemic stopped everything. To keep my head busy, I built an online store just to learn how the thing worked.",
   "That is where it turned. It was not the screens I ended up liking: it was the engineering of making a system exist, of taking something from nothing and standing it up.",
-  "I dropped law, took a degree in graphic design, went after UX courses and got the Scrum certification so I could keep up with an agile team. I started at TT&T, designed product at Locarmais, and today I run design for a whole group of brands at Grupo Oderço.",
+  "I dropped law, took a degree in graphic design, went after UX courses and got the Scrum certification so I could keep up with an agile team. I started at TT&T, designed product at Locarmais, and today I run design for a whole group of brands at Oderço Group.",
 ];
 
 export const SOBRE_FORA = [

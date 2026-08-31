@@ -938,3 +938,20 @@
   .v2-post-capa-in { height: 100%; margin-top: 0; }
   .v2-post-abertura-in { height: 100%; margin-top: 0; }
 }
+
+/* O aviso de post ainda não traduzido.
+ *
+ * Ele é discreto de propósito: é uma informação de serviço, não um erro. Mesma
+ * mono do cromo do site, com a régua accent à esquerda que a página de caso
+ * usa em nota de margem — o vocabulário já existe, e um desenho novo para
+ * dizer uma frase seria caro pelo que ela vale. */
+.v2-post-nao-traduzido {
+  margin: 0 0 var(--v2-s3);
+  padding-left: var(--v2-s2);
+  border-left: 2px solid var(--v2-accent);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  line-height: 1.5;
+  letter-spacing: .02em;
+  color: var(--v2-muted);
+}

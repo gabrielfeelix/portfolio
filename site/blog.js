@@ -4,10 +4,23 @@
  * Aqui a origem é posts.gerado.js, escrito pelo build a partir de
  * conteudo/blog/*.md. Ver blog.mjs. */
 
-import { POSTS } from "./posts.gerado.js";
-import { t } from "./i18n.js";
+import { POSTS as POSTS_PT } from "./posts.gerado.js";
+import { t, EN, espelho } from "./i18n.js";
 
-export { POSTS };
+/* O índice, no idioma da vez.
+ *
+ * `posts.gerado.js` guarda o post uma vez só, com um ramo `en` que carrega o
+ * que MUDA — título, resumo, alt da capa e tempo de leitura. Data, tag, capa e
+ * formato são do post e não do idioma, então não se repetem: dois lugares para
+ * a mesma verdade é dois lugares para ela divergir.
+ *
+ * Post sem par em inglês cai no português inteiro, de propósito. Sumir da
+ * listagem seria pior: o texto existe, e esconder um texto que existe é mentir
+ * por omissão para quem está lendo em inglês. */
+export const POSTS = POSTS_PT.map(({ en, ...post }) => {
+  const traduzido = EN && !!en;
+  return Object.assign(espelho(post, en), { traduzido, faltaTraducao: EN && !en });
+});
 
 /* As três famílias do blog, e o rótulo que cada uma mostra na tela.
  *
@@ -135,11 +148,17 @@ export function dataCurta(iso) {
    medido e explicado em blog.mjs. */
 const cache = new Map();
 
-export async function corpo(slug) {
-  if (cache.has(slug)) return cache.get(slug);
-  const r = await fetch(`/conteudo/blog/${slug}.json`, { headers: { accept: "application/json" } });
-  if (!r.ok) throw new Error(`o texto deste post não carregou (${r.status})`);
+/* O corpo em inglês é outro arquivo, em /en/, e o cache é por CAMINHO e não
+   por slug: com a chave no slug, trocar de idioma na mesma aba devolveria o
+   texto do idioma anterior, que estava quentinho no cache. */
+export async function corpo(slug, temTraducao = true) {
+  const caminho = EN && temTraducao
+    ? `/conteudo/blog/en/${slug}.json`
+    : `/conteudo/blog/${slug}.json`;
+  if (cache.has(caminho)) return cache.get(caminho);
+  const r = await fetch(caminho, { headers: { accept: "application/json" } });
+  if (!r.ok) throw new Error(t(`o texto deste post não carregou (${r.status})`, `this post\u2019s text didn\u2019t load (${r.status})`));
   const dados = await r.json();
-  cache.set(slug, dados.html);
+  cache.set(caminho, dados.html);
   return dados.html;
 }

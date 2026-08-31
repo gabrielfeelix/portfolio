@@ -782,7 +782,10 @@ if (LANG === "en") {
         { k: "Design system", p: "maintaining and growing what existed: components, states and patterns" },
         { k: "Design direction", p: "reviewing and following through on another designer's delivery" },
       ] },
-    oderco: { role: "UX/UI Designer", period: "2026 · current · Maringá",
+    /* "Grupo Oderço" vira "Oderço Group", e a regra vale para o site todo:
+       GRUPO é substantivo comum, não parte do nome. O nome próprio é Oderço.
+       Em inglês o genérico vem depois — Oderço Group, como Tata Group. */
+    oderco: { name: "Oderço Group", role: "UX/UI Designer", period: "2026 · current · Maringá",
       anos: "2026 →", note: "PCYES, Odex, Tonante, Vinik, Skul",
       blurb: "Sole designer at a national distributor, running five brands across three fronts at once.",
       abre: "I'm the only designer at a national distributor with five in-house brands. E-commerce, platform and internal systems running at the same time, with nobody above me to review it. The queue is mine, and so is the prioritising.",

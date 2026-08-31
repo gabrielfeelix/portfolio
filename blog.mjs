@@ -37,6 +37,15 @@ import path from "node:path";
 import { marked } from "marked";
 
 export const DIR_POSTS = "conteudo/blog";
+/* O inglês mora numa SUBPASTA da mesma pasta, com o MESMO nome de arquivo.
+   O nome do arquivo é quem manda no endereço, então o par PT/EN compartilha o
+   slug por construção: não existe um mapa de tradução para dessincronizar, e
+   trocar de idioma no meio de um post continua no mesmo post.
+
+   Post sem par em inglês não some do site — ele aparece na listagem inglesa
+   com o texto português e a marca disso na tela. É melhor que esconder: o
+   leitor descobre que o texto existe, em vez de achar que não existe. */
+export const DIR_POSTS_EN = "conteudo/blog/en";
 export const DIR_MIDIA = "/volume/assets/blog";
 /* Endereço público dos corpos. Espelha o do repositório, e de propósito não
    é /blog: ver o comentário do topo. */
@@ -160,7 +169,7 @@ const FORMATOS = {
   quadrado: "normal", retrato: "normal", paisagem: "largo",
 };
 
-function umPost(arquivo, bruto) {
+function umPost(arquivo, bruto, idioma) {
   const { meta, corpo } = frontmatter(bruto, arquivo);
 
   for (const k of OBRIGATORIAS) {
@@ -180,7 +189,11 @@ function umPost(arquivo, bruto) {
      medido, e um "5 min" chutado no frontmatter seria a única exceção.
      200 palavras por minuto é a média para prosa em português. */
   const palavras = corpo.replace(/```[\s\S]*?```/g, " ").split(/\s+/).filter(Boolean).length;
-  const leitura = Math.max(1, Math.round(palavras / 200));
+  /* 200 palavras por minuto é a média para prosa em PORTUGUÊS; em inglês a
+     média é mais alta, e a razão é a língua, não o leitor — a palavra
+     portuguesa é mais longa. Contar o inglês a 200 daria um tempo inflado num
+     texto que o site inteiro promete ter MEDIDO. */
+  const leitura = Math.max(1, Math.round(palavras / (idioma === "en" ? 230 : 200)));
 
   let html = marked.parse(expandirDiretivas(corpo, slug, arquivo));
 
@@ -218,7 +231,27 @@ export async function lerPosts(raiz, { dev = false } = {}) {
   const posts = [];
   for (const nome of nomes) {
     const bruto = await readFile(path.join(dir, nome), "utf8");
-    posts.push(umPost(nome, bruto));
+    const post = umPost(nome, bruto, "pt");
+
+    /* O par em inglês, quando existe. Ele é lido pelo MESMO `umPost`, então
+       o frontmatter dele é validado com o mesmo rigor: um post em inglês sem
+       `titulo` quebra o build igual ao português, e não passa despercebido
+       até alguém abrir a página traduzida. */
+    const enPath = path.join(raiz, DIR_POSTS_EN, nome);
+    if (existsSync(enPath)) {
+      const en = umPost(nome, await readFile(enPath, "utf8"), "en");
+      if (en.slug !== post.slug) {
+        throw new Error(`blog: o par em inglês de ${nome} deu outro endereço (${en.slug} != ${post.slug}).`);
+      }
+      /* Só o que MUDA vai para o índice. `data`, `tag`, `capa` e `formato`
+         são do post, não do idioma: repetí-los aqui seria criar dois lugares
+         para a mesma verdade divergir — e um post que mudasse de data só em
+         inglês sairia fora de ordem numa listagem e não na outra. */
+      post.en = { titulo: en.titulo, resumo: en.resumo, capaAlt: en.capaAlt,
+                  leitura: en.leitura, palavras: en.palavras };
+      post.htmlEn = en.html;
+    }
+    posts.push(post);
   }
 
   // Rascunho aparece no dev para poder ser lido antes de ir ao ar, e some do
@@ -235,7 +268,7 @@ export async function lerPosts(raiz, { dev = false } = {}) {
 
 export async function escreverBlog(raiz, dist, posts) {
   // 1. o índice, que entra no bundle. Sem `html`: é ele que fica de fora.
-  const indice = posts.map(({ html, publicado, ...resto }) => resto);
+  const indice = posts.map(({ html, htmlEn, publicado, ...resto }) => resto);
   const js =
     "/* GERADO por blog.mjs a cada build. Não edite: edite conteudo/blog/*.md. */\n" +
     "export const POSTS = " + JSON.stringify(indice, null, 2) + ";\n";
@@ -244,8 +277,16 @@ export async function escreverBlog(raiz, dist, posts) {
   // 2. um JSON por post, com o corpo.
   const saida = path.join(dist, "conteudo", "blog");
   await mkdir(saida, { recursive: true });
+  /* O corpo em inglês é um arquivo À PARTE, e não um segundo campo no mesmo
+     JSON: quem abre o post em português não deveria baixar o texto inglês
+     junto. São dois artigos inteiros, e o custo dobraria por nada. */
+  const saidaEn = path.join(saida, "en");
+  await mkdir(saidaEn, { recursive: true });
   for (const p of posts) {
     await writeFile(path.join(saida, `${p.slug}.json`), JSON.stringify({ slug: p.slug, html: p.html }));
+    if (p.htmlEn) {
+      await writeFile(path.join(saidaEn, `${p.slug}.json`), JSON.stringify({ slug: p.slug, html: p.htmlEn }));
+    }
   }
 
   return indice;

@@ -154,7 +154,7 @@ export default function Post({ slug, ir }) {
     let vivo = true;
     setHtml(null);
     setErro(null);
-    corpo(p.slug)
+    corpo(p.slug, p.traduzido)
       .then((h) => { if (vivo) setHtml(h); })
       .catch((e) => { if (vivo) setErro(e.message); });
     return () => { vivo = false; };
@@ -186,6 +186,16 @@ export default function Post({ slug, ir }) {
       <Dobra n="01" nome="Blog" carimbo={rotuloTag(p.tag).toUpperCase()} data-clara="1">
         <article className="v2-post">
           <header className="v2-post-cabeca">
+            {/* O post que ainda não tem versão inglesa avisa, em vez de sumir
+                da listagem. Quem lê em inglês descobre que o texto existe e
+                decide se quer; escondê-lo seria mentir por omissão. O aviso
+                fica no topo, antes do título, porque depois do primeiro
+                parágrafo em português já é tarde. */}
+            {p.faltaTraducao ? (
+              <p className="v2-post-nao-traduzido" lang="en">
+                This one hasn’t been translated yet — the text below is in Portuguese.
+              </p>
+            ) : null}
             <p className="v2-post-meta is-grande">
               {dataLonga(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} {t("MIN DE LEITURA", "MIN READ")}
             </p>
