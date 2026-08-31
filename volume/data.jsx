@@ -1336,7 +1336,9 @@ const PROJECTS = [
     desc: "Visibilidade de dívida e projeção de contas do mês",
     sobre: "Ninguém perde a conta da própria dívida por preguiça: perde porque ela está espalhada em seis lugares que nunca aparecem juntos. Reunindo tudo numa vista e projetando o mês, a pergunta muda de lugar. Deixa de ser quanto eu devo, que assusta e não orienta, e passa a ser quanto sobra depois de pagar, que dá para decidir em cima.", destino: "ar",
     cover: "/volume/assets/projetos/kitamo/cover.webp",
-    links: { vercel: "https://kitamo.com.br/", figma: null } },
+    /* /login e nao a raiz: a capa mostra a Visao Geral autenticada, e a raiz
+       abre a landing. Quem clica no card espera cair onde a foto prometeu. */
+    links: { vercel: "https://kitamo.com.br/login", figma: null } },
   { id: "isabella", title: "Isabella Pires", cat: "web", domain: "Website · Arquitetura", fav: false, chapterId: null,
     desc: "Site institucional de arquitetura, do portfólio ao contato",
     marca: "/volume/assets/marcas/mono/isabella.png",
