@@ -124,44 +124,44 @@ export const MANIFESTO = {
       página recusa um clique depois.
 
    A dobra envelheceu quando a /processo passou a existir, e ninguém voltou
-   para aposentá-la. Agora ela mostra a tese em vez de resumir o método: nada
-   aqui é novo, tudo sai de site/ProcessoNarrativa.jsx, com a origem anotada.
-   O único corte é no parágrafo do caminho longo, e é o corte que o próprio
-   Gabriel pediu: a home informa COMO ele trabalha, e citar caso por nome é
-   trabalho do case, não desta dobra. */
+   para aposentá-la. Agora ela mostra a tese em vez de resumir o método.
+
+   ATENÇÃO, e isto é uma exceção à regra do arquivo: o texto aqui NÃO é cópia
+   de site/ProcessoNarrativa.jsx. A primeira versão era, e o Gabriel reprovou
+   por voz, não por conteúdo — a /processo escreve em aforismo, com frase
+   invertida e punchline no fim de cada bloco ("o tamanho da pesquisa
+   acompanha o preço de errar", "muda o tamanho, nunca é zero, e é a única
+   linha que eu não negocio"). Ele leu como lacração, e a palavra dele foi
+   cringe.
+
+   Então esta dobra é a mesma informação dita em português falado: sujeito,
+   verbo, predicado, sem inversão e sem frase que quer ser citada. O conteúdo
+   é o mesmo da /processo — dois caminhos, o que decide entre eles, e o teste
+   que acontece nos dois.
+
+   Duas consequências para quem mexer aqui:
+   1. mudou a /processo, NÃO copie a frase de lá para cá sem reescrever;
+   2. a /processo continua no tom antigo. Se for uniformizar a voz do site,
+      ela é a próxima. Ver a pendência no handoff de 30/08.
+
+   O que não muda: a home informa COMO ele trabalha, e citar projeto por nome
+   é referência de serviço prestado, que é assunto do case uma dobra abaixo.
+   Por isso nenhum caso aparece nesta dobra. */
 export const METODO = {
-  /* ProcessoNarrativa.jsx · RISCO.t */
-  lead: "O tamanho da pesquisa acompanha o preço de errar.",
+  lead: "Pesquisa e teste entram em todo projeto. O tamanho de cada um muda conforme o risco da decisão e o tempo que eu tenho.",
   caminhos: [
     {
-      /* ProcessoNarrativa.jsx · CURTO.olho e CURTO.t */
       olho: "Caminho curto",
-      frase: "Quando a dúvida já morreu",
-      /* ProcessoNarrativa.jsx · CURTO.p, inteiro */
-      nota: "Dias, não semanas. As etapas que faltam aqui não sumiram por pressa: elas matariam uma dúvida que já estava morta quando o problema chegou.",
+      frase: "Quando as dúvidas já foram sanadas",
+      nota: "Às vezes o problema chega com a resposta junto: reclamação que se repete, chamado no suporte, dado de uso que já aponta onde dói. Aí eu aproveito o que já existe e vou direto para o protótipo, e o tempo que sobra eu gasto testando e ajustando.",
     },
     {
-      /* ProcessoNarrativa.jsx · LONGO.olho e LONGO.t */
       olho: "Caminho longo",
       frase: "Quando ninguém sabe ainda qual é o problema",
-      /* ProcessoNarrativa.jsx · LONGO.p, cortado no ponto: o resto da frase
-         era "e é o que eu fiz no PCYES e na Locarmais". Sai porque esta dobra
-         informa o método, e nome de projeto aqui é referência de serviço
-         prestado — que é assunto do case, uma dobra abaixo. Nenhuma palavra
-         foi trocada, só houve corte. */
-      /* A segunda frase sai de ProcessoNarrativa.jsx · RISCO.p[1], inteira. Ela
-         entra porque sozinho o "Double Diamond" deixava este bloco com cinco
-         palavras contra trinta do outro, e o par lia como se o caminho longo
-         fosse o menos pensado dos dois — o contrário do que a página diz. E é
-         a frase que explica QUANDO o caminho longo se paga, que é justamente
-         o que a dobra promete no lead. */
-      nota: "É onde eu sigo Double Diamond. Decisão cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu não chuto: ali eu compro tempo antes, mesmo quando ninguém pediu.",
+      nota: "É onde eu sigo o Double Diamond. Levo mais tempo na descoberta antes de desenhar qualquer tela, porque quando a decisão é cara de desfazer eu prefiro gastar o tempo antes do que corrigir depois.",
     },
   ],
-  /* ProcessoNarrativa.jsx · NUNCA.p[1]. Fecha a dobra porque é a única linha
-     do método que não é condicional: os dois caminhos mudam de tamanho, e
-     esta não muda. */
-  fecho: "Muda o tamanho. Nunca é zero, e é a única linha que eu não negocio.",
+  fecho: "Nos dois casos, alguém que vai usar a tela mexe nela antes de eu fechar.",
 };
 
 /* MORTO desde 30/08: era o conteúdo da dobra 04, substituído por METODO acima.

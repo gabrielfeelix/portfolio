@@ -78,7 +78,35 @@ O item 2 acima é a saída mais barata. O segundo melhor é o Locarmais: as trê
 mudanças de comportamento **são** o resultado e mereciam número, nem que seja
 "de N planilhas para zero".
 
-### 4. 🟢 FOUC na entrada do capítulo
+### 4. 🟡 A voz da /processo — pendência nova, aberta no fim do dia
+
+O Gabriel reprovou a copy da dobra 04 da home por VOZ, não por conteúdo, e o
+diagnóstico dele vale para mais coisa que aquela dobra.
+
+O padrão que ele recusa: aforismo. Frase invertida, punchline no fim, tudo
+querendo ser citável. Nas palavras dele — "vc fala assim: eu à escola fui. E
+não eu fui à escola. E pior: Escola? eu fui. Mas não somente uma escola. Fiz
+melhor, fui à grande escola." Ele chama de lacração e de cringe, e está certo:
+ninguém fala assim, e num portfólio isso lê como quem está posando.
+
+Exemplos que ele apontou, todos originais da /processo:
+- "O tamanho da pesquisa acompanha o preço de errar"
+- "Muda o tamanho. Nunca é zero, e é a única linha que eu não negocio"
+- "Dias, não semanas"
+- "Quando a dúvida já morreu"
+
+A dobra da home já foi reescrita em português falado (ver METODO em
+`site/copy.js`, com a exceção anotada). **A /processo continua no tom antigo** e
+é a próxima candidata, se ele quiser uniformizar.
+
+REGRA EDITORIAL que ele estabeleceu no mesmo momento, e que vale para o site
+inteiro: **a home informa COMO ele trabalha; o case referencia o trabalho.**
+Citar projeto por nome numa dobra generalista é referência de serviço prestado,
+e isso é assunto do case. Ele reclamou explicitamente de agentes serem
+"fissurados" em puxar o erro do checkout para todo lugar — aquela história é
+material de case, não de home.
+
+### 5. 🟢 FOUC na entrada do capítulo
 
 O Gabriel viu a segunda dobra renderizar sem estilo uma vez. Não reproduzi:
 5 casos locais e 3 no ar, todos corretos, `site.css` com 895 regras, zero falha
@@ -89,7 +117,7 @@ mitigação, se quiserem eliminar a chance: inline do CSS crítico da `.v2-abre`
 `<head>`, como já é feito com a cortina de troca de página (ver `inline` em
 `build.mjs`).
 
-### 5. 🟢 Assets em `uploads/` que ficaram
+### 6. 🟢 Assets em `uploads/` que ficaram
 
 `favicon.png` (1,5 MB) e `gabrielfelix-foto.*` (364 KB) continuam sendo
 publicados porque **`legado-v1/` ainda os referencia**. Movê-los quebraria a V1
