@@ -1413,6 +1413,7 @@ const PROJECTS = [
     desc: "Landing de captação", links: { vercel: null, figma: null } },
   { id: "4yu", title: "4YU MKT", cat: "web", domain: "Website · LP", fav: false, chapterId: null,
     desc: "Landing de conversão para método de vendas",
+    cover: "/volume/assets/projetos/4yu/cover.webp",
     sobre: "Landing de método de vendas vive de uma coisa só: convencer em uma tela que existe um processo por trás da promessa. A página coloca o método antes do depoimento, porque quem compra método quer ver o método.", destino: "ar",
     links: { vercel: "https://4yumkt.com.br/", figma: null } },
   { id: "immo", title: "IMMO", cat: "saas", domain: "SaaS", fav: false, chapterId: null,
@@ -1466,7 +1467,7 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    fita corre da esquerda para a direita, então o começo é o único lugar que o
    visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
    esse lugar. */
-const PIECE_ORDER = ["quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "4yu", "remoctrl", "traxium"];
+const PIECE_ORDER = ["4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "signamais", "dropchina", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
