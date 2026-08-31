@@ -33,6 +33,7 @@ import {
   POSTS, tags, filtrar, destaque, dataCurta, rotuloTag,
   temFiltro, temBusca,
 } from "./blog.js";
+import { t } from "./i18n.js";
 
 /* --- estado na URL -------------------------------------------------------
  *
@@ -130,7 +131,7 @@ function Barra({ lista, tag, setTag, q, setQ, mostrando, total }) {
   return (
     <div className="v2-blog-barra">
       {comFiltro ? (
-        <div className="v2-blog-filtro" role="group" aria-label="Filtrar por assunto">
+        <div className="v2-blog-filtro" role="group" aria-label={t("Filtrar por assunto", "Filter by subject")}>
           <button
             type="button"
             className={"v2-blog-tag" + (tag === "" ? " is-ativa" : "")}
@@ -161,7 +162,7 @@ function Barra({ lista, tag, setTag, q, setQ, mostrando, total }) {
             type="search"
             className="v2-blog-busca-campo"
             value={q}
-            placeholder="título, assunto…"
+            placeholder={t("título, assunto…", "title, subject…")}
             onChange={(e) => setQ(e.target.value)}
           />
           {/* Com busca ou filtro ativos o cromo deixa de ser enfeite e passa a
@@ -232,15 +233,15 @@ export default function Blog({ ir }) {
     <CampoDeVoo variante="blog">
       <Dobra id="blog" n="01" nome="Blog" carimbo={`©${new Date().getFullYear()}`} data-clara="1">
         <header className="v2-blog-cabeca">
-          <Titulo marca="®" como="h1">Notas</Titulo>
+          <Titulo marca="®" como="h1">{t("Notas", "Notes")}</Titulo>
           <div className="v2-blog-cabeca-dir">
             <p className="v2-lead">
-              Ofício, bastidor e carreira. O que eu aprendi medindo, o que deu errado
-              antes de dar certo, e o que ninguém conta em processo seletivo.
+              {t("Ofício, bastidor e carreira. O que eu aprendi medindo, o que deu errado antes de dar certo, e o que ninguém conta em processo seletivo.",
+                 "Craft, backstage and career. What I learned by measuring, what went wrong before it went right, and what nobody tells you in a hiring process.")}
             </p>
             <p className="v2-blog-conta-topo">
-              {POSTS.length} {POSTS.length === 1 ? "texto" : "textos"}
-              {lista.length ? ` · ${lista.length} ${lista.length === 1 ? "assunto" : "assuntos"}` : ""}
+              {POSTS.length} {POSTS.length === 1 ? t("texto", "text") : t("textos", "texts")}
+              {lista.length ? ` · ${lista.length} ${lista.length === 1 ? t("assunto", "subject") : t("assuntos", "subjects")}` : ""}
             </p>
           </div>
         </header>
@@ -255,7 +256,7 @@ export default function Blog({ ir }) {
       {!filtrando && emDestaque ? <Destaque p={emDestaque} ir={ir} /> : null}
 
       {POSTS.length ? (
-        <Dobra n="02" nome="Todos os textos" carimbo={`${POSTS.length} NO AR`}>
+        <Dobra n="02" nome={t("Todos os textos", "Every text")} carimbo={t(`${POSTS.length} NO AR`, `${POSTS.length} LIVE`)}>
           <Barra
             lista={lista}
             tag={tag}
@@ -274,7 +275,7 @@ export default function Blog({ ir }) {
             </div>
           ) : (
             <div className="v2-blog-nada">
-              <p>Nada com esse recorte.</p>
+              <p>{t("Nada com esse recorte.", "Nothing under that filter.")}</p>
               <button type="button" className="v2-blog-limpar" onClick={limpar}>
                 Ver os {POSTS.length} textos
               </button>
@@ -285,7 +286,7 @@ export default function Blog({ ir }) {
 
       {/* O blog devolve para o trabalho: é o argumento da ordem. Quem chegou
           por um texto sai sabendo que existem quatro casos abertos. */}
-      <GradeCasos cromo="Do outro lado" titulo="Isso tudo saiu de algum lugar" ir={ir} />
+      <GradeCasos cromo={t("Do outro lado", "The other side")} titulo={t("Isso tudo saiu de algum lugar", "All of this came from somewhere")} ir={ir} />
     </CampoDeVoo>
   );
 }

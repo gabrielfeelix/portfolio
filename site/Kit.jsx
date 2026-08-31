@@ -21,6 +21,7 @@ import { Label, Regua, Lamina } from "./Shell.jsx";
 export { Lamina };
 import { casos } from "./content.js";
 import { CAPAS_CHEIAS } from "./copy.js";
+import { t } from "./i18n.js";
 
 /* ------------------------------------------------------------------ cromo */
 
@@ -301,14 +302,15 @@ const CAMPO_V = [18, 44, 90, 150, 210];
    de produção, não de vaidade", "Três movimentos, e o do meio é o que a
    maioria pula"), e frase de capa é exatamente onde soar genérico custa mais
    caro num portfólio. */
-const CAMPO_FRASE = ["Acima, o que foi ao *ar*.", "Abaixo, como foi parar lá."];
+const CAMPO_FRASE = [t("Acima, o que foi ao *ar*.", "Above, what went *live*."),
+                     t("Abaixo, como foi parar lá.", "Below, how it got there.")];
 
 function acender(t) {
   return t.split("*").map((p, i) =>
     i % 2 ? <em key={i} className="v2-campo-acende">{p}</em> : p);
 }
 
-export function Campo({ nome = "Travessia", carimbo = "©26", frase = CAMPO_FRASE }) {
+export function Campo({ nome = t("Travessia", "Crossing"), carimbo = "©26", frase = CAMPO_FRASE }) {
   const { ref, estilos, quieto } = useCamadas(CAMPO_V);
   const revelar = useRevelar();
   /* A regua nao entra em fade: ela se DESENHA, do lado alinhado para o solto.
@@ -433,16 +435,21 @@ export function DobraCaso({ label, larga = false, regua = false, topo, aside, ch
  *
  * Ela sangra por NÃO usar `.v2-wrap`, e não por margem negativa: o pai é
  * `.v2-corpo-claro`, que já é largura cheia. */
-export function CapaCapitulo({ n, t, de = "04", rotulo = "Movimento" }) {
+/* `t` virou `titulo` na desestruturação: a prop se chamava `t` e colidia com o
+   `t(pt, en)` do i18n importado no topo — dentro deste componente `t` passaria
+   a ser a string do título e toda chamada de tradução quebraria em tempo de
+   execução. O nome da PROP continua `t` para quem chama, que é o que já estava
+   escrito em Case.jsx e em Sobre.jsx. */
+export function CapaCapitulo({ n, t: titulo, de = "04", rotulo = t("Movimento", "Movement") }) {
   const subir = useSubir();
   return (
-    <section className="v2-capitulo" data-escuro="1" data-escuro-corpo="1" aria-label={`${rotulo} ${n}, ${t}`}>
+    <section className="v2-capitulo" data-escuro="1" data-escuro-corpo="1" aria-label={`${rotulo} ${n}, ${titulo}`}>
       <motion.div className="v2-wrap v2-capitulo-in" {...subir(0)}>
         <p className="v2-capitulo-cromo">
           <span>{rotulo}</span>
           <span className="v2-capitulo-cont">{n} / {de}</span>
         </p>
-        <h2 className="v2-capitulo-t">{t}</h2>
+        <h2 className="v2-capitulo-t">{titulo}</h2>
       </motion.div>
     </section>
   );
@@ -470,7 +477,7 @@ export function CapaCapitulo({ n, t, de = "04", rotulo = "Movimento" }) {
 
    `excluir` continua valendo e é o que impede a página de um caso oferecer ele
    mesmo. */
-export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os projetos", ir, quantos = 3 }) {
+export function GradeCasos({ excluir, cromo = t("Continue", "Keep going"), titulo = t("Os projetos", "The projects"), ir, quantos = 3 }) {
   const rise = useRise();
   const [lista] = useState(() => {
     const pool = casos().filter((c) => c.id !== excluir);

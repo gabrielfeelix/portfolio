@@ -39,6 +39,13 @@
 import React from "react";
 import { motion, useTransform } from "motion/react";
 import { useRise, useTracado, useTrecho, useContador, AVIAO_D } from "./motion.js";
+import { t, mescla } from "./i18n.js";
+import * as EN from "./processo.en.js";
+
+/* Mesmo mecanismo de site/copy.js: o espelho inglês é sobreposto à copy
+   portuguesa, em profundidade, e só carrega o que muda. Os ícones dos fatores
+   e os números do funil ficam no PT e não podem ser esquecidos lá. */
+const tr = (chave, pt) => mescla(pt, EN[chave]);
 
 /* ------------------------------------------------------------------ copy */
 
@@ -46,7 +53,7 @@ import { useRise, useTracado, useTrecho, useContador, AVIAO_D } from "./motion.j
    como o tell número um, e com número no lugar de adjetivo sempre que existe
    número. */
 
-const ABRE = {
+const ABRE = tr("ABRE", {
   olho: "Como eu trabalho",
   t: "Me perguntam qual é o meu processo esperando resposta de uma linha.",
   p: [
@@ -55,9 +62,9 @@ const ABRE = {
     "E teve PCYES, onde eu passei semanas antes de desenhar a primeira caixa. Matriz CSD para separar o que a gente sabia do que a gente achava. Benchmarking para não inventar palavra que o mercado já usa. Um trimestre inteiro de GA4, 166.267 sessões, evento a evento. Gravação de sessão, assistida inteira.",
     "Nos dois casos eu acho que escolhi certo. E escolher entre um e outro é boa parte do trabalho, mesmo que não apareça na tela final.",
   ],
-};
+});
 
-const FATORES = {
+const FATORES = tr("FATORES", {
   olho: "O que decide o tamanho",
   t: "Três coisas decidem: prazo, time, e o que já chegou provado",
   /* A nota saiu em 30/08. Ela dizia "quase todo lugar em que trabalhei era
@@ -75,7 +82,7 @@ const FATORES = {
     { k: "O que já chegou validado", icone: "prova",
       p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova só atrasa." },
   ],
-};
+});
 
 /* Os três ícones dos fatores.
 
@@ -102,16 +109,16 @@ function IconeFator({ nome }) {
   );
 }
 
-const RISCO = {
+const RISCO = tr("RISCO", {
   olho: "Onde eu gasto",
   t: "Eu gasto mais tempo pesquisando quando errar sai caro.",
   p: [
     "Decisão barata de desfazer eu coloco no ar e olho o que acontece. Trocar a ordem de dois blocos numa página de baixo tráfego se responde melhor com gravação de sessão do que com estudo.",
     "Quando a decisão é cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu levanto mais coisa antes de fechar, e peço o tempo para isso.",
   ],
-};
+});
 
-const CURTO = {
+const CURTO = tr("CURTO", {
   olho: "Caminho curto",
   t: "Quando as dúvidas já foram sanadas",
   paradas: [
@@ -121,12 +128,12 @@ const CURTO = {
     { n: "04", t: "Validação", p: "Alguém que vai usar mexe nele antes de eu fechar." },
   ],
   p: "Aqui eu pulo etapa de propósito, e não por pressa. Se a reclamação já chegou repetida e o dado já mostra onde dói, refazer essa prova não me conta nada que eu ainda não saiba, e o tempo rende mais no protótipo e no ajuste.",
-};
+});
 
 /* As quatro fases do Double Diamond, com os métodos que o Gabriel usa em cada
    uma. Os seis passos de PROCESSO continuam vivos: eles moram aqui dentro, que
    é o caminho longo, em vez de serem apresentados como regra de todo projeto. */
-const LONGO = {
+const LONGO = tr("LONGO", {
   olho: "Caminho longo",
   t: "Quando ninguém sabe ainda qual é o problema",
   p: "É onde eu sigo Double Diamond, e é o que eu fiz no PCYES e na Locarmais.",
@@ -140,20 +147,20 @@ const LONGO = {
     "Na Locarmais eu sentei junto do financeiro e acompanhei a conferência dia a dia antes de desenhar. O benchmarking ali foi de vocabulário: plataformas de conciliação já consolidadas, para não inventar termo novo onde já existe um.",
     "No PCYES o qualitativo e o quantitativo vieram separados de propósito. O Clarity respondeu o que as pessoas faziam, mapa de calor e gravação. O GA4 respondeu onde elas paravam.",
   ],
-};
+});
 
-const NUNCA = {
+const NUNCA = tr("NUNCA", {
   olho: "O que não cai",
   t: "Alguém que vai usar aquilo mexe na tela antes de eu fechar.",
   p: [
     "No caminho curto pode ser uma pessoa, quinze minutos, protótipo na mão. No longo é teste de usabilidade com roteiro.",
     "O tamanho muda conforme o projeto, mas nunca chega a zero.",
   ],
-};
+});
 
 /* O fecho, e o ângulo da página inteira. Sai verbatim do capítulo do PCYES:
    `funil.nota` e `funil.etapas` em volume/data.jsx. */
-const APOSTA = {
+const APOSTA = tr("APOSTA", {
   olho: "A vez que eu errei a conta",
   t: "Eu tinha acabado de consertar o checkout. Tinha certeza de que o buraco era ali.",
   p: [
@@ -162,7 +169,9 @@ const APOSTA = {
     "Perdi a aposta, e foi essa correção que redesenhou a V2 inteira.",
   ],
   /* Número cru, e não string formatada: o contador precisa contar. A vírgula
-     de milhar entra no render, por toLocaleString em pt-BR. */
+     de milhar entra no render, por toLocaleString — e o LOCAL acompanha o
+     idioma: 166.267 em português é 166,267 em inglês, e um separador trocado
+     num número que é a prova da página derruba a credibilidade dela. */
   dado: [
     { l: "Viram um produto", v: 50399 },
     { l: "Puseram no carrinho", v: 808 },
@@ -170,7 +179,7 @@ const APOSTA = {
   ],
   fonte: "Google Analytics 4 · 2º trimestre de 2026 · 166.267 sessões",
   fecho: "O processo que eu escolhi estava certo. Só estava apontado para o lugar errado.",
-};
+});
 
 /* ------------------------------------------------------------ desenhos */
 
@@ -244,7 +253,8 @@ function DoisCaminhos() {
      <div className="v2-pn-palco">
       <motion.figure className="v2-pn-desenho" {...rise(0)}>
       <svg viewBox="0 0 1000 360" role="img"
-           aria-label="Os dois caminhos partem do mesmo problema e chegam à mesma entrega. O curto é uma reta com quatro paradas, de dias. O longo abre e fecha duas vezes, em duplo diamante, e leva semanas.">
+           aria-label={t("Os dois caminhos partem do mesmo problema e chegam à mesma entrega. O curto é uma reta com quatro paradas, de dias. O longo abre e fecha duas vezes, em duplo diamante, e leva semanas.",
+             "Both paths start from the same problem and arrive at the same delivery. The short one is a straight line with four stops, measured in days. The long one opens and closes twice, as a double diamond, and takes weeks.")}>
         {/* a metade de baixo do duplo diamante, sem animação: ela não é
             percorrida, está ali para a silhueta do modelo continuar legível */}
         <path className="v2-pn-fantasma" d={LONGA_BAIXO} />
@@ -268,13 +278,14 @@ function DoisCaminhos() {
         {!quieto ? <Aviao rota={LONGA_CIMA} {...longo} escala={1.3} /> : null}
         {!quieto ? <Aviao rota={CURTA} {...curto} escala={1.3} /> : null}
 
-        <text className="v2-pn-svg-k" x="500" y="26" textAnchor="middle">Caminho longo · semanas</text>
-        <text className="v2-pn-svg-k is-forte" x="500" y="202" textAnchor="middle">Caminho curto · dias</text>
-        <text className="v2-pn-svg-k" x="64" y="338">Problema</text>
-        <text className="v2-pn-svg-k" x="936" y="338" textAnchor="end">No ar</text>
+        <text className="v2-pn-svg-k" x="500" y="26" textAnchor="middle">{t("Caminho longo · semanas", "Long path · weeks")}</text>
+        <text className="v2-pn-svg-k is-forte" x="500" y="202" textAnchor="middle">{t("Caminho curto · dias", "Short path · days")}</text>
+        <text className="v2-pn-svg-k" x="64" y="338">{t("Problema", "Problem")}</text>
+        <text className="v2-pn-svg-k" x="936" y="338" textAnchor="end">{t("No ar", "Live")}</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        Os dois começam no mesmo problema e terminam no mesmo lugar. O que muda é quanto eu abro antes de fechar.
+        {t("Os dois começam no mesmo problema e terminam no mesmo lugar. O que muda é quanto eu abro antes de fechar.",
+           "Both start from the same problem and end in the same place. What changes is how much I open up before closing it.")}
       </figcaption>
       </motion.figure>
      </div>
@@ -326,7 +337,8 @@ function Diamante({ fases }) {
      <div className="v2-pn-palco">
       <motion.div className="v2-pn-dd" {...rise(0)}>
       <svg viewBox="-8 0 1016 268" role="img"
-           aria-label="Duplo diamante: o primeiro abre em Descobrir e fecha em Definir; o segundo abre em Desenvolver e fecha em Entregar.">
+           aria-label={t("Duplo diamante: o primeiro abre em Descobrir e fecha em Definir; o segundo abre em Desenvolver e fecha em Entregar.",
+             "Double diamond: the first opens at Discover and closes at Define; the second opens at Develop and closes at Deliver.")}>
         {DD.a.map((d) => (
           <motion.path className="v2-pn-rota is-dd" key={d} d={d}
                        style={quieto ? undefined : { pathLength: um.traco }} />
@@ -516,7 +528,8 @@ function EsbocoEGrade() {
   return (
     <motion.figure className="v2-pn-telas" ref={cena} {...rise(0)}>
       <svg viewBox="0 0 1000 368" role="img"
-           aria-label="A mesma tela duas vezes: primeiro rabiscada à mão, com traço torto e blocos vazios, e depois montada como protótipo de baixa fidelidade, com barra de navegação, campo de formulário e botão.">
+           aria-label={t("A mesma tela duas vezes: primeiro rabiscada à mão, com traço torto e blocos vazios, e depois montada como protótipo de baixa fidelidade, com barra de navegação, campo de formulário e botão.",
+             "The same screen twice: first scribbled by hand, with crooked lines and empty blocks, then built as a low-fidelity prototype, with a navigation bar, a form field and a button.")}>
         <g transform="translate(20 20)">
           {TELA.map((p, i) =>
             aMao(p).map((d, j) => (
@@ -534,8 +547,8 @@ function EsbocoEGrade() {
           {TELA.map((p, i) => <Peca key={i} {...p} />)}
         </motion.g>
 
-        <text className="v2-pn-svg-k" x="20" y="356">Rabiscoframe</text>
-        <text className="v2-pn-svg-k" x="580" y="356">Protótipo de baixa</text>
+        <text className="v2-pn-svg-k" x="20" y="356">{t("Rabiscoframe", "Scribbleframe")}</text>
+        <text className="v2-pn-svg-k" x="580" y="356">{t("Protótipo de baixa", "Low-fidelity")}</text>
       </svg>
       <figcaption className="v2-fig-leg">
         As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para alguém tocar.
@@ -607,7 +620,8 @@ function EixoDoRisco() {
   return (
     <motion.figure className="v2-pn-risco" ref={cena} {...rise(0)}>
       <svg viewBox="0 0 1000 360" role="img"
-           aria-label="Gráfico com duas curvas. O eixo horizontal vai de barato a caro de desfazer, e o vertical é o tempo total até acertar. A curva sem pesquisa começa baixa e sobe rápido; a curva com pesquisa começa mais alta e segue quase reta. As duas se cruzam no meio: a partir dali, pesquisar sai mais barato que errar.">
+           aria-label={t("Gráfico com duas curvas. O eixo horizontal vai de barato a caro de desfazer, e o vertical é o tempo total até acertar. A curva sem pesquisa começa baixa e sobe rápido; a curva com pesquisa começa mais alta e segue quase reta. As duas se cruzam no meio: a partir dali, pesquisar sai mais barato que errar.",
+             "A chart with two curves. The horizontal axis runs from cheap to expensive to undo, and the vertical one is the total time to get it right. The curve without research starts low and climbs fast; the curve with research starts higher and stays almost flat. They cross in the middle: from there on, researching costs less than getting it wrong.")}>
         <defs>
           <clipPath id="pn-risco-revela">
             <motion.rect x="0" y="0" height="360" width={quieto ? 1000 : revela} />
@@ -633,19 +647,18 @@ function EixoDoRisco() {
         <motion.g style={quieto ? undefined : { opacity: marca.traco }}>
           <line className="v2-pn-cruzo-guia" x1="749" y1="160" x2="749" y2="290" />
           <circle className="v2-pn-cruzo" cx="749" cy="154.5" r="6" />
-          <text className="v2-pn-svg-k is-eixo" x="749" y="322" textAnchor="middle">Onde vira conta</text>
+          <text className="v2-pn-svg-k is-eixo" x="749" y="322" textAnchor="middle">{t("Onde vira conta", "Where it pays off")}</text>
         </motion.g>
 
-        <text className="v2-pn-svg-k is-curva" x="948" y="46" textAnchor="end">Sem pesquisa</text>
-        <text className="v2-pn-svg-k is-curva is-com" x="948" y="176" textAnchor="end">Com pesquisa</text>
-        <text className="v2-pn-svg-k" x="76" y="348">Barato de desfazer</text>
-        <text className="v2-pn-svg-k is-forte" x="946" y="348" textAnchor="end">Caro de desfazer</text>
-        <text className="v2-pn-svg-k is-y" x="76" y="28">Tempo total até acertar</text>
+        <text className="v2-pn-svg-k is-curva" x="948" y="46" textAnchor="end">{t("Sem pesquisa", "Without research")}</text>
+        <text className="v2-pn-svg-k is-curva is-com" x="948" y="176" textAnchor="end">{t("Com pesquisa", "With research")}</text>
+        <text className="v2-pn-svg-k" x="76" y="348">{t("Barato de desfazer", "Cheap to undo")}</text>
+        <text className="v2-pn-svg-k is-forte" x="946" y="348" textAnchor="end">{t("Caro de desfazer", "Expensive to undo")}</text>
+        <text className="v2-pn-svg-k is-y" x="76" y="28">{t("Tempo total até acertar", "Total time to get it right")}</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        Decidir no chute começa mais barato e cobra depois, em retrabalho. Levantar as coisas antes custa tempo
-        na frente e quase não cobra na sequência. As duas linhas se cruzam em algum ponto, e é esse ponto que eu
-        procuro antes de escolher quanto abrir.
+        {t("Decidir no chute começa mais barato e cobra depois, em retrabalho. Levantar as coisas antes custa tempo na frente e quase não cobra na sequência. As duas linhas se cruzam em algum ponto, e é esse ponto que eu procuro antes de escolher quanto abrir.",
+           "Guessing starts cheaper and charges you later, in rework. Digging things up first costs time up front and charges you almost nothing afterwards. The two lines cross at some point, and that point is what I look for before choosing how much to open up.")}
       </figcaption>
     </motion.figure>
   );
@@ -663,7 +676,7 @@ function Dado({ l, v }) {
   return (
     <div ref={ref}>
       <dt>{l}</dt>
-      <dd>{valor.toLocaleString("pt-BR")}</dd>
+      <dd>{valor.toLocaleString(t("pt-BR", "en-US"))}</dd>
     </div>
   );
 }

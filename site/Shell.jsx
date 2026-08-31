@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ease, spring, useLamina, AVIAO_D } from "./motion.js";
 import { CONTATO, AUTOR } from "./content.js";
+import { t } from "./i18n.js";
 
 /* Todo link passa pelo roteador (`ir`), inclusive "Casos".
  *
@@ -20,9 +21,9 @@ import { CONTATO, AUTOR } from "./content.js";
    O `href` continua real, então abrir em nova aba e copiar o link seguem
    funcionando: o `preventDefault` só vale para o clique comum. */
 const LINKS = [
-  { id: "casos",    rot: "Projetos", href: "/#casos",     rota: true },
-  { id: "processo", rot: "Processo", href: "/processo",  rota: true },
-  { id: "sobre",    rot: "Sobre",    href: "/sobre",     rota: true },
+  { id: "casos",    rot: t("Projetos", "Work"),    href: "/#casos",     rota: true },
+  { id: "processo", rot: t("Processo", "Process"), href: "/processo",  rota: true },
+  { id: "sobre",    rot: t("Sobre", "About"),      href: "/sobre",     rota: true },
   { id: "blog",     rot: "Blog",     href: "/blog",      rota: true },
 ];
 
@@ -77,7 +78,7 @@ export function Pill({ children, href, onClick, escuro = false, seta = true, ext
     : null;
   return (
     <motion.div
-      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "") + (secundario ? " is-secundario" : "") + (inerte ? " is-inerte" : "")}
+      className={"v2-pill-wrap" + (escuro ? " is-escuro" : "") + (secundario ? " is-secundario" : "") + (inerte ? " is-inerte" : "") + (!seta || inerte ? " is-sem-seta" : "")}
       whileTap={inerte ? undefined : { scale: 0.98 }}
       transition={spring}
     >
@@ -201,7 +202,7 @@ function Hamburguer({ aberto, onClick }) {
     <button
       type="button"
       className={"v2-burger" + (aberto ? " is-aberto" : "")}
-      aria-label={aberto ? "Fechar menu" : "Abrir menu"}
+      aria-label={aberto ? t("Fechar menu", "Close menu") : t("Abrir menu", "Open menu")}
       aria-expanded={aberto}
       aria-controls="v2-menu"
       onClick={onClick}
@@ -256,7 +257,7 @@ function Menu({ aberto, fechar, ir, rota, trocarIdioma }) {
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{ duration: 0.42, ease }}
         >
-          <nav className="v2-menu-links" aria-label="Seções">
+          <nav className="v2-menu-links" aria-label={t("Seções", "Sections")}>
             {LINKS.map((l, i) => (
               <motion.a
                 key={l.id}
@@ -366,7 +367,7 @@ export function Nav({ sobreEscuro, ir, rota, trocarIdioma }) {
 
       {/* Os sobrescritos ⁰¹ ⁰² ⁰³ também saíram. O que separa os três agora
           é espaço, peso e o traço que cresce no hover. */}
-      <nav className="v2-nav-links" aria-label="Seções">
+      <nav className="v2-nav-links" aria-label={t("Seções", "Sections")}>
         {LINKS.map((l) => {
           const aqui = linkDaRota(l.id, rota);
           return (
@@ -389,7 +390,7 @@ export function Nav({ sobreEscuro, ir, rota, trocarIdioma }) {
 
       <div className="v2-nav-cta">
         <TrocaIdioma trocar={trocarIdioma} />
-        <Pill href={CONTATO().whatsapp.href} escuro={sobreEscuro} externo>Falar comigo</Pill>
+        <Pill href={CONTATO().whatsapp.href} escuro={sobreEscuro} externo>{t("Falar comigo", "Let's talk")}</Pill>
       </div>
 
       <Hamburguer aberto={menu} onClick={() => setMenu((v) => !v)} />
@@ -456,9 +457,10 @@ export function Rodape() {
           de uma dobra inteira é outro efeito, não o mesmo. A da fronteira
           hero -> corpo continua. */}
       <div className="v2-rodape-topo">
-        <Label>Contato</Label>
+        <Label>{t("Contato", "Contact")}</Label>
         <p className="v2-rodape-chamada">
-          Aberto a conversar sobre produto, e-commerce e sistemas internos.
+          {t("Aberto a conversar sobre produto, e-commerce e sistemas internos.",
+             "Open to talking about product, e-commerce and internal systems.")}
         </p>
       </div>
       <ul className="v2-rodape-lista">

@@ -23,6 +23,7 @@ import { useRise, useMaskLine, useCobertura } from "./motion.js";
 import { Label, Pill } from "./Shell.jsx";
 import { GradeCasos, Lamina } from "./Kit.jsx";
 import { CONTATO } from "./content.js";
+import { t } from "./i18n.js";
 import { Narrativa } from "./ProcessoNarrativa.jsx";
 
 /* ------------------------------------------------------------------ copy */
@@ -43,10 +44,11 @@ import { Narrativa } from "./ProcessoNarrativa.jsx";
    NUNCA. Se o hero dissesse qualquer um dos dois, o leitor leria a mesma frase
    duas vezes em meia rolagem. */
 const HERO = {
-  olho: "O método",
-  linha1: "Meu processo muda.",
-  linha2: "O critério não.",
-  premissa: "O caminho é outro a cada projeto. Escolher qual deles rodar é a decisão que eu tomo antes de abrir o Figma.",
+  olho: t("O método", "The method"),
+  linha1: t("Meu processo muda.", "My process changes."),
+  linha2: t("O critério não.", "My criteria do not."),
+  premissa: t("O caminho é outro a cada projeto. Escolher qual deles rodar é a decisão que eu tomo antes de abrir o Figma.",
+              "The path is different on every project. Choosing which one to run is the decision I make before opening Figma."),
 };
 
 /* volume/Processo.jsx · `.proc-msg`.
@@ -54,7 +56,7 @@ const HERO = {
    primeira sentença saiu: o passo 06 já diz "Protótipo vira produto no ar" uma
    tela acima, e as duas juntas repetiam seis palavras em meia rolagem. O que
    sobrou é a metade que o passo 06 NÃO diz. */
-const FECHO = ["Eu vou junto", "até o ar."];
+const FECHO = [t("Eu vou junto", "I stay with it"), t("até o ar.", "all the way to live.")];
 
 /* ------------------------------------------------------------------ hero */
 
@@ -125,13 +127,13 @@ function Fecho() {
     <section className="v2-aprendi v2-grao v2-proc-fecho" data-escuro-corpo="1">
       <div className="v2-wrap">
         <div className="v2-caso-duas">
-          <Label>No fim</Label>
+          <Label>{t("No fim", "In the end")}</Label>
           <div className="v2-caso-coluna">
             <motion.p className="v2-proc-fecho-p" {...rise(0)}>
               {FECHO[0]} <span className="v2-proc-fecho-forte">{FECHO[1]}</span>
             </motion.p>
             <motion.div className="v2-caso-pills" {...rise(1)}>
-              <Pill href={CONTATO().whatsapp.href} escuro externo>Falar comigo</Pill>
+              <Pill href={CONTATO().whatsapp.href} escuro externo>{t("Falar comigo", "Let's talk")}</Pill>
             </motion.div>
           </div>
         </div>
@@ -157,7 +159,7 @@ export default function Processo({ ir }) {
         <Narrativa />
 
         <Fecho />
-        <GradeCasos cromo="Continue" titulo="Os projetos" ir={ir} />
+        <GradeCasos cromo={t("Continue", "Keep going")} titulo={t("Os projetos", "The projects")} ir={ir} />
       </div>
     </>
   );

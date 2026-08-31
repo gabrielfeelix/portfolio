@@ -31,13 +31,14 @@ import { Label, Regua, Pill } from "./Shell.jsx";
    passou a existir: as mesmas peças montam as duas páginas. */
 import { DobraCaso as Dobra, Figura, CapaCapitulo, GradeCasos, CampoDeVoo, Lamina } from "./Kit.jsx";
 import { chapterById } from "./content.js";
+import { t } from "./i18n.js";
 import { CAPAS_CHEIAS, CAPAS_CASO } from "./copy.js";
 
 /* ============================================================ utilidades */
 
 /* Número inteiro no formato do país. Não é decoração: 166267 escrito cru
    custa uma leitura a mais que 166.267. */
-const fmt = (n) => new Intl.NumberFormat("pt-BR").format(Math.round(n));
+const fmt = (n) => new Intl.NumberFormat(t("pt-BR", "en-US")).format(Math.round(n));
 
 /* Decimal com vírgula, para as porcentagens do mapa de calor. */
 const dec = (n) => String(n).replace(".", ",");
@@ -262,8 +263,8 @@ function CasoHero({ cap }) {
                   O par escuro+secundário já existia no sistema desde 29/08,
                   desenhado para exatamente esta dobra: mesma altura, borda em
                   branco a 34% em vez de chapa. */}
-              {links.vercel ? <Pill href={links.vercel} externo escuro>Ver no ar</Pill> : null}
-              {links.figma ? <Pill href={links.figma} externo escuro secundario>Abrir no Figma</Pill> : null}
+              {links.vercel ? <Pill href={links.vercel} externo escuro>{t("Ver no ar", "See it live")}</Pill> : null}
+              {links.figma ? <Pill href={links.figma} externo escuro secundario>{t("Abrir no Figma", "Open in Figma")}</Pill> : null}
             </motion.div>
 
             <motion.ul className="v2-caso-tags" {...entrada.sobe(4, { base: 0.1 })}>
@@ -312,29 +313,33 @@ function CasoHero({ cap }) {
    Uma régua só no topo, e filetes internos separando os três andares. */
 function Abre({ cap }) {
   const rise = useRise();
-  const t = cap.tldr || {};
+  /* `resumo` e não `t`: o nome curto colidia com o `t(pt, en)` do i18n
+     importado no topo, e a colisão é silenciosa — dentro desta função `t`
+     passaria a ser o objeto do TLDR e toda chamada de tradução viraria
+     "resumo não é uma função", em tempo de execução e só em uma rota. */
+  const resumo = cap.tldr || {};
   const ficha = [
-    ["Papel", cap.role],
-    ["Superfície", cap.surface],
-    ["Período", cap.periodo],
-    ["Leitura", cap.minutos ? `${cap.minutos} min` : null],
+    [t("Papel", "Role"), cap.role],
+    [t("Superfície", "Surface"), cap.surface],
+    [t("Período", "Period"), cap.periodo],
+    [t("Leitura", "Read"), cap.minutos ? `${cap.minutos} min` : null],
   ].filter(([, v]) => v);
 
   return (
-    <section className="v2-wrap v2-abre" aria-label="Resumo do projeto">
+    <section className="v2-wrap v2-abre" aria-label={t("Resumo do projeto", "Project summary")}>
       <motion.div className="v2-abre-cartao" {...rise(0)}>
-        {t.resultado || t.oque ? (
+        {resumo.resultado || resumo.oque ? (
           <div className="v2-abre-topo">
-            {t.resultado ? (
+            {resumo.resultado ? (
               <div className="v2-abre-forte">
                 <p className="v2-abre-l">O resultado</p>
-                <p className="v2-abre-r">{t.resultado}</p>
+                <p className="v2-abre-r">{resumo.resultado}</p>
               </div>
             ) : null}
-            {t.oque ? (
+            {resumo.oque ? (
               <div className="v2-abre-oque">
                 <p className="v2-abre-l">O quê</p>
-                <p className="v2-abre-o">{t.oque}</p>
+                <p className="v2-abre-o">{resumo.oque}</p>
               </div>
             ) : null}
           </div>
@@ -419,15 +424,17 @@ function ArteCaminho({ curto }) {
 function Caminho({ cap, curto, trocar }) {
   if (!cap.minutos || !cap.minutosCurto) return null;
   const opcoes = [
-    { k: false, r: "O capítulo inteiro", m: cap.minutos,
-      d: "A investigação, o funil, o sistema e as provas. Tudo que sustenta a decisão." },
-    { k: true, r: "Só o essencial", m: cap.minutosCurto,
-      d: "O problema, o que eu decidi e o que aconteceu. O mesmo texto, sem os desvios." },
+    { k: false, r: t("O capítulo inteiro", "The whole chapter"), m: cap.minutos,
+      d: t("A investigação, o funil, o sistema e as provas. Tudo que sustenta a decisão.",
+           "The investigation, the funnel, the system and the evidence. Everything the decision rests on.") },
+    { k: true, r: t("Só o essencial", "Just the essentials"), m: cap.minutosCurto,
+      d: t("O problema, o que eu decidi e o que aconteceu. O mesmo texto, sem os desvios.",
+           "The problem, what I decided and what happened. Same text, without the detours.") },
   ];
   return (
     <section className="v2-wrap v2-esc" aria-labelledby="v2-esc-t">
-      <p className="v2-esc-olho">Como você quer ler</p>
-      <h2 className="v2-esc-t" id="v2-esc-t">Quanto tempo você tem?</h2>
+      <p className="v2-esc-olho">{t("Como você quer ler", "How you want to read it")}</p>
+      <h2 className="v2-esc-t" id="v2-esc-t">{t("Quanto tempo você tem?", "How much time do you have?")}</h2>
       <div className="v2-esc-cards" role="group" aria-labelledby="v2-esc-t">
         {opcoes.map((o) => (
           <button
@@ -717,7 +724,7 @@ function Solucao({ cap }) {
   }).filter(Boolean);
 
   return (
-    <Dobra label="A solução" larga topo={<Ato titulo={s.t} paras={s.p} />}>
+    <Dobra label={t("A solução", "The solution")} larga topo={<Ato titulo={s.t} paras={s.p} />}>
       <div className="v2-sol-grade">
         {shots.map((f, i) => (
           <Figura
@@ -754,7 +761,7 @@ function Vocabulario({ cap }) {
 
   return (
     <Dobra
-      label="O léxico"
+      label={t("O léxico", "The lexicon")}
       larga
       topo={<Ato titulo={v.t} />}
       aside={<NotaMargem k={v.kicker}>{v.nota}</NotaMargem>}
@@ -797,7 +804,7 @@ function Sistema({ cap }) {
           rolar por motion e espaço antes. Mesma peça dos módulos. */}
       <Abas
         id="sis"
-        rotulo="O sistema"
+        rotulo={t("O sistema", "The system")}
         itens={[
           s.escada && { chave: "escada", rotulo: s.escada.k, conteudo: (
 
@@ -822,7 +829,7 @@ function Sistema({ cap }) {
           </ul>
         </motion.div>
           ) },
-          s.funcoes && { chave: "funcoes", rotulo: "Cor com função", conteudo: (
+          s.funcoes && { chave: "funcoes", rotulo: t("Cor com função", "Colour with a job"), conteudo: (
 
         <motion.div className="v2-bloco" {...rise(0)}>
           <h3 className="v2-bloco-t">Cor com função</h3>
@@ -1217,7 +1224,7 @@ function Modulos({ cap }) {
   const lista = cap.modulos || [];
   if (!lista.length) return null;
   return (
-    <Dobra label="Os módulos" larga>
+    <Dobra label={t("Os módulos", "The modules")} larga>
       {lista.map((m) => <Modulo mod={m} figuras={cap.figuras} key={m.k} />)}
     </Dobra>
   );
@@ -1335,7 +1342,7 @@ function AntesDepois({ cap }) {
   if (!ad) return null;
   const pares = [ad, ...(ad.pares || [])];
   return (
-    <Dobra label="Antes e depois" larga>
+    <Dobra label={t("Antes e depois", "Before and after")} larga>
       {pares.map((p, i) => <Comparador par={p} i={Math.min(i, 2)} key={p.antes} />)}
     </Dobra>
   );
@@ -1383,7 +1390,7 @@ function Aprendi({ cap }) {
     <section className="v2-aprendi v2-grao" data-escuro-corpo="1">
       <div className="v2-wrap">
         <div className="v2-caso-duas">
-          <Label>O que eu aprendi</Label>
+          <Label>{t("O que eu aprendi", "What I learned")}</Label>
           <div className="v2-caso-coluna">
             {(a.p || []).map((p, i) => (
               <motion.p className="v2-aprendi-p" key={i} {...rise(i)}>{p}</motion.p>
@@ -1429,8 +1436,8 @@ function Convite({ cap }) {
           : "O arquivo com as telas está aberto, do primeiro rascunho ao que foi entregue."}
       </p>
       <div className="v2-convite-acoes">
-        {l.vercel ? <Pill href={l.vercel} externo>Abrir o protótipo</Pill> : null}
-        {l.figma ? <Pill href={l.figma} externo secundario>Ver o arquivo no Figma</Pill> : null}
+        {l.vercel ? <Pill href={l.vercel} externo>{t("Abrir o protótipo", "Open the prototype")}</Pill> : null}
+        {l.figma ? <Pill href={l.figma} externo secundario>{t("Ver o arquivo no Figma", "See the Figma file")}</Pill> : null}
       </div>
     </motion.section>
   );
@@ -1441,16 +1448,16 @@ function NaoAchou({ ir }) {
     <div className="v2-corpo-claro" data-clara="1">
       <section className="v2-wrap v2-caso-abre">
         <div className="v2-caso-duas">
-          <Label>Erro 404</Label>
+          <Label>{t("Erro 404", "Error 404")}</Label>
           <div className="v2-caso-coluna">
-            <h1 className="v2-caso-ato">Esse endereço não existe.</h1>
+            <h1 className="v2-caso-ato">{t("Esse endereço não existe.", "This address does not exist.")}</h1>
             <p className="v2-corpo v2-caso-p">
-              Ou ele mudou de lugar, ou nunca esteve aqui. Os quatro casos, o
-              método e o resto do site continuam na home.
+              {t("Ou ele mudou de lugar, ou nunca esteve aqui. Os quatro casos, o método e o resto do site continuam na home.",
+                 "Either it moved or it was never here. The four case studies, the method and the rest of the site are still on the home page.")}
             </p>
             <div className="v2-caso-pills">
-              <Pill onClick={() => ir("/")}>Voltar para a home</Pill>
-              <Pill onClick={() => ir("/#casos")}>Ver os projetos</Pill>
+              <Pill onClick={() => ir("/")}>{t("Voltar para a home", "Back to the home page")}</Pill>
+              <Pill onClick={() => ir("/#casos")}>{t("Ver os projetos", "See the projects")}</Pill>
             </div>
           </div>
         </div>
@@ -1498,16 +1505,16 @@ export default function Caso({ id, ir }) {
      tem quatro minutos. A numeração das capas acompanha o caminho escolhido,
      porque ela sai do tamanho da lista já filtrada. */
   const movimentos = [
-    { t: "O problema", tem: ["problema", "funil", "gesto"],
+    { t: t("O problema", "The problem"), tem: ["problema", "funil", "gesto"],
       corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></>,
       curto: <Problema cap={cap} /> },
-    { t: "A investigação", tem: ["investigacao", "busca", "citacao"],
+    { t: t("A investigação", "The investigation"), tem: ["investigacao", "busca", "citacao"],
       corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></>,
       curto: null },
-    { t: "A resposta", tem: ["decisoes", "recusei", "ponte", "solucao", "sistema", "vocabulario", "modulos", "calendario"],
+    { t: t("A resposta", "The answer"), tem: ["decisoes", "recusei", "ponte", "solucao", "sistema", "vocabulario", "modulos", "calendario"],
       corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></>,
       curto: <><Decisoes cap={cap} /><Solucao cap={cap} /></> },
-    { t: "O resultado", tem: ["antesDepois", "resultado", "aprendi"],
+    { t: t("O resultado", "The result"), tem: ["antesDepois", "resultado", "aprendi"],
       corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></>,
       curto: <><Resultado cap={cap} /><Aprendi cap={cap} /></> },
   ].filter((m) => m.tem.some((k) => {
@@ -1565,7 +1572,7 @@ export default function Caso({ id, ir }) {
           </section>
         ) : null}
         <Convite cap={cap} />
-        <GradeCasos excluir={cap.id} titulo="Os outros projetos" ir={ir} />
+        <GradeCasos excluir={cap.id} titulo={t("Os outros projetos", "The other projects")} ir={ir} />
       </CampoDeVoo>
     </>
   );

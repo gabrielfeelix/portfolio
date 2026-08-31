@@ -5,6 +5,7 @@
  * conteudo/blog/*.md. Ver blog.mjs. */
 
 import { POSTS } from "./posts.gerado.js";
+import { t } from "./i18n.js";
 
 export { POSTS };
 
@@ -18,9 +19,9 @@ export { POSTS };
  * com a inicial maiúscula. Post não pode sumir do site por causa de uma
  * chave que faltou nesta tabela. */
 const ROTULOS = {
-  oficio:   "Ofício",
-  bastidor: "Bastidor",
-  carreira: "Carreira",
+  oficio:   t("Ofício", "Craft"),
+  bastidor: t("Bastidor", "Backstage"),
+  carreira: t("Carreira", "Career"),
 };
 
 export function rotuloTag(tag) {

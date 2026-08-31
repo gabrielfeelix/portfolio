@@ -29,6 +29,7 @@ import {
   porSlug, corpo, vizinhos, relacionados,
   dataLonga, dataCurta, rotuloTag,
 } from "./blog.js";
+import { t } from "./i18n.js";
 
 const SITE = "https://gabrielfelix-ux.4yu.com.br";
 
@@ -49,7 +50,7 @@ function useDadosEstruturados(p) {
       description: p.resumo,
       datePublished: p.data,
       dateModified: p.data,
-      inLanguage: "pt-BR",
+      inLanguage: t("pt-BR", "en"),
       wordCount: p.palavras,
       keywords: rotuloTag(p.tag),
       mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blog/${p.slug}` },
@@ -162,7 +163,7 @@ export default function Post({ slug, ir }) {
   if (!p) {
     return (
       <Dobra n="00" nome="Blog" carimbo="404" data-clara="1">
-        <Titulo>Esse texto não existe</Titulo>
+        <Titulo>{t("Esse texto não existe", "This text does not exist")}</Titulo>
         <p className="v2-lead">
           O endereço <code>/blog/{slug}</code> não corresponde a nenhum post.
         </p>
@@ -236,16 +237,16 @@ export default function Post({ slug, ir }) {
       </Dobra>
 
       {anterior || proximo ? (
-        <Dobra n="02" nome="Continue" carimbo="NO BLOG">
+        <Dobra n="02" nome={t("Continue", "Keep going")} carimbo={t("NO BLOG", "ON THE BLOG")}>
           <div className="v2-post-vizinhos">
-            {anterior ? <Cartao p={anterior} ir={ir} rot="Mais novo" /> : <span />}
-            {proximo ? <Cartao p={proximo} ir={ir} rot="Mais antigo" /> : <span />}
+            {anterior ? <Cartao p={anterior} ir={ir} rot={t("Mais novo", "Newer")} /> : <span />}
+            {proximo ? <Cartao p={proximo} ir={ir} rot={t("Mais antigo", "Older")} /> : <span />}
           </div>
         </Dobra>
       ) : null}
 
       {perto.length ? (
-        <Dobra n="03" nome="Perto disso" carimbo={rotuloTag(p.tag).toUpperCase()}>
+        <Dobra n="03" nome={t("Perto disso", "Close to this")} carimbo={rotuloTag(p.tag).toUpperCase()}>
           <div className="v2-post-perto">
             {perto.map((o, i) => (
               <a

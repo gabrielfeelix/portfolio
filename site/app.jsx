@@ -17,6 +17,7 @@ import Post from "./Post.jsx";
 import { porSlug } from "./blog.js";
 import { Cortina, useTravessia } from "./Travessia.jsx";
 import { decodeDeChegada, trocarIdioma } from "./idioma.js";
+import { t } from "./i18n.js";
 import { Cursor } from "./Cursor.jsx";
 
 /* --- roteamento ---
@@ -254,7 +255,9 @@ function App() {
        de rota numa SPA, sair de um caso para a home com `null` deixava a
        description do caso na página anterior colada na home. Toda rota agora
        escreve a sua, e quem não tem uma própria cai aqui de volta. */
-    let descricao = "Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.";
+    let descricao = t(
+      "Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.",
+      "Portfolio of Gabriel Felix Barbosa, UX/Product Designer. Four projects opened all the way up: the problem, what the research showed, what got cut and what shipped.");
     let imagem = null;
     let tipoOg = "website";
 
@@ -282,20 +285,26 @@ function App() {
         descricao = encurtar(`${cabeca}. ${corpo}`.replace(/\s+/g, " ").trim(), 200);
       }
     } else if (rota.tipo === "processo") {
-      titulo = `Processo · ${base}`;
+      titulo = `${t("Processo", "Process")} · ${base}`;
       caminho = "/processo";
-      descricao = "Meu processo muda, o critério não. Os dois caminhos que eu rodo, o que decide o tamanho da pesquisa, e a vez em que o dado provou que a minha aposta estava errada.";
+      descricao = t(
+        "Meu processo muda, o critério não. Os dois caminhos que eu rodo, o que decide o tamanho da pesquisa, e a vez em que o dado provou que a minha aposta estava errada.",
+        "My process changes, my criteria do not. The two paths I run, what decides how much research a decision gets, and the time the data proved my own bet wrong.");
     } else if (rota.tipo === "sobre") {
-      titulo = `Sobre · ${base}`;
+      titulo = `${t("Sobre", "About")} · ${base}`;
       caminho = "/sobre";
-      descricao = "Larguei Direito por causa de um e-commerce que montei na pandemia. Hoje sou o designer de produto de uma distribuidora nacional, e desenho e implemento quando o prazo aperta.";
+      descricao = t(
+        "Larguei Direito por causa de um e-commerce que montei na pandemia. Hoje sou o designer de produto de uma distribuidora nacional, e desenho e implemento quando o prazo aperta.",
+        "I dropped law because of an online store I built during the pandemic. Today I am the product designer for a national distributor, and I design and build when the deadline gets tight.");
     } else if (rota.tipo === "blog") {
-      titulo = `Notas · ${base}`;
+      titulo = `${t("Notas", "Notes")} · ${base}`;
       caminho = "/blog";
-      descricao = "Ofício, bastidor e carreira: o que eu aprendi medindo, o que deu errado antes de dar certo, e o que ninguém conta em processo seletivo.";
+      descricao = t(
+        "Ofício, bastidor e carreira: o que eu aprendi medindo, o que deu errado antes de dar certo, e o que ninguém conta em processo seletivo.",
+        "Craft, backstage and career: what I learned by measuring, what went wrong before it went right, and what nobody tells you in a hiring process.");
     } else if (rota.tipo === "post") {
       const post = porSlug(rota.slug);
-      titulo = post ? `${post.titulo} · ${base}` : `Texto não encontrado · ${base}`;
+      titulo = post ? `${post.titulo} · ${base}` : `${t("Texto não encontrado", "Text not found")} · ${base}`;
       caminho = `/blog/${rota.slug}`;
       /* Post é a única rota do site em que a prévia de link importa de
          verdade: texto circula em grupo e em rede social, e sem isto todo
@@ -313,9 +322,10 @@ function App() {
     const achou = rota.tipo !== "404" && !(rota.tipo === "caso" && !chapterById(rota.id))
       && !(rota.tipo === "post" && !porSlug(rota.slug));
     if (!achou) {
-      titulo = `Página não encontrada · ${base}`;
+      titulo = `${t("Página não encontrada", "Page not found")} · ${base}`;
       caminho = "/";
-      descricao = "Esse endereço não existe mais ou nunca existiu.";
+      descricao = t("Esse endereço não existe mais ou nunca existiu.",
+        "This address either moved or never existed.");
     }
 
     document.title = titulo;

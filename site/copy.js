@@ -1,3 +1,22 @@
+import { mescla } from "./i18n.js";
+import * as EN from "./copy.en.js";
+
+/* `tr` aplica o espelho inglês sobre a copy portuguesa deste arquivo.
+ *
+ * Fica AQUI e não em cada componente porque a fonte da verdade é uma só: quem
+ * importa `HERO` recebe o hero do idioma da vez, sem precisar saber que
+ * existem dois. Nenhum `.jsx` do site muda por causa do inglês.
+ *
+ * A mescla é profunda de propósito — o espelho em site/copy.en.js só carrega
+ * o que muda, e o que ele não diz (caminho de imagem, chave de layout) fica.
+ * A conta está no comentário de `mescla`, em site/i18n.js.
+ *
+ * O que não passa por `tr` também é decisão: CAPAS_*, LOGOS_COR e
+ * SOBRE_FERRAMENTAS são caminho de arquivo e nome próprio, e MANIFESTO e
+ * PROCESSO_CURTO estão mortos desde 30/08 — traduzir código morto é criar
+ * texto para alguém manter à toa. */
+const tr = (chave, pt) => mescla(pt, EN[chave]);
+
 /* Textos que a V2 precisa e que a V1 NÃO publica em window.
  *
  * Contrato do projeto: nada de texto é reescrito e data.jsx é a fonte única.
@@ -17,7 +36,7 @@
  */
 
 /* volume/Capa.jsx · Splash: <h1 className="splash-h"> */
-export const HERO = {
+export const HERO = tr("HERO", {
   linha1: "Product Designer",
   linha2: "que leva",
   /* volume/Capa.jsx · <RotateWord items={...} />
@@ -43,7 +62,7 @@ export const HERO = {
   /* volume/Capa.jsx · <p className="splash-sub"> */
   sub: ["Antes de desenhar, eu assisto ", "sessão de usuário", ". É de lá que saem as decisões."],
   papel: "UX / Product Designer",
-};
+});
 
 /* volume/Posfacio.jsx · blocos <p className="pos-p"> da coluna "como eu trabalho".
    O parágrafo do meio entra cortado no ponto final de "informação": o resto
@@ -75,7 +94,7 @@ export const HERO = {
    O texto continua saindo inteiro de volume/Posfacio.jsx, só recortado e
    redistribuído: nenhuma palavra é nova. O asterisco marca a palavra que sai
    no vermelho do avião (--v2-accent) e nunca chega ao DOM. */
-export const DECLARACAO = [
+export const DECLARACAO = tr("DECLARACAO", [
   {
     olho: "O protótipo",
     frase: "Coloco uma tela clicável na mão das pessoas *cedo*.",
@@ -88,7 +107,7 @@ export const DECLARACAO = [
     frase: "A parte demorada do meu trabalho é o *ajuste*.",
     nota: "É ajuste, e mais ajuste, e é onde eu prefiro gastar o tempo.",
   },
-];
+]);
 
 export const MANIFESTO = {
   lead:
@@ -147,7 +166,7 @@ export const MANIFESTO = {
    O que não muda: a home informa COMO ele trabalha, e citar projeto por nome
    é referência de serviço prestado, que é assunto do case uma dobra abaixo.
    Por isso nenhum caso aparece nesta dobra. */
-export const METODO = {
+export const METODO = tr("METODO", {
   lead: "Pesquisa e teste entram em todo projeto. O tamanho de cada um muda conforme o risco da decisão e o tempo que eu tenho.",
   caminhos: [
     {
@@ -162,7 +181,7 @@ export const METODO = {
     },
   ],
   fecho: "Nos dois casos, alguém que vai usar a tela mexe nela antes de eu fechar.",
-};
+});
 
 /* MORTO desde 30/08: era o conteúdo da dobra 04, substituído por METODO acima.
    Fica registrado por enquanto porque as seis etapas de PROCESSO em
@@ -254,19 +273,19 @@ export const LOGOS_COR = {
       formação logo abaixo imprime os cinco certificados de CERTS. */
 
 /* volume/Posfacio.jsx · <p className="pos-hand"> */
-export const SOBRE_OI = "oi, eu sou o Gabriel.";
+export const SOBRE_OI = tr("SOBRE_OI", "oi, eu sou o Gabriel.");
 
 /* v2/Home.jsx · a frase da dobra 06, que é onde a home apresenta a pessoa.
    Repetida aqui de propósito: é a mesma posição na página, e a /sobre é a
    versão longa da mesma dobra. */
-export const SOBRE_PREMISSA =
+export const SOBRE_PREMISSA = tr("SOBRE_PREMISSA",
   "Designer de produto em Maringá, que aprende o problema antes de abrir " +
-  "o Figma e implementa quando o prazo aperta.";
+  "o Figma e implementa quando o prazo aperta.");
 
 /* volume/Posfacio.jsx · seção "Como eu trabalho". O primeiro parágrafo virou
    lead do cabeçalho por ser o argumento de julgamento, que é o que
    docs/DIAGNOSTICO-TEXTO-2026-08-27.md pede que a página defenda. */
-export const SOBRE_TRABALHO = {
+export const SOBRE_TRABALHO = tr("SOBRE_TRABALHO", {
   lead:
     "Gosto de colocar uma tela clicável na mão das pessoas cedo, porque " +
     "opinião sobre imagem estática costuma ser gosto, e opinião sobre uma " +
@@ -275,40 +294,40 @@ export const SOBRE_TRABALHO = {
     "Depois disso é ajuste, e mais ajuste. É a parte demorada do meu trabalho, e é onde eu não corto tempo.",
     "Nunca consegui pensar design e código como duas coisas separadas. Quando o prazo aperta, eu mesmo implemento.",
   ],
-};
+});
 
 /* volume/data.jsx · CHAPTERS, pcyes: campo `fact`. É a frase mais forte do
    portfólio inteiro e, até aqui, só existia enterrada no capítulo 1. Entra
    com a origem visível, porque frase sem caso é slogan. */
-export const SOBRE_CITACAO = {
+export const SOBRE_CITACAO = tr("SOBRE_CITACAO", {
   q: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada.",
   f: "PCYES V2 · Grupo Oderço · 2026",
-};
+});
 
 /* volume/Posfacio.jsx · seção "Como eu cheguei aqui" (bloco .pt-text). */
-export const SOBRE_VIRADA = [
+export const SOBRE_VIRADA = tr("SOBRE_VIRADA", [
   "Eu estava no fim do curso de Direito na UEM quando a pandemia parou tudo. Para ocupar a cabeça, montei um e-commerce só para aprender a mexer.",
   "Foi ali que a coisa virou. Não me peguei gostando só das telas: gostei da engenharia de fazer um sistema existir, de tirar algo do nada e botar de pé.",
   "Larguei o Direito, me formei em Design Gráfico, fui atrás de curso de UX e tirei a certificação Scrum para andar no ritmo de time ágil. Comecei na TT&T, desenhei produto na Locarmais, e hoje toco o design de um time inteiro de marcas no Grupo Oderço.",
-];
+]);
 
 /* volume/Posfacio.jsx · seção "Fora da tela". O terceiro parágrafo cita dois
    dos aplicativos que já estão em PROJECTS: "Deixei Aqui" e "Quanto Cobro".
    O link do TikTok sai de CONTATO, não daqui. */
-export const SOBRE_FORA = [
+export const SOBRE_FORA = tr("SOBRE_FORA", [
   "Corro, treino boxe há dois anos e jogo vôlei toda semana num time amador aqui em Maringá.",
   { pre: "Leio mangá e manhwa numa quantidade difícil de justificar, e mantenho um canal sobre anime. Se quiser conferir o que eu ando assistindo, ", link: "tá aqui", pos: "." },
   "Também construo aplicativo por hobby. Costumo fazer só os que resolvem algum problema meu: tem um que lembra onde eu estacionei o carro, e outro que ajuda freelancer a calcular quanto cobrar por hora.",
-];
+]);
 
 /* volume/Posfacio.jsx · seção "Para onde eu vou". É a única frase da página
    endereçada a quem contrata, e por isso fecha. */
-export const SOBRE_ADIANTE =
+export const SOBRE_ADIANTE = tr("SOBRE_ADIANTE",
   "Quero trabalhar em produto maior, com gente que sabe mais que eu, e estar " +
-  "mais perto de onde as decisões são tomadas.";
+  "mais perto de onde as decisões são tomadas.");
 
 /* volume/Posfacio.jsx · <p className="pos-hand"> do fim. */
-export const SOBRE_OBRIGADO = "obrigado por ler até aqui.";
+export const SOBRE_OBRIGADO = tr("SOBRE_OBRIGADO", "obrigado por ler até aqui.");
 
 /* As ferramentas.
 

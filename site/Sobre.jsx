@@ -46,6 +46,7 @@ import {
   SOBRE_OI, SOBRE_PREMISSA, SOBRE_TRABALHO, SOBRE_CITACAO, SOBRE_VIRADA,
   SOBRE_FORA, SOBRE_ADIANTE, SOBRE_OBRIGADO,
 } from "./copy.js";
+import { t } from "./i18n.js";
 
 /* O retrato. Preto e branco de propósito: a foto original é de fim de tarde,
    com verde de árvore e laranja de contraluz, e a regra de paleta do site é
@@ -124,14 +125,14 @@ function SobreHero() {
           <motion.p className="v2-sb-premissa" {...linha(4)}>{SOBRE_PREMISSA}</motion.p>
 
           <motion.div className="v2-caso-pills" {...tardio}>
-            <Pill href={c.whatsapp.href} escuro externo>Falar comigo</Pill>
+            <Pill href={c.whatsapp.href} escuro externo>{t("Falar comigo", "Let's talk")}</Pill>
             {c.linkedin ? <Pill href={c.linkedin.href} externo escuro>LinkedIn</Pill> : null}
           </motion.div>
 
           <ul className="v2-caso-tags">
-            <li>Maringá, PR</li>
+            <li>{t("Maringá, PR", "Maringá, Brazil")}</li>
             <li>{atual ? atual.name : null}</li>
-            <li>Desde 2024</li>
+            <li>{t("Desde 2024", "Since 2024")}</li>
           </ul>
         </div>
       </motion.div>
@@ -148,13 +149,13 @@ function Ficha() {
   const lista = COMPANIES();
   const atual = lista.find((e) => e.atual);
   const celulas = [
-    ["Papel", "UX / Product Designer"],
-    ["Base", "Maringá, Paraná"],
-    ["Hoje", atual ? `${atual.name} · ${atual.role}` : null],
+    [t("Papel", "Role"), "UX / Product Designer"],
+    [t("Base", "Based in"), t("Maringá, Paraná", "Maringá, Paraná, Brazil")],
+    [t("Hoje", "Today"), atual ? `${atual.name} · ${atual.role}` : null],
   ].filter(([, v]) => v);
 
   return (
-    <section className="v2-wrap v2-caso-abre" aria-label="Ficha">
+    <section className="v2-wrap v2-caso-abre" aria-label={t("Ficha", "Key facts")}>
       <dl className="v2-sb-ficha">
         {celulas.map(([rot, val], i) => (
           <motion.div className="v2-sb-ficha-cel" key={rot} {...rise(i)}>
@@ -172,10 +173,10 @@ function Ficha() {
 function Metodo() {
   const rise = useRise();
   return (
-    <Dobra id="metodo" n="01" nome="Método" carimbo="©26">
+    <Dobra id="metodo" n="01" nome={t("Método", "Method")} carimbo="©26">
       <Cabecalho
-        olho="Como eu trabalho"
-        titulo={<DuasCores fraca="Uma tela clicável" forte="na mão das pessoas, cedo" />}
+        olho={t("Como eu trabalho", "How I work")}
+        titulo={<DuasCores fraca={t("Uma tela clicável", "A clickable screen")} forte={t("na mão das pessoas, cedo", "in people's hands, early")} />}
         lead={SOBRE_TRABALHO.lead}
         /* O resto do argumento entra na quinta parte do cabeçalho, embaixo do
            lead, e não numa coluna nova embaixo do título. Com ele embaixo
@@ -218,8 +219,8 @@ function Virada() {
   return (
     <Dobra id="virada" n="02" nome="A virada" carimbo="©26">
       <Cabecalho
-        olho="Como eu cheguei aqui"
-        titulo={<DuasCores fraca="Eu ia ser" forte="advogado" />}
+        olho={t("Como eu cheguei aqui", "How I got here")}
+        titulo={<DuasCores fraca={t("Eu ia ser", "I was going to be")} forte={t("advogado", "a lawyer")} />}
         lead={SOBRE_VIRADA[0]}
         prova={
           <div className="v2-sb-continua">
@@ -286,7 +287,7 @@ function Empresa({ e, i, total }) {
 
         {e.skills && e.skills.length ? (
           <motion.div className="v2-sb-emp-skills" {...rise(3)}>
-            <p className="v2-sb-emp-skills-r">O que passou pela minha mão</p>
+            <p className="v2-sb-emp-skills-r">{t("O que passou pela minha mão", "What went through my hands")}</p>
             <dl className="v2-sb-skills">
               {e.skills.map((s) => (
                 <div className="v2-sb-skill" key={s.k}>
@@ -306,11 +307,12 @@ function Empresa({ e, i, total }) {
 function Trajetoria() {
   const lista = COMPANIES();
   return (
-    <Dobra id="empresas" n="03" nome="Trajetória" carimbo="©26">
+    <Dobra id="empresas" n="03" nome={t("Trajetória", "Track record")} carimbo="©26">
       <Cabecalho
-        olho="Onde estive"
-        titulo={<DuasCores fraca="Três empresas," forte="e o que ficou de cada uma" />}
-        lead="A versão curta está na home. Esta é a longa: o que era o lugar, o que eu fiz lá, e o que eu saí sabendo."
+        olho={t("Onde estive", "Where I have been")}
+        titulo={<DuasCores fraca={t("Três empresas,", "Three companies,")} forte={t("e o que ficou de cada uma", "and what each one left behind")} />}
+        lead={t("A versão curta está na home. Esta é a longa: o que era o lugar, o que eu fiz lá, e o que eu saí sabendo.",
+              "The short version is on the home page. This is the long one: what the place was, what I did there, and what I left knowing.")}
       />
       {lista.map((e, i) => (
         <Empresa key={e.id} e={e} i={i} total={lista.length} />
@@ -460,10 +462,10 @@ function Ferramentas() {
 function Formacao() {
   const lista = CERTS();
   return (
-    <Dobra id="formacao" n="04" nome="Formação" carimbo="©26">
+    <Dobra id="formacao" n="04" nome={t("Formação", "Education")} carimbo="©26">
       <Cabecalho
-        olho="Formação"
-        titulo={<DuasCores fraca="O que eu estudei" forte="e com o que eu trabalho" />}
+        olho={t("Formação", "Education")}
+        titulo={<DuasCores fraca={t("O que eu estudei", "What I studied")} forte={t("e com o que eu trabalho", "and what I work with")} />}
       />
       <div className="v2-sb-form">
         <VitrineCerts lista={lista} />
@@ -479,13 +481,13 @@ function ForaDaTela() {
   const rise = useRise();
   const c = CONTATO();
   return (
-    <Dobra id="fora" n="05" nome="Fora da tela" carimbo="©26">
+    <Dobra id="fora" n="05" nome={t("Fora da tela", "Off screen")} carimbo="©26">
       <div className="v2-sb-fora">
         <div className="v2-sb-fora-texto">
           <Cabecalho
             empilhado
-            olho="Fora da tela"
-            titulo={<DuasCores fraca="O que eu faço" forte="quando fecho o Figma" />}
+            olho={t("Fora da tela", "Off screen")}
+            titulo={<DuasCores fraca={t("O que eu faço", "What I do")} forte={t("quando fecho o Figma", "when I close Figma")} />}
           />
           {SOBRE_FORA.map((p, i) =>
             typeof p === "string" ? (
@@ -513,14 +515,14 @@ function ForaDaTela() {
               propósito: repetir "ver o canal" nos dois faria a pessoa achar
               que são o mesmo destino. */}
           <motion.div className="v2-sb-fora-acoes" {...rise(SOBRE_FORA.length)}>
-            {c.youtube ? <Pill href={c.youtube.href} externo>Ver o canal no YouTube</Pill> : null}
-            {c.tiktok ? <Pill href={c.tiktok.href} externo secundario>Os cortes no TikTok</Pill> : null}
+            {c.youtube ? <Pill href={c.youtube.href} externo>{t("Ver o canal no YouTube", "See the YouTube channel")}</Pill> : null}
+            {c.tiktok ? <Pill href={c.tiktok.href} externo secundario>{t("Os cortes no TikTok", "The clips on TikTok")}</Pill> : null}
           </motion.div>
         </div>
         <figure className="v2-sb-fora-fig">
           <img
             src={MANGUDOS}
-            alt="Mangudos, o canal de anime do Gabriel"
+            alt={t("Mangudos, o canal de anime do Gabriel", "Mangudos, Gabriel's anime channel")}
             loading="lazy"
             draggable="false"
           />
@@ -549,8 +551,8 @@ function Adiante() {
   const revelar = useRevelar();
   const c = CONTATO();
   return (
-    <Dobra id="adiante" n="06" nome="Adiante" carimbo="©26">
-      <p className="v2-olho">Para onde eu vou</p>
+    <Dobra id="adiante" n="06" nome={t("Adiante", "Ahead")} carimbo="©26">
+      <p className="v2-olho">{t("Para onde eu vou", "Where I am going")}</p>
       <motion.p className="v2-sb-adiante" {...revelar(0)}>{SOBRE_ADIANTE}</motion.p>
       <motion.div className="v2-sb-fecho" {...revelar(1)}>
         <div>
@@ -564,8 +566,8 @@ function Adiante() {
             um WhatsApp. O currículo entra como secundário: a conversa continua
             sendo a ação principal. */}
         <div className="v2-sb-fecho-acoes">
-          <Pill href={c.whatsapp.href} externo>Falar comigo</Pill>
-          {c.curriculo ? <Pill href={c.curriculo.href} externo secundario>Currículo em PDF</Pill> : null}
+          <Pill href={c.whatsapp.href} externo>{t("Falar comigo", "Let's talk")}</Pill>
+          {c.curriculo ? <Pill href={c.curriculo.href} externo secundario>{t("Currículo em PDF", "Résumé, PDF")}</Pill> : null}
         </div>
       </motion.div>
     </Dobra>
@@ -586,16 +588,16 @@ export default function Sobre({ ir }) {
         <Metodo />
         <Citacao />
 
-        <CapaCapitulo n="01" t="Como eu cheguei aqui" de="02" rotulo="Capítulo" />
+        <CapaCapitulo n="01" t={t("Como eu cheguei aqui", "How I got here")} de="02" rotulo={t("Capítulo", "Chapter")} />
         <Virada />
         <Trajetoria />
         <Formacao />
 
-        <CapaCapitulo n="02" t="Fora da tela" de="02" rotulo="Capítulo" />
+        <CapaCapitulo n="02" t={t("Fora da tela", "Off screen")} de="02" rotulo={t("Capítulo", "Chapter")} />
         <ForaDaTela />
         <Adiante />
 
-        <GradeCasos cromo="O trabalho" titulo="Os projetos" ir={ir} />
+        <GradeCasos cromo={t("O trabalho", "The work")} titulo={t("Os projetos", "The projects")} ir={ir} />
       </CampoDeVoo>
     </>
   );

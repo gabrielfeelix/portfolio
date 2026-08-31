@@ -34,9 +34,10 @@ import { Pill } from "./Shell.jsx";
 import { Cromo, Relogio, Dobra, Titulo, Cabecalho, Campo, Contador, DuasCores, Presa, CampoDeVoo, Lamina } from "./Kit.jsx";
 import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
-  casos, pieceProjects, pieceCover, pieceDestino, pieceStatus,
+  casos, pieceProjects, pieceCover, pieceDestino, pieceDestinoExtra, pieceStatus,
 } from "./content.js";
 import { HERO, DECLARACAO, METODO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
+import { t } from "./i18n.js";
 import { FERRAMENTAS } from "./ferramentas.js";
 
 /* ------------------------------------------------------------------ 1. hero */
@@ -169,14 +170,14 @@ function Hero({ paraCasos }) {
               página inteira existe para mostrar; o secundário abre a conversa,
               que é o passo seguinte de quem já se convenceu. */}
           <div className="v2-hero-botoes">
-            <Pill onClick={paraCasos} escuro>Ver os casos</Pill>
-            <Pill href={CONTATO().whatsapp.href} escuro secundario externo>Falar comigo</Pill>
+            <Pill onClick={paraCasos} escuro>{t("Ver os casos", "See the work")}</Pill>
+            <Pill href={CONTATO().whatsapp.href} escuro secundario externo>{t("Falar comigo", "Let's talk")}</Pill>
           </div>
         </motion.div>
         </div>
 
-        <button className="v2-hero-seta" onClick={paraCasos} aria-label="Rolar para o conteúdo">
-          <span className="v2-hero-seta-rot">Role</span>
+        <button className="v2-hero-seta" onClick={paraCasos} aria-label={t("Rolar para o conteúdo", "Scroll to content")}>
+          <span className="v2-hero-seta-rot">{t("Role", "Scroll")}</span>
           <span className="v2-hero-seta-tra" aria-hidden="true" />
         </button>
       </motion.div>
@@ -246,7 +247,7 @@ function Declaracao() {
     </div>
   );
   return (
-    <Dobra id="sobre" n="01" nome="A tese" carimbo="©26">
+    <Dobra id="sobre" n="01" nome={t("A tese", "The claim")} carimbo="©26">
       <div className="v2-declaracao-par" ref={ref}>
         {bloco(DECLARACAO[0], 0, "is-esq")}
         {bloco(DECLARACAO[1], 1, "is-dir")}
@@ -273,7 +274,7 @@ function Marquee() {
   const marcas = ALL_MARKS();
   const trilho = marcas.map((m) => <Marca key={m.id} m={m} />);
   return (
-    <section className="v2-marquee-secao" aria-label="Marcas por onde o design passou">
+    <section className="v2-marquee-secao" aria-label={t("Marcas por onde o design passou", "Brands the design has been through")}>
       <div className="v2-marquee">
         <div className="v2-marquee-trilho">
           <div className="v2-marquee-fita">{trilho}</div>
@@ -447,7 +448,7 @@ function ProvaFerramentas() {
   return (
     <div className="v2-prova-ferr">
       <div className="v2-prova-ferr-trilho">
-        <ul className="v2-prova-ferr-fita" aria-label="Ferramentas de trabalho">{fita(false)}</ul>
+        <ul className="v2-prova-ferr-fita" aria-label={t("Ferramentas de trabalho", "Tools I work with")}>{fita(false)}</ul>
         {/* a segunda cópia existe só para o laço não ter costura */}
         <ul className="v2-prova-ferr-fita" aria-hidden="true">{fita(true)}</ul>
       </div>
@@ -461,15 +462,16 @@ function Trabalho({ ir }) {
   for (let k = 0; k < lista.length; k += 2) linhas.push(lista.slice(k, k + 2));
   const { ref, progresso } = usePilhaTrilho();
   return (
-    <Dobra id="casos" n="02" nome="Trabalho" carimbo="©26" aria-label="Projetos">
+    <Dobra id="casos" n="02" nome={t("Trabalho", "Work")} carimbo="©26" aria-label={t("Projetos", "Projects")}>
       {/* As cinco partes do viper. É a dobra que o Gabriel dissecou. */}
       <Cabecalho
-        olho="Projetos"
-        titulo="Trabalho selecionado"
+        olho={t("Projetos", "Projects")}
+        titulo={t("Trabalho selecionado", "Selected work")}
         marca="®"
-        lead="Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar."
-        cta={<Pill href="#pecas">Ver tudo</Pill>}
-        nota="Feito com"
+        lead={t("Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.",
+              "Four projects opened all the way up: the problem, what the research showed, what got cut and what shipped.")}
+        cta={<Pill href="#pecas">{t("Ver tudo", "See everything")}</Pill>}
+        nota={t("Feito com", "Made with")}
         prova={<ProvaFerramentas />}
       />
       <div className="v2-pilha" ref={ref}>
@@ -498,11 +500,12 @@ function Numeros() {
   const pecas = pieceProjects().length;
   const anos = Math.max(1, new Date().getFullYear() - ANO_INICIO);
   return (
-    <Dobra id="numeros" n="03" nome="Em números" carimbo="©26">
+    <Dobra id="numeros" n="03" nome={t("Em números", "In numbers")} carimbo="©26">
       <Cabecalho
-        olho="Escala"
-        titulo="O que já saiu da mesa"
-        lead="Números de produção, não de vaidade: cada um deles tem página no site."
+        olho={t("Escala", "Scale")}
+        titulo={t("O que já saiu da mesa", "What has left my desk")}
+        lead={t("Números de produção, não de vaidade: cada um deles tem página no site.",
+              "Production numbers, not vanity ones: every one of them has a page on this site.")}
       />
       {/* Cinco e nao quatro desde 29/08. Com quatro colunas a dobra abria um
           vazio grande a esquerda, embaixo do titulo, e o Gabriel leu como
@@ -517,11 +520,11 @@ function Numeros() {
 
           A ordem desce: 4, 22, 17, 3, 2. */}
       <div className="v2-numeros">
-        <Contador ate={casosN} rotulo="Projetos abertos" nota="Abertos por inteiro" />
-        <Contador ate={casosN + pecas} rotulo="Projetos publicados" nota="Abertos mais peças" />
-        <Contador ate={marcas} rotulo="Marcas atendidas" nota="Todas na fita acima" />
-        <Contador ate={empresas} rotulo="Times por dentro" nota="Estágio, UX e produto" />
-        <Contador ate={anos} sufixo="+" rotulo="Anos em produto" nota={`Desde ${ANO_INICIO}`} />
+        <Contador ate={casosN} rotulo={t("Projetos abertos", "Projects opened")} nota={t("Abertos por inteiro", "Opened all the way up")} />
+        <Contador ate={casosN + pecas} rotulo={t("Projetos publicados", "Projects published")} nota={t("Abertos mais peças", "The four, plus the smaller pieces")} />
+        <Contador ate={marcas} rotulo={t("Marcas atendidas", "Brands worked for")} nota={t("Todas na fita acima", "All of them in the strip above")} />
+        <Contador ate={empresas} rotulo={t("Times por dentro", "Teams from the inside")} nota={t("Estágio, UX e produto", "Internship, UX and product")} />
+        <Contador ate={anos} sufixo="+" rotulo={t("Anos em produto", "Years in product")} nota={t(`Desde ${ANO_INICIO}`, `Since ${ANO_INICIO}`)} />
       </div>
     </Dobra>
   );
@@ -542,13 +545,13 @@ function Numeros() {
 function Metodo({ ir }) {
   const revelar = useRevelar();
   return (
-    <Dobra id="processo" n="04" nome="Método" carimbo="©26">
+    <Dobra id="processo" n="04" nome={t("Método", "Method")} carimbo="©26">
       <Cabecalho
-        olho="Como eu trabalho"
-        titulo={<DuasCores fraca="Não é um processo." forte="São dois." />}
+        olho={t("Como eu trabalho", "How I work")}
+        titulo={<DuasCores fraca={t("Não é um processo.", "It is not one process.")} forte={t("São dois.", "It is two.")} />}
         lead={METODO.lead}
         /* Secundário, como antes: a home tem UM primário, e ele está na hero. */
-        cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>Ver o método inteiro</Pill>}
+        cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>{t("Ver o método inteiro", "See the whole method")}</Pill>}
       />
       <div className="v2-met-par">
         {METODO.caminhos.map((c, i) => (
@@ -578,20 +581,20 @@ function OndeEstive({ ir }) {
   const marca = LOGOS_COR[atual.id] || atual.logo;
 
   return (
-    <Dobra id="onde" n="05" nome="Trajetória" carimbo="©26">
+    <Dobra id="onde" n="05" nome={t("Trajetória", "Track record")} carimbo="©26">
       <Presa
         esquerda={
           <>
             <Cabecalho
               empilhado
-              olho="Onde estive"
-              titulo={<DuasCores fraca="A linha" forte="do tempo" />}
+              olho={t("Onde estive", "Where I have been")}
+              titulo={<DuasCores fraca={t("A linha", "The")} forte={t("do tempo", "timeline")} />}
               /* A trajetória lista empresa e período; quem quer a pessoa por
                  trás da lista continua na /sobre, e daqui até agora não havia
                  caminho. A dobra 06, que é a da ilustração, NÃO ganha CTA: ela
                  é a assinatura da home e fechar com um botão a transformaria em
                  mais uma seção de conversão. */
-              cta={<Pill href="/sobre" onClick={rota(ir, "/sobre")} secundario>Quem eu sou</Pill>}
+              cta={<Pill href="/sobre" onClick={rota(ir, "/sobre")} secundario>{t("Quem eu sou", "Who I am")}</Pill>}
             />
             <div className="v2-tra-marca">
               {/* a chave remonta o bloco: é a troca que anima, e não a logo
@@ -604,13 +607,13 @@ function OndeEstive({ ir }) {
                 transition={{ duration: quieto ? 0.2 : 0.45, ease }}
               >
                 {marca ? (
-                  <img className="v2-tra-logo" src={marca} alt={`Marca da ${atual.name}`} draggable="false" />
+                  <img className="v2-tra-logo" src={marca} alt={t(`Marca da ${atual.name}`, `${atual.name} logo`)} draggable="false" />
                 ) : (
                   <span className="v2-tra-wordmark">{atual.name}</span>
                 )}
                 <p className="v2-tra-periodo">
                   {atual.period}
-                  {atual.atual ? <span className="v2-tra-agora">agora</span> : null}
+                  {atual.atual ? <span className="v2-tra-agora">{t("agora", "now")}</span> : null}
                 </p>
               </motion.div>
             </div>
@@ -658,7 +661,7 @@ function Sobre() {
   const escala = useTransform(scrollYProgress, [0, 0.55], [0.55, 1]);
   const sobe = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
   return (
-    <Dobra id="sobre-mim" n="06" nome="Quem assina" carimbo="©26" largo>
+    <Dobra id="sobre-mim" n="06" nome={t("Quem assina", "Who signs it")} carimbo="©26" largo>
       <div className="v2-sobre" ref={alvo}>
         <motion.div
           className="v2-sobre-foto"
@@ -670,8 +673,8 @@ function Sobre() {
       </div>
       <div className="v2-sobre-texto">
         <p className="v2-sobre-frase">
-          Designer de produto em Maringá, que aprende o problema antes de abrir o Figma
-          e implementa quando o prazo aperta.
+          {t("Designer de produto em Maringá, que aprende o problema antes de abrir o Figma e implementa quando o prazo aperta.",
+             "Product designer in Maringá, Brazil, who learns the problem before opening Figma and builds it when the deadline gets tight.")}
         </p>
         <Assinatura>Gabriel Felix Barbosa</Assinatura>
       </div>
@@ -738,6 +741,7 @@ function Pecas() {
 
   const item = (p, dobra) => {
     const destino = pieceDestino(p);
+    const extra = pieceDestinoExtra(p);
     const status = pieceStatus(p);
     return (
       <div
@@ -764,20 +768,44 @@ function Pecas() {
               servida pela pílula. Trocada pela `Pill secundario escuro`, que é
               literalmente o botão de contorno branco da hero — um botão a
               menos para manter, e o card passa a ler como o resto do kit. */}
-          {destino ? (
-            <Pill
-              secundario
-              escuro
-              href={destino.href}
-              externo
-              /* a cópia do laço não pode receber Tab: sem isto cada peça
-                 apareceria duas vezes na lista de links */
-              tabIndex={dobra ? -1 : undefined}
-              /* "Ver no ar" sozinho se repetiria em toda a fita */
-              aria-label={`${destino.rotulo}: ${p.title}, abre em nova aba`}
-            >
-              {destino.rotulo}
-            </Pill>
+          {/* Com DOIS destinos o principal deixa de ser contorno e vira pílula
+              cheia: dois botões de mesmo peso lado a lado não dizem qual é a
+              escolha, e a hierarquia é justamente o que foi pedido ao colocar
+              o segundo em segundo plano. Sozinho, o principal continua
+              secundário — um botão só não precisa gritar dentro de um card. */}
+          {destino || extra ? (
+            <div className="v2-fita-acoes">
+              {destino ? (
+                <Pill
+                  secundario={!extra}
+                  escuro
+                  href={destino.href}
+                  externo
+                  /* a cópia do laço não pode receber Tab: sem isto cada peça
+                     apareceria duas vezes na lista de links */
+                  tabIndex={dobra ? -1 : undefined}
+                  /* "Ver no ar" sozinho se repetiria em toda a fita */
+                  aria-label={t(`${destino.rotulo}: ${p.title}, abre em nova aba`, `${destino.rotulo}: ${p.title}, opens in a new tab`)}
+                >
+                  {destino.rotulo}
+                </Pill>
+              ) : null}
+              {extra ? (
+                /* sem seta: dois aviões lado a lado no mesmo card viram
+                   repetição de grafismo, e o espaço é curto */
+                <Pill
+                  secundario
+                  escuro
+                  seta={false}
+                  href={extra.href}
+                  externo
+                  tabIndex={dobra ? -1 : undefined}
+                  aria-label={t(`${extra.rotulo}: ${p.title}, abre em nova aba`, `${extra.rotulo}: ${p.title}, opens in a new tab`)}
+                >
+                  {extra.rotulo}
+                </Pill>
+              ) : null}
+            </div>
           ) : null}
           {/* "Em breve" nao tem botao: quem diz isso agora e o selo no topo do
               card, e ele fica visivel o tempo todo. Repetir a mesma palavra
@@ -789,7 +817,7 @@ function Pecas() {
   };
 
   return (
-    <section className="v2-fita-secao" id="pecas" aria-label="Outros projetos">
+    <section className="v2-fita-secao" id="pecas" aria-label={t("Outros projetos", "Other projects")}>
       {/* A dobra abria com o nome dela na mono do cromo, e so: "Fora da
           estante" tinha o tamanho de uma legenda de 11px sustentando uma
           secao inteira. Toda outra dobra da home abre com cromo + titulo de
@@ -797,8 +825,8 @@ function Pecas() {
           da anterior em vez de secao nova. O cromo continua sendo a regua
           (indice, nome curto, carimbo) e o titulo passa a ser titulo. */}
       <div className="v2-wrap v2-fita-cabeca">
-        <Cromo n="07" nome="Peças" carimbo="©26" />
-        <Titulo>Outros projetos</Titulo>
+        <Cromo n="07" nome={t("Peças", "Pieces")} carimbo="©26" />
+        <Titulo>{t("Outros projetos", "Other projects")}</Titulo>
       </div>
       <div className="v2-fita">
         <div className="v2-fita-trilho">
