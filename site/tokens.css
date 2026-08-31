@@ -39,7 +39,10 @@
      rótulo de 10 a 12px, corpo de 15 a 18px, e quase nada entre 20 e 80. São
      cinco degraus e mais nenhum. Se um componente pedir um sexto, o degrau
      escolhido está errado; não falta degrau. */
-  --v2-font: "Switzer", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  /* "Switzer reserva" é a MESMA fonte de sistema que viria depois, só que com
+     as métricas do Switzer coladas por cima (ver fontes.css). Entra entre as
+     duas para que a espera pelo Switzer não mude o tamanho de nada. */
+  --v2-font: "Switzer", "Switzer reserva", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   /* terceira voz, e a unica cursiva do site: so a assinatura da dobra 06.
      Se aparecer em qualquer outro lugar, o lugar errado e o outro. */
   --v2-font-mao: "Bad Script", cursive;

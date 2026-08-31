@@ -29,7 +29,7 @@ const DIST = path.join(ROOT, "dist");
 // Os dois arquivos de conteúdo, transpilados individualmente (bundle:false)
 // para continuarem scripts clássicos de escopo global. Esta lista é só o que
 // transpilar; a ordem que importa é a das tags, em buildHtml().
-const CONTEUDO = ["i18n.jsx", "data.jsx"];
+const CONTEUDO = ["i18n.jsx", "i18n.en.jsx", "data.jsx"];
 
 /* A limpeza NÃO leva a mídia junto.
  *
@@ -216,18 +216,27 @@ async function bundleAnalytics() {
   });
 }
 
-/* consent.js vai para o dist sozinho, fora do bundle do app: ele precisa ser
-   um <script> síncrono no HTML, executado antes do gtag, e nada que dependa do
-   React pode chegar antes dele. Passa pelo esbuild só para minificar. */
+/* consent.js fica fora do bundle do app e vai INLINE no HTML: ele precisa ser
+   síncrono e rodar antes do gtag, e nada que dependa do React pode chegar
+   antes dele. Passa pelo esbuild só para minificar.
+
+   Era um <script src> síncrono até 31/08, e o custo disso não estava à vista:
+   script síncrono TRAVA O PARSER, e script `defer` só executa quando o parser
+   chega ao fim do documento. Como o consent.js mora no fim do body, depois das
+   cinco tags de <!--SCRIPTS-->, a rede dele entrava na frente da execução de
+   TODAS elas. Medido em 31/08 na garganta de 1,6 Mbps: ele terminava aos
+   951ms, e o app só começava depois. São 2 KB comprimidos — inline não custa
+   ida à rede nenhuma e a ordem de execução é exatamente a mesma. */
 async function buildConsent() {
-  await esbuild.build({
+  const saida = await esbuild.build({
     entryPoints: [path.join(ROOT, "site", "consent.js")],
-    outfile: path.join(DIST, "consent.js"),
+    write: false,
     bundle: false,
     minify: true,
     format: "iife",
     target: ["es2018"],
   });
+  return saida.outputFiles[0].text;
 }
 
 /* O measurement ID fica escrito aqui, e não numa env, de propósito: ele é
@@ -237,7 +246,7 @@ async function buildConsent() {
    ainda pode mudar de projeto. */
 const GA4_ID = "G-5VPYQ2C9RT"; // "Portfólio Gabriel Felix", properties/552169302
 
-function analyticsSnippet() {
+function analyticsSnippet(codigoConsent) {
   const vercel = `\n<script defer src="/analytics.js"></script>`;
 
   /* Propriedade GA4 só do portfólio, separada da "Propriedade - 4YU": é a
@@ -303,7 +312,7 @@ function analyticsSnippet() {
      Invertendo 2 e 3, o GA4 dispara uma vez antes de saber o consentimento, e
      o banner vira enfeite. Por isso consent.js é o único script síncrono do
      site: ele tem de rodar entre uma coisa e outra, não "em algum momento". */
-  const consent = `<script src="/consent.js"></script>`;
+  const consent = `<script>${codigoConsent}</script>`;
 
   return vercel + "\n" + clarity + "\n" + consent + "\n" + ga4;
 }
@@ -361,19 +370,40 @@ const appOpcoes = (dev) => ({
   logLevel: "info",
 });
 
+/* A folha, cortada em DUAS METADES DO MESMO ARRANJO.
+ *
+ * `fontes.css` vem PRIMEIRO: as @font-face precisam existir antes de qualquer
+ * regra que use as famílias, e o navegador começa a resolver as fontes assim
+ * que lê o topo da folha.
+ *
+ * O corte é num ÚNICO ponto da ordem, e isso não é detalhe de arrumação: a
+ * cascata do CSS é posicional, então qualquer split que embaralhe a sequência
+ * troca quem ganha um empate de especificidade. Prefixo e sufixo concatenados
+ * de volta dão byte a byte a folha antiga — é o que `site.css` continua sendo.
+ *
+ * O prefixo é o que a HOME precisa; o sufixo é o CSS das outras rotas. A home
+ * embute o prefixo no <head> e busca o sufixo sem bloquear; as demais rotas
+ * seguem com a folha inteira, como sempre. Ver buildHtml().
+ */
+const CSS_HOME = ["fontes.css", "tokens.css", "kit.css", "shell.css", "home.css"];
+const CSS_RESTO = ["case.css", "processo.css", "sobre.css", "blog.css", "cursor.css"];
+
 async function buildCss() {
-  // Um arquivo só, na ordem em que os tokens precisam existir antes do resto.
-  /* `fontes.css` vem PRIMEIRO: as @font-face precisam existir antes de
-     qualquer regra que use as famílias, e o navegador começa a resolver as
-     fontes assim que lê o topo da folha. */
-  const ordem = ["fontes.css", "tokens.css", "kit.css", "shell.css", "home.css", "case.css", "processo.css", "sobre.css", "blog.css", "cursor.css"];
-  const partes = [];
-  for (const css of ordem) {
-    const src = path.join(ROOT, "site", css);
-    if (existsSync(src)) partes.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
-  }
-  const out = await esbuild.transform(partes.join("\n"), { loader: "css", minify: true });
-  await writeFile(path.join(DIST, "site.css"), out.code);
+  const junta = async (lista) => {
+    const partes = [];
+    for (const css of lista) {
+      const src = path.join(ROOT, "site", css);
+      if (existsSync(src)) partes.push(`/* ---- ${css} ---- */\n` + (await readFile(src, "utf8")));
+    }
+    return (await esbuild.transform(partes.join("\n"), { loader: "css", minify: true })).code;
+  };
+  const home = await junta(CSS_HOME);
+  const resto = await junta(CSS_RESTO);
+  await writeFile(path.join(DIST, "site.css"), home + resto);
+  await writeFile(path.join(DIST, "site-resto.css"), resto);
+  const kb = (s) => (s.length / 1024).toFixed(0);
+  console.log(`  css: ${kb(home)} KB da home embutidos, ${kb(resto)} KB do resto adiados`);
+  return home;
 }
 
 /* A cortina entra INLINE no <head>, e não como arquivo externo.
@@ -506,6 +536,7 @@ async function preRender() {
 
   const data = await readFile(path.join(DIST, "volume", "data.js"), "utf8");
   const i18n = await readFile(path.join(DIST, "volume", "i18n.js"), "utf8");
+  const i18nEn = await readFile(path.join(DIST, "volume", "i18n.en.js"), "utf8");
 
   const umIdioma = (lang) => {
     const ctx = contextoDom(lang === "en" ? "/en" : "/", lang);
@@ -513,6 +544,10 @@ async function preRender() {
     vm.runInContext("window.React = __SSR.React;", ctx);
     vm.runInContext(data, ctx, { filename: "volume/data.js" });
     vm.runInContext(i18n, ctx, { filename: "volume/i18n.js" });
+    /* Só o contexto inglês roda o espelho, exatamente como só o HTML inglês
+       traz a tag. O `vm` reproduz a MESMA sequência do navegador, que é o que
+       mantém pré-render e cliente escrevendo a mesma coisa. */
+    if (lang === "en") vm.runInContext(i18nEn, ctx, { filename: "volume/i18n.en.js" });
     return vm.runInContext("__SSR.render()", ctx);
   };
 
@@ -546,9 +581,43 @@ async function preRender() {
   return marcacao;
 }
 
-async function buildHtml(marcacao = null) {
+async function buildHtml(marcacao = null, cssHome = null, codigoConsent = "") {
   const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
   const estiloInline = await inline();
+
+  /* A FOLHA SAI DO CAMINHO CRÍTICO DA HOME.
+   *
+   * Medido em 31/08, garganta de 1,6 Mbps / 150ms de RTT / CPU 4x:
+   * `/site.css` são 18 KB comprimidos que começavam a baixar em 200ms e só
+   * terminavam em 813ms — 613ms para o que a banca sozinha entregaria em 90.
+   * A diferença é DISPUTA: os cinco <script defer> (react-dom, data, i18n,
+   * app) somam quase 200 KB e saem no mesmo instante, e o CSS, que é o único
+   * que bloqueia a pintura, esperava a vez. O elemento de LCP da home é o
+   * `<p class="v2-hero-sub">` — texto, sem recurso próprio —, então FCP e LCP
+   * eram os dois a mesma coisa: a hora em que o CSS chegava.
+   *
+   * Embutido, o CSS da home viaja DENTRO do documento, que é a primeira
+   * requisição, a de maior prioridade e a que não disputa com ninguém. São
+   * 9 KB comprimidos a mais no HTML e uma ida e volta a menos.
+   *
+   * Não é "critical CSS" no sentido de extrair a primeira tela: é a folha
+   * INTEIRA da home, cortada por rota e não por dobra. Por isso não existe
+   * FOUC possível — nenhuma regra que a home usa chega depois.
+   *
+   * O resto (case, processo, sobre, blog, cursor) desce sem bloquear pelo
+   * truque de `media="print"`: o navegador baixa em prioridade baixa e o
+   * `onload` promove para `all`. Ele só é necessário quando alguém navega
+   * para outra rota DENTRO da SPA, o que exige o app já carregado — ou seja,
+   * sempre depois. O <noscript> cobre quem não roda JS.
+   *
+   * As outras rotas seguem com a folha inteira por <link>: elas precisam do
+   * CSS de caso na primeira pintura, e um <link> cacheável serve melhor um
+   * arquivo que já está no navegador de quem navegou pela home. */
+  const cssResto =
+    `<link rel="stylesheet" href="/site-resto.css" media="print" onload="this.media='all';this.onload=null">` +
+    `<noscript><link rel="stylesheet" href="/site-resto.css"></noscript>`;
+  const cssDaHome = cssHome ? `<style>${cssHome}</style>` + cssResto : `<link rel="stylesheet" href="/site.css">`;
+  const cssInteiro = `<link rel="stylesheet" href="/site.css">`;
   /* A ordem é o contrato: React global, depois DATA e só então I18N, e por
      último o app, que lê window.CHAPTERS. `defer` preserva a ordem entre eles
      e não trava o parser.
@@ -568,20 +637,34 @@ async function buildHtml(marcacao = null) {
      não na hora do load. E os dois continuam sendo scripts clássicos, que
      dividem o mesmo escopo léxico global — é por isso que i18n.jsx alcança o
      `const CHAPTERS` do outro arquivo por referência nua. */
-  const tags = [
+  /* O ESPELHO INGLÊS SÓ ENTRA ONDE É INGLÊS.
+   *
+   * `i18n.en.js` são 29 KB comprimidos de texto que só `/en` usa. Enquanto
+   * viajava dentro do i18n.js, toda visita em português baixava e parseava o
+   * bloco inteiro para descartar — banda no caminho crítico e tarefa longa na
+   * thread principal, que valem 30% da nota.
+   *
+   * `rota.html` continua com os dois porque ele é a casca de TODO endereço
+   * que não é a home, nos dois idiomas: `/en/case/pcyes` cai nele. Quem ganha
+   * o corte é a home portuguesa, que é a página que recebe o link
+   * compartilhado e a que o PageSpeed mede. */
+  const tags = (comEspelhoEn) => [
     `<script defer src="/vendor/react.production.min.js"></script>`,
     `<script defer src="/vendor/react-dom.production.min.js"></script>`,
     `<script defer src="/volume/data.js"></script>`,
     `<script defer src="/volume/i18n.js"></script>`,
+    ...(comEspelhoEn ? [`<script defer src="/volume/i18n.en.js"></script>`] : []),
     `<script defer src="/app.js"></script>`,
   ].join("\n");
   const base = tpl
     .replace("<!--CORTINA-CSS-->", estiloInline)
-    .replace("<!--SCRIPTS-->", tags)
-    .replace("<!--ANALYTICS-->", analyticsSnippet());
+    .replace("<!--ANALYTICS-->", analyticsSnippet(codigoConsent));
 
-  const comRaiz = (corpo) =>
-    base.replace('<div id="v2-root"></div>', `<div id="v2-root">${corpo}</div>`);
+  const comRaiz = (corpo, css, comEspelhoEn) =>
+    base
+      .replace("<!--CSS-->", css)
+      .replace("<!--SCRIPTS-->", tags(comEspelhoEn))
+      .replace('<div id="v2-root"></div>', `<div id="v2-root">${corpo}</div>`);
 
   /* TRÊS arquivos, e o terceiro é o que impede uma regressão feia.
    *
@@ -599,8 +682,8 @@ async function buildHtml(marcacao = null) {
    *
    * Os três nomes estão amarrados aos rewrites do vercel.json e ao proxy do
    * `--serve`, aqui embaixo. Renomear um pede mexer nos três lugares. */
-  await writeFile(path.join(DIST, "index.html"), comRaiz(marcacao ? marcacao.pt : ""));
-  await writeFile(path.join(DIST, "rota.html"), comRaiz(""));
+  await writeFile(path.join(DIST, "index.html"), comRaiz(marcacao ? marcacao.pt : "", cssDaHome, false));
+  await writeFile(path.join(DIST, "rota.html"), comRaiz("", cssInteiro, true));
 
   /* A versão inglesa não é só o corpo traduzido: o `lang` do <html> e o
      endereço canônico também mudam, e os dois valem ANTES de qualquer JS
@@ -612,7 +695,7 @@ async function buildHtml(marcacao = null) {
      site/app.jsx, e copiá-lo para cá criaria a segunda fonte de verdade que
      este build inteiro existe para evitar. O app corrige na montagem, como
      já corrigia antes. Anotado no handoff. */
-  const en = comRaiz(marcacao ? marcacao.en : "")
+  const en = comRaiz(marcacao ? marcacao.en : "", cssDaHome, true)
     .replace('<html lang="pt-BR">', '<html lang="en">')
     .replace('<link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/">',
              '<link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/en">')
@@ -639,17 +722,17 @@ async function buildOnce(dev = false) {
   await clean();
   await transpileConteudo();
   await bundleAnalytics();
-  await buildConsent();
+  const codigoConsent = await buildConsent();
   await copyVendor();
   await copyAssets();
   const posts = await buildBlog(dev);
   await buildSitemap(posts);
   await esbuild.build(appOpcoes(dev));
-  await buildCss();
+  const cssHome = await buildCss();
   /* O pré-render roda DEPOIS de transpileConteudo (ele lê dist/volume/*.js) e
      depois de buildBlog (site/posts.gerado.js entra no grafo do bundle). E
-     antes de buildHtml, que é quem injeta a marcação. */
-  await buildHtml(await preRender());
+     antes de buildHtml, que é quem injeta a marcação E o CSS da home. */
+  await buildHtml(await preRender(), cssHome, codigoConsent);
   console.log("✓ build → dist/");
 }
 
@@ -676,14 +759,17 @@ if (process.argv.includes("--serve")) {
     let pendente = null;
     watch(dir, (_ev, arquivo) => {
       if (!arquivo) return;
-      const dec = arquivo === "carregando.css";
-      if (!dec && !arquivo.endsWith(".css")) return;
+      if (!arquivo.endsWith(".css")) return;
       clearTimeout(pendente);
+      /* TODO CSS reescreve o HTML, e não só o site.css. Desde que a home
+         embute a folha dela no <head>, mexer em home.css sem regerar o HTML
+         deixa o dev mostrando o CSS do build anterior — o mesmo engano caro
+         que este watch existe para evitar, só que ao contrário. */
       pendente = setTimeout(() => {
-        const tarefa = dec
-          ? preRender().then(buildHtml).then(() => console.log("[watch] index.html atualizado"))
-          : buildCss().then(() => console.log("[watch] site.css atualizado"));
-        tarefa.catch((e) => console.error(e));
+        buildCss()
+          .then(async (css) => buildHtml(await preRender(), css, await buildConsent()))
+          .then(() => console.log("[watch] css + html atualizados"))
+          .catch((e) => console.error(e));
       }, 60);
     });
   }

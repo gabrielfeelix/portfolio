@@ -34,7 +34,29 @@
   font-family: "Switzer";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  /* `block`, e não `swap`, e SÓ nestes dois pesos, que são os pré-carregados.
+
+     Desde que o CSS da home passou a vir embutido, a primeira pintura caiu
+     para ~400ms — antes do Switzer, que chega aos ~700ms. Com `swap` o texto
+     pintava na fonte de sistema e crescia na troca: o parágrafo do hero saía
+     de 14.344px² para 15.255px², e o Chrome só registra candidato de LCP
+     MAIOR — então a troca criava um SEGUNDO candidato, e esse repaint ficava
+     preso atrás da montagem do React. Medido em 31/08, garganta de 1,6 Mbps:
+     LCP de 5,78s contra FCP de 528ms.
+
+     Com `block` o texto do hero espera a fonte e pinta UMA vez, no tamanho
+     final. Medido no mesmo runner: FCP 400ms, LCP 760ms, CLS 0. O FCP não
+     paga por isso porque quem pinta primeiro é o cromo em mono, que segue
+     em `swap`.
+
+     O preço é FOIT: se a fonte demorasse, o hero ficaria em branco até 3s,
+     que é o teto do período de bloqueio do Chrome. São 16 e 19 KB
+     pré-carregados, mesma origem, cache de um ano — mas é o único ponto
+     desta otimização que aparece na tela, e está anotado no handoff.
+
+     Os outros pesos ficam em `swap`: não são pré-carregados, chegam depois, e
+     esperar por eles seria trocar texto visível por buraco sem ganho de LCP. */
+  font-display: block;
   src: url("/volume/fonts/v2/switzer-400.woff2") format("woff2");
 }
 @font-face {
@@ -58,7 +80,8 @@
      serve um 800 nesta família, e o navegador sintetiza a partir do 700 —
      que é o que já acontecia com as folhas externas. */
   font-weight: 700 800;
-  font-display: swap;
+  /* `block` pelo mesmo motivo do 400, logo acima. */
+  font-display: block;
   src: url("/volume/fonts/v2/switzer-700.woff2") format("woff2");
 }
 
@@ -88,4 +111,62 @@
   font-weight: 400;
   font-display: swap;
   src: url("/volume/fonts/v2/badscript-400.woff2") format("woff2");
+}
+
+/* A RESERVA DO SWITZER, com métricas casadas.
+
+   Sem ela, a página pinta na fonte de sistema e o texto TROCA de tamanho
+   quando o Switzer chega. Medido em 31/08: o parágrafo do hero saía de
+   14.344px² para 15.255px², e isso custava as duas métricas mais pesadas de
+   uma vez — o Chrome registrava um segundo candidato de LCP (só candidato
+   MAIOR conta), e o crescimento empurrava o pé do hero, tirando o CLS de 0.
+
+   Casadas as métricas, a fonte de sistema desenha a MESMA caixa que o
+   Switzer: a troca deixa de mover pixel. Nada muda no desenho final — o que
+   muda é o meio segundo antes dele.
+
+   Os números saem da fonte real, não de chute:
+       node tools/reserva-fonte.mjs
+   Trocou um .woff2? Rode de novo e cole a saída aqui. */
+/* ---- RESERVA MÉTRICA — GERADO, não edite à mão ----------------------
+   node tools/reserva-fonte.mjs  regera este bloco. O porquê está lá. */
+@font-face {
+  font-family: "Switzer reserva";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 88.73%;
+  ascent-override: 110.45%;
+  descent-override: 28.18%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Switzer reserva";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 89.63%;
+  ascent-override: 109.33%;
+  descent-override: 27.89%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Switzer reserva";
+  font-style: normal;
+  font-weight: 600;
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 80.6%;
+  ascent-override: 121.59%;
+  descent-override: 31.02%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Switzer reserva";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 81.75%;
+  ascent-override: 119.88%;
+  descent-override: 30.58%;
+  line-gap-override: 0%;
 }

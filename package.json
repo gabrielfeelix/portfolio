@@ -8,7 +8,10 @@
     "build": "node build.mjs",
     "dev": "node build.mjs --serve",
     "verifica:home": "node tools/primeiro-quadro.mjs",
-    "mede:home": "node tools/mede-home.mjs"
+    "mede:home": "node tools/mede-home.mjs",
+    "perfil:home": "node tools/perfil-home.mjs",
+    "compara:render": "node tools/compara-render.mjs",
+    "reserva:fonte": "node tools/reserva-fonte.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",

@@ -46,6 +46,15 @@
 /* --------------------------------------------------------------- estrutura */
 
 .v2-dobra { position: relative; }
+
+/* O espaço entre dobras. Era uma régua a cada dobra, todas do mesmo peso: é
+   isso que faz vinte e nove mil pixels de leitura parecerem catálogo. Agora
+   quem separa é o vão.
+
+   Escopado em `.v2-wrap` porque `.v2-dobra` sozinha é a Dobra crua do kit,
+   que não quer vão nenhum; quem traz as duas classes é a `Secao`, e essa a
+   home e o caso usam igual. Veio de case.css em 31/08 — o porquê está lá. */
+.v2-dobra.v2-wrap { margin-top: var(--v2-s6); }
 /* 168px em cima e embaixo somavam 336px entre duas dobras, mais os 104 que
    vazavam do case.css: 440px de branco entre conteudo e conteudo. A ref
    respira, nao vaza. */
@@ -573,4 +582,18 @@
 .v2-voo-campo {
   position: relative;
   z-index: 0;
+}
+
+/* O vão entre dobras no celular. Veio de case.css em 31/08, junto com o
+   `.v2-dobra.v2-wrap` lá de cima e pelo mesmo motivo — o seletor é nu e
+   sempre valeu para a home também, que desde então embute o CSS dela e não
+   espera mais a folha de caso para saber o próprio espaçamento.
+
+   Fica no FIM do arquivo, e não junto do `.v2-dobra` de cima, porque no
+   original ele morava perto do fim de case.css: quanto mais tarde na
+   cascata, menos empate ele desfaz sem querer. Aqui ele continua perdendo
+   para `.v2-dobra.v2-wrap`, que tem especificidade maior e vale em qualquer
+   largura, que é exatamente o arranjo de antes. */
+@media (max-width: 860px) {
+  .v2-dobra { margin-top: var(--v2-s5); }
 }

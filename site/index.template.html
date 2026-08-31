@@ -86,7 +86,11 @@
 <link rel="preload" as="font" type="font/woff2" href="/volume/fonts/v2/switzer-700.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/volume/fonts/v2/switzer-400.woff2" crossorigin>
 
-<link rel="stylesheet" href="/site.css">
+<!-- A folha entra de um jeito na home e de outro nas demais rotas, e quem
+     decide é buildHtml(). Na home o CSS dela vem EMBUTIDO e o das outras rotas
+     chega sem bloquear; nas demais rotas vem a folha inteira por <link>. O
+     porquê está em buildCss() e em buildHtml(), em build.mjs. -->
+<!--CSS-->
 
 <!-- A cortina de troca de página entra INLINE, junto com a calha da barra de
      rolagem: as duas precisam valer no primeiro quadro, antes de /site.css.

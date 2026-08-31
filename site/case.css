@@ -207,11 +207,14 @@
 /* O espaço entre dobras. Era uma régua a cada dobra, vinte e três delas,
    todas do mesmo peso: é isso que faz vinte e nove mil pixels de leitura
    parecerem catálogo. Agora quem separa é o vão. */
-/* Escopado em `.v2-wrap` porque a HOME tambem usa `.v2-dobra` (o componente
-   Dobra do kit) e herdava estes 104px sem pedir, somando 440px de vao entre
-   dobras claras. As duas secoes de caso que usam a classe sempre trazem
-   `v2-wrap` junto; a Dobra do kit nunca traz. */
-.v2-dobra.v2-wrap { margin-top: var(--v2-s6); }
+/* `.v2-dobra.v2-wrap` MUDOU DE ARQUIVO, e não é arrumação.
+   A regra vale para a home tanto quanto para o caso — a `Secao` do kit
+   (Kit.jsx) sai com as duas classes —, e desde 31/08 a home embute só o
+   prefixo da folha (fontes+tokens+kit+shell+home) e busca o resto sem
+   bloquear. Enquanto ela morou aqui, seis seções da home nasciam sem os 64px
+   e ganhavam depois: 384px de deslocamento medidos no celular, ou seja CLS
+   entregue de graça. Agora mora em kit.css, junto do `.v2-dobra` que a
+   declara. Ver o comentário de buildHtml() em build.mjs. */
 
 /* Primeira dobra depois do hero: régua ali em cima colaria no escuro, então
    quem abre o espaço é o padding. */
@@ -1751,7 +1754,10 @@
   .v2-caso-hero-grade { grid-template-columns: 1fr; }
   .v2-caso-duas { grid-template-columns: 1fr; gap: var(--v2-s3); }
   .v2-caso-abre { padding-top: var(--v2-s5); }
-  .v2-dobra { margin-top: var(--v2-s5); }
+  /* `.v2-dobra` no celular saiu daqui e foi para o fim de kit.css, pelo mesmo
+     motivo do `.v2-dobra.v2-wrap` lá em cima: o seletor é NU, então pegava
+     todas as dobras da home também, e a home não busca mais esta folha na
+     primeira pintura. Ver o comentário de buildHtml() em build.mjs. */
   /* Três quadros lado a lado não cabem: viram um por linha, na mesma ordem. */
   .v2-outros-grade { grid-template-columns: 1fr; gap: var(--v2-s5); }
   .v2-outros-topo { grid-template-columns: 1fr; gap: var(--v2-s1); margin-bottom: var(--v2-s5); }
