@@ -372,8 +372,21 @@ if (LANG === "en") {
           efeito: {
             k: "What happened next",
             t: "The fix has been live since July, and it measured",
-            p: ["The V2 hasn't shipped yet, but the V1.2 has, and one month of live traffic already answers. The buy button went with it: red on the storefront and in the cart, it turned green at the end of July.",
+            p: ["The V2 hasn't shipped yet, but the V1.2 has, and one month of live traffic already answers. The buy button went with it: red until the end of July, green after it.",
+                "The colour didn't come from theory about red meaning danger. It came from looking at the page: the PCYES brand is red, so the header, the promo tag, the quantity stepper and the search button were already red. The most important button on the screen was the one element that stood apart from nothing around it.",
                 "Script errors inside checkout is the number I defend hardest: it comes from session recording, which filters bots at the source, and the cut is exactly the screen I worked on."],
+            par: {
+              antes: "/volume/assets/projetos/pcyes/v12-vermelho.webp",
+              depois: "/volume/assets/projetos/pcyes/v12-verde.webp",
+              rotuloAntes: "V1", rotuloDepois: "V1.2",
+              /* 60% e nao o meio: medido na propria imagem, a faixa que muda
+                 entre as duas vai de 983 a 1172 dos 1800px de largura, que e o
+                 botao. Em 50% a divisa cai ANTES dele, e o par abre mostrando o
+                 verde inteiro e vermelho nenhum — o oposto da comparacao. Em 60%
+                 ela corta o proprio botao ao meio. */
+              pos: 60,
+              legenda: "The same product page, dragging the divider: only the buy button changes. Everything around it that was already red stays red.",
+            },
             dados: [
               { v: "\u221215.6%", l: "script errors in checkout", n: "57.9% of sessions down to 48.9%" },
               { v: "+28%", l: "add-to-cart per product viewed", n: "z = 5.40 · p < 0.0001" },

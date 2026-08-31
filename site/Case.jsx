@@ -1105,6 +1105,11 @@ function PonteEfeito({ e }) {
       aside={<><Fonte>{e.fonte}</Fonte>
         {e.ressalva ? <NotaMargem k={e.ressalvaK}>{e.ressalva}</NotaMargem> : null}</>}
     >
+      {/* O comparador vem ANTES dos números, e a ordem é o argumento: quem
+          arrasta a divisa e vê que só o botão mudou entende, sem precisar de
+          texto, por que o próximo bloco não consegue separar o efeito da cor
+          do efeito do checkout novo. */}
+      {e.par ? <Comparador par={e.par} /> : null}
       <ul className="v2-dados is-apertada">
         {(e.dados || []).map((d, i) => (
           <motion.li key={d.l} {...rise(Math.min(i, 3))}>
@@ -1352,7 +1357,12 @@ function Calendario({ cap }) {
    para as pontas. O elemento é um slider de verdade para leitor de tela. */
 function Comparador({ par, i = 0 }) {
   const rise = useRise();
-  const [pos, setPos] = useState(50);
+  /* A divisa abre em 50% por padrão, que é o certo quando as duas telas
+     diferem por inteiro. Quando a diferença é um elemento só, 50% costuma
+     cair longe dele e o par abre parecendo idêntico: aí o `pos` do próprio
+     par manda, e o lugar certo é em cima do que mudou, para a divisa cortar
+     o elemento ao meio e mostrar as duas versões dele lado a lado. */
+  const [pos, setPos] = useState(par.pos != null ? par.pos : 50);
   const caixa = useRef(null);
   const arrastando = useRef(false);
 

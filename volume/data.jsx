@@ -576,8 +576,27 @@ const CHAPTERS = [
         efeito: {
           k: "O que aconteceu depois",
           t: "A correção está no ar desde julho, e ela mediu",
-          p: ["A V2 ainda não publicou, mas a V1.2 sim, e um mês de operação já responde. Junto dela foi o botão de comprar, que era vermelho na vitrine e no carrinho e passou a verde no fim de julho.",
+          p: ["A V2 ainda não publicou, mas a V1.2 sim, e um mês de operação já responde. Junto dela foi o botão de comprar, que era vermelho e passou a verde no fim de julho.",
+              "A cor não saiu de teoria sobre vermelho ser cor de alerta. Saiu de olhar a página: a marca da PCYES é vermelha, e por isso o topo, a promoção, o seletor de quantidade e a busca já eram vermelhos. O botão mais importante da tela era o único elemento que não se distinguia de nada em volta.",
               "O erro de script dentro do checkout é o número que eu mais defendo: vem de gravação de sessão, que filtra robô na origem, e o recorte é exatamente a tela onde eu mexi."],
+          /* O par existe como comparador de arrastar, e não como duas imagens
+             lado a lado, porque a mudança é de UM elemento: com as telas
+             separadas o leitor caça a diferença, e com a divisa em cima do
+             botão ela aparece sozinha. As duas foram recortadas na mesma
+             altura por isso — 12px de diferença bastavam para a divisa cortar
+             em pontos diferentes de cada lado. */
+          par: {
+            antes: "/volume/assets/projetos/pcyes/v12-vermelho.webp",
+            depois: "/volume/assets/projetos/pcyes/v12-verde.webp",
+            rotuloAntes: "V1", rotuloDepois: "V1.2",
+            /* 60% e nao o meio: medido na propria imagem, a faixa que muda
+               entre as duas vai de 983 a 1172 dos 1800px de largura, que e o
+               botao. Em 50% a divisa cai ANTES dele, e o par abre mostrando o
+               verde inteiro e vermelho nenhum — o oposto da comparacao. Em 60%
+               ela corta o proprio botao ao meio. */
+            pos: 60,
+            legenda: "A mesma página de produto, arrastando a divisa: muda só a cor do botão de comprar. Em volta dele, tudo o que já era vermelho continua vermelho.",
+          },
           dados: [
             { v: "\u221215,6%", l: "erro de script no checkout", n: "57,9% das sessões para 48,9%" },
             { v: "+28%", l: "adição ao carrinho por produto visto", n: "z = 5,40 · p < 0,0001" },
