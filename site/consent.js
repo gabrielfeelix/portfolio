@@ -164,7 +164,17 @@
 
     var css = document.createElement("style");
     css.textContent =
-      '#gfb-consent{position:fixed;left:20px;bottom:20px;z-index:9998;width:min(380px,calc(100vw - 40px));' +
+      /* z-index 1200, e o número é escolhido, não chutado.
+         O site esconde o ponteiro do sistema (`cursor:none` em tudo, por
+         html[data-vento]) e desenha o próprio cursor, o `.v2-vento`, em 1300.
+         Com o banner em 9998 ele ficava ACIMA do vento: o cursor desenhado
+         sumia atrás da caixa e o do sistema já estava escondido, então não
+         havia cursor nenhum em cima do banner — dava a impressão exata de que
+         o mouse passava por baixo, e mirar o botão virava adivinhação.
+         1200 põe o banner acima de tudo do site (a cortina e o carregamento
+         são 900) e abaixo do cursor, que é o único que precisa ficar por cima
+         de tudo. */
+      '#gfb-consent{position:fixed;left:20px;bottom:20px;z-index:1200;width:min(380px,calc(100vw - 40px));' +
       'background:var(--v2-ink,#0B0B0C);color:#fff;border-radius:14px;padding:20px;' +
       'font:400 14px/1.55 var(--v2-font,"Switzer",system-ui,sans-serif);' +
       'box-shadow:0 18px 48px rgba(0,0,0,.28);' +
