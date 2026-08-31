@@ -1309,8 +1309,8 @@ const PROJECTS = [
   /* ---- outras peças: entram no índice e linkam pro próprio trabalho -- */
   /* Fora da fita a pedido do Gabriel em 30/08: a vitrine ja carrega Hub e
      Checkout do mesmo cliente, e dois cartoes da Oderco seguidos faziam a
-     dobra parecer portfolio de uma conta so. `hidden` tira da fita e mantem
-     a peca no dado. */
+     dobra parecer portfolio de uma conta so. Confirmado em 30/08: ele nao vai
+     usar esta peca. `hidden` tira da fita e mantem a peca no dado. */
   { id: "oderco-checkout", hidden: true, shots: ["/volume/assets/projetos/checkout/s1.webp"],
     title: "Checkout Oderço", cat: "ecommerce", domain: "E-commerce · B2B", fav: false, chapterId: null,
     desc: "Checkout B2B por nota fiscal, em etapas com revisão",
@@ -1347,7 +1347,9 @@ const PROJECTS = [
     desc: "Site da fiadora digital, um pitch para três públicos",
     marca: "/volume/assets/marcas/mono/locarmais.png",
     sobre: "Fiança digital tem três públicos com desejos opostos: o inquilino quer alugar sem depósito, o proprietário quer garantia e a imobiliária quer fechar rápido. O site conta a mesma história três vezes, cada uma pela dor de quem lê.", destino: "ar",
-    cover: "/volume/assets/projetos/locarmais/cover.webp" },
+    /* Perdeu o link em 29/08 e ficou sem selo nenhum, que num card ao lado de
+       nove selados lia como esquecimento. `embreve` até o link voltar. */
+    cover: "/volume/assets/projetos/locarmais/cover.webp", embreve: true },
   { id: "signamais", title: "Signamais", cat: "saas", domain: "SaaS · Assinaturas", fav: false, chapterId: null,
     desc: "Plataforma de assinaturas",
     marca: "/volume/assets/marcas/mono/signamais.svg",
