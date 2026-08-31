@@ -1,0 +1,132 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* Tokens copiados de site/tokens.css. Nenhum valor cru novo. */
+  :root {
+    --paper: #FFFFFF;
+    --ink:   #0B0B0C;
+    --muted: #6B6B70;
+    --rule:  #E6E6E8;
+    --accent:#E4231B;
+    --font: "Switzer", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: var(--paper);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    padding: 72px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  /* O voo. Atrás de tudo, como no site: o avião é fundo, não ilustração.
+     A curva entra pela direita no alto e sai pela direita embaixo, que é o
+     mesmo gesto da home. */
+  .voo {
+    position: absolute;
+    inset: 0;
+    width: 1200px;
+    height: 630px;
+    z-index: 0;
+  }
+  .trilha {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 7 9;
+    stroke-linecap: round;
+    opacity: 0.34;
+  }
+
+  .topo {
+    position: relative;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .nome {
+    position: relative;
+    z-index: 1;
+    font-size: 116px;
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    color: var(--ink);
+  }
+
+  .pe {
+    position: relative;
+    z-index: 1;
+  }
+  .regua {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 20px;
+  }
+  .linha {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .tagline {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .dominio {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+
+<div class="card">
+  <svg class="voo" viewBox="0 0 1200 630" fill="none">
+    <!-- A trilha: um gesto só, ascendente. Nasce baixo à esquerda, atrás do
+         nome, e sobe até o avião. Não fecha volta e não encosta no rodapé —
+         a órbita da primeira tentativa cruzava o domínio e lia como erro. -->
+    <path class="trilha"
+          d="M596 486 C 692 472, 796 434, 868 380 C 912 346, 940 320, 958 302" />
+    <!-- O avião. AVIAO_D de site/motion.js:574, caixa 24x24, bico à direita.
+         Escala 4.6 = 110px. A rotação é a tangente da curva no ponto final:
+         subindo à direita, -42°. -->
+    <g transform="translate(1012 252) rotate(-42) scale(4.6) translate(-12 -12)">
+      <path d="M23 12 L3 3 L9 12 L3 21 Z" fill="#E4231B" />
+    </g>
+  </svg>
+
+  <div class="topo">UX / Product Designer</div>
+
+  <h1 class="nome">Gabriel Felix<br>Barbosa</h1>
+
+  <div class="pe">
+    <div class="regua"></div>
+    <div class="linha">
+      <div class="tagline">Do protótipo navegável ao produto publicado.</div>
+      <div class="dominio">gabrielfelix-ux.4yu.com.br</div>
+    </div>
+  </div>
+</div>
