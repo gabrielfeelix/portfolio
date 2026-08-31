@@ -544,6 +544,52 @@
   .v2-esc-d { flex: 1 0 100%; margin-top: 0; }
 }
 
+
+/* ---------------- o convite do fim ----------------
+
+   Fecha o capítulo antes da grade de projetos. Régua de 2px em cima, como o
+   bloco de entrada: os dois são as bordas da leitura, e usar a mesma marca nos
+   dois faz o capítulo abrir e fechar com o mesmo gesto. */
+.v2-convite {
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-top: var(--v2-s3);
+  margin-top: var(--v2-s7);
+  border-top: 2px solid var(--v2-ink);
+}
+
+.v2-convite-olho {
+  margin: 0 0 var(--v2-s2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-convite-t {
+  margin: 0 0 var(--v2-s2);
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+.v2-convite-p {
+  margin: 0 0 var(--v2-s4);
+  max-width: 56ch;
+  font-size: var(--v2-t-corpo);
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
+
+.v2-convite-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--v2-s2);
+}
+
 /* ---------------- mídia ---------------- */
 
 /* A mídia da página de caso.

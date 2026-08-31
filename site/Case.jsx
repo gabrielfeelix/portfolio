@@ -250,8 +250,20 @@ function CasoHero({ cap }) {
             ) : null}
 
             <motion.div className="v2-caso-pills" {...entrada.sobe(3, { base: 0.1 })}>
+              {/* Um primário e um secundário, e não dois primários.
+
+                  "Ver no ar" e "Abrir no Figma" levam a lugares de peso muito
+                  diferente: o primeiro é o trabalho funcionando, que é o que a
+                  maioria de quem abre um caso quer; o segundo é o arquivo, que
+                  interessa a quem vai olhar como foi montado. Com os dois em
+                  chapa cheia a hero pedia duas coisas com a mesma voz e não
+                  dizia por onde começar.
+
+                  O par escuro+secundário já existia no sistema desde 29/08,
+                  desenhado para exatamente esta dobra: mesma altura, borda em
+                  branco a 34% em vez de chapa. */}
               {links.vercel ? <Pill href={links.vercel} externo escuro>Ver no ar</Pill> : null}
-              {links.figma ? <Pill href={links.figma} externo escuro>Abrir no Figma</Pill> : null}
+              {links.figma ? <Pill href={links.figma} externo escuro secundario>Abrir no Figma</Pill> : null}
             </motion.div>
 
             <motion.ul className="v2-caso-tags" {...entrada.sobe(4, { base: 0.1 })}>
@@ -1388,6 +1400,42 @@ function Aprendi({ cap }) {
    "O capítulo 'contato' não existe". Também parou de repetir na tela o que
    veio na URL — devolver a entrada do visitante em tipo de 64px dá ao erro
    um destaque que ele não merece, e o caminho errado ele já tem na barra. */
+/* O convite do fim.
+
+   Quem chega até aqui leu o caso inteiro, e a única coisa que a página
+   oferecia em seguida eram os outros projetos. Ou seja: a pessoa mais
+   interessada que existe naquele trabalho era mandada para outro trabalho, e o
+   protótipo que ela acabou de ler sobre ficava só lá em cima, na hero, a uma
+   rolagem inteira de distância.
+
+   Os mesmos dois links da hero, na mesma hierarquia — o que está no ar em
+   primeiro, o arquivo em segundo. O que muda é o momento: lá em cima é oferta
+   para quem ainda não sabe se vai ler; aqui é oferta para quem já leu.
+
+   Sem link nenhum, o bloco não existe. Um convite para tocar sem nada para
+   tocar seria pior que a ausência dele — é o caso da Locarmais, que ainda não
+   tem protótipo público (ver a pendência no handoff de 30/08). */
+function Convite({ cap }) {
+  const l = cap.links || {};
+  if (!l.vercel && !l.figma) return null;
+  const rise = useRise();
+  return (
+    <motion.section className="v2-wrap v2-convite" aria-labelledby="v2-convite-t" {...rise(0)}>
+      <p className="v2-convite-olho">Antes de sair</p>
+      <h2 className="v2-convite-t" id="v2-convite-t">Dá para abrir e mexer</h2>
+      <p className="v2-convite-p">
+        {l.vercel
+          ? "O que você acabou de ler está navegável, com as telas na mesma ordem em que elas aparecem aqui."
+          : "O arquivo com as telas está aberto, do primeiro rascunho ao que foi entregue."}
+      </p>
+      <div className="v2-convite-acoes">
+        {l.vercel ? <Pill href={l.vercel} externo>Abrir o protótipo</Pill> : null}
+        {l.figma ? <Pill href={l.figma} externo secundario>Ver o arquivo no Figma</Pill> : null}
+      </div>
+    </motion.section>
+  );
+}
+
 function NaoAchou({ ir }) {
   return (
     <div className="v2-corpo-claro" data-clara="1">
@@ -1402,7 +1450,7 @@ function NaoAchou({ ir }) {
             </p>
             <div className="v2-caso-pills">
               <Pill onClick={() => ir("/")}>Voltar para a home</Pill>
-              <Pill onClick={() => ir("/#casos")}>Ver os casos</Pill>
+              <Pill onClick={() => ir("/#casos")}>Ver os projetos</Pill>
             </div>
           </div>
         </div>
@@ -1516,6 +1564,7 @@ export default function Caso({ id, ir }) {
             <Pill onClick={() => trocar(false)}>Ler o capítulo inteiro · {cap.minutos} min</Pill>
           </section>
         ) : null}
+        <Convite cap={cap} />
         <GradeCasos excluir={cap.id} titulo="Os outros projetos" ir={ir} />
       </CampoDeVoo>
     </>
