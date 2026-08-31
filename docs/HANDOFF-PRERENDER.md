@@ -149,6 +149,17 @@ Medir o servidor de dev não serve: ele não comprime e o JS cru esconde tudo.
 4. PageSpeed duas vezes, use a melhor. O TBT oscila muito com a carga do
    runner do Google; FCP, LCP, SI e CLS ficam estáveis e são esses que valem.
 
+Conferido em 31/08 logo depois do deploy: `/` e `/en` trazem o hero escrito,
+`/case/pcyes`, `/processo` e `/en/case/pcyes` trazem a casca de 7,2 KB, e
+sitemap, robots e llms.txt continuam escapando do rewrite.
+
+O PageSpeed NÃO pôde ser rodado: a quota diária da API estava esgotada. O
+Lighthouse rodado localmente contra produção, melhor de duas, deu nota 50 com
+FCP 1,1s, SI 3,0s e CLS 0 — mas esse runner não é o do Google e os absolutos
+não se comparam com os 2,7s de FCP e 7,3s de SI anotados no handoff de
+medição. **Rode o PageSpeed de verdade quando a quota voltar.** O que já está
+provado é o delta do A/B local, onde os dois lados saem do mesmo runner.
+
 ---
 
 ## 6. O que sobrou
