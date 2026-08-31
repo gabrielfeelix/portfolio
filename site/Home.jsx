@@ -791,12 +791,14 @@ function Pecas() {
                 </Pill>
               ) : null}
               {extra ? (
-                /* sem seta: dois aviões lado a lado no mesmo card viram
-                   repetição de grafismo, e o espaço é curto */
+                /* O par é o mesmo da hero, sem invenção: pílula cheia mais
+                   pílula de contorno, as duas com o avião. Tirar a seta da
+                   segunda para ganhar espaço deixava um contorno pelado ao
+                   lado de um botão completo, e o que era hierarquia virava
+                   botão quebrado. Quem cede espaço é a caixa, não a peça. */
                 <Pill
                   secundario
                   escuro
-                  seta={false}
                   href={extra.href}
                   externo
                   tabIndex={dobra ? -1 : undefined}

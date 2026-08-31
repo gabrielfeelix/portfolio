@@ -504,7 +504,7 @@ function Funil({ cap }) {
       label={f.k}
       larga
       topo={<Ato titulo={f.t} />}
-      aside={<><Fonte>{f.fonte}</Fonte><NotaMargem k="O que eu li errado">{f.nota}</NotaMargem></>}
+      aside={<><Fonte>{f.fonte}</Fonte><NotaMargem k={t("O que eu li errado", "What I read wrong")}>{f.nota}</NotaMargem></>}
     >
       <ol className="v2-dados is-funil">
         {f.etapas.map((e, i) => (
@@ -563,7 +563,7 @@ function Gesto({ cap }) {
       label={g.k}
       larga
       topo={<Ato titulo={g.t} />}
-      aside={<><Fonte>{g.fonte}</Fonte><NotaMargem k="A leitura">{g.leitura}</NotaMargem></>}
+      aside={<><Fonte>{g.fonte}</Fonte><NotaMargem k={t("A leitura", "The read")}>{g.leitura}</NotaMargem></>}
     >
       <ul className="v2-dados is-funil">
         {g.itens.map((it, i) => (
@@ -1428,12 +1428,14 @@ function Convite({ cap }) {
   const rise = useRise();
   return (
     <motion.section className="v2-wrap v2-convite" aria-labelledby="v2-convite-t" {...rise(0)}>
-      <p className="v2-convite-olho">Antes de sair</p>
-      <h2 className="v2-convite-t" id="v2-convite-t">Dá para abrir e mexer</h2>
+      <p className="v2-convite-olho">{t("Antes de sair", "Before you go")}</p>
+      <h2 className="v2-convite-t" id="v2-convite-t">{t("Dá para abrir e mexer", "You can open it and poke at it")}</h2>
       <p className="v2-convite-p">
         {l.vercel
-          ? "O que você acabou de ler está navegável, com as telas na mesma ordem em que elas aparecem aqui."
-          : "O arquivo com as telas está aberto, do primeiro rascunho ao que foi entregue."}
+          ? t("O que você acabou de ler está navegável, com as telas na mesma ordem em que elas aparecem aqui.",
+              "What you just read is navigable, with the screens in the same order they appear here.")
+          : t("O arquivo com as telas está aberto, do primeiro rascunho ao que foi entregue.",
+              "The file with the screens is open, from the first sketch to what was delivered.")}
       </p>
       <div className="v2-convite-acoes">
         {l.vercel ? <Pill href={l.vercel} externo>{t("Abrir o protótipo", "Open the prototype")}</Pill> : null}

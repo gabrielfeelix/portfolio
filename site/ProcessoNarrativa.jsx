@@ -551,7 +551,8 @@ function EsbocoEGrade() {
         <text className="v2-pn-svg-k" x="580" y="356">{t("Protótipo de baixa", "Low-fidelity")}</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para alguém tocar.
+        {t("As mesmas peças, duas vezes. A primeira serve para decidir o que entra na tela; a segunda, para alguém tocar.",
+           "The same pieces, twice. The first one is for deciding what goes on the screen; the second one is for somebody to touch.")}
       </figcaption>
     </motion.figure>
   );

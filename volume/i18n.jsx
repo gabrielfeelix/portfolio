@@ -404,6 +404,51 @@ if (LANG === "en") {
                      "Walking into a hard conversation with recordings instead of an opinion also changes who has to prove what. And chasing the payment module bug down to its origin bought more trust with the tech team than any presentation I could have made."] },
     },
     "locarmais-conciliacao": {
+      /* A ponte e um ramo de TOPO, e o Object.assign do fim do arquivo troca
+         ramo de topo inteiro. Entao ela vem completa aqui, `fig` incluso:
+         faltando um `fig`, a figura correspondente some no ingles. */
+      ponte: {
+        k: "The three paths", t: "From cheapest to most expensive in human effort",
+        buraco: "Most entries close on their own, and the team's time went on hunting the divergent minority inside the correct majority.",
+        p: ["A person's effort is kept for where it is genuinely needed. Each stage below only receives what the one before it could not close."],
+        passos: [
+          { k: "The intake", t: "Every acquirer in one operation",
+            p: "Each acquirer reports in its own statement format. The import accepts several sources in the same operation, with a period and a file per source.",
+            fig: "importar" },
+          { k: "Path 01", t: "Automatic reconciliation on import",
+            p: "The system compares the statement against the entries and returns the summary already split: what closed on its own, what diverged and what is still pending. Each group exports to CSV.",
+            fig: "auto" },
+          { k: "Path 02", t: "In bulk, for whatever is left",
+            p: "Whatever the automatic pass didn't close goes to bulk selection, where one person handles several movements at once by pointing at the gateway and the source statement.",
+            fig: "lote" },
+          { k: "Path 03", t: "Forced one by one, with a mandatory reason",
+            p: "What needs human judgement closes one at a time, and closing with a difference asks for a reason from a closed list. It is the decision I'm proudest of in this module: the exception was a hole in the process and became data.",
+            fig: "forcar" },
+        ],
+      },
+      figuras: {
+        conciliacao: {
+          alt: "Reconciliation screen with the totals at the top and the queue of entries below",
+          legenda: "The module opens on the divergent queue, with the accumulated difference highlighted right above it." },
+        origem: {
+          alt: "Data source panel, with the platform record next to the gateway record",
+          legenda: "The platform record and the gateway record side by side, with contract, expected fee, expected net amount and expected payout date. The check happens on screen, without opening two systems." },
+        detalhe: {
+          alt: "Detail of a reconciled entry, with a history of who did it and when",
+          legenda: "The history keeps the author and the time of every automatic reconciliation, statement import and manual adjustment." },
+        importar: {
+          alt: "Statement import modal with a period, two sources and the upload for each file",
+          legenda: "The user uploads statements from several acquirers in a single operation, each source with its own file." },
+        auto: {
+          alt: "Result of the automatic reconciliation, split into reconciled, divergent and not reconciled",
+          legenda: "The summary the import returns: how many reconciled on their own, how many diverged and how many are still pending, with a CSV export for each group." },
+        lote: {
+          alt: "Bulk reconciliation at the selection stage, with the list of movements and the choice of gateway and statement",
+          legenda: "Bulk reconciliation picks up what the automatic pass didn't close: the person ticks the movements and points at the gateway and the source statement." },
+        forcar: {
+          alt: "Force reconciliation screen, with the reason field as a closed list",
+          legenda: "Closing with a difference asks for a reason from a closed list: fee or charge, split payment, date difference, acquirer rounding, other." },
+      },
       vocabulario: {
         t: "Five statuses, one language",
         kicker: "the lexicon that ended the ambiguity",
@@ -455,6 +500,29 @@ if (LANG === "en") {
                      "I also learned the value of designing for the expected error. A system that only accepts the perfect path pushes the user out of it, usually into a side spreadsheet nobody audits."] },
     },
     odex: {
+      /* As telas da solucao. O merge de `figuras` e por chave (ver o codigo
+         no fim do arquivo), entao aqui so entram alt e legenda: o caminho do
+         arquivo e a proporcao continuam morando no portugues. */
+      figuras: {
+        plataforma: {
+          alt: "ODEX platform home, with the month's summary, the category navigation and the energy storage feature",
+          legenda: "The platform home opens on the month's summary and the product categories. Same first stop as before, the whole surface redrawn." },
+        catalogo: {
+          alt: "The week's deals on the platform, with panel and inverter cards, and the tables of recent quotes and orders",
+          legenda: "The week's deals, recent quotes and recent orders in one scroll: people who work in here every day still find each thing where it was." },
+        loja: {
+          alt: "The platform store: catalogue banner, search, category tabs, price and brand filters on the left, and solar panel cards showing output, efficiency and a sale badge",
+          legenda: "The store behaves like a store: search, category tabs, price and brand filters, and the card putting output and efficiency up front. Somebody looking for a 600W panel doesn't have to open the spec sheet to know which one it is." },
+        kit1: {
+          alt: "First step of Build Your Kit: four project types as cards, the opening details of the quote, and a side panel with an explainer video and quick tips",
+          legenda: "Build Your Kit became a numbered process. Step 1 picks the project type, and every field says what it decides further down the line \u2014 the wiring type filters the compatible inverters, the state sets the tax rule." },
+        kit2: {
+          alt: "The next step of Build Your Kit, with the kit assembly under way",
+          legenda: "Each step only offers what the previous one left possible. That is the difference between building a kit and finding out at the end that two parts don't talk to each other." },
+        orcamentos: {
+          alt: "The platform's quotes screen, as a list, with a status on each quote",
+          legenda: "The quote is the document the installer takes to their own client. It went from a loose spreadsheet to a list with a visible state." },
+      },
       investigacao: { t: "Validated with the people who operate the system",
         p: ["The system is operated by managers and the board, so the evaluation happened with them, who are the real users. Every version was delivered as a navigable prototype, with comments recorded on the screens, and adjusted before the next one."],
         achados: [
@@ -490,6 +558,45 @@ if (LANG === "en") {
                      "The other half was the site delivery, tied to a trade show date with no window from the dev team. Going into Magento myself was the difference between arriving there with the new site or not arriving at all."] },
     },
     "oderco-revenda": {
+      /* Ramo de topo, entao vem completo. CNPJ NAO se traduz: e o registro
+         fiscal brasileiro, e "tax ID" perderia a precisao que a frase usa
+         para dizer exatamente quem entra. */
+      investigacao: {
+        t: "The research was the complaint queue that already existed",
+        p: ["I didn't open new research. The people who handle the leads are the SDRs, they complained about this every day, and the complaint was already sorted: they could tell you who was arriving, who wasn't worth the call, and why. That is where the framing of the project came from.",
+            "What the conversation changed was the target. I had come in thinking I would redo a form, and the form was the third problem on their list. The first two aren't solved by any field: they're solved by deciding who gets in."],
+        achados: [
+          "Dropshippers signed up with nothing in the way, and Oderço doesn't sell to that model.",
+          "Competitors used the sign-up as a door to the price list.",
+          "People arriving from an ad didn't know what the company was before they started filling it in.",
+          "The SDR received all of that in the same queue, with no order and no stages.",
+        ],
+      },
+      figuras: {
+        catalogo: {
+          alt: "The page's catalogue section, with the line End-to-end responsibility over a grid of products",
+          legenda: "What the company distributes, on the same screen as the sign-up." },
+        marcas: {
+          alt: "The section for the group's own brands, with PCYES, Vinik, Skul, Tonante and Odex side by side",
+          legenda: "The group's five own brands. For somebody arriving from an ad who has never heard of the company, this is where the name gets some weight." },
+        app: {
+          alt: "The reseller app section, with four numbered benefits beside the app screen",
+          legenda: "What the reseller gets: a catalogue at their own price, the branch that delivers fastest, terms by quantity, and ordering from the app." },
+        hero: {
+          alt: "First fold of the new page: the headline You sell, Oderço supplies on the left, and the account form on the right, asking for CNPJ, the person in charge of purchasing, email and WhatsApp",
+          legenda: "The first fold does both things at once. On the left the company introduces itself \u2014 its own stock, two distribution centres, five brands \u2014 and on the right the sign-up is already open, with the time and the criteria said before the first field: it takes a minute, and only for companies with an active CNPJ." },
+        numeros: {
+          alt: "The page's numbers strip: years supplying Brazilian retailers, distribution centres in Paraná and Espírito Santo, and own brands",
+          legenda: "For somebody arriving from an ad who doesn't know the brand, this is the strip that answers how big the company on the other side of the form is." },
+        fechamento: {
+          alt: "The page's closing, with the headline Your next supplier is one sign-up away and the button I want to sign up",
+          legenda: "The closing repeats the invitation after the argument, and picks the right word for what changed: whoever signs up requests access to the commercial terms. The sign-up stopped being the door and became the queue." },
+        antigo: {
+          alt: "Oderço's old sign-up page: the headline Become an Oderço partner, one CNPJ field, two consent checkboxes, a reCAPTCHA and the continue button",
+          legenda: "The sign-up the ad landed on: one CNPJ field, two consent boxes and a reCAPTCHA. Not one line about what the company distributes \u2014 and the dropshipping policy as a badge in the footer, where it filters nobody." },
+      },
+      antesDepois: { rotuloAntes: "Before", rotuloDepois: "After",
+        legenda: "The same first screen, in both versions. The old one opens on \u201cBecome an Oderço partner\u201d and a CNPJ field; the new one opens on \u201cYou sell, Oderço supplies\u201d, says there are two distribution centres and five own brands, and declares the filter at the door: it takes a minute, and only for companies with an active CNPJ." },
       domain: "WEB", descriptor: "Reseller signup page", title: "Oderço", project: "Oderço",
       premise: "A long form, from a brand the visitor had never heard of.",
       role: "UX/UI Designer, from the flow to the automation",
@@ -717,6 +824,13 @@ if (LANG === "en") {
   const certDg = CERTS.find((c) => c.id === "design-g"); if (certDg) certDg.title = "Graphic Design";
 
   /* a mensagem que abre a conversa no WhatsApp */
+  /* O currículo. É o único canal cujo RÓTULO é uma palavra portuguesa — os
+     outros são nomes de produto (LinkedIn, WhatsApp, Instagram) e o e-mail é o
+     próprio endereço. Sem isto o rodapé de toda página em inglês fechava com
+     "Currículo". "Résumé" e não "CV": em inglês americano, que é o mercado que
+     este site persegue, CV é o documento acadêmico longo. */
+  if (CONTATO.curriculo) CONTATO.curriculo.label = "Résumé";
+
   CONTATO.whatsapp.href = "https://wa.me/5544998775978?text=" + encodeURIComponent(
     "Hi Gabriel! I came from your portfolio and I'd love to chat.");
 
@@ -736,6 +850,18 @@ if (LANG === "en") {
     "solar-site": "Website · LP", "4yu": "Website · LP", immo: "SaaS",
   };
   const PJ_DESC_EN = {
+    /* Os oito que faltavam, achados varrendo a home em ingles: a fita de
+       pecas rendia oito descricoes em portugues no meio do texto ingles.
+       Roku, Shopify, Figma, EUDR/IDTF/TRACES NT e CNPJ ficam como estao —
+       sao nomes proprios de produto e de norma. */
+    remoctrl: "Control a Roku smart TV from the browser, nothing to install",
+    traxium: "Agro-logistics export compliance: EUDR, IDTF and TRACES NT",
+    dropchina: "Shopify store with a catalogue built by script",
+    web2design: "Extension plus Figma plugin: the web becomes an editable layer",
+    argel: "Boxing gym management: platform and student app",
+    "solar-site": "Lead capture landing page",
+    "4yu": "Conversion landing page for a sales method",
+    immo: "A Locarmais product",
     "oderco-checkout": "B2B checkout by invoice, in steps with a final review",
     "hub-oderco": "Hub that generates material and product copy for 7 brands",
     "ponto-admin": "Time tracking: manager dashboard and worker app",
