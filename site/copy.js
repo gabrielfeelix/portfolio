@@ -106,6 +106,67 @@ export const MANIFESTO = {
 /* Os titulos saem do proprio titulo da dobra, "Do objetivo ao ar": objetivo,
    protótipo, no ar. Nao e nome novo, e a frase da dobra desmontada em tres.
    As sentencas sao as mesmas de antes, palavra por palavra. */
+/* A dobra 04 da home, refeita em 30/08.
+
+   Ela mostrava três frases numeradas — "Começo pelo objetivo, não pela lista de
+   telas", "Do objetivo ao protótipo clicável em dias", "Mostro cedo, corto o
+   que não serve". O Gabriel leu como constrangedor e tinha dois motivos, e o
+   segundo é o grave:
+
+   1. era o único lugar do site onde ele descreve a própria virtude em vez de
+      mostrar. Todo o resto ancora afirmação em coisa que aconteceu; ali eram
+      três frases que qualquer designer digita sobre si mesmo em dez segundos;
+
+   2. contradizia a página que ela linka. A /processo abre em "me perguntam
+      qual é o meu processo esperando resposta de uma linha", e a tese dela é
+      que não existe UM processo — existem dois caminhos, e quem decide é o
+      preço de errar. A dobra era exatamente a resposta de uma linha que a
+      página recusa um clique depois.
+
+   A dobra envelheceu quando a /processo passou a existir, e ninguém voltou
+   para aposentá-la. Agora ela mostra a tese em vez de resumir o método: nada
+   aqui é novo, tudo sai de site/ProcessoNarrativa.jsx, com a origem anotada.
+   O único corte é no parágrafo do caminho longo, e é o corte que o próprio
+   Gabriel pediu: a home informa COMO ele trabalha, e citar caso por nome é
+   trabalho do case, não desta dobra. */
+export const METODO = {
+  /* ProcessoNarrativa.jsx · RISCO.t */
+  lead: "O tamanho da pesquisa acompanha o preço de errar.",
+  caminhos: [
+    {
+      /* ProcessoNarrativa.jsx · CURTO.olho e CURTO.t */
+      olho: "Caminho curto",
+      frase: "Quando a dúvida já morreu",
+      /* ProcessoNarrativa.jsx · CURTO.p, inteiro */
+      nota: "Dias, não semanas. As etapas que faltam aqui não sumiram por pressa: elas matariam uma dúvida que já estava morta quando o problema chegou.",
+    },
+    {
+      /* ProcessoNarrativa.jsx · LONGO.olho e LONGO.t */
+      olho: "Caminho longo",
+      frase: "Quando ninguém sabe ainda qual é o problema",
+      /* ProcessoNarrativa.jsx · LONGO.p, cortado no ponto: o resto da frase
+         era "e é o que eu fiz no PCYES e na Locarmais". Sai porque esta dobra
+         informa o método, e nome de projeto aqui é referência de serviço
+         prestado — que é assunto do case, uma dobra abaixo. Nenhuma palavra
+         foi trocada, só houve corte. */
+      /* A segunda frase sai de ProcessoNarrativa.jsx · RISCO.p[1], inteira. Ela
+         entra porque sozinho o "Double Diamond" deixava este bloco com cinco
+         palavras contra trinta do outro, e o par lia como se o caminho longo
+         fosse o menos pensado dos dois — o contrário do que a página diz. E é
+         a frase que explica QUANDO o caminho longo se paga, que é justamente
+         o que a dobra promete no lead. */
+      nota: "É onde eu sigo Double Diamond. Decisão cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu não chuto: ali eu compro tempo antes, mesmo quando ninguém pediu.",
+    },
+  ],
+  /* ProcessoNarrativa.jsx · NUNCA.p[1]. Fecha a dobra porque é a única linha
+     do método que não é condicional: os dois caminhos mudam de tamanho, e
+     esta não muda. */
+  fecho: "Muda o tamanho. Nunca é zero, e é a única linha que eu não negocio.",
+};
+
+/* MORTO desde 30/08: era o conteúdo da dobra 04, substituído por METODO acima.
+   Fica registrado por enquanto porque as seis etapas de PROCESSO em
+   volume/data.jsx continuam vivas na /processo, dentro do caminho longo. */
 export const PROCESSO_CURTO = [
   {
     titulo: "Objetivo",

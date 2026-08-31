@@ -19,6 +19,60 @@
   line-height: 1.55;
 }
 
+/* ---------------- 4. método ----------------
+
+   O par de caminhos. Mesma gramática do par da dobra 01 — cromo, uma linha
+   forte, um parágrafo de leitura —, um degrau abaixo na escala: lá o display
+   corre a 88px porque é a abertura da página, aqui ele é --v2-t-bloco porque
+   a dobra é uma porta, não uma abertura. Repetir os 88px faria a home parecer
+   ter duas teses.
+
+   Régua no topo de cada bloco em vez de caixa: a home não usa caixa em lugar
+   nenhum, e um cartão aqui traria o cinza de volta pela porta dos fundos. */
+.v2-met-par {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--v2-s5);
+  margin-top: var(--v2-s5);
+}
+
+.v2-met-bloco {
+  min-width: 0;
+  padding-top: var(--v2-s3);
+  border-top: 2px solid var(--v2-ink);
+}
+
+.v2-met-frase {
+  margin: var(--v2-s2) 0 var(--v2-s3);
+  font-size: var(--v2-t-bloco);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+.v2-met-nota { margin: 0; max-width: 46ch; }
+
+/* O fecho atravessa a dobra: ele é a regra que vale para os dois caminhos, e
+   morar dentro de uma coluna o faria parecer pertencer àquele lado. O filete
+   em cima separa sem fechar caixa. */
+.v2-met-fecho {
+  margin: var(--v2-s5) 0 0;
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+  max-width: 52ch;
+  font-size: var(--v2-t-lead);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -.015em;
+}
+
+@media (max-width: 860px) {
+  /* Empilha, e o vão cresce: lado a lado abaixo disso cada caminho fica com
+     menos de 30ch e a frase forte quebra em quatro linhas. */
+  .v2-met-par { grid-template-columns: 1fr; gap: var(--v2-s4); }
+}
+
 /* ---------------- 1. hero ---------------- */
 
 .v2-hero {

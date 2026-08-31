@@ -36,7 +36,7 @@ import {
   ALL_MARKS, VOL, COMPANIES, CONTATO,
   casos, pieceProjects, pieceCover, pieceDestino,
 } from "./content.js";
-import { HERO, DECLARACAO, PROCESSO_CURTO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
+import { HERO, DECLARACAO, METODO, CAPAS_CHEIAS, CAPAS_CASO, LOGOS_COR } from "./copy.js";
 import { FERRAMENTAS } from "./ferramentas.js";
 
 /* ------------------------------------------------------------------ 1. hero */
@@ -527,106 +527,47 @@ function Numeros() {
   );
 }
 
-/* --------------------------------------------------------------- 7. processo */
+/* --------------------------------------------------------------- 7. método */
 
-/* A dobra do método, agora um índice.
+/* A dobra do método.
 
-   O que tinha antes eram três colunas em escada com uma ilustração de 320x200
-   cada. Gabriel: "achei muito forçado", e ele tem razão. A dobra inventava
-   arte para justificar três frases, e nenhuma das seis referências faz isso:
-   quando não têm material, elas resolvem com régua, número e tipografia. Este
-   é o índice do viper, três linhas em largura cheia separadas por filete.
+   Era um índice de três frases sobre si mesmo, e virou a tese que a /processo
+   defende. O porquê está anotado em METODO, em copy.js.
 
-   O nome do passo entra em negrito na frente da própria frase, que é o
-   componente da launchfolio (primeira sentença forte, resto normal). Assim ele
-   não pede um sexto degrau na escala, que a gramática proíbe.
-
-   A régua de cada linha se desenha da esquerda para a direita quando a linha
-   entra, e o número acende. É o mesmo gesto três vezes: vocabulário repetido,
-   que é o que docs/ANALISE-REFS.md cobra. */
-function Processo({ ir }) {
-  const quieto = useReducedMotion();
-  /* Estas duas curvas eram locais e escaparam do acerto de velocidade de
-     bf26a57, que levou o resto do site de 1,2s para dur=0,6s. Ficaram em 0,9s,
-     50% mais lentas que qualquer outra revelação da página — era a queixa de
-     "pesado" desta dobra. Agora leem dur/passo/easeRevela de motion.js, então
-     o próximo acerto global pega estas junto.
-
-     O blur(6px) saiu por inteiro, e não encurtado: com y+opacity ele não
-     acrescenta leitura, e é a única propriedade aqui que o compositor não
-     resolve sozinho — cada quadro repinta a linha. O gesto continua sendo
-     subir e acender. */
-  const regua = quieto
-    ? { initial: { opacity: 0 }, whileInView: { opacity: 1 }, transition: { duration: 0.2 } }
-    : {
-        initial: { scaleX: 0 },
-        whileInView: { scaleX: 1 },
-        transition: { duration: dur, ease: easeRevela },
-      };
-  const linha = (i) =>
-    quieto
-      ? {
-          initial: { opacity: 0 },
-          whileInView: { opacity: 1 },
-          viewport: { once: true, amount: 0.4 },
-          transition: { duration: 0.2 },
-        }
-      : {
-          initial: { opacity: 0, y: 12 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, amount: 0.4 },
-          transition: { duration: dur, ease: easeRevela, delay: 0.1 + i * passo },
-        };
-
+   A forma é a do par de blocos da dobra 01, que é a gramática que a home já
+   usa para duas coisas complementares: cromo em cima, uma linha em display,
+   um parágrafo de leitura embaixo. Um degrau ABAIXO na escala de tipo, de
+   propósito — repetir o display de 88px faria a dobra 04 ler como uma
+   segunda abertura, e ela não é: ela é a porta da página de método. */
+function Metodo({ ir }) {
+  const revelar = useRevelar();
   return (
     <Dobra id="processo" n="04" nome="Método" carimbo="©26">
       <Cabecalho
         olho="Como eu trabalho"
-        titulo={<DuasCores fraca="Do objetivo" forte="ao ar" />}
-        lead="Três movimentos, e o do meio é o que a maioria pula."
-        /* A dobra mostra três frases de um método que tem uma página inteira.
-           Quem quis saber mais aqui tinha que voltar à nav para descobrir que a
-           página existe. Secundário e não primário: a home tem UM primário, e
-           ele está na hero. */
+        titulo={<DuasCores fraca="Não é um processo." forte="São dois." />}
+        lead={METODO.lead}
+        /* Secundário, como antes: a home tem UM primário, e ele está na hero. */
         cta={<Pill href="/processo" onClick={rota(ir, "/processo")} secundario>Ver o método inteiro</Pill>}
       />
-      <ol className="v2-indice">
-        {PROCESSO_CURTO.map((f, i) => (
-            <li className="v2-linha" key={f.titulo}>
-              <motion.span
-                className="v2-linha-regua"
-                aria-hidden="true"
-                viewport={{ once: true, amount: 0.4 }}
-                {...regua}
-              />
-              <motion.span className="v2-linha-n" aria-hidden="true" {...linha(i)}>
-                {`( 00${i + 1} )`}
-              </motion.span>
-              <motion.p className="v2-linha-p" {...linha(i)}>
-                <b className="v2-linha-t">{f.titulo}.</b> {f.frase}
-              </motion.p>
-            </li>
+      <div className="v2-met-par">
+        {METODO.caminhos.map((c, i) => (
+          <motion.div className="v2-met-bloco" key={c.olho} {...revelar(i)}>
+            <p className="v2-olho">{c.olho}</p>
+            <p className="v2-met-frase">{c.frase}</p>
+            <p className="v2-lead v2-met-nota">{c.nota}</p>
+          </motion.div>
         ))}
-      </ol>
+      </div>
+      {/* O fecho fica FORA do par: ele não pertence a nenhum dos dois caminhos,
+          é a regra que vale para os dois. Por isso atravessa a dobra inteira,
+          na régua, em vez de morar dentro de uma das colunas. */}
+      <motion.p className="v2-met-fecho" {...revelar(2)}>{METODO.fecho}</motion.p>
     </Dobra>
   );
 }
 
-/* A trajetória, no componente da coluna presa.
 
-   A linha do tempo com trilho vertical saiu: ela era a mesma forma da dobra
-   04 (linha, filete, texto) e não usava a única coisa visual que esta dobra
-   tem de verdade, que é a marca das empresas.
-
-   Agora a esquerda fica parada com a logo da empresa que está na altura da
-   leitura, e a direita rola. A logo troca sozinha: é a informação mudando de
-   lugar, não um enfeite entrando. Quem não tem arquivo de logo entra em
-   wordmark, que é como a V1 já resolve o mesmo caso (ver CompanyLogo em
-   volume/data.jsx).
-
-   O estado ativo NÃO é feito com cinza claro. Cinza claro sobre branco
-   reprova contraste, e a dobra inteira cairia no axe: o que muda é o preto
-   contra o cinza de texto, mais o índice em vermelho, que é grafismo. */
 function OndeEstive({ ir }) {
   const quieto = useReducedMotion();
   const rise = useRise();
@@ -874,7 +815,7 @@ export default function Home({ ir }) {
             Nenhum cromo precisou ser renumerado: a quebra nao tem indice, de
             proposito. Ela nao e uma dobra, e a passagem entre duas. */}
         <Campo />
-        <Processo ir={ir} />
+        <Metodo ir={ir} />
         <OndeEstive ir={ir} />
         <Sobre />
         <Pecas />
