@@ -160,8 +160,18 @@ function relata(nome, m) {
   console.log("     candidatos de LCP, na ordem:");
   (m.cands || []).forEach((c) => console.log(`       @${String(ms(c.t)).padStart(7)}  ${String(c.tam).padStart(6)}px²  opacity=${c.op}  ${c.el.slice(0, 60)}`));
   console.log(`CLS ${(m.cls || 0).toFixed(4)}` + (m.saltos && m.saltos.length ? "  saltos: " + m.saltos.map((s) => `@${ms(s.i)} ${s.v} (${s.alvo})`).join(" · ") : ""));
-  const tb = (m.tarefas || []).reduce((a, t) => a + Math.max(0, t.d - 50), 0);
-  console.log(`TBT aprox (soma de tarefa longa − 50ms): ${ms(tb)} em ${m.tarefas.length} tarefas`);
+  /* TBT do jeito que o Lighthouse conta: a janela COMEÇA NA FCP
+     (core/computed/metrics/total-blocking-time.js), e cada tarefa entra pelo
+     que passa de 50ms, recortada pelo início da janela. Somar tarefa longa
+     que aconteceu ANTES da FCP infla um número que a nota não vê — e foi
+     justamente confundindo os dois que dava para concluir errado. */
+  const tb = (m.tarefas || []).reduce((a, t) => {
+    const ini = Math.max(t.i, m.fcp || 0);
+    const fim = t.i + t.d;
+    return a + Math.max(0, (fim - ini) - 50);
+  }, 0);
+  const tbTudo = (m.tarefas || []).reduce((a, t) => a + Math.max(0, t.d - 50), 0);
+  console.log(`TBT (janela a partir da FCP): ${ms(tb)}   [ignorando a janela: ${ms(tbTudo)}]  em ${m.tarefas.length} tarefas`);
   (m.tarefas || []).slice(0, 6).forEach((t) => console.log(`     @${ms(t.i)} dura ${ms(t.d)}`));
   console.log("recursos que atrasam o primeiro quadro:");
   (m.rec || []).filter((r) => /\.(css|js|woff2)$/.test(r.nome) || r.tipo === "link")
