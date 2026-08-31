@@ -10,7 +10,7 @@
  * aqui primeiro. É isso que faz a página parecer um sistema e não um sortido.
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { useRevelar, useCortina, useParallax, useCamadas, useContador, useRise, useSubir, useVoo, AVIAO_D, dur, easeRevela } from "./motion.js";
 import { Label, Regua, Lamina } from "./Shell.jsx";
@@ -455,9 +455,31 @@ export function CapaCapitulo({ n, t, de = "04", rotulo = "Movimento" }) {
  * de hover. Quem mexer aqui mexe na home junto.
  *
  * `excluir` tira o caso que a pessoa acabou de ler; sem ele, entram os quatro. */
-export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os casos", ir }) {
+/* A grade de casos do fim das páginas.
+
+   Três, e sorteados, desde 30/08. Antes ela imprimia todos os quatro, e isso
+   fazia duas coisas ruins: virava um índice repetido da home no pé de toda
+   página, e a ordem fixa dava ao primeiro da fila um destaque que ele não
+   ganhou — quem chega ali já viu a home, e o que se quer é oferecer o
+   PRÓXIMO, não recitar o catálogo.
+
+   O sorteio acontece uma vez por montagem, em useState com inicializador: com
+   useMemo sem dependência estável ou com sort direto no corpo, a lista
+   reembaralharia a cada re-render e os cartões trocariam de lugar debaixo do
+   cursor de quem está para clicar.
+
+   `excluir` continua valendo e é o que impede a página de um caso oferecer ele
+   mesmo. */
+export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os casos", ir, quantos = 3 }) {
   const rise = useRise();
-  const lista = casos().filter((c) => c.id !== excluir);
+  const [lista] = useState(() => {
+    const pool = casos().filter((c) => c.id !== excluir);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, quantos);
+  });
   if (!lista.length) return null;
 
   return (

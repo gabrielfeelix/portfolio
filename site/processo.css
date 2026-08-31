@@ -145,6 +145,101 @@
 .v2-pn-bloco.is-aposta .v2-pn-t { max-width: 22ch; }
 
 
+
+/* ---------------- a ficha dos fatores ----------------
+
+   Mesma gramática da segunda dobra da página de caso (`.v2-abre`, em
+   case.css), porque o problema é o mesmo: uma afirmação que manda, uma que
+   apoia, e dados de catálogo embaixo que não podem disputar tamanho com
+   nenhuma das duas.
+
+   Não reaproveita as classes de lá de propósito. As duas páginas montam a
+   forma pelo mesmo motivo, mas nada garante que vão evoluir juntas, e acoplar
+   /processo a case.css faria o próximo ajuste na página de caso mexer aqui
+   sem ninguém pedir. */
+.v2-pn-ficha { padding-bottom: var(--v2-s6); }
+
+.v2-pn-ficha-cartao {
+  border-top: 2px solid var(--v2-ink);
+  padding-top: var(--v2-s3);
+}
+
+.v2-pn-ficha-topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--v2-s5);
+  align-items: start;
+  padding-bottom: var(--v2-s4);
+}
+
+.v2-pn-ficha-l {
+  margin: 0 0 var(--v2-s2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+/* O quadrado accent, que é o sinal que abre dobra no site inteiro. */
+.v2-pn-ficha-l::before {
+  content: "";
+  display: inline-block;
+  width: .5em;
+  height: .5em;
+  margin-right: .6em;
+  background: var(--v2-accent);
+  vertical-align: baseline;
+}
+
+.v2-pn-ficha-t {
+  margin: 0;
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+.v2-pn-ficha-nota {
+  margin: 0;
+  font-size: var(--v2-t-corpo);
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
+
+/* Os três fatores como linha de cromo, com filete separando do título. */
+.v2-pn-ficha-itens {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+  margin: 0;
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-pn-ficha-cel { min-width: 0; }
+
+.v2-pn-ficha-k {
+  margin: 0 0 var(--v2-s1);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-pn-ficha-p {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .v2-pn-ficha-topo { grid-template-columns: 1fr; gap: var(--v2-s4); }
+  .v2-pn-ficha-itens { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
+}
+
 /* ==================================================== a pauta de ritmo
 
    Cada bloco nasce com `data-larg` e `data-lado`, e a pauta que
@@ -171,12 +266,26 @@
    título e o texto juntos, na ordem, de cima para baixo. */
 .v2-pn-col { max-width: var(--col, 100%); margin-bottom: var(--v2-s4); }
 
-.v2-pn-bloco[data-larg="estreita"] { --col: 620px; }
+/* 620 virou 760 e a coluna estreita passou a centrar, em 30/08.
+
+   O Gabriel mandou print da primeira dobra: uma coluna de 620px encostada à
+   esquerda de um container de 1240 deixa 620px de papel vazio do lado direito,
+   e o olho lê como buraco, não como respiro. Com o bloco seguinte encostado à
+   direita, o buraco troca de lado e a página inteira parece desalinhada.
+
+   Centrada, a sobra vira margem — 240px de cada lado, que é margem de livro e
+   não vazio. E 760px ainda é menos que a `wrap` (860) e que a `larga` (100%),
+   então a rampa que a pauta de RITMO desenha continua de pé: a página abre
+   recolhida e cresce até o funil. O que muda é o eixo, não o tamanho relativo. */
+.v2-pn-bloco[data-larg="estreita"] { --col: 760px; }
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-col { margin-inline: auto; }
 .v2-pn-bloco[data-larg="wrap"]     { --col: 860px; }
 .v2-pn-bloco[data-larg="larga"]    { --col: 100%; }
 
-.v2-pn-bloco[data-lado="dir"] .v2-pn-col { margin-left: auto; margin-right: 0; }
-.v2-pn-bloco[data-lado="esq"] .v2-pn-col { margin-left: 0; margin-right: auto; }
+.v2-pn-bloco[data-larg="wrap"][data-lado="dir"] .v2-pn-col,
+.v2-pn-bloco[data-larg="larga"][data-lado="dir"] .v2-pn-col { margin-left: auto; margin-right: 0; }
+.v2-pn-bloco[data-larg="wrap"][data-lado="esq"] .v2-pn-col,
+.v2-pn-bloco[data-larg="larga"][data-lado="esq"] .v2-pn-col { margin-left: 0; margin-right: auto; }
 
 /* O TAMANHO do título sobe junto com a coluna, e isto é uma correção.
 
@@ -343,32 +452,10 @@
 /* Três colunas com régua em cima, que é a gramática de dado do site: régua,
    rótulo, texto. Sem caixa — na fase 6 o painel cinza passou a significar
    mídia e só. */
-.v2-pn-fatores {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--v2-s4);
-}
-.v2-pn-fatores > li { padding-top: 12px; border-top: 1px solid var(--v2-ink); }
-.v2-pn-fator-k {
-  margin: 0 0 10px;
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  text-transform: uppercase;
-}
 /* 16px e nao os 12 do rotulo. Ao lado de um titulo de 88px, 12px lia como
    letra miuda de contrato — o Gabriel mandou print dizendo que nao dava para
    entender nada. Os 12px continuam sendo o tamanho do CROMO (o `-k` em mono),
    que e rotulo e nao leitura. */
-.v2-pn-fator-p {
-  margin: 0;
-  font-size: var(--v2-t-corpo);
-  line-height: 1.55;
-  color: var(--v2-muted);
-}
 
 /* ---------------------------------------------------------------- trilho */
 
@@ -527,7 +614,6 @@
 @media (max-width: 900px) {
   .v2-pn { padding: var(--v2-s5) 0 var(--v2-s6); }
   .v2-pn-bloco { padding-bottom: var(--v2-s5); }
-  .v2-pn-fatores,
   .v2-pn-trilho,
   .v2-pn-fases,
   .v2-pn-dado { grid-template-columns: minmax(0, 1fr); }

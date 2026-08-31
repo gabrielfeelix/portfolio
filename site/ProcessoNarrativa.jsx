@@ -653,19 +653,36 @@ export function Narrativa() {
         <Paras itens={ABRE.p} />
       </Bloco>
 
-      <Bloco olho={FATORES.olho} t={FATORES.t} {...b(1)}
-             cheio={
-               <ol className="v2-pn-fatores">
-                 {FATORES.itens.map((f, i) => (
-                   <motion.li key={f.k} {...rise(i)}>
-                     <p className="v2-pn-fator-k">{f.k}</p>
-                     <p className="v2-pn-fator-p">{f.p}</p>
-                   </motion.li>
-                 ))}
-               </ol>
-             }>
-        <motion.p className="v2-pn-nota" {...rise(2)}>{FATORES.nota}</motion.p>
-      </Bloco>
+      {/* Esta dobra saiu do molde `Bloco` e usa a gramática da segunda dobra da
+          página de caso: título grande à esquerda, o texto de apoio menor e em
+          cinza à direita, e os itens embaixo como linha de cromo, separados por
+          filete.
+
+          O motivo é que ela não é um argumento, é uma FICHA — três fatores com
+          nome e descrição curta. No molde de bloco ela ganhava título de 88px e
+          olho com régua, o mesmo peso das dobras que defendem alguma coisa, e
+          o Gabriel leu como desproporcional. A dobra do caso já resolve
+          exatamente essa forma: uma afirmação que manda, uma que apoia, e os
+          dados de catálogo embaixo sem disputar tamanho com nenhuma das duas. */}
+      <section className="v2-wrap v2-pn-ficha" aria-labelledby="pn-fatores-t">
+        <motion.div className="v2-pn-ficha-cartao" {...rise(0)}>
+          <div className="v2-pn-ficha-topo">
+            <div className="v2-pn-ficha-forte">
+              <p className="v2-pn-ficha-l">{FATORES.olho}</p>
+              <h2 className="v2-pn-ficha-t" id="pn-fatores-t">{FATORES.t}</h2>
+            </div>
+            <p className="v2-pn-ficha-nota">{FATORES.nota}</p>
+          </div>
+          <dl className="v2-pn-ficha-itens">
+            {FATORES.itens.map((f) => (
+              <div className="v2-pn-ficha-cel" key={f.k}>
+                <dt className="v2-pn-ficha-k">{f.k}</dt>
+                <dd className="v2-pn-ficha-p">{f.p}</dd>
+              </div>
+            ))}
+          </dl>
+        </motion.div>
+      </section>
 
       <Bloco olho={RISCO.olho} t={RISCO.t} classe="is-destaque" {...b(2)}
              cheio={<EixoDoRisco />}>
