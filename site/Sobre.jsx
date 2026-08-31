@@ -440,7 +440,7 @@ function Ferramentas() {
   const rise = useRise();
   return (
     <motion.div className="v2-sb-ferr" {...rise(1)}>
-      <p className="v2-sb-ferr-r">Ferramentas</p>
+      <p className="v2-sb-ferr-r">{t("Ferramentas", "Tools")}</p>
       <ul className="v2-sb-ferr-grade">
         {FERRAMENTAS.map((f) => (
           <li className="v2-sb-ferr-item" key={f.id}>

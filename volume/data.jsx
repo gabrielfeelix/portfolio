@@ -1441,10 +1441,10 @@ function pieceCover(p) { return p.cover || (p.shots && p.shots[0]) || null; }
    dado, e ele ja dizia — o rotulo e que ignorava. */
 function pieceDestino(p) {
   const l = p.links || {};
-  if (l.vercel) return { href: l.vercel, rotulo: p.destino === "proto" ? "Ver protótipo" : "Ver no ar" };
+  if (l.vercel) return { href: l.vercel, rotulo: p.destino === "proto" ? t("Ver protótipo", "See the prototype") : t("Ver no ar", "See it live") };
   if (l.play)   return { href: l.play,   rotulo: "Play Store" };
-  if (l.figma)  return { href: l.figma,  rotulo: "Ver no Figma" };
-  if (l.prod)   return { href: l.prod,   rotulo: "Ver em produção" };
+  if (l.figma)  return { href: l.figma,  rotulo: t("Ver no Figma", "See it in Figma") };
+  if (l.prod)   return { href: l.prod,   rotulo: t("Ver em produção", "See it in production") };
   return null;
 }
 
@@ -1462,7 +1462,7 @@ function pieceDestinoExtra(p) {
   if (!l.prod) return null;
   const principal = pieceDestino(p);
   if (!principal || principal.href === l.prod) return null;
-  return { href: l.prod, rotulo: "Ver em produção" };
+  return { href: l.prod, rotulo: t("Ver em produção", "See it in production") };
 }
 
 /* O selo do card: "No ar" quando a peca tem destino publicado, "Em breve"
@@ -1471,8 +1471,8 @@ function pieceDestinoExtra(p) {
    Fica aqui, e nao na Fita, porque a promessa e do dado: quem decide se algo
    esta no ar e o link, nao o componente. */
 function pieceStatus(p) {
-  if (pieceDestino(p)) return { rotulo: "No ar", ar: true };
-  if (p.embreve) return { rotulo: "Em breve", ar: false };
+  if (pieceDestino(p)) return { rotulo: t("No ar", "Live"), ar: true };
+  if (p.embreve) return { rotulo: t("Em breve", "Coming soon"), ar: false };
   return null;
 }
 

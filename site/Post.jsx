@@ -165,11 +165,11 @@ export default function Post({ slug, ir }) {
       <Dobra n="00" nome="Blog" carimbo="404" data-clara="1">
         <Titulo>{t("Esse texto não existe", "This text does not exist")}</Titulo>
         <p className="v2-lead">
-          O endereço <code>/blog/{slug}</code> não corresponde a nenhum post.
+          {t("O endereço ", "The address ")}<code>/blog/{slug}</code>{t(" não corresponde a nenhum post.", " doesn't match any post.")}
         </p>
         <div className="v2-post-404-cta">
           <Pill href="/blog" onClick={(e) => { e.preventDefault(); ir("/blog"); }}>
-            Ver todos os textos
+            {t("Ver todos os textos", "See every text")}
           </Pill>
         </div>
       </Dobra>
@@ -187,7 +187,7 @@ export default function Post({ slug, ir }) {
         <article className="v2-post">
           <header className="v2-post-cabeca">
             <p className="v2-post-meta is-grande">
-              {dataLonga(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} MIN DE LEITURA
+              {dataLonga(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} {t("MIN DE LEITURA", "MIN READ")}
             </p>
             <h1 className="v2-post-titulo">{p.titulo}</h1>
             <motion.p className="v2-post-resumo" {...rise(1)}>{p.resumo}</motion.p>
@@ -212,25 +212,29 @@ export default function Post({ slug, ir }) {
               <p className="v2-erro">{erro}</p>
               <p>
                 <a href={`/blog/${p.slug}`} onClick={(e) => { e.preventDefault(); window.location.reload(); }}>
-                  Tentar de novo
+                  {t("Tentar de novo", "Try again")}
                 </a>
               </p>
             </div>
           ) : (
             <div className="v2-post-corpo is-carregando" aria-live="polite">
-              <p className="v2-post-carregando">Carregando o texto…</p>
+              <p className="v2-post-carregando">{t("Carregando o texto…", "Loading the text…")}</p>
             </div>
           )}
 
           <footer className="v2-post-assinatura">
-            <p className="v2-post-meta">Escrito por</p>
+            <p className="v2-post-meta">{t("Escrito por", "Written by")}</p>
             <p className="v2-post-autor">Gabriel Felix Barbosa</p>
             <p className="v2-post-autor-nota">
-              UX / Product Designer. Desenho e construo: do protótipo navegável ao
-              produto publicado.
+              {t("UX / Product Designer. Desenho e construo: do protótipo navegável ao produto publicado.",
+                 "UX / Product Designer. I design and I build: from the navigable prototype to the shipped product.")}
             </p>
             <Pill href="/sobre" onClick={(e) => { e.preventDefault(); ir("/sobre"); }}>
-              Quem é
+              {/* "Who I am" e não a terceira pessoa: é o mesmo rótulo do CTA da
+                  dobra 06 da home, e o site fala em primeira pessoa em todo o
+                  resto. Manter a voz importa mais que casar com o "Escrito por"
+                  logo acima. */}
+              {t("Quem é", "Who I am")}
             </Pill>
           </footer>
         </article>

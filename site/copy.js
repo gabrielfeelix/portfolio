@@ -1,4 +1,4 @@
-import { mescla } from "./i18n.js";
+import { espelho } from "./i18n.js";
 import * as EN from "./copy.en.js";
 
 /* `tr` aplica o espelho inglês sobre a copy portuguesa deste arquivo.
@@ -15,7 +15,7 @@ import * as EN from "./copy.en.js";
  * SOBRE_FERRAMENTAS são caminho de arquivo e nome próprio, e MANIFESTO e
  * PROCESSO_CURTO estão mortos desde 30/08 — traduzir código morto é criar
  * texto para alguém manter à toa. */
-const tr = (chave, pt) => mescla(pt, EN[chave]);
+const tr = (chave, pt) => espelho(pt, EN[chave]);
 
 /* Textos que a V2 precisa e que a V1 NÃO publica em window.
  *

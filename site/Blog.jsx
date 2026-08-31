@@ -138,7 +138,7 @@ function Barra({ lista, tag, setTag, q, setQ, mostrando, total }) {
             aria-pressed={tag === ""}
             onClick={() => setTag("")}
           >
-            Todos <i>({total})</i>
+            {t("Todos", "All")} <i>({total})</i>
           </button>
           {lista.map((t) => (
             <button
@@ -156,7 +156,7 @@ function Barra({ lista, tag, setTag, q, setQ, mostrando, total }) {
 
       {comBusca ? (
         <div className="v2-blog-busca">
-          <label className="v2-blog-busca-rot" htmlFor="v2-blog-q">Buscar</label>
+          <label className="v2-blog-busca-rot" htmlFor="v2-blog-q">{t("Buscar", "Search")}</label>
           <input
             id="v2-blog-q"
             type="search"
@@ -248,7 +248,8 @@ export default function Blog({ ir }) {
 
         {POSTS.length === 0 ? (
           <p className="v2-blog-vazio">
-            O primeiro texto está sendo escrito. Volte em alguns dias.
+            {t("O primeiro texto está sendo escrito. Volte em alguns dias.",
+               "The first text is being written. Come back in a few days.")}
           </p>
         ) : null}
       </Dobra>
@@ -277,7 +278,7 @@ export default function Blog({ ir }) {
             <div className="v2-blog-nada">
               <p>{t("Nada com esse recorte.", "Nothing under that filter.")}</p>
               <button type="button" className="v2-blog-limpar" onClick={limpar}>
-                Ver os {POSTS.length} textos
+                {t(`Ver os ${POSTS.length} textos`, `See all ${POSTS.length} texts`)}
               </button>
             </div>
           )}

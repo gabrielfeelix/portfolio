@@ -39,13 +39,13 @@
 import React from "react";
 import { motion, useTransform } from "motion/react";
 import { useRise, useTracado, useTrecho, useContador, AVIAO_D } from "./motion.js";
-import { t, mescla } from "./i18n.js";
+import { t, espelho } from "./i18n.js";
 import * as EN from "./processo.en.js";
 
 /* Mesmo mecanismo de site/copy.js: o espelho inglês é sobreposto à copy
    portuguesa, em profundidade, e só carrega o que muda. Os ícones dos fatores
    e os números do funil ficam no PT e não podem ser esquecidos lá. */
-const tr = (chave, pt) => mescla(pt, EN[chave]);
+const tr = (chave, pt) => espelho(pt, EN[chave]);
 
 /* ------------------------------------------------------------------ copy */
 

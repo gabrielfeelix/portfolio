@@ -104,16 +104,26 @@ export function relacionados(slug, n = 3) {
    `new Date("2026-09-02")` é lido como UTC e, num fuso negativo como o
    nosso, imprime o dia anterior. Por isso a data é partida na mão: ela é uma
    etiqueta de calendário, não um instante. */
-const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const MESES = t(
+  ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"],
+  ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]);
 
+/* A ORDEM da data muda com o idioma, e não só o nome do mês: em português é
+   "26 de ago de 2026" e em inglês americano é "Aug 26, 2026". Trocar só o mês
+   e manter a ordem portuguesa produziria "26 Aug 2026", que é britânico — e
+   uma data no formato errado é a primeira coisa que denuncia tradução
+   automática para quem lê. */
 export function dataLonga(iso) {
   const [a, m, d] = String(iso).split("-").map(Number);
-  return `${d} de ${MESES[m - 1]} de ${a}`;
+  return t(`${d} de ${MESES[m - 1]} de ${a}`, `${MESES[m - 1]} ${d}, ${a}`);
 }
 
+/* A curta também inverte: 31.08.26 em português é 08.31.26 em inglês
+   americano. Dia e mês trocados é ambiguidade real — 08.09 é 8 de setembro
+   de um lado e 9 de agosto do outro. */
 export function dataCurta(iso) {
   const [a, m, d] = String(iso).split("-");
-  return `${d}.${m}.${a.slice(2)}`;
+  return t(`${d}.${m}.${a.slice(2)}`, `${m}.${d}.${a.slice(2)}`);
 }
 
 /* --- o corpo do post -----------------------------------------------------

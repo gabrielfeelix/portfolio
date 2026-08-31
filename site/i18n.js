@@ -65,6 +65,29 @@ export function t(pt, en) { return EN && en !== undefined ? en : pt; }
  *                    que quer dois. A alternativa silenciosa seria um terceiro
  *                    item em português no meio do texto inglês.
  */
+/* O espelho, com a guarda de idioma.
+ *
+ * ESTA FUNÇÃO EXISTE POR CAUSA DE UM BUG QUE FOI AO AR, e ele merece ficar
+ * escrito: a primeira versão dos arquivos de copy chamava `mescla` direto,
+ * assim —
+ *
+ *     const tr = (chave, pt) => mescla(pt, EN[chave]);
+ *
+ * — e `mescla` não sabe nada sobre idioma: ela sobrepõe o que receber. Então o
+ * espelho INGLÊS era aplicado nos DOIS idiomas. O site em português abria com
+ * o H1 em inglês enquanto a nav, os botões e o rodapé continuavam em português,
+ * porque esses passam por `t()`, que tem a guarda.
+ *
+ * Foi o Gabriel quem viu, testando a volta: "to mudando pra portugues e n ta
+ * mudando". E os medidores não pegaram porque contam PALAVRA PORTUGUESA numa
+ * página inglesa — texto inglês sobrando numa página portuguesa era o caso
+ * exato que nenhum deles procurava.
+ *
+ * Agora a guarda mora aqui, num lugar só, e quem chama não tem como esquecer.
+ * `mescla` continua exportada e pura: ela é a regra de MERGE, e esta é a regra
+ * de IDIOMA. Misturar as duas foi o erro. */
+export function espelho(pt, en) { return EN ? mescla(pt, en) : pt; }
+
 export function mescla(pt, en) {
   if (en === undefined || en === null) return pt;
   if (Array.isArray(pt) && Array.isArray(en)) {

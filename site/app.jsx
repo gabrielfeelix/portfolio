@@ -339,6 +339,12 @@ function App() {
 
     por('meta[name="robots"]', "content", achou ? "index, follow" : "noindex, follow");
     por('link[rel="canonical"]', "href", url);
+    /* O `og:locale` acompanha o idioma, e é o único metadado que ficava para
+       trás: o `lang` do <html> já era trocado por volume/i18n.jsx, mas a
+       prévia de link continuava se anunciando como pt_BR mesmo com a página
+       inteira em inglês. Quem recebe o link no LinkedIn vê o idioma errado
+       declarado, e buscador usa isso para decidir a quem servir a página. */
+    por('meta[property="og:locale"]', "content", t("pt_BR", "en_US"));
     por('meta[property="og:url"]', "content", url);
     por('meta[property="og:type"]', "content", tipoOg);
     por('meta[property="og:title"]', "content", titulo);

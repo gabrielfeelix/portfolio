@@ -529,8 +529,13 @@ if (LANG === "en") {
           "The paths had worked for years and nobody was asking to change them.",
           "What bothered people was always the surface: what the screen showed first, the weight of the text, the age of the layout.",
         ] },
-      antesDepois: { rotuloAntes: "V1", rotuloDepois: "V3",
-        legenda: "Two iterations of the redesign on the same fold: the V1 opens on a targets dashboard, the V3 opens on the catalogue. The path for the people already using it did not change." },
+      /* O `antesDepois` do ODEX SAIU em 31/08. Ele existia só aqui, no espelho
+         inglês, e não tem origem nenhuma em data.jsx: o capítulo português não
+         tem essa dobra. Como `antesDepois` é ramo de topo, o Object.assign
+         abaixo o ENXERTAVA no capítulo, e o inglês ganhava uma comparação
+         antes/depois sem os dois caminhos de imagem, que moram no português.
+         Arquivo de tradução não inventa seção — se essa dobra tem que existir,
+         ela nasce no data.jsx e o espelho a acompanha. */
       domain: "DESKTOP AND WEB", descriptor: "Interface redesign", title: "ODEX", project: "ODEX",
       premise: "The platform had worked for years. It was the interface that had aged.",
       role: "UX/UI Designer",
