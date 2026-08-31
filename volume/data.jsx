@@ -861,12 +861,6 @@ const CHAPTERS = [
       slots: 4,
       shots: [{ fig: "plataforma" }, { fig: "loja" }, { fig: "kit1" }, { fig: "kit2" }],
     },
-    antesDepois: {
-      antes: "/volume/assets/projetos/odex/antes.webp",
-      depois: "/volume/assets/projetos/odex/depois.webp",
-      rotuloAntes: "V1", rotuloDepois: "V3",
-      legenda: "Duas iterações do redesign na mesma dobra: a V1 abre em painel de metas, a V3 abre no catálogo. O percurso de quem já usava não mudou.",
-    },
     resultado: {
       t: "No ar a tempo da feira",
       p: ["O site entrou em produção dentro da data do evento. A plataforma segue em andamento e o app está em protótipo."],

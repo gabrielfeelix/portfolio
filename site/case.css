@@ -660,8 +660,7 @@
 
 .v2-fig-moldura {
   display: block;
-  border: 1px solid var(--v2-rule);
-  border-radius: var(--v2-r-media);
+  border-radius: var(--v2-r-print);
   overflow: hidden;
   background: var(--v2-paper);
 }
@@ -1189,8 +1188,7 @@
 .v2-preso-palco {
   position: relative;
   aspect-ratio: 4 / 3;
-  border: 1px solid var(--v2-rule);
-  border-radius: var(--v2-r-secao);
+  border-radius: var(--v2-r-print);
   background: var(--v2-paper);
   padding: var(--v2-s2);
   overflow: hidden;
@@ -1442,10 +1440,7 @@
 
 .v2-comp-caixa {
   position: relative;
-  /* O filete entra aqui pelo mesmo motivo da figura: as duas telas comparadas
-     são de fundo claro, e sem borda a de cima se dissolve no papel. */
-  border: 1px solid var(--v2-rule);
-  border-radius: var(--v2-r-media);
+  border-radius: var(--v2-r-print);
   overflow: hidden;
   background: var(--v2-paper);
   touch-action: pan-y;

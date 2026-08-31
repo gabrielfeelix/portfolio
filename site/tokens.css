@@ -109,6 +109,12 @@
   --v2-r-arco:  500px;   /* o topo em arco das colunas da fita de midia */
   --v2-r-card:  0px;
   --v2-r-media: 0px;
+  /* O raio do print. Fica separado de --v2-r-media, que é 0 e continua sendo:
+     a régua de canto reto vale para a MOLDURA da página — painel, seção,
+     comparador. O print é outra coisa: é a foto de um produto que tem canto
+     arredondado por dentro, e quadrar a borda dele faz a captura brigar com
+     a interface capturada. Pedido do Gabriel em 30/08. */
+  --v2-r-print: 10px;
   --v2-r-secao: 0px;
 
   /* EXCECAO, e uma so: o cartao de caso da home.
