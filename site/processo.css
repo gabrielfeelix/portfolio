@@ -277,7 +277,7 @@
    não vazio. E 760px ainda é menos que a `wrap` (860) e que a `larga` (100%),
    então a rampa que a pauta de RITMO desenha continua de pé: a página abre
    recolhida e cresce até o funil. O que muda é o eixo, não o tamanho relativo. */
-.v2-pn-bloco[data-larg="estreita"] { --col: 760px; }
+.v2-pn-bloco[data-larg="estreita"] { --col: 940px; }
 .v2-pn-bloco[data-larg="estreita"] .v2-pn-col { margin-inline: auto; }
 .v2-pn-bloco[data-larg="wrap"]     { --col: 860px; }
 .v2-pn-bloco[data-larg="larga"]    { --col: 100%; }
@@ -398,6 +398,36 @@
 /* A cunha do risco. Preenchida E contornada: preenchida porque é uma
    quantidade e quantidade se lê por área; contornada porque a 11% de tinta,
    sozinha, ela lia como mancha de gradiente em vez de peça desenhada. */
+.v2-pn-curva {
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* Sem pesquisa é a linha de tinta e mais grossa: é o caminho que a maioria
+   toma, e o que o gráfico está discutindo. */
+.v2-pn-curva.is-sem { stroke: var(--v2-ink); stroke-width: 2.5; }
+
+/* Com pesquisa entra em accent, que é a única cor do site e aqui marca a
+   escolha que a página defende. Tracejada porque é a alternativa, não o
+   padrão. */
+.v2-pn-curva.is-com { stroke: var(--v2-accent); stroke-width: 2.5; stroke-dasharray: 7 6; }
+
+.v2-pn-cruzo { fill: var(--v2-accent); }
+
+/* A guia que liga o encontro ao rótulo no eixo. Tracejada e fraca: ela é
+   endereço, não uma terceira curva. */
+.v2-pn-cruzo-guia {
+  stroke: var(--v2-accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  opacity: .5;
+}
+
+.v2-pn-svg-k.is-curva { fill: var(--v2-ink); font-weight: 600; }
+.v2-pn-svg-k.is-curva.is-com { fill: var(--v2-accent); }
+.v2-pn-svg-k.is-eixo,
+.v2-pn-svg-k.is-y { fill: var(--v2-muted); }
+
 .v2-pn-cunha {
   fill: var(--v2-ink);
   fill-opacity: .1;

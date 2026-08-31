@@ -290,7 +290,7 @@ const CHAPTERS = [
     investigacao: {
       t: "Gravação de sessão no lugar de opinião",
       p: ["Nada disso saiu de relatório. Saiu do Clarity, de métrica de navegação e de conversa com quem estava tentando comprar.",
-          "Assisti as sessões inteiras, sem pular, anotando o ponto exato em que a pessoa parava de avançar. É trabalho lento, e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
+          "Assisti as sessões inteiras, anotando o ponto exato em que a pessoa parava de avançar. É trabalho lento, e é ele que sustenta o resto: sem isso, a reunião seguinte seria a minha opinião contra a opinião da diretoria, e a minha perde.",
           "A diretoria queria uma direção minimalista, com foco em valor de marca, e o comportamento no site apontava para o outro lado. Levei as gravações para a reunião e propus um terceiro caminho, com a marca presente em momentos escolhidos e o caminho de compra como eixo do site. O modelo final foi aprovado."],
       achados: [
         "As formas de pagamento não apareciam na primeira dobra do checkout. O usuário só descobria como podia pagar depois de rolar a página, e muitos saíam antes disso.",

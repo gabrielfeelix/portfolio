@@ -157,7 +157,7 @@ export default function Processo({ ir }) {
         <Narrativa />
 
         <Fecho />
-        <GradeCasos cromo="Continue" titulo="Os casos" ir={ir} />
+        <GradeCasos cromo="Continue" titulo="Os projetos" ir={ir} />
       </div>
     </>
   );

@@ -52,7 +52,7 @@ const ABRE = {
   p: [
     "A minha tem duas.",
     "Já me entregaram feature com o problema pronto. O P.O. chegou com a reclamação na mão, o FAQ dizia onde doía, e a dúvida que uma pesquisa mataria já estava morta. Fui direto para o protótipo e validei na tela.",
-    "E teve PCYES, onde eu passei semanas antes de desenhar a primeira caixa. Matriz CSD para separar o que a gente sabia do que a gente achava. Benchmarking para não inventar palavra que o mercado já usa. Um trimestre inteiro de GA4, 166.267 sessões, evento a evento. Gravação de sessão assistida inteira, sem pular.",
+    "E teve PCYES, onde eu passei semanas antes de desenhar a primeira caixa. Matriz CSD para separar o que a gente sabia do que a gente achava. Benchmarking para não inventar palavra que o mercado já usa. Um trimestre inteiro de GA4, 166.267 sessões, evento a evento. Gravação de sessão, assistida inteira.",
     "Nos dois casos eu acho que escolhi certo. E escolher entre um e outro é boa parte do trabalho, mesmo que não apareça na tela final.",
   ],
 };
@@ -63,7 +63,7 @@ const FATORES = {
   itens: [
     { k: "Prazo", p: "Se é para segunda-feira ou para daqui um mês. Ele decide quanto eu tenho, não onde eu gasto." },
     { k: "Time", p: "Se eu divido a atividade com alguém ou toco sozinho. Dois designers mudam o que cabe na mesma semana." },
-    { k: "O que já chegou validado", p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova é teatro." },
+    { k: "O que já chegou validado", p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova só atrasa." },
   ],
   nota: "Quase todo lugar em que trabalhei era startup, e startup tem pressa. PCYES e Locarmais foram onde deu tempo de fazer o completo.",
 };
@@ -73,7 +73,7 @@ const RISCO = {
   t: "Eu gasto mais tempo pesquisando quando errar sai caro.",
   p: [
     "Decisão barata de desfazer eu coloco no ar e olho o que acontece. Trocar a ordem de dois blocos numa página de baixo tráfego se responde melhor com gravação de sessão do que com estudo.",
-    "Decisão cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu não chuto. Ali eu compro tempo antes, mesmo quando ninguém pediu.",
+    "Quando a decisão é cara de desfazer, dessas que reescrevem catálogo ou mexem em pagamento, eu levanto mais coisa antes de fechar, e peço o tempo para isso.",
   ],
 };
 
@@ -526,28 +526,66 @@ function EsbocoEGrade() {
 
    A ponta grossa fecha em arco e não em corte reto: cortada, a peça terminava
    numa aresta vertical e lia como recorte de papel em vez de volume. */
+/* O eixo do risco.
+
+   Era uma cunha que engrossava da esquerda para a direita, e o problema é que
+   ela não plotava nada: a espessura era ilustração de uma ideia, não medida de
+   uma grandeza contra outra. O Gabriel pediu gráfico, e o gráfico existe — o
+   argumento da dobra JÁ é de duas variáveis.
+
+   O que está desenhado: no eixo horizontal, o quanto custa desfazer a decisão.
+   No vertical, o tempo total até acertar, que é o que interessa a quem paga a
+   conta — não o tempo até a primeira entrega.
+
+   Duas curvas. Sem pesquisa começa embaixo, porque decidir no chute é rápido,
+   e sobe rápido conforme desfazer fica caro: cada erro cobra retrabalho. Com
+   pesquisa começa mais alto, porque levantar coisa custa tempo antes, e fica
+   quase reta, porque o erro que ela evita não volta para cobrar.
+
+   As duas se cruzam, e o cruzamento é o conteúdo: à esquerda dele pesquisar
+   sai mais caro que errar, e à direita sai mais barato. É onde a decisão de
+   quanto abrir deixa de ser gosto e vira conta. */
 function EixoDoRisco() {
   const rise = useRise();
   const cena = React.useRef(null);
   const { progresso, quieto } = useTracado(cena, { offset: ["start 90%", "center 55%"] });
   const abre = useTrecho(progresso, 0, 0.9);
+  const anim = quieto ? undefined : { opacity: abre.traco, scaleX: abre.traco };
 
   return (
     <motion.figure className="v2-pn-risco" ref={cena} {...rise(0)}>
-      <svg viewBox="0 0 1000 200" role="img"
-           aria-label="Uma cunha curva que começa quase sem espessura à esquerda, onde a decisão é barata de desfazer, e engrossa até a direita, onde é cara. A espessura é o tamanho da pesquisa.">
-        <line className="v2-pn-risco-eixo" x1="60" y1="81" x2="946" y2="81" />
-        <motion.g style={quieto ? undefined : { opacity: abre.traco, scaleX: abre.traco }}
-                  transform-origin="60 81">
-          <path className="v2-pn-cunha"
-                d="M60 80 C360 79 640 52 930 16 Q980 81 930 146 C640 110 360 83 60 82 Z" />
+      <svg viewBox="0 0 1000 360" role="img"
+           aria-label="Gráfico com duas curvas. O eixo horizontal vai de barato a caro de desfazer, e o vertical é o tempo total até acertar. A curva sem pesquisa começa baixa e sobe rápido; a curva com pesquisa começa mais alta e segue quase reta. As duas se cruzam no meio: a partir dali, pesquisar sai mais barato que errar.">
+        <line className="v2-pn-risco-eixo" x1="76" y1="290" x2="946" y2="290" />
+        <line className="v2-pn-risco-eixo" x1="76" y1="290" x2="76" y2="40" />
+
+        <motion.g style={anim} transform-origin="76 290">
+          {/* sem pesquisa: barata de começar, cara de consertar */}
+          <path className="v2-pn-curva is-sem"
+                d="M76 250 C 300 246 480 232 620 196 C 760 160 860 108 940 52" />
+          {/* com pesquisa: custa antes, e para de cobrar depois */}
+          <path className="v2-pn-curva is-com"
+                d="M76 168 C 320 164 620 158 940 150" />
+          {/* o cruzamento */}
+          {/* Posição medida, não estimada: as duas béziers foram amostradas e se
+              cruzam em x=749, y=154,5. O ponto estava em 672/176 e ficava
+              flutuando à esquerda do encontro real. */}
+          <line className="v2-pn-cruzo-guia" x1="749" y1="160" x2="749" y2="290" />
+          <circle className="v2-pn-cruzo" cx="749" cy="154.5" r="6" />
         </motion.g>
-        <text className="v2-pn-svg-k" x="60" y="192">Barato de desfazer</text>
-        <text className="v2-pn-svg-k is-forte" x="946" y="192" textAnchor="end">Caro de desfazer</text>
+
+        <text className="v2-pn-svg-k is-curva" x="948" y="46" textAnchor="end">Sem pesquisa</text>
+        <text className="v2-pn-svg-k is-curva is-com" x="948" y="176" textAnchor="end">Com pesquisa</text>
+        <text className="v2-pn-svg-k is-eixo" x="749" y="322" textAnchor="middle">Onde vira conta</text>
+
+        <text className="v2-pn-svg-k" x="76" y="348">Barato de desfazer</text>
+        <text className="v2-pn-svg-k is-forte" x="946" y="348" textAnchor="end">Caro de desfazer</text>
+        <text className="v2-pn-svg-k is-y" x="76" y="28">Tempo total até acertar</text>
       </svg>
       <figcaption className="v2-fig-leg">
-        A espessura é o quanto eu abro antes de decidir. Quanto mais caro for desfazer, mais eu abro — o que manda
-        aqui é o risco da decisão, não a data de entrega.
+        Decidir no chute começa mais barato e cobra depois, em retrabalho. Levantar as coisas antes custa tempo
+        na frente e quase não cobra na sequência. As duas linhas se cruzam em algum ponto, e é esse ponto que eu
+        procuro antes de escolher quanto abrir.
       </figcaption>
     </motion.figure>
   );

@@ -285,18 +285,6 @@
    pendurada embaixo de "Papel", lendo como se fosse subordinada a ele. As
    quatro cabem na largura do caso — a mais longa é o período, e ele tem 24ch
    de folga a 1440. Abaixo de 900 a regra do fim do arquivo empilha tudo. */
-.v2-ficha {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--v2-s4);
-  margin: 0 auto;
-  max-width: var(--v2-caso-larga);
-  padding-top: var(--v2-s3);
-  border-top: 1px solid var(--v2-rule);
-}
-
-.v2-ficha-cel { min-width: 0; }
-
 /* ---------------- a entrada do capítulo ----------------
 
    Um bloco só no lugar de três faixas soltas. O que ele resolve é densidade:
@@ -1677,7 +1665,6 @@
   /* A capa encolhe mas continua sendo a tela inteira: é o corte, e um corte
      de 46svh num celular já é meia tela. */
   .v2-capitulo { margin-top: var(--v2-s6); padding-block: var(--v2-s6); min-height: 40svh; }
-  .v2-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
   .v2-resumo { grid-template-columns: 1fr; gap: var(--v2-s3); }
 
   /* Uma coluna so: tudo que era duas colunas empilha, e a coluna presa

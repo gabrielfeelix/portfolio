@@ -239,7 +239,7 @@ function App() {
        de rota numa SPA, sair de um caso para a home com `null` deixava a
        description do caso na página anterior colada na home. Toda rota agora
        escreve a sua, e quem não tem uma própria cai aqui de volta. */
-    let descricao = "Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro casos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.";
+    let descricao = "Portfólio de Gabriel Felix Barbosa, UX/Product Designer. Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar.";
     let imagem = null;
     let tipoOg = "website";
 

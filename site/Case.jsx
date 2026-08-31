@@ -1516,7 +1516,7 @@ export default function Caso({ id, ir }) {
             <Pill onClick={() => trocar(false)}>Ler o capítulo inteiro · {cap.minutos} min</Pill>
           </section>
         ) : null}
-        <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
+        <GradeCasos excluir={cap.id} titulo="Os outros projetos" ir={ir} />
       </CampoDeVoo>
     </>
   );

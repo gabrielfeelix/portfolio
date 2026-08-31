@@ -155,11 +155,11 @@ function Ficha() {
 
   return (
     <section className="v2-wrap v2-caso-abre" aria-label="Ficha">
-      <dl className="v2-ficha">
+      <dl className="v2-sb-ficha">
         {celulas.map(([rot, val], i) => (
-          <motion.div className="v2-ficha-cel" key={rot} {...rise(i)}>
-            <dt className="v2-ficha-l">{rot}</dt>
-            <dd className="v2-ficha-v">{val}</dd>
+          <motion.div className="v2-sb-ficha-cel" key={rot} {...rise(i)}>
+            <dt className="v2-sb-ficha-l">{rot}</dt>
+            <dd className="v2-sb-ficha-v">{val}</dd>
           </motion.div>
         ))}
       </dl>
@@ -579,7 +579,7 @@ export default function Sobre({ ir }) {
         <ForaDaTela />
         <Adiante />
 
-        <GradeCasos cromo="O trabalho" titulo="Os casos" ir={ir} />
+        <GradeCasos cromo="O trabalho" titulo="Os projetos" ir={ir} />
       </CampoDeVoo>
     </>
   );

@@ -1,3 +1,48 @@
+
+/* ---------------- a ficha do topo ----------------
+
+   Ela usava `.v2-ficha`, do case.css, e quebrou em 30/08 quando a página de
+   caso trocou aquele componente pelo bloco de entrada: as regras de rótulo e
+   de valor foram embora com ele e sobraram só a grade e a célula. Sem
+   `.v2-ficha-v`, o `<dd>` voltou ao padrão do navegador e ganhou 40px de
+   recuo — era o desalinhamento que o Gabriel viu. E a grade tinha virado
+   quatro colunas para três células, o que abria um vão à direita.
+
+   Agora a ficha é da /sobre e não empresta de ninguém. Três colunas, porque
+   são três células, e `margin: 0` explícito no `dd`, que é a regra que se
+   perdeu. */
+.v2-sb-ficha {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--v2-s4);
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-sb-ficha-cel { min-width: 0; }
+
+.v2-sb-ficha-l {
+  margin: 0 0 var(--v2-s1);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-sb-ficha-v {
+  margin: 0;
+  font-size: var(--v2-t-corpo);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .v2-sb-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
+}
+
 /* Estilo da página /sobre. Pareia com v2/Sobre.jsx.
 
    Regra do arquivo: ele só desenha o que é próprio desta página. Hero preso,

@@ -461,10 +461,10 @@ function Trabalho({ ir }) {
   for (let k = 0; k < lista.length; k += 2) linhas.push(lista.slice(k, k + 2));
   const { ref, progresso } = usePilhaTrilho();
   return (
-    <Dobra id="casos" n="02" nome="Trabalho" carimbo="©26" aria-label="Casos">
+    <Dobra id="casos" n="02" nome="Trabalho" carimbo="©26" aria-label="Projetos">
       {/* As cinco partes do viper. É a dobra que o Gabriel dissecou. */}
       <Cabecalho
-        olho="Casos"
+        olho="Projetos"
         titulo="Trabalho selecionado"
         marca="®"
         lead="Quatro projetos abertos por inteiro: o problema, o que a pesquisa mostrou, o que foi cortado e o que sobrou no ar."
@@ -517,8 +517,8 @@ function Numeros() {
 
           A ordem desce: 4, 22, 17, 3, 2. */}
       <div className="v2-numeros">
-        <Contador ate={casosN} rotulo="Casos abertos" nota="Abertos por inteiro" />
-        <Contador ate={casosN + pecas} rotulo="Projetos publicados" nota="Casos mais peças" />
+        <Contador ate={casosN} rotulo="Projetos abertos" nota="Abertos por inteiro" />
+        <Contador ate={casosN + pecas} rotulo="Projetos publicados" nota="Abertos mais peças" />
         <Contador ate={marcas} rotulo="Marcas atendidas" nota="Todas na fita acima" />
         <Contador ate={empresas} rotulo="Times por dentro" nota="Estágio, UX e produto" />
         <Contador ate={anos} sufixo="+" rotulo="Anos em produto" nota={`Desde ${ANO_INICIO}`} />

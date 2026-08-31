@@ -470,7 +470,7 @@ export function CapaCapitulo({ n, t, de = "04", rotulo = "Movimento" }) {
 
    `excluir` continua valendo e é o que impede a página de um caso oferecer ele
    mesmo. */
-export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os casos", ir, quantos = 3 }) {
+export function GradeCasos({ excluir, cromo = "Continue", titulo = "Os projetos", ir, quantos = 3 }) {
   const rise = useRise();
   const [lista] = useState(() => {
     const pool = casos().filter((c) => c.id !== excluir);
