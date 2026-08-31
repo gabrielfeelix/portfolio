@@ -1492,7 +1492,13 @@ function caseProjects() { return CASE_IDS.map((id) => PROJECTS.find((p) => p.id 
    fita corre da esquerda para a direita, então o começo é o único lugar que o
    visitante vê sem esperar o laço dar a volta — e capa nova é a que merece
    esse lugar. */
-const PIECE_ORDER = ["isabella", "signamais", "locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "dropchina", "remoctrl", "traxium"];
+/* O Signamais foi para o fim da fila de tela grande em 31/08: a capa dele e a
+   da Isabella são as duas de monitor sobre mesa de madeira, e vizinhas na
+   fita liam como a mesma foto repetida. Separadas pelas nove peças do meio,
+   a semelhança deixa de ser leitura. Hub e Worklife entram na lista só para
+   ficarem ANTES dele — sem rank explícito os dois caíam no fim por padrão e
+   empurravam o Signamais de volta para perto da Isabella. */
+const PIECE_ORDER = ["isabella", "locarmais-site", "4yu", "quantocobro", "kitamo-app", "argel", "deixeiaqui", "rodape", "hub-oderco", "ponto-admin", "signamais", "dropchina", "remoctrl", "traxium"];
 function pieceProjects() {
   /* Sem o filtro por link, que escondia 5 peças boas: web2design, argel,
      solar-site, immo e o site da Locarmais (este perdeu o link em 29/08, a
