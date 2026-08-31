@@ -549,35 +549,61 @@ function EixoDoRisco() {
   const rise = useRise();
   const cena = React.useRef(null);
   const { progresso, quieto } = useTracado(cena, { offset: ["start 90%", "center 55%"] });
-  const abre = useTrecho(progresso, 0, 0.9);
-  const anim = quieto ? undefined : { opacity: abre.traco, scaleX: abre.traco };
+  const abre = useTrecho(progresso, 0, 0.82);
+  const marca = useTrecho(progresso, 0.66, 1);
+
+  /* O gráfico cresce por RECORTE, e não por transform.
+
+     A primeira versão animava `scaleX` no grupo inteiro, e o Gabriel viu o
+     defeito na hora: escalar em um eixo só estica o desenho. As curvas
+     achatavam, a espessura do traço mudava com elas, e o ponto do cruzamento
+     virava um oval. Parecia imagem esticada, não gráfico sendo desenhado.
+
+     `pathLength` seria o caminho natural, e não serve aqui: ele desenha o
+     traço mexendo em `stroke-dasharray`, que é justamente a propriedade que a
+     curva "com pesquisa" usa para ser tracejada. Uma das duas teria que abrir
+     mão da forma.
+
+     Um retângulo de recorte que cresce da esquerda para a direita resolve as
+     duas: nada é escalado, então nenhuma geometria distorce, o tracejado
+     continua tracejado, e as duas linhas aparecem juntas na ordem em que se
+     leem — do barato para o caro. */
+  const revela = useTransform(abre.traco, (v) => 1000 * v);
 
   return (
     <motion.figure className="v2-pn-risco" ref={cena} {...rise(0)}>
       <svg viewBox="0 0 1000 360" role="img"
            aria-label="Gráfico com duas curvas. O eixo horizontal vai de barato a caro de desfazer, e o vertical é o tempo total até acertar. A curva sem pesquisa começa baixa e sobe rápido; a curva com pesquisa começa mais alta e segue quase reta. As duas se cruzam no meio: a partir dali, pesquisar sai mais barato que errar.">
+        <defs>
+          <clipPath id="pn-risco-revela">
+            <motion.rect x="0" y="0" height="360" width={quieto ? 1000 : revela} />
+          </clipPath>
+        </defs>
+
         <line className="v2-pn-risco-eixo" x1="76" y1="290" x2="946" y2="290" />
         <line className="v2-pn-risco-eixo" x1="76" y1="290" x2="76" y2="40" />
 
-        <motion.g style={anim} transform-origin="76 290">
+        <g clipPath="url(#pn-risco-revela)">
           {/* sem pesquisa: barata de começar, cara de consertar */}
           <path className="v2-pn-curva is-sem"
                 d="M76 250 C 300 246 480 232 620 196 C 760 160 860 108 940 52" />
           {/* com pesquisa: custa antes, e para de cobrar depois */}
           <path className="v2-pn-curva is-com"
                 d="M76 168 C 320 164 620 158 940 150" />
-          {/* o cruzamento */}
-          {/* Posição medida, não estimada: as duas béziers foram amostradas e se
-              cruzam em x=749, y=154,5. O ponto estava em 672/176 e ficava
-              flutuando à esquerda do encontro real. */}
+        </g>
+
+        {/* O encontro entra depois das duas linhas, porque ele só significa
+            alguma coisa quando as duas já estão na tela. Posição medida, não
+            estimada: as béziers foram amostradas e se cruzam em x=749,
+            y=154,5. */}
+        <motion.g style={quieto ? undefined : { opacity: marca.traco }}>
           <line className="v2-pn-cruzo-guia" x1="749" y1="160" x2="749" y2="290" />
           <circle className="v2-pn-cruzo" cx="749" cy="154.5" r="6" />
+          <text className="v2-pn-svg-k is-eixo" x="749" y="322" textAnchor="middle">Onde vira conta</text>
         </motion.g>
 
         <text className="v2-pn-svg-k is-curva" x="948" y="46" textAnchor="end">Sem pesquisa</text>
         <text className="v2-pn-svg-k is-curva is-com" x="948" y="176" textAnchor="end">Com pesquisa</text>
-        <text className="v2-pn-svg-k is-eixo" x="749" y="322" textAnchor="middle">Onde vira conta</text>
-
         <text className="v2-pn-svg-k" x="76" y="348">Barato de desfazer</text>
         <text className="v2-pn-svg-k is-forte" x="946" y="348" textAnchor="end">Caro de desfazer</text>
         <text className="v2-pn-svg-k is-y" x="76" y="28">Tempo total até acertar</text>

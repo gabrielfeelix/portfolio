@@ -304,6 +304,19 @@
    própria coluna, e um `ch` por cima dela só criaria uma segunda regra
    disputando com a primeira. */
 .v2-pn-bloco[data-larg="estreita"] .v2-pn-t { font-size: var(--v2-t-caso-ato); max-width: none; }
+/* E o PARÁGRAFO acompanha a coluna, que é a correção que faltava.
+
+   Alargar `--col` para 940 não mudou uma linha de texto, porque `.v2-pn-p`
+   trava em `--v2-medida-lead` (560px) e o cap vence a coluna: o bloco ficou
+   mais largo e o texto continuou quebrando no mesmo lugar, agora com 380px de
+   sobra em branco dentro da própria coluna. Era isso que o Gabriel estava
+   vendo quando disse que eu não tinha aumentado as letras por frase.
+
+   Aqui a coluna JÁ é a medida — 940px centrados —, então o parágrafo não
+   precisa de um segundo limite. Vale só para a estreita: nas outras larguras
+   a coluna é maior que a medida de leitura, e ali o cap continua sendo o que
+   impede a linha de virar uma régua de 1300px. */
+.v2-pn-bloco[data-larg="estreita"] .v2-pn-p { max-width: none; }
 .v2-pn-bloco[data-larg="wrap"]     .v2-pn-t { font-size: var(--v2-t-movimento); max-width: none; }
 .v2-pn-bloco[data-larg="larga"]    .v2-pn-t { font-size: var(--v2-t-secao); max-width: 26ch; text-wrap: pretty; }
 
