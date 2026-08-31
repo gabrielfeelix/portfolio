@@ -60,13 +60,47 @@ const ABRE = {
 const FATORES = {
   olho: "O que decide o tamanho",
   t: "Três coisas decidem: prazo, time, e o que já chegou provado",
+  /* A nota saiu em 30/08. Ela dizia "quase todo lugar em que trabalhei era
+     startup, e startup tem pressa. PCYES e Locarmais foram onde deu tempo de
+     fazer o completo", e tinha dois problemas: citava projeto por nome numa
+     dobra que informa o método, o que é referência de serviço prestado e
+     assunto do case, e lia como justificativa antecipada de por que o processo
+     nem sempre é o completo. Os três fatores abaixo já dizem isso sem se
+     desculpar. */
   itens: [
-    { k: "Prazo", p: "Se é para segunda-feira ou para daqui um mês. Ele decide quanto eu tenho, não onde eu gasto." },
-    { k: "Time", p: "Se eu divido a atividade com alguém ou toco sozinho. Dois designers mudam o que cabe na mesma semana." },
-    { k: "O que já chegou validado", p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova só atrasa." },
+    { k: "Prazo", icone: "relogio",
+      p: "Se é para segunda-feira ou para daqui um mês. Ele decide quanto eu tenho, não onde eu gasto." },
+    { k: "Time", icone: "gente",
+      p: "Se eu divido a atividade com alguém ou toco sozinho. Dois designers mudam o que cabe na mesma semana." },
+    { k: "O que já chegou validado", icone: "prova",
+      p: "Reclamação recorrente, chamado no FAQ, dado de uso. Quando o problema já vem provado, refazer a prova só atrasa." },
   ],
-  nota: "Quase todo lugar em que trabalhei era startup, e startup tem pressa. PCYES e Locarmais foram onde deu tempo de fazer o completo.",
 };
+
+/* Os três ícones dos fatores.
+
+   Traço, e não chapa: a página inteira é tipo e filete, e um ícone preenchido
+   entraria como o único elemento sólido da tela. Grade de 24, traço de 1.5 com
+   ponta redonda, e cada um desenhado para ser distinto do outro em silhueta —
+   dois círculos iguais com miolo diferente não se separam num relance, então
+   o relógio é redondo, a gente é orgânica e a prova é retangular. */
+const ICONES = {
+  relogio: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.2V12l3.4 2" /></>,
+  gente: <><circle cx="9.4" cy="9.2" r="3.1" />
+           <path d="M3.6 19.2c0-3 2.6-5.1 5.8-5.1s5.8 2.1 5.8 5.1" />
+           <path d="M16.4 7.3a3.1 3.1 0 0 1 0 5.9" />
+           <path d="M18 14.6c1.7.8 2.7 2.4 2.7 4.3" /></>,
+  prova: <><path d="M6.2 3.8h7.3L18 8.3v11.9H6.2z" /><path d="M13.4 3.8v4.6H18" />
+           <path d="M9.1 13.9l2.1 2.1 3.9-4" /></>,
+};
+
+function IconeFator({ nome }) {
+  const d = ICONES[nome];
+  if (!d) return null;
+  return (
+    <svg className="v2-pn-ficha-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{d}</svg>
+  );
+}
 
 const RISCO = {
   olho: "Onde eu gasto",
@@ -735,13 +769,15 @@ export function Narrativa() {
               <p className="v2-pn-ficha-l">{FATORES.olho}</p>
               <h2 className="v2-pn-ficha-t" id="pn-fatores-t">{FATORES.t}</h2>
             </div>
-            <p className="v2-pn-ficha-nota">{FATORES.nota}</p>
           </div>
           <dl className="v2-pn-ficha-itens">
             {FATORES.itens.map((f) => (
               <div className="v2-pn-ficha-cel" key={f.k}>
-                <dt className="v2-pn-ficha-k">{f.k}</dt>
-                <dd className="v2-pn-ficha-p">{f.p}</dd>
+                <IconeFator nome={f.icone} />
+                <div className="v2-pn-ficha-txt">
+                  <dt className="v2-pn-ficha-k">{f.k}</dt>
+                  <dd className="v2-pn-ficha-p">{f.p}</dd>
+                </div>
               </div>
             ))}
           </dl>

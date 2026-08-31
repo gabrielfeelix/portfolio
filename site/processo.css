@@ -164,13 +164,18 @@
   padding-top: var(--v2-s3);
 }
 
+/* Uma coluna desde 30/08, quando a nota saiu.
+
+   O topo era um par — título à esquerda, nota à direita — e com a nota fora a
+   coluna da direita virava vão. O título passa a ocupar a linha e ganha um
+   cap de medida, senão ele corre os 1240px inteiros e vira régua. */
 .v2-pn-ficha-topo {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: var(--v2-s5);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
   padding-bottom: var(--v2-s4);
 }
+
+.v2-pn-ficha-t { max-width: 26ch; }
 
 .v2-pn-ficha-l {
   margin: 0 0 var(--v2-s2);
@@ -201,12 +206,6 @@
   text-wrap: balance;
 }
 
-.v2-pn-ficha-nota {
-  margin: 0;
-  font-size: var(--v2-t-corpo);
-  line-height: 1.55;
-  color: var(--v2-muted);
-}
 
 /* Os três fatores como linha de cromo, com filete separando do título. */
 .v2-pn-ficha-itens {
@@ -218,7 +217,35 @@
   border-top: 1px solid var(--v2-rule);
 }
 
-.v2-pn-ficha-cel { min-width: 0; }
+/* Ícone à esquerda, texto à direita. `align-items: start` e não center: com o
+   texto centrado o ícone flutuava no meio de três linhas de parágrafo, longe
+   do rótulo que ele ilustra. Ancorado no topo, ele lê como marcador do
+   título. */
+.v2-pn-ficha-cel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--v2-s2);
+  align-items: start;
+}
+
+.v2-pn-ficha-txt { min-width: 0; }
+
+/* Traço e não chapa, pelo mesmo motivo do resto da página: aqui tudo é tipo e
+   filete, e um ícone preenchido seria o único elemento sólido da tela. Fica
+   em --v2-muted, na mesma força do rótulo que ele acompanha — ele é marcador,
+   não ilustração, e em tinta cheia roubaria o olho do texto. */
+.v2-pn-ficha-ico {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin-top: -2px;
+  fill: none;
+  stroke: var(--v2-muted);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 .v2-pn-ficha-k {
   margin: 0 0 var(--v2-s1);
@@ -236,8 +263,7 @@
 }
 
 @media (max-width: 900px) {
-  .v2-pn-ficha-topo { grid-template-columns: 1fr; gap: var(--v2-s4); }
-  .v2-pn-ficha-itens { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
+  .v2-pn-ficha-itens { grid-template-columns: 1fr; row-gap: var(--v2-s4); }
 }
 
 /* ==================================================== a pauta de ritmo
