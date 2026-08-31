@@ -541,7 +541,16 @@ function Adiante() {
           <p className="v2-sb-obrigado">{SOBRE_OBRIGADO}</p>
           <Assinatura>{AUTOR()}</Assinatura>
         </div>
-        <Pill href={c.whatsapp.href} externo>Falar comigo</Pill>
+        {/* Dois pills desde 30/08. SOBRE_ADIANTE é a única frase do site
+            endereçada a quem contrata, então é o ponto de maior intenção da
+            página inteira — e até aqui só oferecia conversa. Quem lê a /sobre
+            até o fim e decide levar adiante precisa de um arquivo, não só de
+            um WhatsApp. O currículo entra como secundário: a conversa continua
+            sendo a ação principal. */}
+        <div className="v2-sb-fecho-acoes">
+          <Pill href={c.whatsapp.href} externo>Falar comigo</Pill>
+          {c.curriculo ? <Pill href={c.curriculo.href} externo secundario>Currículo em PDF</Pill> : null}
+        </div>
       </motion.div>
     </Dobra>
   );

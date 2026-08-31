@@ -8,7 +8,12 @@ dist/
 
 # material pessoal e sensível: não vai pro repo nem pro deploy
 dossie-profissional-gabriel.md
+# O CV na raiz é a fonte de edição e fica fora do git. A cópia que vai ao
+# ar é uploads/, essa sim versionada. A regra era *Curriculo*.pdf e quebrou
+# quando o arquivo foi renomeado para o nome que o recrutador lê.
+/Gabriel-Felix-Barbosa-Product-Designer.pdf
 *Curriculo*.pdf
+*.pdf:Zone.Identifier
 *.Zone.Identifier
 *Zone.Identifier
 
@@ -23,4 +28,10 @@ site/posts.gerado.js
 # arte de origem das camadas do campo: 4,9MB de PNG que so servem
 # para reprocessar. As camadas publicadas sao volume/assets/campo/*.webp
 # (304KB), geradas por tools/camadas-campo.py.
-uploads/*-parallax.png
+#
+# Mudaram de uploads/ para _fontes/campo/ em 30/08: o motivo do ignore era o
+# peso, e ele valia so para o git. build.mjs sincroniza uploads/ inteira para
+# dist/, entao TODA arte de origem que morasse la era publicada junto — 25MB
+# de PNG e mp4 servidos para pintar imagens que ja existem em webp. _fontes/
+# nao e copiada pelo build, entao o que mora la fica no repo e sai do deploy.
+_fontes/campo/*-parallax.png

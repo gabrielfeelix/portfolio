@@ -280,9 +280,14 @@
 
 /* ---------------- ficha ---------------- */
 
+/* Quatro colunas desde 30/08, quando "Leitura" entrou como quarta célula: com
+   as três de antes a nova quebrava sozinha para uma segunda linha e ficava
+   pendurada embaixo de "Papel", lendo como se fosse subordinada a ele. As
+   quatro cabem na largura do caso — a mais longa é o período, e ele tem 24ch
+   de folga a 1440. Abaixo de 900 a regra do fim do arquivo empilha tudo. */
 .v2-ficha {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--v2-s4);
   margin: 0 auto;
   max-width: var(--v2-caso-larga);
@@ -291,6 +296,205 @@
 }
 
 .v2-ficha-cel { min-width: 0; }
+
+/* ---------------- a entrada do capítulo ----------------
+
+   Um bloco só no lugar de três faixas soltas. O que ele resolve é densidade:
+   ficha, resumo e caminho somavam uma tela inteira de altura para entregar
+   seis linhas, cada um com a própria régua e 104px de vão no meio, e o
+   conjunto lia como sobra flutuando entre dobras em vez de bloco.
+
+   Aqui o vão vira filete e a hierarquia entra por tamanho: o resultado em
+   corpo de bloco, o "o quê" um degrau abaixo, a ficha em cromo. */
+.v2-abre {
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-top: var(--v2-s6);
+}
+
+.v2-abre-cartao {
+  border-top: 2px solid var(--v2-ink);
+  padding-top: var(--v2-s3);
+}
+
+/* Duas colunas desiguais, e a desigualdade é o argumento: o resultado ocupa a
+   maior porque é a única linha da dobra que responde "isso moveu alguma
+   coisa?". Antes as duas tinham a mesma largura e o mesmo tamanho de letra, e
+   a descrição do projeto empatava com o desfecho. */
+.v2-abre-topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--v2-s5);
+  align-items: start;
+  padding-bottom: var(--v2-s4);
+}
+
+.v2-abre-l {
+  margin: 0 0 var(--v2-s2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+/* O quadrado accent do rótulo do resultado: é o mesmo sinal que abre toda
+   dobra da home, e aqui marca qual das duas colunas manda. */
+.v2-abre-forte .v2-abre-l::before {
+  content: "";
+  display: inline-block;
+  width: .5em;
+  height: .5em;
+  margin-right: .6em;
+  background: var(--v2-accent);
+  vertical-align: baseline;
+}
+
+.v2-abre-r {
+  margin: 0;
+  font-size: var(--v2-t-caso-ato);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+.v2-abre-o {
+  margin: 0;
+  font-size: var(--v2-t-bloco);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -.01em;
+  color: var(--v2-muted);
+}
+
+/* A ficha desceu para cromo: quatro pares rótulo/valor numa linha, separados
+   do resumo por um filete. Papel, superfície, período e preço de leitura são
+   dado de catálogo, e catálogo não disputa tamanho com argumento. */
+.v2-abre-ficha {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--v2-s4);
+  margin: 0;
+  padding: var(--v2-s3) 0;
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-abre-cel { min-width: 0; }
+
+.v2-abre-fl {
+  margin: 0 0 var(--v2-s1);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-abre-fv {
+  margin: 0;
+  font-size: var(--v2-t-label);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Dentro do bloco o caminho perde a régua e a margem próprias: quem separa
+   os andares aqui é o filete da ficha logo acima. */
+.v2-abre-cartao .v2-caminho {
+  max-width: none;
+  margin-top: 0;
+  padding-top: var(--v2-s3);
+  border-top: 1px solid var(--v2-rule);
+}
+
+@media (max-width: 900px) {
+  .v2-abre { padding-top: var(--v2-s5); }
+  /* O resultado passa a abrir sozinho: lado a lado numa tela estreita as duas
+     colunas encolhem abaixo da medida em que o display respira. */
+  .v2-abre-topo { grid-template-columns: 1fr; gap: var(--v2-s4); }
+  .v2-abre-ficha { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--v2-s3); }
+}
+
+@media (max-width: 520px) {
+  .v2-abre-ficha { grid-template-columns: 1fr; }
+}
+
+/* ---------------- o caminho de leitura ----------------
+
+   Fica logo abaixo da ficha e usa a mesma régua horizontal dela: as duas são
+   a mesma faixa de serviço do capítulo — uma diz o que é o projeto, a outra
+   diz quanto ele custa para ler. Por isso não ganha caixa, sombra nem cor:
+   é cromo, não conteúdo, e uma caixa aqui competiria com a abertura logo
+   abaixo, que é a primeira coisa que deveria puxar o olho. */
+.v2-caminho {
+  margin: 0 auto;
+  max-width: var(--v2-caso-larga);
+  padding-top: var(--v2-s3);
+  margin-top: var(--v2-s4);
+  border-top: 1px solid var(--v2-rule);
+}
+
+.v2-caminho-l {
+  margin: 0 0 var(--v2-s2);
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+.v2-caminho-op {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v2-s2);
+}
+
+/* O botão não escolhido é contorno; o escolhido é chapa. É a única diferença,
+   e basta: são duas opções, e a pergunta que o leitor faz é "em qual eu
+   estou", não "quantas existem". */
+.v2-caminho-b {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v2-s2);
+  padding: var(--v2-s2) var(--v2-s3);
+  border: 1px solid var(--v2-rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--v2-ink);
+  font: inherit;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.v2-caminho-b:hover { border-color: var(--v2-ink); }
+
+.v2-caminho-b[aria-pressed="true"] {
+  background: var(--v2-ink);
+  border-color: var(--v2-ink);
+  color: #fff;
+}
+
+.v2-caminho-r { font-weight: 600; }
+
+.v2-caminho-m {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-label);
+  letter-spacing: var(--v2-track-cromo);
+  opacity: .7;
+}
+
+/* A saída, no fim do caminho curto. Empurrada para longe do "aprendi" que
+   vem logo acima, senão lê como se fosse parte dele. */
+.v2-caminho-fim {
+  margin-top: var(--v2-s6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v2-s3);
+}
+
+.v2-caminho-fim .v2-caminho-l { margin-bottom: 0; }
 
 .v2-ficha-l {
   margin: 0 0 var(--v2-s1);
@@ -385,9 +589,19 @@
 
 /* ---------------- mídia ---------------- */
 
-/* A mídia da página de caso. O painel `--v2-card` continua sendo o único
-   lugar onde o cinza aparece, com a textura de 5px dentro dele
-   (`.v2-textura`, em shell.css), nunca na página.
+/* A mídia da página de caso.
+
+   CORREÇÃO de uma regra que este arquivo anunciava até 30/08: o painel cinza
+   com a trama de 5px dentro dele era "o único lugar onde o cinza aparece", e
+   deixou de existir. Aquele tratamento veio da V1 inteiro — chapa, respiro de
+   24px, raio de seção e textura pontilhada — e ficou para trás quando a home,
+   o /processo e o /sobre passaram a apresentar mídia com filete e tipo. Toda
+   figura publicada saía com a cara da versão anterior do site.
+
+   A regra agora é uma linha: a imagem senta no papel, dentro de um filete de
+   1px. O filete não é enfeite — quase todo print aqui é interface de fundo
+   claro, e sem borda ele se dissolve no papel branco. Era o que a chapa
+   resolvia, e o filete resolve igual sem a gramática velha junto.
 
    Três larguras, e só três: sangra, meia e terço. Medido em 29/08 na página
    do PCYES, a mídia aparecia em cinco larguras diferentes no mesmo caso
@@ -402,11 +616,23 @@
 
    Medido no inventário do repositório: 18 das 30 figuras dos quatro casos
    são 16:10, então par e tríptico fecham sem sobra de proporção. */
+/* A moldura da figura saiu da linguagem da V1 em 30/08.
+
+   Ela vinha de lá inteira: chapa cinza com 24px de respiro em volta da
+   imagem, raio de seção, e a textura pontilhada de 5px por baixo — o mesmo
+   tratamento que a V1 dava a toda mídia. Só que o resto da V2 já não fala
+   assim há semanas: a home, o /processo e o /sobre apresentam imagem com
+   filete e tipo, sem chapa e sem trama, e os tokens de raio foram a zero.
+   O resultado é que todo print publicado saía com a cara da versão anterior
+   do próprio site, que é o pior lugar possível para uma inconsistência
+   dessas — o portfólio argumenta consistência na página ao lado.
+
+   Fica o filete. Ele não é decoração: quase todo print aqui é interface de
+   fundo claro, e sem borda um screenshot de tela branca se dissolve no papel
+   branco da página. Era esse o problema que a chapa cinza resolvia, e um
+   filete de 1px resolve igual sem trazer junto a gramática velha. */
 .v2-fig {
   margin: var(--v2-s4) 0 0;
-  padding: var(--v2-s3);
-  border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
 }
 
 /* Sangria. A figura fica FORA do `.v2-wrap`, filha direta de
@@ -434,6 +660,7 @@
 
 .v2-fig-moldura {
   display: block;
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-media);
   overflow: hidden;
   background: var(--v2-paper);
@@ -957,11 +1184,14 @@
   top: 14svh;
 }
 
+/* O palco da coluna presa acompanha a figura: filete no lugar da chapa, pela
+   mesma razão. Ele era a terceira peça a carregar cinza e trama. */
 .v2-preso-palco {
   position: relative;
   aspect-ratio: 4 / 3;
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
+  background: var(--v2-paper);
   padding: var(--v2-s2);
   overflow: hidden;
 }
@@ -1187,15 +1417,34 @@
 
 /* ---------------- antes e depois ---------------- */
 
+/* O comparador recupera a coluna do rótulo.
+
+   Ele mora numa Dobra `larga`, cuja grade é 220px de label mais o resto: numa
+   janela de 1440 sobravam 988px para a imagem. Só que o que ele mostra é uma
+   tela de desktop inteira, com navegação, formulário e coluna de texto, e a
+   988px cada um desses pedaços chega pequeno demais para ser lido — o
+   Gabriel leu como "apertando demais a tela final", e é isso mesmo.
+
+   Puxando a margem esquerda de volta pela largura do label mais o vão, o
+   comparador passa a ocupar os 1240px inteiros de `--v2-caso-larga`: 25% a
+   mais de tela, sem tocar na grade que o resto da página usa. O rótulo da
+   dobra continua onde estava, acima. */
 .v2-comp {
   margin: var(--v2-s4) 0 0;
-  padding: var(--v2-s3);
-  border-radius: var(--v2-r-secao);
-  background: var(--v2-card);
+  margin-left: calc(-1 * (var(--v2-label-col) + var(--v2-s4)));
+}
+
+/* Abaixo de 900 a Dobra já empilha e não existe coluna de label para
+   recuperar: puxar a margem aqui jogaria a imagem para fora da tela. */
+@media (max-width: 900px) {
+  .v2-comp { margin-left: 0; }
 }
 
 .v2-comp-caixa {
   position: relative;
+  /* O filete entra aqui pelo mesmo motivo da figura: as duas telas comparadas
+     são de fundo claro, e sem borda a de cima se dissolve no papel. */
+  border: 1px solid var(--v2-rule);
   border-radius: var(--v2-r-media);
   overflow: hidden;
   background: var(--v2-paper);
@@ -1465,6 +1714,10 @@
      de 46svh num celular já é meia tela. */
   .v2-capitulo { margin-top: var(--v2-s6); padding-block: var(--v2-s6); min-height: 40svh; }
   .v2-ficha { grid-template-columns: 1fr; row-gap: var(--v2-s3); }
+  /* As duas opções de leitura empilham: lado a lado elas encolhem abaixo do
+     tamanho em que o rótulo e o tempo cabem na mesma linha. */
+  .v2-caminho-op { flex-direction: column; align-items: stretch; }
+  .v2-caminho-b { justify-content: space-between; }
   .v2-resumo { grid-template-columns: 1fr; gap: var(--v2-s3); }
 
   /* Uma coluna so: tudo que era duas colunas empilha, e a coluna presa

@@ -1190,6 +1190,27 @@
   margin-right: var(--v2-s2);
 }
 
+/* O tempo de leitura, no fim da linha do domínio. Fica na mono, como todo o
+   cromo do cartão, e em --v2-muted e não em --v2-ink: é a informação de
+   serviço da linha, não o assunto dela. O separador é um filete, e não um
+   ponto, porque a linha já usa espaço como separador entre índice e domínio;
+   um terceiro item colado leria como continuação do domínio. */
+.v2-cartao-min {
+  font-family: var(--v2-mono);
+  letter-spacing: var(--v2-track-cromo);
+  color: var(--v2-muted);
+}
+
+.v2-cartao-min::before {
+  content: "";
+  display: inline-block;
+  width: 1ch;
+  border-top: 1px solid currentColor;
+  vertical-align: middle;
+  margin: 0 var(--v2-s1);
+  opacity: .6;
+}
+
 /* O curso que mantem a linha 0 grudada enquanto a linha 1 sobe.
 
    CORRECAO de uma afirmacao anterior deste arquivo: nao e o vao entre as

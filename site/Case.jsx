@@ -274,29 +274,119 @@ function CasoHero({ cap }) {
 
 /* Régua de metadados. É a única dobra da página sem label lateral: ela É a
    legenda do hero, e um rótulo em cima repetiria isso. */
-function Ficha({ cap }) {
+/* A entrada do capítulo, numa peça só.
+
+   Eram três faixas soltas empilhadas entre o hero e o primeiro movimento — a
+   ficha, o resumo e o caminho de leitura —, cada uma com a própria régua e
+   104px de vão entre elas. Somadas, ocupavam uma tela inteira para entregar
+   seis linhas de texto, e o efeito era o oposto do pretendido: a informação
+   não lia como bloco, lia como sobra flutuando entre dobras. O Gabriel leu
+   exatamente assim, e tinha razão.
+
+   Agora é um bloco fechado, com hierarquia declarada dentro dele:
+
+     1. o RESULTADO abre, grande, porque é a única linha da dobra que responde
+        a pergunta que traz alguém a um portfólio — o trabalho dessa pessoa
+        move alguma coisa? Antes ele era a segunda de duas células de mesmo
+        peso, e empatava com a descrição do projeto;
+     2. o O QUÊ vem ao lado, menor, porque é contexto do resultado e não
+        concorrente dele;
+     3. a ficha desce para uma linha de cromo, que é o que ela é: papel,
+        superfície, período e preço de leitura são dados de catálogo, não
+        argumento;
+     4. o caminho de leitura fecha, porque é a última decisão que o leitor
+        toma antes de começar.
+
+   Uma régua só no topo, e filetes internos separando os três andares. */
+function Abre({ cap, curto, trocar }) {
   const rise = useRise();
-  const celulas = [
+  const t = cap.tldr || {};
+  const ficha = [
     ["Papel", cap.role],
     ["Superfície", cap.surface],
     ["Período", cap.periodo],
+    ["Leitura", cap.minutos ? `${cap.minutos} min` : null],
   ].filter(([, v]) => v);
 
   return (
-    <section className="v2-wrap v2-caso-abre" aria-label="Ficha do projeto">
-      <dl className="v2-ficha">
-        {celulas.map(([rot, val], i) => (
-          <motion.div className="v2-ficha-cel" key={rot} {...rise(i)}>
-            <dt className="v2-ficha-l">{rot}</dt>
-            <dd className="v2-ficha-v">{val}</dd>
-          </motion.div>
-        ))}
-      </dl>
+    <section className="v2-wrap v2-abre" aria-label="Resumo do projeto">
+      <motion.div className="v2-abre-cartao" {...rise(0)}>
+        {t.resultado || t.oque ? (
+          <div className="v2-abre-topo">
+            {t.resultado ? (
+              <div className="v2-abre-forte">
+                <p className="v2-abre-l">O resultado</p>
+                <p className="v2-abre-r">{t.resultado}</p>
+              </div>
+            ) : null}
+            {t.oque ? (
+              <div className="v2-abre-oque">
+                <p className="v2-abre-l">O quê</p>
+                <p className="v2-abre-o">{t.oque}</p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <dl className="v2-abre-ficha">
+          {ficha.map(([rot, val]) => (
+            <div className="v2-abre-cel" key={rot}>
+              <dt className="v2-abre-fl">{rot}</dt>
+              <dd className="v2-abre-fv">{val}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <Caminho cap={cap} curto={curto} trocar={trocar} />
+      </motion.div>
     </section>
   );
 }
 
 /* ============================================================== abertura */
+
+/* ============================================================== caminho
+
+   A escolha entre ler o capítulo inteiro e ler só a espinha dele.
+
+   O motivo é de triagem: o capítulo 01 pede 19 minutos e o portfólio inteiro
+   pede 35, contra os três ou quatro que alguém gasta num primeiro passe. Até
+   aqui a página tinha uma porta só, e quem não tinha o tempo saía no meio —
+   que é pior que ler o resumo, porque sai sem o resultado.
+
+   Duas portas declaradas resolvem sem cortar uma linha do texto: quem tem o
+   tempo lê tudo, quem não tem lê a espinha inteira e chega ao fim. E a espinha
+   NÃO é um resumo escrito à parte: é o mesmo texto, filtrado. Nada aqui foi
+   reescrito para caber, então o caminho curto não tem como divergir do longo.
+
+   Só aparece onde a economia é real (ver `minutosCurto` em volume/data.jsx).
+   Em capítulo de 3 minutos não há escolha a oferecer, e a página não oferece. */
+function Caminho({ cap, curto, trocar }) {
+  if (!cap.minutos || !cap.minutosCurto) return null;
+  const opcoes = [
+    { k: false, r: "Capítulo inteiro", m: cap.minutos },
+    { k: true, r: "Só o essencial", m: cap.minutosCurto },
+  ];
+  return (
+    <section className="v2-wrap v2-caminho" aria-label="Como você quer ler">
+      <p className="v2-caminho-l">Como você quer ler</p>
+      <div className="v2-caminho-op" role="group">
+        {opcoes.map((o) => (
+          <button
+            key={String(o.k)}
+            type="button"
+            className="v2-caminho-b"
+            aria-pressed={curto === o.k}
+            onClick={() => trocar(o.k)}
+          >
+            <span className="v2-caminho-r">{o.r}</span>
+            <span className="v2-caminho-m">{o.m} min</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 function Abertura({ cap }) {
   const a = cap.abertura;
@@ -318,32 +408,6 @@ function Abertura({ cap }) {
   );
 }
 
-/* ================================================================ resumo */
-
-/* `tldr.papel` não entra: a ficha logo acima já responde isso, e a V1 tinha
-   cortado a mesma duplicação pelo mesmo motivo (ver volume/Capitulo.jsx).
-
-   Fase 6: o painel cinza saiu. Duas células com régua em cima é a mesma
-   informação sem fingir que o resumo é mídia. */
-function Resumo({ cap }) {
-  const rise = useRise();
-  const t = cap.tldr;
-  if (!t) return null;
-  const celulas = [["O quê", t.oque], ["Resultado", t.resultado]].filter(([, v]) => v);
-
-  return (
-    <Dobra label="Resumo" larga>
-      <div className="v2-resumo">
-        {celulas.map(([rot, val], i) => (
-          <motion.div className="v2-resumo-cel" key={rot} {...rise(i)}>
-            <p className="v2-resumo-l">{rot}</p>
-            <p className="v2-resumo-v">{val}</p>
-          </motion.div>
-        ))}
-      </div>
-    </Dobra>
-  );
-}
 
 /* =============================================================== problema */
 
@@ -891,7 +955,7 @@ function PresoEsquerda({ passos, figuras }) {
 
   return (
     <div className="v2-preso">
-      <div className="v2-preso-media v2-textura" aria-hidden="true">
+      <div className="v2-preso-media" aria-hidden="true">
         <div className="v2-preso-palco">
           {passos.map((p, i) => {
             const f = figuras && figuras[p.fig];
@@ -1172,7 +1236,7 @@ function Comparador({ par, i = 0 }) {
   }, []);
 
   return (
-    <motion.figure className="v2-comp v2-textura" {...rise(i)}>
+    <motion.figure className="v2-comp" {...rise(i)}>
       <div
         className="v2-comp-caixa"
         ref={caixa}
@@ -1308,19 +1372,52 @@ export default function Caso({ id, ir }) {
   /* `tem` lista as chaves de conteúdo que sustentam o movimento. Se nenhuma
      existe, o movimento inteiro sai — capa incluída. Cada componente já sabe
      se apaga sozinho; o que faltava era a capa saber. */
+  /* O caminho escolhido mora na URL, e não só no estado: quem manda o link do
+     caso para alguém manda junto a forma como leu. `?curto=1` é ignorado pelo
+     roteador, que só olha `pathname` (ver rotaDe em app.jsx), então ele não
+     tem como atrapalhar a navegação. */
+  const [curto, setCurto] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("curto") === "1";
+  });
+
+  /* Trocar de caminho volta ao topo do corpo. Sem isso a pessoa que aperta
+     "só o essencial" no meio do capítulo continua na mesma altura de rolagem,
+     que no caminho curto é outro trecho — ou o fim da página. */
+  const trocar = (v) => {
+    setCurto(v);
+    const u = new URL(window.location.href);
+    if (v) u.searchParams.set("curto", "1"); else u.searchParams.delete("curto");
+    window.history.replaceState(null, "", u.pathname + u.search);
+    const alvo = document.getElementById("v2-caso-corpo");
+    if (alvo) alvo.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  /* `tem` lista as chaves de conteúdo que sustentam o movimento. Se nenhuma
+     existe, o movimento inteiro sai — capa incluída.
+
+     `curto` é o mesmo movimento com o corpo reduzido à espinha. Quando ele é
+     `null`, o movimento não existe no caminho curto: é o caso da investigação,
+     que é o trecho mais longo do capítulo 01 e o primeiro a sair quando alguém
+     tem quatro minutos. A numeração das capas acompanha o caminho escolhido,
+     porque ela sai do tamanho da lista já filtrada. */
   const movimentos = [
     { t: "O problema", tem: ["problema", "funil", "gesto"],
-      corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></> },
+      corpo: <><Problema cap={cap} /><Funil cap={cap} /><Gesto cap={cap} /></>,
+      curto: <Problema cap={cap} /> },
     { t: "A investigação", tem: ["investigacao", "busca", "citacao"],
-      corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></> },
+      corpo: <><Investigacao cap={cap} /><Busca cap={cap} /><Citacao cap={cap} /></>,
+      curto: null },
     { t: "A resposta", tem: ["decisoes", "recusei", "ponte", "solucao", "sistema", "vocabulario", "modulos", "calendario"],
-      corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></> },
+      corpo: <><Decisoes cap={cap} /><Recusei cap={cap} /><Ponte cap={cap} /><Solucao cap={cap} /><Sistema cap={cap} /><Vocabulario cap={cap} /><Modulos cap={cap} /><Calendario cap={cap} /></>,
+      curto: <><Decisoes cap={cap} /><Solucao cap={cap} /></> },
     { t: "O resultado", tem: ["antesDepois", "resultado", "aprendi"],
-      corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></> },
+      corpo: <><AntesDepois cap={cap} /><Resultado cap={cap} /><Aprendi cap={cap} /></>,
+      curto: <><Resultado cap={cap} /><Aprendi cap={cap} /></> },
   ].filter((m) => m.tem.some((k) => {
     const v = cap[k];
     return Array.isArray(v) ? v.length > 0 : v != null;
-  }));
+  })).filter((m) => !curto || m.curto);
 
   return (
     <>
@@ -1329,10 +1426,14 @@ export default function Caso({ id, ir }) {
           `data-clara` é o que a nav observa para saber quando inverter. */}
       <CampoDeVoo variante="caso" classe="v2-corpo-claro v2-corpo-lamina" data-clara="1">
         <Lamina />
-        {/* A abertura: quem é o projeto, antes de qualquer movimento. */}
-        <Ficha cap={cap} />
+        {/* A abertura: quem é o projeto, antes de qualquer movimento.
+
+            O caminho vem logo depois da ficha de propósito: é na ficha que a
+            pessoa acabou de ler "Leitura · 19 min", e a escolha tem que estar
+            onde o preço aparece, não três dobras abaixo. */}
+        <span id="v2-caso-corpo" />
+        <Abre cap={cap} curto={curto} trocar={trocar} />
         <Abertura cap={cap} />
-        <Resumo cap={cap} />
 
         {/* Os movimentos, numerados pelo que o caso tem.
          *
@@ -1345,12 +1446,22 @@ export default function Caso({ id, ir }) {
          * Agora cada movimento declara o que o sustenta. Sem conteúdo, não
          * há capa, e o denominador acompanha: o Oderço lê 01/03 a 03/03, e
          * quem tem os quatro segue em 01/04 a 04/04. */}
-        {movimentos.map(({ t, corpo }, i) => (
-          <React.Fragment key={t}>
-            <CapaCapitulo n={dois(i + 1)} t={t} de={dois(movimentos.length)} />
-            {corpo}
+        {movimentos.map((m, i) => (
+          <React.Fragment key={m.t}>
+            <CapaCapitulo n={dois(i + 1)} t={m.t} de={dois(movimentos.length)} />
+            {curto ? m.curto : m.corpo}
           </React.Fragment>
         ))}
+
+        {/* A saída do caminho curto. Quem leu a espinha e se interessou não
+            deveria precisar procurar como ler o resto: a oferta vem no ponto
+            em que ele acabou de terminar, que é onde a vontade existe. */}
+        {curto ? (
+          <section className="v2-wrap v2-caminho v2-caminho-fim">
+            <p className="v2-caminho-l">Você leu a versão de {cap.minutosCurto} min</p>
+            <Pill onClick={() => trocar(false)}>Ler o capítulo inteiro · {cap.minutos} min</Pill>
+          </section>
+        ) : null}
         <GradeCasos excluir={cap.id} titulo="Os outros casos" ir={ir} />
       </CampoDeVoo>
     </>

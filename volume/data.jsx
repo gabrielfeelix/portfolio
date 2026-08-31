@@ -59,7 +59,7 @@ const CHAPTERS = [
     premise: "Uma vitrine que ficou bonita e ficou lenta de comprar.",
     role: "UX/UI Designer, responsável pelo projeto",
     surface: "E-commerce · Magento",
-    periodo: "6 meses · publicação prevista para outubro/2026",
+    periodo: "6 meses · design entregue, publicação prevista para outubro/2026",
     year: "2026",
     fact: "Contrariei o briefing com gravação de sessão na mão, e a direção oposta foi a aprovada",
     /* Quanto o capítulo cobra, em minutos, e é medido, não estimado: 3.593
@@ -68,11 +68,21 @@ const CHAPTERS = [
        chave que faz o atalho existir: capítulo sem `minutos` não ganha
        atalho, porque um atalho de 3 minutos num capítulo de 3 minutos
        seria mentira. Se o capítulo crescer, meça de novo e atualize. */
-    minutos: 18,
+    minutos: 19,
+    /* O caminho curto, medido pela mesma régua: a espinha do capítulo
+       (resumo, problema, decisões, solução, resultado e o que aprendi) soma
+       451 palavras, contra 3761 do caminho inteiro.
+
+       Só existe onde a economia é real. A regra é a que já estava escrita
+       aqui em cima, no `minutos` do capítulo 01: um atalho de 3 minutos num
+       capítulo de 3 minutos seria mentira. O corte é economia de 3 minutos ou
+       mais — por isso ODEX, Oderço e Portfólio não têm este campo, e a página
+       deles não oferece escolha nenhuma. */
+    minutosCurto: 2,
     tldr: {
       papel: "UX/UI Designer, responsável pelo projeto",
       oque: "Loja de hardware em Magento, redesenhada da home ao checkout.",
-      resultado: "A direção oposta à do briefing foi a aprovada. Entra no ar em outubro de 2026",
+      resultado: "A direção oposta à do briefing foi a aprovada. Design entregue, no ar em outubro de 2026",
     },
     /* ---- a nota do suporte, antes do Ato I --------------------------
        O capítulo foi desenhado mobile first e mostra telas de celular ao
@@ -598,7 +608,7 @@ const CHAPTERS = [
       mes: "Outubro", ano: "2026", dia: 26,
       dow: ["D", "S", "T", "Q", "Q", "S", "S"],
       semanas: [[0, 0, 0, 1, 2, 3, 4], [5, 6, 7, 8, 9, 10, 11], [12, 13, 14, 15, 16, 17, 18], [19, 20, 21, 22, 23, 24, 25], [26, 27, 28, 29, 30, 31, 0]],
-      legenda: "26 de outubro de 2026: a data combinada com a diretoria para a V2 entrar no ar. Até lá, o protótipo é o produto que dá para testar.",
+      legenda: "26 de outubro de 2026: a data combinada com a diretoria para a V2 entrar no ar. O design está entregue; a publicação é do time de desenvolvimento.",
     },
     /* o par que sustenta o case: a V1 e a V2 no mesmo enquadramento */
     antesDepois: {
@@ -621,9 +631,9 @@ const CHAPTERS = [
       ],
     },
     resultado: {
-      t: "Entra em produção em outubro",
-      p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada e a data ficou marcada.",
-          "Resultado de operação eu ainda não tenho, e prefiro não apresentar número que não existe."],
+      t: "Entregue, com data marcada para outubro",
+      p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada, o design saiu da minha mesa e a data ficou marcada.",
+          "Número de operação só passa a existir depois que a loja estiver no ar, e eu prefiro não apresentar número que não existe."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
               "Conclusão do checkout e abandono por etapa",
@@ -647,6 +657,19 @@ const CHAPTERS = [
     surface: "Sistema de gestão · web",
     periodo: "Em produção",
     year: "2026",
+    /* Medido, não estimado: 1379 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 7,
+    /* O caminho curto, medido pela mesma régua: a espinha do capítulo
+       (resumo, problema, decisões, solução, resultado e o que aprendi) soma
+       673 palavras, contra 1370 do caminho inteiro.
+
+       Só existe onde a economia é real. A regra é a que já estava escrita
+       aqui em cima, no `minutos` do capítulo 01: um atalho de 3 minutos num
+       capítulo de 3 minutos seria mentira. O corte é economia de 3 minutos ou
+       mais — por isso ODEX, Oderço e Portfólio não têm este campo, e a página
+       deles não oferece escolha nenhuma. */
+    minutosCurto: 3,
     fact: "Substituiu uma ferramenta externa e eliminou as planilhas paralelas do time financeiro",
     tldr: {
       papel: "UX Designer, responsável pelo módulo",
@@ -774,6 +797,9 @@ const CHAPTERS = [
     surface: "Plataforma · aplicativo · site",
     periodo: "Plataforma em andamento · site em produção · app em protótipo",
     year: "2026",
+    /* Medido, não estimado: 1164 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 6,
     fact: "Sistema legado atualizado sem alterar o percurso de quem já usava",
     tldr: {
       papel: "UX/UI Designer",
@@ -790,11 +816,25 @@ const CHAPTERS = [
       catalogo: { src: "/volume/assets/projetos/odex/s2.webp", ar: "1600/1000",
         alt: "Ofertas da semana na plataforma, com cards de painel e inversor, e as tabelas de orçamentos e pedidos recentes",
         legenda: "Ofertas da semana, orçamentos recentes e pedidos recentes na mesma rolagem: quem opera todo dia continua achando cada coisa onde ela estava." },
+      loja: { src: "/volume/assets/projetos/odex/loja.webp", ar: "1600/1000",
+        alt: "A loja da plataforma: banner de catálogo, busca, abas por categoria, filtro de preço e marca à esquerda e cards de painel solar com potência, eficiência e selo de promoção",
+        legenda: "A loja se comporta como loja: busca, abas por categoria, filtro de preço e de marca, e o card trazendo potência e eficiência na frente. Quem procura um painel de 600W não precisa abrir a ficha para saber qual é." },
+      kit1: { src: "/volume/assets/projetos/odex/monte-kit.webp", ar: "1600/1000",
+        alt: "Primeiro passo do Monte Seu Kit: quatro tipos de projeto em cartões, dados iniciais do orçamento, e um painel lateral com vídeo explicativo e dicas rápidas",
+        legenda: "O Monte Seu Kit virou processo numerado. O passo 1 escolhe o tipo de projeto, e cada campo diz o que ele decide adiante — o tipo de ligação filtra os inversores compatíveis, o estado define a regra de tributação." },
+      kit2: { src: "/volume/assets/projetos/odex/monte-kit-2.webp", ar: "1600/1000",
+        alt: "Passo seguinte do Monte Seu Kit, com a montagem do kit em andamento",
+        legenda: "Cada passo só oferece o que o anterior deixou possível. É a diferença entre montar um kit e descobrir no fim que duas peças não conversam." },
+      orcamentos: { src: "/volume/assets/projetos/odex/orcamentos.webp", ar: "1600/1000",
+        alt: "Tela de orçamentos da plataforma, em lista, com status por orçamento",
+        legenda: "O orçamento é o documento que o integrador leva para o cliente dele. Ele saiu de tabela solta e virou uma lista com estado visível." },
     },
     problema: {
-      t: "A interface envelheceu junto com o produto",
+      t: "Quem compra aqui está em cima de um telhado",
       p: ["A plataforma funcionava, e funcionava havia anos. O que tinha envelhecido era a interface, um layout antigo que passou a prometer menos do que o negócio já entrega hoje.",
-          "Num sistema com esse tempo de uso, mexer no percurso custa caro. Quem opera isso todo dia sabe onde tudo está de cor, e obrigar essa pessoa a reaprender o caminho seria cobrar por uma melhoria que ela não pediu, então a superfície inteira mudou e a lógica ficou exatamente onde estava."],
+          "Só que o problema não era de gosto. Quem usa isso é integrador solar, e boa parte do uso acontece em obra, muitas vezes em cima do telhado, com o cliente esperando: a pessoa precisa achar o equipamento e fechar rápido. O que a plataforma pedia era o contrário disso — o caminho até a compra era longo e cheio de erro pequeno, de bug e de fluxo, do tipo que não derruba o sistema e faz a pessoa desistir.",
+          "A referência certa para o que existe lá dentro é loja, não painel administrativo. É catálogo, preço, carrinho e fechamento, e era assim que precisava se comportar.",
+          "Ao mesmo tempo, mexer no percurso de um sistema com esse tempo de uso custa caro. Quem opera todo dia sabe onde tudo está de cor, e obrigar essa pessoa a reaprender o caminho seria cobrar por uma melhoria que ela não pediu. Então o corte foi esse: a superfície inteira mudou, a navegação ficou onde estava, e um fluxo só foi refeito — o que já estava quebrado."],
     },
     investigacao: {
       t: "Validado com quem opera o sistema",
@@ -807,15 +847,19 @@ const CHAPTERS = [
     decisoes: [
       { d: "Toda a base de telas redesenhada, com protótipo navegável", r: "porque o time precisava avaliar a proposta em uso, não em imagem estática." },
       { d: "Linguagem visual nova, percurso intacto", r: "porque em sistema com anos de uso, mudar a aparência sem mudar o percurso é a diferença entre modernizar e atrapalhar." },
+      { d: "A loja se comportando como loja", r: "porque o que existe ali dentro é catálogo, preço, carrinho e fechamento. Tratar isso como painel administrativo era o erro de origem: entrou busca, aba por categoria, filtro de preço e de marca, e o card passou a mostrar potência e eficiência na frente, que é por onde o integrador decide." },
+      { d: "Monte Seu Kit refeito em etapas numeradas", r: "porque era o fluxo que estava quebrado, e o único que valia refazer. Montar um kit é uma decisão que depende da anterior, e antes tudo era pedido de uma vez: agora o tipo de projeto abre o passo seguinte, o tipo de ligação já filtra os inversores compatíveis e o estado define a tributação, então o kit não chega no fim com duas peças que não conversam." },
+      { d: "Uma aba de Novidades", r: "porque um sistema que muda sem avisar parece um sistema que quebrou. A aba dá lugar para a mudança ser anunciada, e é ela que faz a atualização ser lida como atualização." },
       { d: "App redesenhado nas telas principais", r: "porque a superfície mobile precisa falar a mesma língua. Hoje está em protótipo: a implementação ainda não entrou no roadmap." },
       { d: "Assumi a implementação do site", r: "porque a entrega estava presa a um evento com data fechada e o time de desenvolvimento não tinha janela. Fui direto ao Magento: alterei o código da home, criei e indexei as categorias, refiz cabeçalho e rodapé e ajustei os redirecionamentos." },
       { d: "Validação com gestores e diretoria", r: "porque opinião de quem não usa o produto todo dia não serve de critério." },
     ],
     solucao: {
-      t: "A superfície inteira, sem reaprender nada",
-      p: ["Plataforma redesenhada com protótipo navegável, telas principais do app em protótipo, e a página de armazenamento de energia criada para a nova linha de baterias, explicando o funcionamento do produto para um público que ainda não conhece a tecnologia."],
-      slots: 2,
-      shots: [{ fig: "plataforma" }, { fig: "catalogo" }],
+      t: "A superfície inteira, e um fluxo só",
+      p: ["A plataforma foi redesenhada com protótipo navegável, e quem já usava continua achando cada coisa onde ela estava. O que mudou de lugar foi só o Monte Seu Kit, que virou um processo numerado onde cada passo abre o seguinte.",
+          "A loja passou a se comportar como loja, com busca, filtro de preço e de marca, e a ficha resumida no próprio card. As telas principais do app estão em protótipo, e a página de armazenamento de energia foi criada para a nova linha de baterias, explicando o funcionamento do produto para um público que ainda não conhece a tecnologia."],
+      slots: 4,
+      shots: [{ fig: "plataforma" }, { fig: "loja" }, { fig: "kit1" }, { fig: "kit2" }],
     },
     antesDepois: {
       antes: "/volume/assets/projetos/odex/antes.webp",
@@ -844,6 +888,9 @@ const CHAPTERS = [
     surface: "Landing page · formulário · RD Station",
     periodo: "Pronta, lançamento em etapas",
     year: "2026",
+    /* Medido, não estimado: 1392 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 7,
     fact: "Reduziu de três para dois os sistemas usados pelo comercial",
     tldr: {
       papel: "UX/UI Designer, do fluxo à automação",
@@ -862,11 +909,37 @@ const CHAPTERS = [
       app: { src: "/volume/assets/projetos/oderco-revenda/s3.webp", ar: "1600/1000",
         alt: "Seção do aplicativo de revenda, com quatro benefícios numerados ao lado da tela do aplicativo",
         legenda: "O que o revendedor ganha: catálogo com o seu preço, filial que entrega mais rápido, condições por quantidade e pedido pelo aplicativo." },
+      hero: { src: "/volume/assets/projetos/oderco-revenda/lp-hero.webp", ar: "1600/1000",
+        alt: "Primeira dobra da página nova: o título Você vende, a Oderço abastece à esquerda, e o formulário de abertura de conta à direita, pedindo CNPJ, responsável pelo setor de compras, e-mail e WhatsApp",
+        legenda: "A primeira dobra faz as duas coisas ao mesmo tempo. À esquerda a empresa se apresenta — estoque próprio, dois centros de distribuição, cinco marcas —, e à direita o cadastro já está aberto, com o prazo e o critério ditos antes do primeiro campo: leva um minuto, e só para empresa com CNPJ ativo." },
+      numeros: { src: "/volume/assets/projetos/oderco-revenda/lp-numeros.webp", ar: "1600/900",
+        alt: "Faixa de números da página: anos abastecendo o lojista brasileiro, centros de distribuição no Paraná e no Espírito Santo, e marcas próprias",
+        legenda: "Para quem chega de anúncio sem conhecer a marca, é a faixa que responde de que tamanho é a empresa do outro lado do formulário." },
+      fechamento: { src: "/volume/assets/projetos/oderco-revenda/lp-cadastro.webp", ar: "1600/1000",
+        alt: "Fecho da página, com o título O seu próximo fornecedor está a um cadastro de distância e o botão Quero me cadastrar",
+        legenda: "O fecho repete o convite depois do argumento, e escolhe a palavra certa para o que mudou: quem se cadastra solicita acesso às condições comerciais. O cadastro deixou de ser a porta e virou a fila." },
+      antigo: { src: "/volume/assets/projetos/oderco-revenda/cadastro-antigo.webp", ar: "1400/1228",
+        alt: "A página de cadastro antiga da Oderço: título Seja um parceiro Oderço, um campo de CNPJ, dois aceites, um reCAPTCHA e o botão continuar",
+        legenda: "O cadastro que o anúncio encontrava: um campo de CNPJ, dois aceites e um reCAPTCHA. Nenhuma linha sobre o que a empresa distribui — e a política de dropshipping como selo no rodapé, onde ela não filtra ninguém." },
     },
     problema: {
-      t: "Por que eu deveria responder tudo isso?",
-      p: ["O tráfego chegava de anúncio direto na página de cadastro, e a página só tinha o formulário. Isso funciona quando a pessoa já conhece a empresa, mas fora da região quase ninguém conhece.",
-          "Então o visitante caía num formulário longo de uma marca que ele nunca tinha ouvido falar, e a pergunta que ele fazia era razoável. Eram dois problemas somados, um alimentando o outro: faltava contexto, e o formulário era pesado demais para o nível de confiança que existia naquele momento."],
+      t: "Entrava todo mundo, e o comercial atendia todo mundo",
+      p: ["A demanda não veio de uma reunião de design. Veio dos SDRs, que reclamavam da mesma coisa havia meses: eles não tinham funil. O que chegava era uma fila de cadastros sem ordem e sem qualificação, e cabia a eles descobrir um por um quem valia a ligação.",
+          "Ouvindo a reclamação, os problemas eram três, e só um deles era o formulário.",
+          "O primeiro é que a Oderço não trabalha com dropshipping, e não havia nada no cadastro que filtrasse isso. Quem faz dropshipping se cadastrava à vontade, e a política existia como selo no rodapé do site, não como processo.",
+          "O segundo é que o cadastro liberava o acesso sozinho, e preço de distribuidor é informação sensível. Concorrente se cadastrava só para ver a tabela.",
+          "O terceiro é o do anúncio. O tráfego pago caía direto na página de cadastro, e a página só tinha o formulário: nem uma linha sobre o que a empresa distribui ou por que valeria a pena. Fora da região quase ninguém conhece a marca, então o visitante encontrava um cadastro burocrático de uma empresa que ele nunca tinha ouvido falar, e a pergunta que ele fazia era razoável."],
+    },
+    investigacao: {
+      t: "A pesquisa era a fila de reclamação que já existia",
+      p: ["Não abri pesquisa nova. Quem atende o lead são os SDRs, eles reclamavam disso todo dia, e a reclamação já estava classificada: eles sabiam dizer quem chegava, quem não valia a ligação e por quê. Foi de lá que saiu o recorte do projeto.",
+          "O que a conversa com eles mudou foi o alvo. Eu tinha entrado achando que ia refazer um formulário, e o formulário era o terceiro problema da lista deles. Os dois primeiros não se resolvem com campo nenhum: se resolvem decidindo quem entra."],
+      achados: [
+        "Dropshipper se cadastrava sem obstáculo, e a Oderço não vende para esse modelo.",
+        "Concorrente usava o cadastro como porta para a tabela de preço.",
+        "Quem vinha de anúncio não sabia o que era a empresa antes de começar a preencher.",
+        "O SDR recebia tudo isso na mesma fila, sem ordem e sem etapa.",
+      ],
     },
     decisoes: [
       { d: "Contexto e formulário na mesma tela", r: "porque quem já está decidido preenche direto, e quem precisa entender antes rola a página e encontra o portfólio de produtos, as marcas distribuídas, o aplicativo de revenda e as empresas atendidas. A página inteira é argumento, sem nunca tirar o cadastro do campo de visão." },
@@ -874,16 +947,28 @@ const CHAPTERS = [
       { d: "Etapas com corte proposital", r: "porque o corte foi definido pelo que a empresa precisa garantir primeiro. A etapa 1 pede e-mail e aceite dos termos: se a pessoa desistir dali em diante, o contato já existe e o comercial retoma. A etapa 2 concentra a qualificação, como área de interesse." },
       { d: "CNPJ que não trava o cadastro", r: "porque uma falha de integração não pode custar um lead. O campo aceita o novo padrão alfanumérico e busca os dados automaticamente; quando a consulta não encontra o registro, o usuário preenche e segue, e o comercial verifica depois." },
       { d: "Distribuição automática do lead", r: "porque configurei os campos personalizados e a automação no RD Station: o lead entra e é distribuído em esteira entre os vendedores responsáveis pelo primeiro contato, com régua de e-mail disparada conforme o segmento escolhido na etapa 2." },
+      { d: "O cadastro deixou de liberar a conta", r: "porque era ele que deixava concorrente ver preço. Agora cadastrar é entrar na fila, não ganhar acesso: o SDR analisa, liga, entende o que a revenda precisa e acompanha, e a conta só abre depois da primeira compra. É mais atrito de propósito, no único ponto onde atrito era o remédio." },
+      { d: "Um funil de verdade para o SDR", r: "porque a reclamação original era a falta dele. Desenhei os fluxos no CRM com os estados que eles já usavam na prática e não tinham onde registrar: contato de primeira viagem, retomada em 48 horas sem resposta, e retomada de quem está há uma semana em silêncio. Dropshipper tem destino próprio, uma pasta que tira ele da fila sem ninguém precisar ligar para descobrir." },
     ],
     solucao: {
       t: "A página responde antes do formulário",
       p: ["Quem chega de anúncio sem nunca ter ouvido falar da empresa encontra, na mesma tela do formulário, o que ela distribui, para quem vende e o que o revendedor ganha com isso, de modo que quem chega ao cadastro já sabe o que está aceitando."],
-      slots: 3,
-      shots: [{ fig: "catalogo" }, { fig: "marcas" }, { fig: "app" }],
+      slots: 6,
+      shots: [{ fig: "hero" }, { fig: "catalogo" }, { fig: "marcas" },
+              { fig: "app" }, { fig: "numeros" }, { fig: "fechamento" }],
+    },
+    antesDepois: {
+      antes: "/volume/assets/projetos/oderco-revenda/cadastro-antigo.webp",
+      depois: "/volume/assets/projetos/oderco-revenda/lp-nova.webp",
+      rotuloAntes: "Antes", rotuloDepois: "Depois",
+      legenda: "A mesma primeira tela, nas duas versões. A antiga abre em “Seja um parceiro Oderço” e um campo de CNPJ; a nova abre em “Você vende, a Oderço abastece”, diz que são dois centros de distribuição e cinco marcas próprias, e declara o filtro na entrada: leva um minuto, e só para empresa com CNPJ ativo.",
     },
     resultado: {
-      t: "Um sistema a menos no comercial",
-      p: ["A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
+      t: "O comercial ganhou um funil, e parou de atender todo mundo",
+      p: ["Os três problemas que os SDRs relatavam têm resposta no fluxo novo, e as três são verificáveis sem medição.",
+          "Dropshipper não entra mais na fila de ligação: é identificado no cadastro e vai para uma pasta própria no CRM. Preço deixou de estar a um cadastro de distância, porque a conta só abre depois da primeira compra, com o SDR tendo falado com a pessoa antes. E quem chega de anúncio encontra a empresa apresentada na mesma tela do formulário, em vez de um campo de CNPJ sem contexto.",
+          "O funil que faltava existe: primeira viagem, retomada em 48 horas, retomada de uma semana em silêncio. Eram os estados que os vendedores já usavam de cabeça e não tinham onde registrar.",
+          "A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
           "Esse não era o resultado previsto. Para montar a automação, fui atrás da API do RD Station e documentei como ela funcionava, e isso mostrou ao time de desenvolvimento que a integração era mais simples do que parecia, então eles começaram a conectar o RD ao CRM interno. Um sistema saiu de cena, e o caminho agora é consolidar tudo no CRM próprio, com o fluxo já validado na prática com os vendedores.",
           "O lançamento é em etapas. Primeiro ela recebe só o tráfego de anúncio, que é onde o problema aparecia com mais força, e só depois substitui a página de cadastro do site oficial. Até aqui foi testada com usuários internos e com um grupo pequeno de externos."],
       listaK: "O que será acompanhado nessa primeira fase",
@@ -908,6 +993,9 @@ const CHAPTERS = [
     surface: "Website · Manifesto",
     periodo: "No ar",
     year: "2026",
+    /* Medido, não estimado: 449 palavras de prosa no caminho padrão, a 200
+       palavras por minuto. Se o capítulo crescer, meça de novo. */
+    minutos: 2,
     fact: "Zero violação WCAG, medida view a view",
     tldr: {
       papel: "Ideia, design e código, do conceito ao ar",
@@ -963,6 +1051,12 @@ const CONTATO = {
   linkedin:  { label: "LinkedIn", display: "/in/gabrielfeelix", href: "https://www.linkedin.com/in/gabrielfeelix/" },
   instagram: { label: "Instagram", display: "@gaabriel.feelix", href: "https://www.instagram.com/gaabriel.feelix/" },
   tiktok:    { label: "TikTok", display: "@mangudosanimes", href: "https://www.tiktok.com/@mangudosanimes" },
+  /* O currículo em PDF. Entrou em 30/08: o site tinha WhatsApp, e-mail e
+     LinkedIn e nenhum arquivo para anexar. Quem faz triagem precisa subir um
+     PDF no ATS, e sem ele o portfólio inteiro depende de a pessoa ter tempo
+     de ler. Mora em uploads/ porque é a única pasta que build.mjs sincroniza
+     para dist/; o arquivo na raiz do repo não é servido. */
+  curriculo: { label: "Currículo", display: "PDF · 36 KB", href: "/uploads/gabriel-felix-barbosa-product-designer.pdf" },
 };
 const AUTOR = "Gabriel Felix Barbosa";
 const VOL = "VOL. 2026";
@@ -1047,7 +1141,7 @@ const COMPANIES = [
         "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado para o time de desenvolvimento só para tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
       ] },
       { k: "A primeira vez que testei de verdade", p: [
-        "Foi o único lugar onde testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
+        "Testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
         "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou para sempre meu jeito de escrever rótulo e de ordenar campo.",
       ] },
       { k: "E olhei o trabalho de outra pessoa", p: [
