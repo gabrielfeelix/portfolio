@@ -232,10 +232,14 @@ Clarity é carregado pelo GTM, por isso não há ID em repositório nenhum. Ele 
 aparecia porque a conta `contato@4yu.com.br` provavelmente não é a dona.
 **Esse ID não serve para o portfólio**: usá-lo misturaria as métricas.
 
-**O pré-render da home**, que é a tarefa seguinte e tem documento próprio:
-`docs/HANDOFF-PRERENDER.md`. Leia-o inteiro antes de começar — em especial a
-seção 1, que responde à objeção do Gabriel sobre trabalho duplo, e a seção 8,
-que diz quando abortar.
+**O pré-render da home foi feito na tarde do mesmo dia** e o documento dele,
+`docs/HANDOFF-PRERENDER.md`, deixou de ser plano e virou registro. Em resumo:
+o build escreve o HERO (não a home inteira) em `dist/index.html` e
+`dist/en.html`, todo o resto passa a ser servido por `dist/rota.html`, e a nota
+de desempenho subiu 6–7 pontos com FCP caindo de 4,5s para 0,95s. A alavanca
+que sobrou é maior que essa e é decisão de design: o elemento de LCP fica em
+`opacity: 0` por 1,4s por causa do `useTardio`, e o Chrome não conta o que
+está invisível.
 
 **O `analise-v1-2.md` está no disco e fora do git.** Ele é a fonte dos números
 do case. Não commite.

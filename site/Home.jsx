@@ -100,7 +100,10 @@ function Rotativa({ itens, intervalo = 2800 }) {
   );
 }
 
-function Hero({ paraCasos }) {
+/* Exportado porque o BUILD o renderiza sozinho, sem o resto da home.
+   O pré-render escreve só a primeira tela: ver site/entrada-ssr.jsx, que
+   explica por que o que está abaixo da dobra é custo e não ganho. */
+export function Hero({ paraCasos }) {
   const linha = useMaskLine();
   const tardio = useTardio(1.4);
   // O hero fica preso enquanto o corpo sobe por cima dele, e sai perdendo

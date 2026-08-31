@@ -1,278 +1,215 @@
-# Handoff — pré-renderizar a home
+# Pré-render da home — feito em 31/08/2026
 
-Escrito em 31/08/2026, para quem for executar. Lê-se sozinho: não depende da
-conversa em que nasceu.
-
----
-
-## 1. Antes de tudo: isto NÃO é trabalho duplo
-
-O Gabriel levantou a objeção certa, e ela é o motivo de este documento existir:
-
-> "toda alteração que eu for fazer agora vamos ter que pré-renderizar em HTML e
-> em JS toda vez, fazer match entre os dois e subir, é trabalho duplo vitalício"
-
-**Se fosse assim, não faça.** Um site com HTML escrito à mão em paralelo ao
-React é um site que vai divergir na terceira alteração e mentir para sempre.
-
-Não é o que está proposto aqui. O HTML é **gerado a partir dos mesmos
-componentes React**, dentro do `npm run build`, por `renderToString`. Existe uma
-fonte de verdade só — `site/Home.jsx` e os arquivos que ele importa — e o HTML
-é um artefato descartável, como `dist/app.js` já é hoje.
-
-Na prática, depois de pronto:
-
-- quem edita a home continua editando **só** o `.jsx`;
-- `npm run build` gera o HTML novo sozinho;
-- ninguém abre, lê ou concilia HTML nenhum;
-- se o React e o HTML divergirem, **o build quebra** — não a produção.
-
-O custo vitalício real é outro, menor, e está na seção 8. Leia antes de
-começar, porque ele é o que decide se vale a pena.
+Este documento era o plano. Agora é o registro: a tarefa foi executada e
+medida, e sobe neste commit. Confira o deploy pela seção 5. O que sobrou de
+plano está na seção 6.
 
 ---
 
-## 2. Contexto do projeto
+## 1. O que existe hoje
 
-Portfólio do Gabriel Felix Barbosa, em `gabrielfelix-ux.4yu.com.br`.
+O `npm run build` escreve o HTML do **hero** dentro de `dist/index.html`, no
+lugar da `<div id="v2-root"></div>` vazia. A marcação sai dos MESMOS
+componentes React que o cliente monta, por `renderToString`.
 
-- SPA em React 18, **sem framework**. Build próprio em `build.mjs` com esbuild.
-- React e ReactDOM entram como **UMD global** (`window.React`), não como
-  import — ver o plugin `reactGlobais` em `build.mjs`.
-- O conteúdo mora em `volume/data.jsx` e `volume/i18n.jsx`, que são **scripts
-  clássicos**: eles terminam com `Object.assign(window, { CHAPTERS, ... })`, e
-  o app lê de `window` por `site/content.js`.
-- A ordem das tags no HTML é load-bearing: React → data → i18n → app. Está
-  comentada em `buildHtml()`, em `build.mjs`.
-- Deploy: Vercel, automático no push para `main`. Sem passo manual.
-- Idioma vem do caminho: `/en` e `/en/...` são inglês, o resto é português.
+- `site/entrada-ssr.jsx` — a árvore do servidor: `Nav` + `Hero`, nada mais.
+- `preRender()` em `build.mjs` — roda o bundle num contexto `node:vm` por
+  idioma e devolve as duas marcações.
+- `buildHtml()` — escreve **três** arquivos, e os três são necessários.
 
-Leia também `docs/HANDOFF.md` (estado geral) antes de mexer.
+**Ninguém escreve, lê ou concilia HTML.** Quem edita a home continua editando
+só o `.jsx`; o HTML sai junto, sozinho. Se algum dia for preciso corrigir o
+pré-render editando HTML à mão, a implementação está errada — pare e repense
+em vez de aceitar a duplicação. Era a objeção do Gabriel e ela continua sendo
+a regra.
+
+**Não hidratamos.** O cliente segue com `createRoot(...).render(...)`, que
+limpa o container e monta do zero. O que o servidor escreve é o estado
+`initial` do Framer Motion, ou seja exatamente o primeiro quadro que o cliente
+desenharia — é por construção que não pisca, e está medido (seção 4).
+
+### Os três arquivos, e por que três
+
+| arquivo | serve | conteúdo |
+|---|---|---|
+| `dist/index.html` | `/` | hero pré-renderizado, pt |
+| `dist/en.html` | `/en` | hero pré-renderizado, en |
+| `dist/rota.html` | todo o resto | a casca vazia de sempre |
+
+O rewrite manda todo caminho que não é arquivo para um HTML só. Com a home
+dentro dele, abrir `/case/pcyes` direto passaria a pintar a HOME por segundos
+antes de trocar pelo caso — trocar tela branca por tela errada, que é pior.
+Por isso `rota.html` existe e é para onde vai todo o resto.
+
+Os três nomes estão amarrados aos `rewrites` do `vercel.json` E ao proxy do
+`--serve`, em `build.mjs`. Renomear um pede mexer nos três lugares. O
+`vercel.json` declara `/` → `/index.html` **explicitamente**, e não por
+confiar na ordem entre sistema de arquivos e rewrite: se essa ordem virasse, o
+pré-render deixaria de ser servido sem erro nenhum, que é a pior forma de
+quebrar.
 
 ---
 
-## 3. O problema, medido
+## 2. Só o hero, e isso foi medido
 
-PageSpeed em 31/08, celular, depois das otimizações de rede já feitas:
+A primeira versão escrevia a home INTEIRA — 55 KB, 77 `<img>`, 48 `<svg>`.
+Não funcionou, e o número que explica está numa linha só: **o app passou a
+montar em 3,72s em vez de 2,16s.**
 
-| métrica | valor |
-|---|---|
-| Desempenho | 50 |
-| FCP | 2,7s |
-| LCP | 4,5s |
-| Speed Index | 7,3s |
-| TBT | 1.070ms |
-| CLS | 0 |
+| | home inteira | só o hero |
+|---|---|---|
+| FCP | 4,6s → 1,1s | 4,6s → 0,9s |
+| LCP | 4,9s → **6,3s** | 4,8s → 5,1s |
+| app monta | 2,16s → **3,72s** | 2,11s → 2,68s |
+| nota Lighthouse | **−36** | **+6 / +7** |
 
-Desktop está em 98 e não precisa de nada.
+Parsear e fazer layout de um DOM que o React vai jogar fora custa CPU, e tudo
+que depende de JS desliza junto — inclusive o elemento de LCP. Abaixo da dobra
+o pré-render não pinta nada que alguém veja: é custo puro.
 
-O diagnóstico, medido em 4G lento com CPU 4x mais lenta:
+Uma armadilha do caminho, que vale registrar porque não era óbvia: com a home
+inteira escrita, o parser descobria as imagens todas de uma vez e o limiar de
+`loading="lazy"` do Chrome é generoso o bastante para buscar quase tudo —
+1.871 KB viraram 2.837 KB. `preRender()` ainda tira o `src` de qualquer imagem
+com `loading="lazy"`, hoje como rede de segurança: com só o hero no HTML não
+sobra nenhuma, mas se alguém voltar a incluir dobra, o guarda-chuva já está
+aberto.
+
+---
+
+## 3. O que melhorou, medido
+
+Local contra local, mesmo build, mesmo servidor com gzip, mesma rede simulada
+(1,6 Mbps · 150ms RTT · CPU 4x). `node tools/mede-home.mjs`.
+
+| | sem pré-render | com pré-render |
+|---|---|---|
+| FCP | 4,5s | **0,95s** |
+| Speed Index (Lighthouse) | 4,6s | **3,4s** |
+| nota de desempenho | 43–44 | **50** (duas rodadas: +6 e +7) |
+| LCP | 4,6s | 5,1s |
+| TBT | 1,5–1,7s | 1,3–1,4s |
+| CLS | 0 | 0 |
+| bytes até o load | 1.871 KB | 1.872 KB |
+| HTML (gzip) | 3,0 KB | 4,1 KB |
+
+Os números absolutos NÃO são comparáveis com os do PageSpeed: a máquina é
+outra. O que vale é o delta.
+
+**O que o visitante ganha, dito com honestidade:** a **capa** do hero pinta ~3,5s
+mais cedo. As **palavras** continuam esperando o JS, porque o design as mantém
+invisíveis até revelar. Medido pixel a pixel: a metade de cima do quadro do
+servidor é praticamente idêntica à do cliente (diferença de 1,5 a 6 por canal);
+a metade de baixo diverge porque é onde ficam título, subtítulo e botões.
+
+O LCP piora ~0,5s, e a causa é banda: o poster de 78 KB agora carrega ANTES do
+`app.js` em vez de depois, atrasando a montagem em ~0,5s. É o preço de pintar
+a capa 3,5s antes, e vale.
+
+---
+
+## 4. Como verificar (obrigatório antes de subir mudança no hero)
 
 ```
-todos os recursos chegam até   2.084ms
-FCP acontece em                5.096ms
-                               -------
-CPU pura, antes de pintar      3.012ms
+npm run dev                        # noutro terminal
+node tools/primeiro-quadro.mjs     # ou: npm run verifica:home
 ```
 
-A rede já foi resolvida. O que sobra é que o servidor entrega
-`<div id="v2-root"></div>` **vazio**: nada aparece até o React baixar, parsear,
-executar e montar a home inteira. A tira de quadros do Lighthouse mostra isso —
-os quatro primeiros são brancos.
+Ele responde duas perguntas: as rotas sobem sem erro de JS e sem 4xx, e o
+quadro do servidor bate com o **primeiro** quadro do cliente — texto idêntico
+e todas as caixas na mesma posição.
 
-É por isso que o Speed Index (7,3s) está pior que o LCP (4,5s): a tela fica em
-branco muito tempo e depois preenche de uma vez.
+Dois cuidados dentro dele que quebram em silêncio se removidos:
 
-**Metade do bundle é o Framer Motion**: 144 KB de 316 KB.
+- o quadro do servidor é isolado **bloqueando `/app.js`**, e não desligando o
+  JavaScript: com o JS desligado o `evaluate` do Playwright morre junto e não
+  dá para medir nada;
+- o quadro do cliente é lido num `MutationObserver` instalado ANTES do app, no
+  callback da primeira inserção. Comparar com a tela assentada acusaria a
+  animação de entrada como defeito — `useTardio` começa 16px abaixo, e é para
+  começar.
 
----
+Não precisa rodar para trocar uma palavra. Precisa ao mexer em
+`site/entrada-ssr.jsx`, no `Hero`, no `Nav`, ou em `preRender()`/`buildHtml()`.
 
-## 4. O que já foi feito (não refaça)
-
-Commit `acc53a7`:
-
-- o vídeo do hero (834 KB) só carrega depois do `load`, em
-  `requestIdleCallback`; antes dele aparece o poster de 78 KB;
-- o `gtag.js` (153 KB) também só depois do `load` — nenhum evento se perde,
-  porque `window.gtag` empilha em `dataLayer` e o script processa a fila
-  quando chega;
-- as fontes saíram de quatro origens de terceiro e são servidas de
-  `/volume/fonts/v2/`, com `@font-face` em `site/fontes.css` e preload dos dois
-  pesos da primeira tela.
-
-Resultado: bytes até o `load` de ~1,6 MB para 637 KB, desktop de 82 para 98,
-celular de 34 para 50.
+Para medir: `npm run build && node tools/mede-home.mjs`. Ele sobe servidor
+próprio com gzip sobre `dist/` e mede os dois lados — `?vazio=1` é o "antes".
+Medir o servidor de dev não serve: ele não comprime e o JS cru esconde tudo.
 
 ---
 
-## 5. A tarefa
+## 5. Confira depois do deploy
 
-Fazer o `build.mjs` gerar o HTML da **home** dentro de `dist/index.html`, no
-lugar da div vazia.
-
-### Escopo
-
-- **Só a home** (`/` e `/en`). As outras rotas continuam como estão.
-  Motivo: é a página que recebe o link compartilhado e a que o PageSpeed mede.
-  Case, processo, sobre e blog são navegação interna, já com o JS quente.
-- Alvo: FCP e Speed Index caindo para perto do que o desktop já entrega.
-- Não mexer em desktop, que está em 98.
-
-### A escolha que importa: hidratar ou substituir
-
-**Faça a versão que SUBSTITUI.** Ou seja: o HTML pré-renderizado é pintura
-inicial, e o cliente segue chamando `createRoot(...).render(...)` como hoje —
-o React limpa o container e monta do zero.
-
-- ganho: FCP, LCP e Speed Index, que é o que dói;
-- custo: o React refaz o DOM uma vez, que é exatamente o que ele já faz hoje;
-- **não** use `hydrateRoot` nesta primeira volta.
-
-Por que não hidratar: hidratação exige que o HTML do servidor bata exatamente
-com o primeiro quadro do cliente, e esta home tem Framer Motion em 294 pontos,
-Lenis, cursor customizado e um relógio que imprime a hora. Qualquer diferença
-vira erro de hidratação e o React descarta a árvore inteira — você teria o
-custo do SSR sem o benefício. Hidratar pode ser um passo dois, depois de o
-primeiro estar medido e estável.
+1. `curl -s https://gabrielfelix-ux.4yu.com.br/ | grep -c v2-hero-capa` tem de
+   devolver 1, e não 0. Zero significa que o rewrite não pegou e o pré-render
+   virou no-op silencioso.
+2. O mesmo em `/en`, com `<html lang="en">`.
+3. `curl -s .../case/pcyes | grep -c v2-hero-capa` tem de devolver **0**: caso
+   não pode vir com a home escrita dentro.
+4. PageSpeed duas vezes, use a melhor. O TBT oscila muito com a carga do
+   runner do Google; FCP, LCP, SI e CLS ficam estáveis e são esses que valem.
 
 ---
 
-## 6. Como fazer
+## 6. O que sobrou
 
-### 6.1 O que já está a favor
+**A alavanca maior que o pré-render, e ela é decisão do Gabriel.** O elemento
+de LCP é o `<p class="v2-hero-sub">`, e o Chrome **exclui do LCP tudo que está
+em `opacity: 0`**. O `useTardio(1.4)` mantém esse parágrafo invisível por 1,4
+segundo de propósito, então o LCP é, por construção, montagem + 1,4s +
+animação. Nenhuma otimização de rede ou de HTML alcança isso.
 
-Verificado em 31/08:
+A saída conhecida é começar a animação em `opacity: .1` em vez de `0` — quase
+invisível para o olho, mas visível para o navegador, que passa a contar o
+elemento no primeiro quadro. Custaria segundos de LCP. **É mudança na
+coreografia de entrada do hero, então é escolha de design e não minha.**
+Ver [DebugBear sobre animações de opacidade e LCP](https://www.debugbear.com/blog/opacity-animation-poor-lcp).
 
-- `react-dom/server` está disponível (React 18.3.1, já em `dependencies`);
-- **nenhum** módulo de `site/` toca `window`, `document`, `matchMedia` ou
-  `localStorage` em nível de módulo — só dentro de função ou efeito;
-- `site/content.js` lê `window.CHAPTERS` etc. dentro de funções, não na
-  importação. Basta popular `global.window` antes de renderizar.
+**A `description` do `en.html` continua a portuguesa.** O texto dela mora
+dentro do efeito de rota em `site/app.jsx`, e copiá-lo para o build criaria a
+segunda fonte de verdade que este trabalho inteiro existe para evitar. O app
+corrige na montagem, como já corrigia antes — não é regressão, é a mesma
+dívida de sempre. Resolver de verdade é mover a copy para `site/copy.js`, que
+já tem o espelho pt/en.
 
-Isso é o que torna a tarefa viável. Se alguma dessas três deixar de valer, o
-plano muda.
-
-### 6.2 Passos
-
-1. **Uma entrada de servidor.** Crie `site/entrada-ssr.jsx` que exporta uma
-   função recebendo o idioma e devolvendo o elemento React da home — o mesmo
-   que `app.jsx` monta na rota `/`. Não duplique árvore: importe o que já
-   existe.
-
-2. **Popular os globais no Node.** Antes de renderizar, o build precisa de
-   `window` com o conteúdo publicado. Duas saídas, em ordem de preferência:
-   - importar `volume/data.jsx` e `volume/i18n.jsx` num contexto que já tenha
-     `global.window = {}` e `global.React` definidos, deixando eles fazerem o
-     `Object.assign` de sempre;
-   - se isso brigar com o formato clássico deles, execute os arquivos já
-     transpilados de `dist/volume/*.js` com `node:vm` num contexto preparado.
-   O importante é **não reescrever o conteúdo em outro lugar**.
-
-3. **Renderizar no build.** Em `build.mjs`, depois de `buildBlog` e antes de
-   `buildHtml`, gere a marcação com `renderToString` e injete no lugar de
-   `<div id="v2-root"></div>`. Gere as duas versões, pt e en.
-
-4. **Servir a versão certa.** O HTML é o mesmo para todo caminho (é SPA
-   estática com rewrite). Como `/en` precisa do HTML em inglês e `/` do
-   português, você tem duas saídas:
-   - gerar `dist/index.html` (pt) e `dist/en.html` (en) e apontar o rewrite do
-     `vercel.json` para cada um;
-   - ou pré-renderizar só o português e aceitar que `/en` pinta em português
-     por um quadro antes de o React trocar.
-   **Prefira a primeira.** A segunda entrega uma piscada de idioma errado
-   justamente para o público que o inglês existe para atender.
-
-5. **`useLayoutEffect`.** Há 5 usos, em `site/app.jsx` e `site/motion.js`. No
-   servidor eles emitem aviso. Não quebram, e como não vamos hidratar, não
-   causam divergência. Silencie o aviso no build se poluir a saída, mas **não**
-   troque `useLayoutEffect` por `useEffect` no cliente para calar o servidor:
-   o comentário em `app.jsx:237` explica que a diferença ali é visível.
-
-### 6.3 Armadilhas deste repositório
-
-- **`Relogio`** (em `site/Kit.jsx`) imprime a hora. No HTML gerado ela vai
-  congelada no horário do build. Como não hidratamos, o React corrige no
-  primeiro quadro — mas confira que não fica um horário errado visível por
-  meio segundo. Se ficar, renderize o relógio vazio no servidor.
-- **`Rotativa`** (em `site/Home.jsx`) troca de palavra por timer. No servidor
-  ela deve sair no item 0, que é o que o cliente também mostra primeiro.
-- **A cortina e o `carregando.css`** entram inline no head e valem no primeiro
-  quadro. Confira que o HTML novo não aparece **atrás** ou **na frente** da
-  cortina de forma errada — é o ponto mais provável de dar errado visualmente.
-- **`clean()`** em `build.mjs` preserva `dist/volume`. Se você gerar arquivo
-  novo em `dist/`, garanta que ele não é apagado nem deixado para trás.
-- **O `dist/` não é versionado.** Não commite HTML gerado.
+**O `LazyMotion`** continua disponível como próximo passo independente: trocar
+o import cheio do Framer Motion por `LazyMotion` + `domAnimation` tira ~85 KB
+dos 316 KB do bundle e ataca o TBT. São 294 usos de `motion.*` em 11 arquivos,
+mecânico, sem custo de manutenção depois. Confirmado que o site não usa `drag`
+nem `layout`, que é o que essa troca corta.
 
 ---
 
-## 7. Como verificar (obrigatório antes de subir)
+## 7. Detalhes que vão custar tempo se não estiverem escritos
 
-1. **Nada quebrou.** Suba `PORT=45553 node build.mjs --serve`, abra `/`, `/en`,
-   `/case/pcyes`, `/processo`, `/sobre`, `/blog` e confira que não há erro de
-   JS no console e nenhuma requisição 4xx.
+**`node:vm`, e não `import`.** Três coisas precisam valer ao mesmo tempo:
+`volume/data.js` e `volume/i18n.js` são scripts CLÁSSICOS (abrem com
+`const { useState } = React` nu, fecham com `Object.assign(window, ...)`, e
+i18n alcança o `const CHAPTERS` do outro por referência léxica); `site/i18n.js`
+lê `window.LANG` na CARGA DO MÓDULO, então com `import` o cache do Node faria
+o segundo idioma sair no primeiro; e o React que renderiza tem de ser o MESMO
+que `data.js` usa nos hooks. Contexto novo por idioma entrega as três.
 
-2. **O primeiro quadro bate.** Este é o teste que decide. Com Playwright,
-   tire dois screenshots do topo da home:
-   - um com JavaScript **desligado** (`context.setJavaScriptEnabled(false)`) —
-     é o que o HTML pré-renderizado entrega sozinho;
-   - outro com o React já montado.
+**A ordem dentro do vm é a mesma das tags**: bundle (que publica o React),
+depois `data.js`, depois `i18n.js`. Pelos mesmos motivos do comentário de
+`buildHtml()`.
 
-   Eles não precisam ser idênticos ao pixel (o motion anima na entrada), mas o
-   **texto, a posição do título e a capa** precisam coincidir. Se o quadro sem
-   JS estiver em branco, o pré-render não funcionou. Se estiver visivelmente
-   diferente, vai piscar para quem visita — conserte antes de subir.
+**`window.LANG` é semeado à mão** no contexto antes de tudo, porque
+`site/i18n.js` o lê antes de `volume/i18n.js` rodar. Os dois batem porque o
+`location.pathname` do contexto é o do idioma que está sendo gerado.
 
-3. **Mediu?** Rode o mesmo teste de rede que produziu os números da seção 3:
-   4G lento (150ms de latência, 1,6 Mbps) com CPU 4x mais lenta, e compare FCP
-   e Speed Index. Espere FCP perto de 1,3s. Se não melhorou, **não suba** —
-   reverta e escreva o que aprendeu aqui neste arquivo.
+**O `Relogio` congela no horário do build e isso NÃO é problema — mas por um
+motivo que não se adivinha.** Ele fica dentro de `.v2-hero-topo`, que nasce com
+`clip-path: inset(0 0 100% 0)` vindo do `useMaskLine`: no quadro do servidor a
+linha inteira está recortada a zero, então o horário errado (na Vercel o build
+roda em UTC, três horas à frente de Maringá) nunca chega a aparecer. Se algum
+dia a animação de entrada do topo mudar, isto volta a ser problema e a saída é
+renderizar o relógio vazio no servidor.
 
-4. **Depois do deploy**, rode o PageSpeed duas vezes e use a melhor. O TBT do
-   Lighthouse varia muito com a carga do runner do Google: em 31/08 duas
-   medições seguidas do mesmo commit deram 38 e 50, com TBT de 4.330ms e
-   1.070ms. As outras quatro métricas ficaram estáveis nas duas — são elas que
-   você deve olhar.
+**Ao testar, mate o servidor de dev primeiro.** Ele fica vigiando e
+reconstrói `dist/` em modo dev por cima do build de produção — a medição sai
+com número de página quebrada e leva um tempo para desconfiar.
 
----
-
-## 8. Como isso passa a ser gerido (a pergunta do Gabriel)
-
-Depois de pronto, o fluxo de quem edita o site é **exatamente o de hoje**:
-mexe no `.jsx`, roda o build, sobe. O HTML sai junto, sozinho.
-
-O que muda de verdade, e é honesto dizer:
-
-**O build fica mais lento.** Alguns segundos, uma vez por build.
-
-**Um jeito novo de quebrar.** Se alguém escrever um componente que toca
-`window` fora de efeito, o build passa a falhar. Isso é uma melhora disfarçada
-de custo: hoje esse mesmo erro passa batido e só aparece no navegador de quem
-visita. Falhar no build é o lugar certo de falhar. A mensagem de erro do Node
-diz o arquivo e a linha.
-
-**Um teste que precisa continuar rodando.** O da seção 7.2, o dos dois
-screenshots. Ele é o que garante que o HTML e o React não divergiram. Deixe-o
-como script em `tools/`, documentado, e rode antes de subir mudança grande na
-home. Não precisa rodar para trocar uma palavra.
-
-**O que NÃO muda:** ninguém escreve, lê ou concilia HTML. Não existe segundo
-lugar para atualizar. Não existe "fazer match" manual. Se em algum momento
-alguém precisar editar HTML à mão para consertar o pré-render, a
-implementação está errada — pare e repense em vez de aceitar a duplicação.
-
-### Quando abortar
-
-Se, ao executar, você descobrir que:
-
-- os componentes da home não rodam no Node sem serem reescritos, **ou**
-- o quadro sem JS não bate com o do React sem gambiarra,
-
-então pare e **não force**. O caminho alternativo, sem nenhuma dessas
-complicações, é reduzir o JS: trocar o import cheio do Framer Motion por
-`LazyMotion` + `domAnimation` (confirmado que o site não usa `drag` nem
-`layout`, que é o que essa troca corta), o que tira cerca de 85 KB dos 316 KB
-do bundle. É mecânico, são 294 usos de `motion.*` em 11 arquivos, e ataca o TBT
-em vez do FCP — menos ganho, risco menor, e zero custo de manutenção depois.
-
-Escreva aqui o que decidiu e por quê, para a próxima pessoa não refazer a
-investigação.
+**O Lighthouse não está no `package.json`.** Foi instalado com
+`npm i --no-save lighthouse` só para medir. `tools/mede-home.mjs` não depende
+dele: usa CDP direto, com garganta real em vez do modelo Lantern.

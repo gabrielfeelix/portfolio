@@ -6,7 +6,9 @@
   "description": "Portfólio de Gabriel Felix Barbosa — em forma de volume de mangá.",
   "scripts": {
     "build": "node build.mjs",
-    "dev": "node build.mjs --serve"
+    "dev": "node build.mjs --serve",
+    "verifica:home": "node tools/primeiro-quadro.mjs",
+    "mede:home": "node tools/mede-home.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",

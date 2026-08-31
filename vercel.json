@@ -16,9 +16,12 @@
     { "source": "/v2/:path*", "destination": "/:path*", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/en", "destination": "/en.html" },
+    { "source": "/en/", "destination": "/en.html" },
     {
       "source": "/((?!llms\\.txt|robots\\.txt|sitemap\\.xml).*)",
-      "destination": "/index.html"
+      "destination": "/rota.html"
     }
   ],
   "headers": [

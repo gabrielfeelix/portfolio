@@ -5,6 +5,7 @@ import { existsSync, watch } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import vm from "node:vm";
 import { lerPosts, escreverBlog, DIR_POSTS } from "./blog.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -391,7 +392,161 @@ async function inline() {
   return `<style>${cssMin}</style>`;
 }
 
-async function buildHtml() {
+/* ------------------------- o primeiro quadro ------------------------- */
+
+/* O HTML da home, escrito no build a partir dos MESMOS componentes React.
+ *
+ * O problema que isto resolve: até 31/08 o servidor entregava
+ * `<div id="v2-root"></div>` vazio, e nada pintava até o React baixar,
+ * parsear, executar e montar a home inteira. Em 4G lento com CPU 4x mais
+ * lenta, todos os bytes chegavam em 2.084ms e o FCP acontecia em 5.096ms —
+ * três segundos de CPU pura com a tela em branco. Ver docs/HANDOFF-PRERENDER.md.
+ *
+ * NÃO É UM SEGUNDO SITE, e essa é a objeção que o documento existe para
+ * responder: a marcação sai de `site/entrada-ssr.jsx`, que importa o mesmo
+ * `Home.jsx` e o mesmo `Shell.jsx` que o cliente monta. Ninguém escreve, lê
+ * ou concilia HTML. Se um dia for preciso corrigir o pré-render editando HTML
+ * à mão, a implementação está errada — pare e repense.
+ *
+ * NÃO HIDRATAMOS: o cliente segue com `createRoot(...).render(...)`, que
+ * limpa o container e monta do zero. O que o servidor escreve é o estado
+ * `initial` do Framer Motion, ou seja EXATAMENTE o primeiro quadro que o
+ * cliente desenharia — é por construção que não existe piscada. O que o
+ * visitante ganha é a capa, o véu, o nav e o rodapé pintando na chegada dos
+ * bytes em vez de depois do JS; a revelação do título continua acontecendo
+ * quando o app monta, como sempre aconteceu.
+ */
+
+/* Por que `node:vm` e não um `import`.
+ *
+ * Três coisas precisam ser verdade ao mesmo tempo, e só um contexto novo por
+ * idioma entrega as três:
+ *
+ *   1. `volume/data.js` e `volume/i18n.js` são scripts CLÁSSICOS. Eles abrem
+ *      com `const { useState, ... } = React` nu e fecham com
+ *      `Object.assign(window, ...)`, e i18n.js alcança o `const CHAPTERS` de
+ *      data.js por referência léxica. Isso é semântica de <script> no
+ *      navegador, e um contexto de vm é o único lugar em Node onde ela vale.
+ *   2. `site/i18n.js` lê `window.LANG` na CARGA DO MÓDULO, não dentro de
+ *      função. Com `import` o módulo ficaria no cache do Node e o segundo
+ *      idioma renderizaria no primeiro. Contexto novo, registro novo.
+ *   3. O React que renderiza tem de ser o MESMO que `data.js` usa nos hooks.
+ *      Por isso o bundle exporta o React dele e a linha abaixo o publica em
+ *      `window` antes de data.js rodar.
+ *
+ * A ordem das três execuções é a mesma das tags em buildHtml() e pelos mesmos
+ * motivos: React, depois data, depois i18n. Ver o comentário de lá.
+ */
+function contextoDom(caminho, lang) {
+  const nada = () => {};
+  const elemento = () => ({
+    style: { setProperty: nada, removeProperty: nada },
+    classList: { add: nada, remove: nada, contains: () => false, toggle: nada },
+    setAttribute: nada, getAttribute: () => null, removeAttribute: nada,
+    appendChild: nada, removeChild: nada,
+    addEventListener: nada, removeEventListener: nada,
+    querySelector: () => null, querySelectorAll: () => [],
+    getBoundingClientRect: () => ({ top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0 }),
+    firstChild: null, textContent: "", lang: "",
+  });
+  const documento = {
+    documentElement: elemento(), head: elemento(), body: elemento(),
+    createElement: () => elemento(),
+    querySelector: () => null, querySelectorAll: () => [],
+    getElementById: () => null,
+    addEventListener: nada, removeEventListener: nada,
+    visibilityState: "visible",
+  };
+  const sandbox = {
+    console,
+    setTimeout, clearTimeout, setInterval, clearInterval, queueMicrotask,
+    requestAnimationFrame: (fn) => setTimeout(fn, 0), cancelAnimationFrame: clearTimeout,
+    requestIdleCallback: (fn) => setTimeout(fn, 0), cancelIdleCallback: clearTimeout,
+    performance, TextEncoder, TextDecoder, URL, URLSearchParams,
+    process: { env: { NODE_ENV: "production" } },
+    document: documento,
+    navigator: { userAgent: "node", language: lang === "en" ? "en" : "pt-BR" },
+    location: { pathname: caminho, search: "", hash: "", href: "https://gabrielfelix-ux.4yu.com.br" + caminho, assign: nada },
+    matchMedia: () => ({ matches: false, addEventListener: nada, removeEventListener: nada, addListener: nada, removeListener: nada }),
+    localStorage: { getItem: () => null, setItem: nada, removeItem: nada },
+    innerWidth: 1440, innerHeight: 900, devicePixelRatio: 1, scrollX: 0, scrollY: 0,
+    addEventListener: nada, removeEventListener: nada,
+    getComputedStyle: () => ({ getPropertyValue: () => "" }),
+    /* Semeado à mão porque `site/i18n.js` lê isto na carga do módulo, que
+       acontece antes de volume/i18n.js rodar. Aquele arquivo recalcula LANG a
+       partir de `location.pathname` e republica — os dois batem porque o
+       caminho aqui é o do idioma que estamos gerando. */
+    LANG: lang,
+  };
+  const ctx = vm.createContext(sandbox);
+  vm.runInContext("globalThis.window = globalThis; globalThis.self = globalThis;", ctx);
+  return ctx;
+}
+
+async function preRender() {
+  /* Bundle próprio, e de propósito SEM o plugin `reactGlobais`: aqui não
+     existe vendor UMD para apontar, então este bundle traz o React de
+     node_modules e é ele quem vira `window.React` no contexto. */
+  const saida = await esbuild.build({
+    entryPoints: [path.join(ROOT, "site", "entrada-ssr.jsx")],
+    bundle: true,
+    write: false,
+    format: "iife",
+    globalName: "__SSR",
+    platform: "browser",
+    jsx: "transform",
+    jsxFactory: "React.createElement",
+    jsxFragment: "React.Fragment",
+    loader: { ".jsx": "jsx" },
+    target: ["es2020"],
+    define: { "process.env.NODE_ENV": '"production"' },
+    logLevel: "warning",
+  });
+  const bundle = saida.outputFiles[0].text;
+
+  const data = await readFile(path.join(DIST, "volume", "data.js"), "utf8");
+  const i18n = await readFile(path.join(DIST, "volume", "i18n.js"), "utf8");
+
+  const umIdioma = (lang) => {
+    const ctx = contextoDom(lang === "en" ? "/en" : "/", lang);
+    vm.runInContext(bundle, ctx, { filename: "site/entrada-ssr.js" });
+    vm.runInContext("window.React = __SSR.React;", ctx);
+    vm.runInContext(data, ctx, { filename: "volume/data.js" });
+    vm.runInContext(i18n, ctx, { filename: "volume/i18n.js" });
+    return vm.runInContext("__SSR.render()", ctx);
+  };
+
+  /* O `src` das imagens de lazy sai do HTML do servidor, e isto NÃO é
+     detalhe: é a diferença entre o pré-render ajudar e atrapalhar.
+   *
+     Medido em 4G lento com CPU 4x, a home pré-renderizada com os src no
+     lugar: FCP 4,58s → 1,10s, mas LCP 4,77s → 6,99s. O motivo está nos
+     bytes — 1.871 KB → 2.837 KB, com as imagens saindo de 24 para 44. O
+     parser descobre a página INTEIRA de uma vez, e o limiar de `loading=lazy`
+     do Chrome é generoso o bastante para ele buscar quase tudo. Um mega de
+     imagem de dobra que ninguém está olhando disputa a banda com o JS que
+     revela o título, e o título é o LCP.
+   *
+     Tirar o src é seguro exatamente porque NÃO hidratamos: o React limpa o
+     container e remonta a árvore com os src no lugar, no mesmo instante em
+     que os punha antes deste commit. Nenhuma imagem carrega mais tarde do que
+     carregava. `<img>` sem `src` nenhum não desenha ícone de quebrado — e o
+     `alt` fica, então o que um leitor de tela ou um rastreador sem JS
+     encontra continua sendo o mesmo texto.
+   *
+     A capa do hero é a exceção e é ela que faz o FCP: não tem `loading=lazy`,
+     então não entra nesta regra. */
+  const semLazy = (html) =>
+    html.replace(/<img\b[^>]*>/g, (tag) =>
+      /loading="lazy"/.test(tag) ? tag.replace(/\ssrc="[^"]*"/, "") : tag);
+
+  const marcacao = { pt: semLazy(umIdioma("pt")), en: semLazy(umIdioma("en")) };
+  const kb = (s) => (s.length / 1024).toFixed(0);
+  console.log(`  home pré-renderizada: ${kb(marcacao.pt)} KB pt, ${kb(marcacao.en)} KB en`);
+  return marcacao;
+}
+
+async function buildHtml(marcacao = null) {
   const tpl = await readFile(path.join(ROOT, "site", "index.template.html"), "utf8");
   const estiloInline = await inline();
   /* A ordem é o contrato: React global, depois DATA e só então I18N, e por
@@ -420,11 +575,52 @@ async function buildHtml() {
     `<script defer src="/volume/i18n.js"></script>`,
     `<script defer src="/app.js"></script>`,
   ].join("\n");
-  const html = tpl
+  const base = tpl
     .replace("<!--CORTINA-CSS-->", estiloInline)
     .replace("<!--SCRIPTS-->", tags)
     .replace("<!--ANALYTICS-->", analyticsSnippet());
-  await writeFile(path.join(DIST, "index.html"), html);
+
+  const comRaiz = (corpo) =>
+    base.replace('<div id="v2-root"></div>', `<div id="v2-root">${corpo}</div>`);
+
+  /* TRÊS arquivos, e o terceiro é o que impede uma regressão feia.
+   *
+   * O rewrite do vercel.json manda todo caminho que não é arquivo para um
+   * HTML só. Com a home pré-renderizada dentro dele, abrir /case/pcyes
+   * direto passaria a pintar a HOME por três segundos e só então trocar pelo
+   * caso — trocar tela branca por tela errada, que é pior.
+   *
+   * Então: index.html e en.html carregam a home escrita, e são servidos
+   * exatamente nos dois endereços que SÃO a home. `rota.html` é a casca
+   * vazia de sempre, e é para onde vai todo o resto — mesmo comportamento
+   * que o site tinha antes deste commit, sem regressão nenhuma. O escopo é a
+   * home porque é ela que recebe o link compartilhado e é ela que o
+   * PageSpeed mede; as outras rotas são navegação interna, com o JS quente.
+   *
+   * Os três nomes estão amarrados aos rewrites do vercel.json e ao proxy do
+   * `--serve`, aqui embaixo. Renomear um pede mexer nos três lugares. */
+  await writeFile(path.join(DIST, "index.html"), comRaiz(marcacao ? marcacao.pt : ""));
+  await writeFile(path.join(DIST, "rota.html"), comRaiz(""));
+
+  /* A versão inglesa não é só o corpo traduzido: o `lang` do <html> e o
+     endereço canônico também mudam, e os dois valem ANTES de qualquer JS
+     rodar. Quem lê com leitor de tela e quem indexa a página sem executar
+     script só enxerga o que está aqui.
+
+     A description continua a portuguesa neste arquivo, e isso é dívida
+     conhecida e não descuido: o texto dela mora dentro do efeito de rota em
+     site/app.jsx, e copiá-lo para cá criaria a segunda fonte de verdade que
+     este build inteiro existe para evitar. O app corrige na montagem, como
+     já corrigia antes. Anotado no handoff. */
+  const en = comRaiz(marcacao ? marcacao.en : "")
+    .replace('<html lang="pt-BR">', '<html lang="en">')
+    .replace('<link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/">',
+             '<link rel="canonical" href="https://gabrielfelix-ux.4yu.com.br/en">')
+    .replace('<meta property="og:url" content="https://gabrielfelix-ux.4yu.com.br/">',
+             '<meta property="og:url" content="https://gabrielfelix-ux.4yu.com.br/en">')
+    .replace('<meta property="og:locale" content="pt_BR">',
+             '<meta property="og:locale" content="en_US">');
+  await writeFile(path.join(DIST, "en.html"), en);
 }
 
 /* O blog roda ANTES do bundle: `escreverBlog` grava site/posts.gerado.js, que
@@ -450,7 +646,10 @@ async function buildOnce(dev = false) {
   await buildSitemap(posts);
   await esbuild.build(appOpcoes(dev));
   await buildCss();
-  await buildHtml();
+  /* O pré-render roda DEPOIS de transpileConteudo (ele lê dist/volume/*.js) e
+     depois de buildBlog (site/posts.gerado.js entra no grafo do bundle). E
+     antes de buildHtml, que é quem injeta a marcação. */
+  await buildHtml(await preRender());
   console.log("✓ build → dist/");
 }
 
@@ -482,7 +681,7 @@ if (process.argv.includes("--serve")) {
       clearTimeout(pendente);
       pendente = setTimeout(() => {
         const tarefa = dec
-          ? buildHtml().then(() => console.log("[watch] index.html atualizado"))
+          ? preRender().then(buildHtml).then(() => console.log("[watch] index.html atualizado"))
           : buildCss().then(() => console.log("[watch] site.css atualizado"));
         tarefa.catch((e) => console.error(e));
       }, 60);
@@ -507,18 +706,27 @@ if (process.argv.includes("--serve")) {
       });
     }
   }
-  // esbuild serve numa porta interna; o proxy na frente devolve index.html
-  // para path que não é arquivo, que é o mesmo fallback do vercel.json. Sem
-  // isso /case/pcyes dá 404 no dev e só funciona em produção.
+  /* esbuild serve numa porta interna; o proxy na frente resolve o path que não
+     é arquivo, e ele espelha os rewrites do vercel.json — se os dois
+     divergirem, o dev mente sobre produção. Sem esse fallback /case/pcyes dá
+     404 no dev e só funciona no ar.
+
+     São três destinos e não um, pelo mesmo motivo que buildHtml escreve três
+     arquivos: `/en` é a home inglesa pré-renderizada, e todo o resto é a
+     casca vazia. Mandar /case/pcyes para o index.html pré-renderizado
+     pintaria a home antes do caso. */
   const { host: iHost, port: iPort } = await ctxConteudo.serve({ servedir: DIST, port: 0 });
   const wanted = Number(process.env.PORT) || 5173;
   const proxy = http.createServer((req, res) => {
     const enc = (p) => http.request(
       { hostname: iHost, port: iPort, path: p, method: req.method, headers: req.headers },
       (up) => {
-        if (up.statusCode === 404 && !path.extname(req.url.split("?")[0])) {
-          // rota do SPA: serve o index e deixa o app decidir a view.
-          return enc("/index.html").end();
+        const caminho = req.url.split("?")[0];
+        if (up.statusCode === 404 && !path.extname(caminho)) {
+          const semBarra = caminho.replace(/\/+$/, "") || "/";
+          if (semBarra === "/en") return enc("/en.html").end();
+          // rota do SPA: serve a casca e deixa o app decidir a view.
+          return enc("/rota.html").end();
         }
         res.writeHead(up.statusCode, up.headers);
         up.pipe(res, { end: true });
