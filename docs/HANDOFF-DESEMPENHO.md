@@ -63,12 +63,12 @@ Toda a conta é TTFB + atraso de renderização, e por isso nenhuma otimização
 imagem ia mover o número. A auditoria `render-blocking` saiu de score 0 para
 score 1.
 
-### Projeção para o PageSpeed
+### Projeção para o PageSpeed — ERRADA, ver seção 9
 
-Aplicando os deltas às curvas do Lighthouse sobre os 75 medidos em 31/08:
-FCP ~+2, SI ~+2, LCP ~+10, TBT ~+2, CLS inalterado. **Projeção de 85 a 91.**
-É projeção, não medição — o Gabriel precisa rodar o PageSpeed pela interface
-web (a quota da API estourou em 31/08) e escrever o número real aqui.
+Esta seção previa 85 a 91. O PageSpeed real deu **64**, e a seção 9 conta o
+que aconteceu e o que foi medido depois. A previsão também usava uma conta
+errada: TBT de 280ms **não** vale 24,9 pontos, vale **22,06**. A curva do TBT
+é p10=200ms, mediana=600ms, e para 280ms o score é 0,735, não 0,83.
 
 ---
 
@@ -348,3 +348,185 @@ estilo computado de cada elemento, e não a foto — o hero tem vídeo e a entra
    3.3 (quebrar o `app.js`), pelo caminho do segundo bundle IIFE.
 2. **Conferir o computador**, que estava em 94.
 3. **Decidir sobre o `font-display: block`** (seção 4, item 1).
+
+---
+
+## 9. O PageSpeed real deu 64, e o que a investigação achou
+
+Escrito em 31/08/2026, depois do deploy do commit `c4c4764`.
+
+### 9.1 As medições
+
+PageSpeed celular, produção, duas rodadas seguidas da MESMA URL:
+
+| | antes (75) | run 1 | run 2 |
+|---|---|---|---|
+| nota | 75 | **64** | **43** |
+| FCP | 2,3s | 1,0s | 2,9s |
+| SI | 6,0s | 3,4s | 7,7s |
+| LCP | 3,9s | 3,7s | 4,8s |
+| **TBT** | **280ms** | **1.240ms** | **1.830ms** |
+| CLS | 0 | 0 | 0 |
+
+Computador: 91 (era 94). Acessibilidade/práticas/SEO: 96/100/100, intactos.
+
+**Duas rodadas do mesmo build discordam em 21 pontos.** Guarde isso: a
+documentação oficial do Lighthouse só garante que "a mediana de 5 rodadas é
+duas vezes mais estável que 1", e não publica desvio esperado para TBT. O 75
+original também foi rodada única.
+
+### 9.2 A causa: a janela do TBT, não trabalho novo
+
+**TBT é somado da FCP até a TTI.** Isso está no código-fonte, não é
+interpretação: `core/computed/metrics/total-blocking-time.js:21-22` — *"the sum
+of all Blocking Time between First Contentful Paint and Interactive Time"* —
+e os limites literais em `lantern/metrics/TBTUtils.js:7-8,16-17` são
+`startTimeMs = FCP`, `endTimeMs = TTI`. O recorte por tarefa está em
+`TBTUtils.js:35-46`, e o limiar de 50ms com overhang `duration - 50` em
+`TBTUtils.js:4,52`.
+
+Ou seja: **antecipar a FCP alarga a janela e passa a contar trabalho que antes
+ficava de fora**, sem que nada tenha ficado mais lento. O commit puxou a FCP de
+2,3s para 1,0s — 1,3s a mais de janela. O TBT subiu 960ms. Os números batem.
+
+No modo simulado, que é o que o PageSpeed usa, agrava: o TBT sai de
+`simulation.nodeTimings`, do grafo de dependência
+(`lantern/metrics/TotalBlockingTime.js:22-46`). Deixar a rede mais rápida
+agenda os nós de CPU mais cedo na linha simulada — e eles caem dentro da janela
+que também abriu mais cedo. Os dois efeitos empurram na mesma direção.
+
+### 9.3 A prova de que o commit não adiciona trabalho
+
+Lighthouse em modo simulado (Lantern, a engine do PageSpeed), **5 rodadas de
+cada lado, máquina ociosa**, os dois servidos do mesmo runner:
+
+| | ref (`1cc3297`) | atual (`c4c4764`) | delta |
+|---|---|---|---|
+| nota | 52 | **54** | +2 |
+| FCP | 1366 | 1207 | −159 |
+| SI | 3515 | 3357 | −158 |
+| LCP | 5046 | 4732 | −314 |
+| **TBT** | **2073** | **2029** | **−44** |
+| bootup (JS) | 5714 | 5729 | +15 |
+| thread | 7588 | 7616 | +28 |
+
+TBTs individuais: ref `1874 1945 2073 2238 2178` · atual `2049 1955 2284 1935
+2029`. Mesma distribuição. `bootup` +15ms sobre 5,7s e `thread` +28ms sobre
+7,6s é ruído.
+
+Localmente a FCP só andou 159ms, e a janela (TTI − FCP) ficou em 6050 → 6016ms
+— por isso o TBT local não se mexeu. No PageSpeed a FCP andou 1.300ms, porque
+lá o `site.css` bloqueante custava muito mais. **É a mesma história, com a
+janela abrindo de verdade só no runner deles.**
+
+### 9.4 Acusações testadas e derrubadas
+
+Quatro revisões independentes atacaram o commit. Uma achou um mecanismo real:
+o `site-resto.css` promovido por `onload` obriga o navegador a parsear 62 KB e
+recalcular estilo contra ~940 elementos, **depois** da FCP — trabalho que no
+build antigo acontecia antes dela. Medido, 5 rodadas, garganta real:
+
+| variante | FCP | LCP | TBT (janela da FCP) |
+|---|---|---|---|
+| como está (folha cortada) | 404ms | 768ms | **5,39s** |
+| sem o `site-resto.css` (controle) | 400ms | 768ms | **5,52s** |
+| folha inteira embutida | 440ms | **680ms** | **5,52s** |
+
+A variante que **não carrega a folha de jeito nenhum** tem o mesmo TBT. O
+mecanismo existe; a magnitude é ruído perto da montagem do React. Acusação
+derrubada.
+
+Achado lateral guardado: embutir a folha INTEIRA dá **LCP 88ms melhor** (some
+da disputa de banda) ao custo de 36ms de FCP.
+
+### 9.5 O tamanho real do problema
+
+Curva do TBT (p10=200ms, mediana=600ms, peso 30%):
+
+| TBT | pontos de 30 |
+|---|---|
+| 100ms | 27,9 |
+| 200ms | 24,5 |
+| **280ms (build antigo)** | **22,1** |
+| 600ms | 15,0 |
+| **1.240ms (agora)** | **8,2** |
+
+Cada 100ms vale 3 a 4 pontos entre 200 e 900ms.
+
+**Partindo da run 1 e mexendo só no TBT: 85 exige TBT ≈ 94ms. 90 é impossível
+sem melhorar também o LCP.** O TBT nunca esteve bom — mesmo os 280ms deixavam
+8 pontos na mesa. O que mudou foi ele ficar visível.
+
+### 9.6 `startTransition` no render inicial — medido, NÃO subido
+
+TBT só conta o que passa de **50ms por tarefa**. Uma tarefa de 2.500ms vale
+2.450ms de TBT; as mesmas 2.500ms fatiadas em tarefas de 50ms valem zero. O
+React 18 fatia render marcado como transição. Uma linha em `site/app.jsx`:
+
+```jsx
+const raiz = createRoot(alvo);
+startTransition(() => raiz.render(<App />));
+```
+
+Lantern, 5 rodadas cada, distribuições sem sobreposição:
+
+| | atual | com `startTransition` | delta |
+|---|---|---|---|
+| **nota** | 55 | **66** | **+11** |
+| FCP | 1206 | 1205 | 0 |
+| SI | 3291 | 3012 | −279 |
+| LCP | 4691 | 3188 | −1503 |
+| TBT | 1871 | 1645 | −226 |
+
+Notas individuais: `54 54 55 55 55` contra `68 66 69 66 66`.
+
+**Mas NÃO foi subido, por duas razões medidas:**
+
+1. **O ganho de LCP é artefato do Lantern.** Na garganta real, FCP, LCP e CLS
+   são idênticos (396/768/0 contra 400/768/0). O Lantern penaliza a tarefa
+   longa; o navegador de verdade não, porque o elemento de LCP já está pintado
+   pelo pré-render e a remontagem produz o mesmo tamanho. O ganho de TBT é
+   real, o de LCP não.
+2. **Ele puxa 521 KB de imagem que não deveria.** Com `startTransition`, as 11
+   capas de "outros projetos" — abaixo da dobra, `loading=lazy` — são baixadas
+   entre 5,6s e 8,4s. Sem ele, **nunca** são baixadas, nem numa janela de 25s.
+   Isso contraria de frente o `semLazy` do `preRender()`, que existe
+   exatamente para não puxar imagem de dobra no carregamento.
+
+Verificado que ele NÃO quebra o pré-render: sondando o DOM a cada 8ms, o
+`#v2-root` nunca fica vazio, o `<h1>` aparece no mesmo instante e a altura do
+documento vai de 727 para 11292px no mesmo momento nos dois. Não há piscada.
+
+**Próximo passo, se alguém retomar:** descobrir por que a montagem fatiada
+dispara o lazy-load daquelas capas. A suspeita é que num quadro intermediário
+o documento ainda está curto (727px) e o Chrome julga as imagens perto da
+viewport. Se for isso, `width`/`height` explícitos nessas `<img>` — que o
+PageSpeed já pede — resolvem os dois de uma vez, e o `startTransition` vira
++11 pontos limpos.
+
+### 9.7 O corte do `app.js` foi medido e rende pouco
+
+`app.js` sem `Case`, `Processo`, `Sobre`, `Blog` e `Post`: 276,7 KB → 188,2 KB
+(−32%, −26 KB gz). Bate com os "111 KiB de JS não usado" do relatório. Medido
+3 vezes com máquina ociosa: **TBT 6,22/5,92/5,32 contra 6,05/5,77/5,32.
+Idêntico.** Só a montagem fica ~110ms mais rápida.
+
+O motivo é V8: função que nunca é chamada não é compilada. O peso está no
+RENDER de ~940 elementos, não no parse do código morto. **Continua valendo
+como economia de rede (−26 KB gz), não como conserto de TBT.**
+
+### 9.8 Como medir daqui pra frente
+
+- **A cota que estourou é a anônima por IP.** Uma chave de API do Google Cloud
+  (grátis, PageSpeed Insights API) sobe para 25.000/dia e permite tirar
+  mediana de 5 rodadas, que é o que a variância deste site exige.
+- **Lighthouse local em modo simulado é a mesma engine do PageSpeed** e serve
+  para delta. Absoluto não: esta máquina dá TBT 4x o deles.
+- **Máquina ociosa não é detalhe.** Três Chromium órfãos de um bisect que
+  falhou ficaram rodando durante uma bateria inteira de medições e a
+  invalidaram — a mesma variante deu 5,57s e 12,62s. Antes de medir:
+  `ps -eo args | grep -c '[c]hrome-linux/chrome'` tem de dar 0.
+- **Os deploys antigos existem na Vercel** (cada commit tem URL imutável), mas
+  estão atrás do login: `Deployment Protection`. Liberar isso, ou gerar um
+  *Protection Bypass for Automation*, permitiria medir build antigo e novo
+  lado a lado no PageSpeed — que é a comparação que faltou.
