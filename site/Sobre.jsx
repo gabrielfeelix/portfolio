@@ -32,7 +32,7 @@
 import React from "react";
 import { m as motion, AnimatePresence, useReducedMotion, useScroll, useTransform, useSpring, useMotionValue } from "motion/react";
 import {
-  useMaskLine, useCobertura, useRise, useRevelar, useTardio, useEscrita, useNaAltura,
+  useMaskLine, useCobertura, useRise, useRevelar, useEscrita, useNaAltura,
 } from "./motion.js";
 import { Pill, Label } from "./Shell.jsx";
 import {
@@ -77,7 +77,6 @@ const MANGUDOS = "/volume/assets/mangudos.webp";
  * desde o primeiro hero da V2. */
 function SobreHero() {
   const linha = useMaskLine();
-  const tardio = useTardio(1.2);
   const capa = useCobertura();
   const quieto = useReducedMotion();
   const c = CONTATO();
@@ -124,10 +123,14 @@ function SobreHero() {
 
           <motion.p className="v2-sb-premissa" {...linha(4)}>{SOBRE_PREMISSA}</motion.p>
 
-          <motion.div className="v2-caso-pills" {...tardio}>
+          {/* Sem entrada animada, pelo mesmo motivo do pé do hero da home:
+              `useTardio` gravava `opacity: 0.06` no elemento e os dois botões
+              de contato ficavam invisíveis por 1,2s. Botão que a pessoa não vê
+              é botão que ela não clica. */}
+          <div className="v2-caso-pills">
             <Pill href={c.whatsapp.href} escuro externo>{t("Falar comigo", "Let's talk")}</Pill>
             {c.linkedin ? <Pill href={c.linkedin.href} externo escuro>LinkedIn</Pill> : null}
-          </motion.div>
+          </div>
 
           <ul className="v2-caso-tags">
             <li>{t("Maringá, PR", "Maringá, Brazil")}</li>

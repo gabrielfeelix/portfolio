@@ -26,7 +26,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { m as motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "motion/react";
 import {
-  spring, ease, easeRevela, dur, passo, useTardio, useRise, useMaskLine, useCobertura,
+  spring, ease, easeRevela, dur, passo, useRise, useMaskLine, useCobertura,
   usePilha, usePilhaTrilho, usePalavra, useRevelar, useEscrita, useNaAltura,
   rolarPara,
 } from "./motion.js";
@@ -105,7 +105,6 @@ function Rotativa({ itens, intervalo = 2800 }) {
    explica por que o que está abaixo da dobra é custo e não ganho. */
 export function Hero({ paraCasos }) {
   const linha = useMaskLine();
-  const tardio = useTardio(1.4);
   // O hero fica preso enquanto o corpo sobe por cima dele, e sai perdendo
   // escala em vez de rolar para fora. É a única passagem coberta da home.
   const capa = useCobertura();
@@ -203,7 +202,18 @@ export function Hero({ paraCasos }) {
           </span>
         </h1>
 
-        <motion.div className="v2-hero-pe" {...tardio}>
+        {/* SEM entrada animada, e isto é correção de um defeito medido.
+            O bloco usava `useTardio(1.4)`: nascia em `opacity: 0.06` e só
+            abria 1,4s depois. Como a home é pré-renderizada, esse estado
+            inicial ia GRAVADO no HTML — `style="opacity:0.06"` no arquivo
+            servido — então o lead e os dois botões ficavam invisíveis desde
+            o primeiro quadro até o React hidratar e o atraso vencer.
+            Reprovado por print em 01/09 pelo Gabriel.
+            O 0.06 existia para o Chrome contar o subtítulo no LCP em vez de
+            ignorá-lo por ser invisível. Pintar o bloco inteiro de uma vez
+            resolve o mesmo problema melhor: o LCP passa a ser a primeira
+            pintura, sem depender de JS nenhum. */}
+        <div className="v2-hero-pe">
           <p className="v2-hero-sub">
             {HERO.sub[0]}
             <span className="v2-marca-texto">{HERO.sub[1]}</span>
@@ -218,7 +228,7 @@ export function Hero({ paraCasos }) {
             <Pill onClick={paraCasos} escuro>{t("Ver os casos", "See the work")}</Pill>
             <Pill href={CONTATO().whatsapp.href} escuro secundario externo>{t("Falar comigo", "Let's talk")}</Pill>
           </div>
-        </motion.div>
+        </div>
         </div>
 
         <button className="v2-hero-seta" onClick={paraCasos} aria-label={t("Rolar para o conteúdo", "Scroll to content")}>

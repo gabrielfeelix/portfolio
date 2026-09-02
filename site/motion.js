@@ -70,29 +70,24 @@ export const easeRevela = [0.4, 0, 0.2, 1];
    É o sotaque que faltava na V2, que entrava com tudo junto. */
 export const tweenLaunch = { duration: 0.44, ease: [0.4, 0, 0.2, 1] };
 
-/* Entrada tardia obediente ao sistema: em reduced-motion sobra a opacidade,
-   e mesmo ela entra sem o atraso longo.
-
-   A opacidade inicial é 0.06 e NÃO zero, e o motivo é medido, não estético.
-   O Chrome exclui do Largest Contentful Paint tudo que está em `opacity: 0`:
-   enquanto o subtítulo do hero — que é o elemento de LCP da home, 15.255px² —
-   nascia invisível, o LCP não era o momento em que ele pintava, era montagem
-   do React + os 1,4s deste atraso + a animação. Nenhuma otimização de rede ou
-   de HTML alcança isso, porque não é a página que está lenta: é o navegador
-   se recusando a contar o que ninguém pode ver.
-
-   Com 0.06 o navegador passa a contá-lo no primeiro quadro. Seis por cento de
-   branco sobre a capa escura do hero é fantasma, não texto — e a animação que
-   importa, que é a subida de 16px com a opacidade abrindo, continua igual: ela
-   só começa de 0.06 em vez de 0.
-
-   Se algum dia isto voltar a 0, o LCP volta a ser refém do atraso. */
-export function useTardio(delay = 1.4) {
-  const quieto = useReducedMotion();
-  return quieto
-    ? { initial: { opacity: 0.06 }, animate: { opacity: 1 }, transition: { duration: 0.2 } }
-    : { initial: { opacity: 0.06, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { ...tweenLaunch, delay } };
-}
+/* 2a. tardio — REMOVIDO em 01/09, e não volta sem uma medição nova.
+ *
+ * Era a entrada atrasada do pé do hero: `opacity: 0.06` mais 1,4s de espera.
+ * O 0.06 tinha um motivo real — o Chrome exclui do LCP tudo que está em
+ * `opacity: 0`, e o subtítulo do hero É o elemento de LCP da home (15.255px²),
+ * então nascer invisível fazia o LCP contar montagem do React mais o atraso
+ * mais a animação.
+ *
+ * O que ninguém tinha olhado é o que a pessoa VÊ. A home é pré-renderizada,
+ * então o estado inicial ia gravado no HTML servido, literalmente
+ * `style="opacity:0.06;transform:translateY(16px)"` no arquivo: o lead e os
+ * dois botões do hero ficavam invisíveis do primeiro quadro até o React
+ * hidratar e o atraso vencer. Reprovado por print em 01/09.
+ *
+ * A correção é melhor pelos dois lados: sem animação nenhuma, o bloco pinta
+ * junto com o resto do hero, e o LCP passa a ser a primeira pintura em vez de
+ * depender de JS. Se um dia a entrada atrasada voltar a ser desejada, ela
+ * precisa acontecer SEM estado inicial invisível no HTML pré-renderizado. */
 
 /* 2b. longa
    A entrada de dobra grande: sem retorno, sem quique, e devagar o
