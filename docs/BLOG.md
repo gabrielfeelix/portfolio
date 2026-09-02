@@ -61,11 +61,19 @@ sozinho. Caminho começando com `/` e URL passam intactos.
 
 Depois: `npm run dev` para ver, `npm run build` para publicar.
 
-## As três diretivas
+## As seis diretivas
 
 Markdown comum funciona (`##`, `**negrito**`, `[link](/sobre)`, listas,
-citação, código). O que ele não sabe dizer são as três formas de mídia do
-site, e por isso existem três diretivas, e continuam sendo três:
+citação, código). O que ele não sabe dizer são as formas de mídia e de
+composição do site, e é para isso que existem as diretivas.
+
+Eram três até 01/09. As outras três entraram no mesmo dia, com um objetivo só:
+**tirar o post da coluna única.** A referência (taylordesigner, em `~/dev/refs`)
+alterna imagem pequena ao lado de texto, imagem larga, texto empurrado para um
+lado e frase grande de largura inteira, e é isso que faz o texto dela não ler
+como documento.
+
+As três primeiras, que já existiam:
 
 ```
 ::figura src=01.webp alt="Descrição obrigatória" largura=sangra
@@ -84,6 +92,52 @@ A frase que vira pull-quote.
 
 `largura` aceita `medida` (padrão, 640px), `larga` (1240px, passa dos dois
 lados) e `sangra` (de borda a borda da janela).
+
+E as três de composição, de 01/09:
+
+```
+::frase
+A afirmação do post, grande, na largura inteira. Uma ou duas sentenças.
+::
+
+::lado src=01.webp alt="Descrição obrigatória" pos=esquerda
+Imagem pequena de um lado, este texto do outro, em corpo maior.
+`pos` é o lado onde a IMAGEM fica: esquerda (padrão) ou direita.
+::
+
+::coluna pos=direita
+Um bloco empurrado para um dos lados, em coluna de 560px. Serve para variar o
+lado depois de uma imagem larga. `pos` é direita (padrão) ou esquerda.
+::
+```
+
+`::frase` é um degrau ACIMA do `##`, porque ela não é título de seção: é a frase
+que a pessoa leva embora, e costuma aparecer dentro de uma seção que já tem
+título. Não use duas seguidas.
+
+`::lado` exige `src` e `alt`, como a `::figura`. A imagem mantém a **proporção
+natural do arquivo**, e isto não é detalhe: a primeira versão travava 1:1 com
+corte central, copiando a referência, e destruiu o primeiro print de sistema que
+entrou nela (717×987 cortado em quadrado vira um pedaço de tabela sem começo nem
+fim). A referência põe foto de banco ali; este blog põe tela.
+
+### Onde os blocos largos crescem, e por quê 1400
+
+Os três, mais a `::figura largura=larga` e a `::margem`, só saem da coluna de
+leitura a partir de **1400px**. Abaixo disso viram bloco normal, na largura do
+texto.
+
+O número era 1281 e estava errado. Medido em 01/09: a 1281 a nota de margem ia
+de 1033 a 1333 numa janela de 1281, e isso são **52px de overflow horizontal**.
+A faixa entre 1281 e 1390 nunca tinha sido olhada, porque o portão de qualidade
+só rodava a 1440 e a 390.
+
+A conta que fecha: a nota mede 300 e abre 40 de vão, então precisa de 340px à
+direita de uma coluna de 720 centrada. Com o respiro da dobra, o número é 1400.
+De quebra, os blocos largos pararam de nascer a 13px da borda da janela.
+
+Verificado depois da mudança, em 1281, 1399, 1400, 1440, 1600, 1920, 900 e 390:
+**zero overflow em todas.**
 
 `alt` em `::figura` é **obrigatório** e o build falha sem ele. Imagem que
 ninguém consegue ler não entra num site cujo dono desenha para gente.

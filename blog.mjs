@@ -75,8 +75,14 @@ function frontmatter(bruto, arquivo) {
 
 /* --- diretivas -----------------------------------------------------------
    Markdown não sabe dizer "esta imagem sangra de borda a borda" nem "isto é
-   nota de margem", e essas duas formas são a gramática de mídia do site
-   (M4 de docs/ANALISE-REFS.md). São três, e continuam sendo três:
+   nota de margem", e essas formas são a gramática de mídia do site
+   (M4 de docs/ANALISE-REFS.md).
+
+   Eram três até 01/09. As outras três entraram no mesmo dia, e existem por um
+   motivo só: tirar o post da coluna única. A referência (taylordesigner, em
+   ~/dev/refs) alterna imagem pequena ao lado de texto, imagem larga, texto
+   empurrado para um lado e frase grande de largura inteira, e é isso que faz
+   o texto dela não ler como documento.
 
      ::figura src=01.webp alt="..." largura=sangra|medida|larga
      legenda opcional
@@ -84,6 +90,16 @@ function frontmatter(bruto, arquivo) {
 
      ::margem      vai para a coluna de 300px, fora do fluxo de leitura
      ::destaque    a frase que vira pull-quote
+
+     ::frase       a afirmação do post, grande, na largura inteira
+     ::lado src=01.webp alt="..." pos=esquerda|direita
+                   imagem pequena de um lado, texto grande do outro
+     ::coluna pos=direita|esquerda
+                   um bloco de texto empurrado para um dos lados
+
+   As três novas só saem da coluna de leitura a partir de 1281px, que é onde
+   existe folga dos dois lados. Abaixo disso elas viram bloco normal, na
+   largura do texto — a mesma regra que `::figura largura=larga` já seguia.
 
    Rodam ANTES do marked e viram HTML cru, que o marked deixa passar. */
 function atributos(linha) {
@@ -110,7 +126,7 @@ function expandirDiretivas(corpo, slug, arquivo) {
   const fora = [];
   let i = 0;
   while (i < linhas.length) {
-    const abre = linhas[i].match(/^::(figura|margem|destaque)\b(.*)$/);
+    const abre = linhas[i].match(/^::(figura|margem|destaque|frase|lado|coluna)\b(.*)$/);
     if (!abre) { fora.push(linhas[i++]); continue; }
 
     const tipo = abre[1];
@@ -136,6 +152,27 @@ function expandirDiretivas(corpo, slug, arquivo) {
         `</figure>`;
     } else if (tipo === "margem") {
       html = `<aside class="v2-post-margem">${marked.parse(texto)}</aside>`;
+    } else if (tipo === "frase") {
+      if (!texto) throw new Error(`${arquivo}: ::frase vazia`);
+      html = `<p class="v2-post-frase">${inline}</p>`;
+    } else if (tipo === "lado") {
+      /* Imagem pequena de um lado, texto do outro. `pos` é o lado da IMAGEM,
+         e não o do texto: quem escreve está olhando para a foto. */
+      if (!at.src) throw new Error(`${arquivo}: ::lado sem src=`);
+      if (!at.alt) throw new Error(`${arquivo}: ::lado sem alt= (a imagem precisa ser lida por quem não a vê)`);
+      if (!texto) throw new Error(`${arquivo}: ::lado sem texto ao lado da imagem`);
+      const pos = at.pos === "direita" ? "direita" : "esquerda";
+      html =
+        `<div class="v2-post-lado is-${pos}">` +
+        `<figure class="v2-post-lado-fig">` +
+        `<img src="${escapar(midia(at.src, slug))}" alt="${escapar(at.alt)}" loading="lazy" decoding="async">` +
+        `</figure>` +
+        `<div class="v2-post-lado-texto">${marked.parse(texto)}</div>` +
+        `</div>`;
+    } else if (tipo === "coluna") {
+      if (!texto) throw new Error(`${arquivo}: ::coluna vazia`);
+      const pos = at.pos === "esquerda" ? "esquerda" : "direita";
+      html = `<div class="v2-post-coluna is-${pos}">${marked.parse(texto)}</div>`;
     } else {
       html = `<p class="v2-post-destaque">${inline}</p>`;
     }
@@ -196,6 +233,18 @@ function umPost(arquivo, bruto, idioma) {
   const leitura = Math.max(1, Math.round(palavras / (idioma === "en" ? 230 : 200)));
 
   let html = marked.parse(expandirDiretivas(corpo, slug, arquivo));
+
+  /* A tabela rola dentro de si (`overflow-x: auto` em blog.css, para uma tabela
+     de quatro colunas não empurrar a página a 390px). Região que rola precisa
+     ser alcançável pelo teclado, senão quem não usa mouse não chega no que está
+     fora do quadro — é a regra `scrollable-region-focusable` do axe, e ela
+     reprovou o post em inglês a 390px em 01/09. A versão portuguesa passava por
+     acaso: a mesma tabela, com palavras mais curtas, cabia sem rolar.
+
+     `tabindex` na própria tabela, e não um invólucro com `role="region"`:
+     região sem nome acessível troca um defeito por outro, e a tabela já se
+     anuncia como tabela. */
+  html = html.replace(/<table>/g, '<table tabindex="0">');
 
   // Imagem escrita em markdown puro (![alt](01.webp)) ganha o mesmo prefixo
   // que a diretiva dá, e o lazy que ela não tem como pedir.

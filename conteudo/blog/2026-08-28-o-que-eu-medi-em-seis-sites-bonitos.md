@@ -19,7 +19,9 @@ O que eu consegui dizer na hora foi isto:
 > Está cru. Parece que a gente foi pegando componente pronto, jogando na página
 > e pronto. Nada se amarra de verdade.
 
-**"Cru" não é diagnóstico.** Serve para reprovar e não serve para consertar.
+::frase
+"Cru" não é diagnóstico. Serve para reprovar e não serve para consertar.
+::
 
 Então eu baixei seis portfólios que eu achava bonitos e parei de descrever o
 que sentia olhando para eles. Contei o CSS.
@@ -36,11 +38,13 @@ Rodei uma contagem de `border-radius` em cada um:
   é `500px`, o arco no topo das colunas do hero.
 - **o meu:** `20px` no card, `24px` na mídia, `28px` na seção.
 
+::coluna pos=direita
 Ou zero, ou extremo. Eu tinha três valores médios, todos diferentes entre si, e
-**nenhum deles escolhido por um motivo que eu soubesse explicar.**
+nenhum deles escolhido por um motivo que eu soubesse explicar.
 
 Eles vieram junto com os componentes, e é exatamente essa a denúncia: raio
 médio em tudo é o que sobra quando ninguém decidiu nada sobre forma.
+::
 
 ::margem
 A regra que saiu daí: conteúdo é reto, redondo só onde é acento. Os tokens de
@@ -93,7 +97,9 @@ Espaço em branco não convence por ser muito. Convence quando a página é larg
 o texto é estreito, e a diferença entre os dois é visivelmente escolhida.
 ::
 
+::coluna pos=esquerda
 Com container estreito e texto largo, o branco vira o que não coube.
+::
 
 ## O que a medição não resolve
 
@@ -148,5 +154,7 @@ bungee, morreu aí.
 
 Nenhum dos três aparece olhando para a tela.
 
-Medir não é o contrário de ter gosto. É o que faz o gosto virar um argumento
-que sobrevive a uma reunião, e a uma segunda leitura na terça-feira seguinte.
+::frase
+Medir não é o contrário de ter gosto. É o que faz o gosto virar um argumento que
+sobrevive a uma reunião, e a uma segunda leitura na terça-feira seguinte.
+::

@@ -19,8 +19,10 @@ ninguém.
 
 Numa casa assim, esperar o calendário abrir é esperar sentado.
 
-**Evidência de uso não vem só de sessão agendada.** Ela costuma já estar na
+::frase
+Evidência de uso não vem só de sessão agendada. Ela costuma já estar na
 operação, escrita à mão, esperando alguém ler.
+::
 
 ## A planilha paralela é a operação escrita à mão
 
@@ -45,12 +47,14 @@ imposto e prazo de repasse diferentes entre si, e importação de extrato de
 várias origens. A planilha entregou a ordem. O briefing entregou a lista.
 ::
 
+::lado src=/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp alt="Painel de origem dos dados, com o registro da plataforma ao lado do registro do gateway" pos=direita
 A parte difícil nunca foi desenhar aquelas telas. Foi decidir **a ordem em que
-elas aparecem**, e o que continua visível quando o número não bate. Regra de
-negócio pesada não se resolve com componente bonito: se resolve escolhendo o
-que a pessoa vê primeiro no momento em que alguma coisa deu errado.
+elas aparecem**, e o que continua visível quando o número não bate.
 
-Isso a planilha me contou de graça.
+Regra de negócio pesada não se resolve com componente bonito: se resolve
+escolhendo o que a pessoa vê primeiro no momento em que alguma coisa deu
+errado. Isso a planilha me contou de graça.
+::
 
 ## A aula mais barata da profissão custa oito segundos de silêncio
 
@@ -125,14 +129,18 @@ Nada. E as sugestões eram outros erros de grafia do próprio catálogo: "Mause"
 escapasse da grafia exata.
 ::
 
+::coluna pos=direita
 Metade dos nomes numa loja de hardware é estrangeira e cheia de número. Errar a
 grafia ali é o caso comum, não a exceção.
 
 Quem digitava *mause* tinha o mesmo dinheiro de quem digitava *mouse*, e saía
 sem ver um único produto.
+::
 
-Aquilo deixou de ser bug de motor de busca no segundo em que virou frase: **a
-loja estava decidindo que quem não escreve certo não compra.**
+::frase
+Aquilo deixou de ser bug de motor de busca no segundo em que virou frase: a loja
+estava decidindo que quem não escreve certo não compra.
+::
 
 ## O hábito que sobrou
 

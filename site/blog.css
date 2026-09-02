@@ -672,6 +672,129 @@
   padding: 0 var(--v2-gutter);
 }
 
+/* ============ os três blocos que tiram o post da coluna única ============
+ *
+ * Entraram em 01/09, com a referência taylordesigner (~/dev/refs). O post
+ * dela alterna imagem pequena ao lado de texto, imagem larga, texto empurrado
+ * para um lado e frase grande de largura inteira, e é isso que faz o texto
+ * não ler como documento de uma coluna só.
+ *
+ * Os três seguem a MESMA regra que `::figura largura=larga` já seguia: dentro
+ * da coluna de 720 até 1280px, e só a partir de 1281 eles crescem para os
+ * 1240 de `--v2-caso-larga`, com o mesmo truque de margem negativa. Antes
+ * disso não existe folga dos dois lados para crescer, e forçar produziria
+ * exatamente o overflow horizontal que o portão de qualidade proíbe.
+ *
+ * `clear: both` nos três porque `::margem` flutua à direita a partir de 1281:
+ * sem isso um bloco largo logo depois de uma nota de margem nasce por baixo
+ * dela. */
+
+/* ------------------------------------------------------------------ frase
+   A afirmação do post. Um degrau ACIMA do h2 (`--v2-t-movimento` contra
+   `--v2-t-caso-ato`), porque ela não é título de seção: ela é a frase que a
+   pessoa leva embora, e no meio de uma seção que já tem título. */
+.v2-post-corpo .v2-post-frase {
+  clear: both;
+  margin: var(--v2-s6) 0;
+  font-size: var(--v2-t-movimento);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: var(--v2-track-display);
+  text-wrap: balance;
+}
+
+/* ------------------------------------------------------------------- lado
+   Imagem pequena de um lado, texto grande do outro. As medidas são as da
+   referência, lidas do CSS dela: imagem de 326px numa proporção de 0.97 (que
+   aqui vira 1, para o corte da foto ser previsível) e o texto ocupando o
+   resto. O texto sobe para `--v2-t-lead` porque ao lado de uma imagem o corpo
+   de 16px lê como legenda. */
+.v2-post-lado {
+  clear: both;
+  display: grid;
+  gap: var(--v2-s4);
+  margin: var(--v2-s6) 0;
+}
+
+.v2-post-lado-fig { margin: 0; }
+
+/* Proporção NATURAL, e não um quadrado com `cover`.
+ *
+ * A primeira versão travava 1:1 e cortava do centro, que é o que a referência
+ * faz — só que a referência põe foto de banco ali, e este blog põe print de
+ * sistema. Medido em 01/09 com a tela de origem dos dados (717×987): o quadrado
+ * comia o topo e o rodapé e sobrava um pedaço de tabela sem começo nem fim.
+ * Print de tela não sobrevive a corte, porque a informação dele está nas
+ * bordas. */
+.v2-post-lado-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--v2-cartao-raio);
+}
+
+.v2-post-lado-texto {
+  font-size: var(--v2-t-lead);
+  line-height: 1.45;
+}
+
+.v2-post-lado-texto > :first-child { margin-top: 0; }
+.v2-post-lado-texto > :last-child { margin-bottom: 0; }
+
+/* ----------------------------------------------------------------- coluna
+   Um bloco empurrado para um dos lados. Serve para variar o lado depois de
+   uma imagem larga, que é o que a referência faz: imagem de borda a borda e,
+   embaixo, o texto encostado à direita. */
+.v2-post-coluna {
+  clear: both;
+  margin: var(--v2-s6) 0;
+  font-size: var(--v2-t-lead);
+  line-height: 1.45;
+}
+
+.v2-post-coluna > :first-child { margin-top: 0; }
+.v2-post-coluna > :last-child { margin-bottom: 0; }
+
+/* No celular e no tablet os três são bloco normal, na largura do texto. A
+   imagem do `::lado` fica no topo e não passa de 320px: esticada na coluna
+   inteira ela vira capa, e ela não é capa. */
+@media (max-width: 1399px) {
+  .v2-post-lado-fig img { max-width: 320px; }
+}
+
+@media (min-width: 1400px) {
+  /* Os 1240 de largura com a coluna de 720 no meio: -260px de cada lado. É a
+     mesma conta que `.v2-post-fig.is-larga` faz, e o mesmo ponto de virada. */
+  /* O seletor carrega `.v2-post-corpo` porque a frase é um <p>, e
+     `.v2-post-corpo > p` já declara `margin` no atalho: sem isto ela ficava com
+     margin-left 0 e furava 153px para fora da janela a 1440. Medido em 01/09. */
+  .v2-post-corpo .v2-post-frase,
+  .v2-post-corpo .v2-post-lado,
+  .v2-post-corpo .v2-post-coluna {
+    width: var(--v2-caso-larga);
+    margin-left: calc((var(--v2-medida-post) - var(--v2-caso-larga)) / 2);
+  }
+
+  .v2-post-lado {
+    grid-template-columns: 326px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--v2-s5);
+  }
+
+  /* `pos` é o lado da IMAGEM. Com ela à direita, o texto assume a primeira
+     coluna e a figura a segunda — por `order`, e não invertendo o HTML, para
+     a ordem de leitura continuar sendo imagem-e-depois-texto em quem ouve. */
+  .v2-post-lado.is-direita { grid-template-columns: minmax(0, 1fr) 326px; }
+  .v2-post-lado.is-direita .v2-post-lado-fig { order: 2; }
+  .v2-post-lado.is-direita .v2-post-lado-texto { order: 1; }
+
+  /* A coluna estreita dentro da faixa larga. `--v2-medida-lead` são os mesmos
+     560px que o lead de toda dobra do site usa. */
+  .v2-post-coluna > * { max-width: var(--v2-medida-lead); }
+  .v2-post-coluna.is-direita > * { margin-left: auto; }
+  .v2-post-coluna.is-esquerda > * { margin-right: auto; }
+}
+
 .v2-post-carregando {
   font-family: var(--v2-mono);
   font-size: var(--v2-t-cromo);
@@ -680,9 +803,19 @@
   color: var(--v2-muted);
 }
 
-@media (min-width: 1281px) {
-  /* A partir daqui existe margem de sobra à direita da coluna de 640: a nota
-     sai do fluxo e a figura larga pode passar dos dois lados. */
+/* 1400 e não 1281.
+ *
+ * A 1281 a nota de margem ia de 1033 a 1333 numa janela de 1281: 52px de
+ * overflow horizontal, medido em 01/09. O portão de qualidade do blog só tinha
+ * sido rodado a 1440 e a 390, então a faixa entre 1281 e 1390 nunca foi olhada.
+ *
+ * A conta: a nota mede 300 e abre 40 de vão, então ela precisa de 340px à
+ * direita de uma coluna de 720 centrada. Some o respiro da dobra e o número que
+ * fecha é 1400, e não 1281. Os blocos largos usam o mesmo ponto de virada, e de
+ * quebra param de nascer a 13px da borda da janela. */
+@media (min-width: 1400px) {
+  /* A partir daqui existe margem de sobra à direita da coluna: a nota sai do
+     fluxo e a figura larga pode passar dos dois lados. */
   .v2-post-margem {
     float: right;
     width: var(--v2-margem-caso);

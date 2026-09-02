@@ -18,8 +18,10 @@ and a booked interview was time that showed up on nobody's delivery report.
 
 In a house like that, waiting for the calendar to open up is waiting forever.
 
-**Evidence of use doesn't only come from a scheduled session.** It is usually
+::frase
+Evidence of use doesn't only come from a scheduled session. It is usually
 already in the operation, written by hand, waiting for somebody to read it.
+::
 
 ## The parallel spreadsheet is the operation written out by hand
 
@@ -45,12 +47,14 @@ from several sources. The spreadsheet gave me the order. The brief gave me the
 list.
 ::
 
+::lado src=/volume/assets/projetos/locarmais/s2-origem-dos-dados.webp alt="Data-origin panel, with the platform record next to the gateway record" pos=direita
 The hard part was never drawing those screens. It was deciding **the order they
-appear in**, and what stays visible when the numbers don't agree. Heavy business
-rules don't get solved with a pretty component: they get solved by choosing what
-the person sees first at the moment something has gone wrong.
+appear in**, and what stays visible when the numbers don't agree.
 
-The spreadsheet told me that for free.
+Heavy business rules don't get solved with a pretty component: they get solved
+by choosing what the person sees first at the moment something has gone wrong.
+That is what the spreadsheet told me for free.
+::
 
 ## The cheapest lesson in this profession costs eight seconds of silence
 
@@ -124,14 +128,18 @@ Nothing. And the suggestions were other misspellings from the catalogue itself:
 variation that escaped the exact spelling.
 ::
 
+::coluna pos=direita
 Half the names in a hardware store are foreign and full of numbers. Getting the
 spelling wrong there is the common case, not the exception.
 
 Somebody typing *mause* had the same money as somebody typing *mouse*, and left
 without seeing a single product.
+::
 
-That stopped being a search-engine bug the second it became a sentence: **the
-store was deciding that people who can't spell don't get to buy.**
+::frase
+That stopped being a search-engine bug the second it became a sentence: the
+store was deciding that people who can't spell don't get to buy.
+::
 
 ## The habit that stuck
 

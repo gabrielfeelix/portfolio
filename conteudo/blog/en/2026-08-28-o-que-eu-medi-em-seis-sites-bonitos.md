@@ -19,8 +19,10 @@ What I managed to say at the time was this:
 > It's raw. It looks like we grabbed ready-made components, dropped them on the
 > page and called it done. Nothing really ties together.
 
-**"Raw" is not a diagnosis.** It's enough to reject something and no use at all
-for fixing it.
+::frase
+"Raw" is not a diagnosis. It's enough to reject something and no use at all for
+fixing it.
+::
 
 So I downloaded six portfolios I thought were beautiful and stopped describing
 how I felt looking at them. I counted the CSS.
@@ -37,12 +39,14 @@ I ran a `border-radius` count on each one:
   `500px`, the arc on top of the hero columns.
 - **mine:** `20px` on the card, `24px` on media, `28px` on the section.
 
+::coluna pos=direita
 Either zero or extreme. I had three middling values, all different from each
-other, and **not one of them chosen for a reason I could explain.**
+other, and not one of them chosen for a reason I could explain.
 
 They came bundled with the components, and that is exactly what gives it away: a
 middling radius on everything is what's left over when nobody decided anything
 about form.
+::
 
 ::margem
 The rule that came out of it: content is square, round only where it's an accent.
@@ -95,7 +99,9 @@ White space doesn't convince by being plentiful. It convinces when the page is
 wide, the text is narrow, and the difference between the two is visibly chosen.
 ::
 
+::coluna pos=esquerda
 With a narrow container and wide text, the white becomes whatever didn't fit.
+::
 
 ## What measuring doesn't solve
 
@@ -150,5 +156,7 @@ It failed axe at 12px. At 60% it gives 7.06:1 and passes comfortably.
 
 None of the three shows up by looking at the screen.
 
+::frase
 Measuring is not the opposite of having taste. It is what turns taste into an
 argument that survives a meeting, and a second reading the following Tuesday.
+::
