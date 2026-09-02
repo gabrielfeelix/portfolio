@@ -41,8 +41,8 @@ publicado: true
 | `resumo` | sim | duas linhas; aparece no card, no hover e na prévia de link |
 | `capa` | não | nome do arquivo dentro da pasta do post |
 | `capaAlt` | não | cai no título se faltar |
-| `formato` | não | `normal` (padrão) ou `largo` |
-| `destaque` | não | `true` põe o post na capa grande da listagem |
+| `formato` | não | aceito e **ignorado** desde 01/09; ver abaixo |
+| `destaque` | não | aceito e **ignorado** desde 01/09; ver abaixo |
 | `publicado` | não | `false` = escrito e fora do ar; aparece só em `npm run dev` |
 
 **Não existe campo de tempo de leitura.** Ele é contado no build por palavra,
@@ -110,7 +110,44 @@ devolver **302** — o servidor via um diretório com aquele nome e redirecionav
 para `/blog/` antes de qualquer fallback de SPA. A listagem inteira sumia
 atrás de um redirect. Dado e rota não dividem endereço.
 
-## As decisões de desenho, e o que foi medido
+## A forma de 01/09: dois em dois, sem capa grande
+
+Pedido do Gabriel, com uma quarta referência:
+`~/dev/refs/taylordesigner.framer.website` (blog e um post). O que mudou:
+
+- **A capa de destaque saiu.** A listagem abria com um post ocupando a janela
+  inteira (100vw por 2.0), e ele não quis "uma capa muito grande para um
+  post". A página abre direto na grade. O campo `destaque` continua sendo
+  lido para nenhum `.md` quebrar, mas não faz nada.
+- **A grade é de dois em dois**, simétrica, como a fileira de casos da home.
+  Medido na referência: `repeat(2, minmax(50px, 1fr))` com 20px de vão, e
+  card de 500 por 368 de capa (1.36). Aqui a capa é **3:2**, a proporção em
+  que o arquivo é servido, então o card mostra a foto inteira. O `largo` saiu
+  junto (o campo `formato` também é lido e ignorado): grade simétrica não tem
+  onde pôr um card de duas colunas sem abrir buraco.
+- **O hover é só o zoom da capa** (1.035 em 900ms, o mesmo da capa cheia dos
+  casos na home). O véu escuro com o resumo por cima saiu; o resumo mora
+  embaixo do título, em duas linhas, onde é lido em vez de adivinhado.
+- **A abertura do post é alinhada à esquerda**, título grande e resumo como
+  subtítulo, com a capa larga dentro da dobra em 16:9 (3:2 no celular). Era
+  centrada, com a capa sangrando a janela a 72vh.
+- **O fim do post usa os mesmos dois cards da listagem**, com capa. A
+  referência fecha o artigo com "Next Article" e duas capas; o cartão só de
+  texto que ficava ali não se parecia com nada que o leitor tivesse visto.
+
+O card e a capa moram em `site/PostCard.jsx`, porque agora são usados em duas
+páginas.
+
+O que ficou de fora, de propósito: o corpo do post da referência não é uma
+coluna só (imagem pequena à esquerda com texto à direita, imagem larga, texto
+encostado à direita, frase grande). Fazer isso aqui pede uma diretiva nova no
+markdown e reescrever os três posts com ela. Fica para quando houver imagem
+própria para pôr nesses lugares.
+
+## As decisões de desenho de 29/08, e o que foi medido
+
+Boa parte do que está abaixo foi substituído em 01/09 (grade, destaque,
+abertura do post). Fica como registro do que foi tentado e por quê.
 
 Referências usadas: `viper-template`, `bungee`, `launchfolio`, em
 `~/dev/refs`. A `isabella-pires` **não** é referência deste site.

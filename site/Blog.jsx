@@ -23,16 +23,27 @@
  * 2. Post sem capa NÃO vira card mutilado. Ele cai na chapa escura com o
  *    número em display, que é a mesma resposta que a página /processo já dá
  *    para passo sem print honesto. É o caso comum hoje: o blog nasce sem
- *    banco de imagem. */
+ *    banco de imagem.
+ *
+ * Em 01/09 a página mudou de forma, por pedido do Gabriel e com uma quarta
+ * referência (taylordesigner, ~/dev/refs/taylordesigner.framer.website):
+ *
+ *   - a capa grande de destaque SAIU. Ela abria a página com um post
+ *     ocupando a janela inteira, e o Gabriel não quis "uma capa muito grande
+ *     para um post". A listagem agora abre direto na grade.
+ *   - a grade é de DOIS em dois, simétrica, como a fileira de casos da home.
+ *     O `largo` e a proporção variando por card saíram junto: todo card tem
+ *     a mesma capa retangular, e a página lê como uma coisa só.
+ *   - o hover é só o zoom da capa. O véu escuro com o resumo por cima saiu, e
+ *     o resumo mora embaixo do título, onde é lido.
+ *
+ * O card e a capa moram em PostCard.jsx, porque o fim de cada post usa os
+ * mesmos dois. */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { m as motion } from "motion/react";
 import { Dobra, Titulo, GradeCasos, CampoDeVoo } from "./Kit.jsx";
-import { useParallax, useRise, useSubir } from "./motion.js";
-import {
-  POSTS, tags, filtrar, destaque, dataCurta, rotuloTag,
-  temFiltro, temBusca,
-} from "./blog.js";
+import { CardPost } from "./PostCard.jsx";
+import { POSTS, tags, filtrar, temFiltro, temBusca } from "./blog.js";
 import { t, url } from "./i18n.js";
 
 /* --- estado na URL -------------------------------------------------------
@@ -60,63 +71,6 @@ function escreverURL({ tag, q }) {
        ver: a URL certa chegava a existir. */
     window.history.replaceState(null, "", url("/blog") + (busca ? `?${busca}` : ""));
   } catch (e) { /* file:// e afins; a tela continua certa, só a URL não acompanha */ }
-}
-
-/* --- capa ----------------------------------------------------------------
-   Um componente só para os dois estados, porque a alternativa é cada lugar
-   que mostra post decidir sozinho o que fazer quando não há imagem — e aí
-   metade da página trata o vazio de um jeito e a outra metade de outro. */
-function Capa({ p, n, className = "", intensidade = 10 }) {
-  /* O hook vem antes do `if`: React exige a mesma ordem de hooks em todo
-     render, e post com capa e post sem capa passam pelo mesmo componente. */
-  const par = useParallax(intensidade);
-
-  if (p.capa) {
-    return (
-      /* Parallax na capa. A moldura corta e a foto anda dentro dela: é a
-         mesma primitiva que a `Quebra` do kit já usa na home, com a mesma
-         folga de 114% de altura para o deslocamento não abrir faixa vazia
-         em cima nem embaixo. Em reduced-motion o hook devolve `undefined`
-         e a foto fica parada. */
-      <span className={`v2-post-capa ${className}`} ref={par.ref}>
-        <motion.span className="v2-post-capa-in" style={par.style}>
-          <img src={p.capa} alt={p.capaAlt || ""} loading="lazy" decoding="async" />
-        </motion.span>
-      </span>
-    );
-  }
-  return (
-    <span className={`v2-post-capa is-vazia ${className}`} aria-hidden="true">
-      <span className="v2-post-capa-tag">{rotuloTag(p.tag)}</span>
-      <span className="v2-post-capa-n">{String(n).padStart(2, "0")}</span>
-    </span>
-  );
-}
-
-/* --- o destaque ----------------------------------------------------------
-   A largura toda, sangrando de borda a borda. É a peça que nenhuma das três
-   referências de blog tem, e é o que faz a página abrir com peso em vez de
-   abrir com uma grade. Com um post só no ar, ela É a página. */
-function Destaque({ p, ir }) {
-  const subir = useSubir();
-  if (!p) return null;
-  return (
-    <motion.a
-      className="v2-post-destaque-capa"
-      href={url(`/blog/${p.slug}`)}
-      onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
-      {...subir(0)}
-    >
-      <Capa p={p} n={1} className="is-larga" intensidade={16} />
-      <span className="v2-post-destaque-texto">
-        <span className="v2-post-meta">
-          {dataCurta(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} MIN
-        </span>
-        <span className="v2-post-destaque-titulo">{p.titulo}</span>
-        <span className="v2-post-destaque-resumo">{p.resumo}</span>
-      </span>
-    </motion.a>
-  );
 }
 
 /* --- a barra -------------------------------------------------------------
@@ -183,39 +137,6 @@ function Barra({ lista, tag, setTag, q, setQ, mostrando, total }) {
   );
 }
 
-/* --- o card ---------------------------------------------------------------
-   Sem caixa, sem sombra, raio 0: imagem, meta na mono, título. No hover a
-   capa escurece e o resumo entra por cima — a mesma primitiva que a dobra de
-   peças da home pede. Um vocabulário de motion, dois lugares (M5). */
-function Card({ p, i, n, ir }) {
-  const rise = useRise();
-  return (
-    <motion.a
-      className="v2-post-card"
-      data-formato={p.formato}
-      href={url(`/blog/${p.slug}`)}
-      onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
-      /* O resumo mora dentro da janela da capa, então ele vem antes do título
-         no DOM e o nome acessível do link saía pelo resumo: "Recusei a minha
-         própria home e não sabia dizer por quê. Baixei seis…" em vez do
-         título. Na tela a ordem está certa — o resumo só aparece no hover, por
-         cima da capa —, o que estava errado era o que o link anuncia. */
-      aria-label={p.titulo}
-      {...rise(i % 3)}
-    >
-      <span className="v2-post-card-janela">
-        <Capa p={p} n={n} intensidade={8} />
-        <span className="v2-post-card-veu" aria-hidden="true" />
-        <span className="v2-post-card-resumo">{p.resumo}</span>
-      </span>
-      <span className="v2-post-meta">
-        {dataCurta(p.data)}<i>·</i>{rotuloTag(p.tag)}<i>·</i>{p.leitura} MIN
-      </span>
-      <span className="v2-post-card-titulo">{p.titulo}</span>
-    </motion.a>
-  );
-}
-
 export default function Blog({ ir }) {
   const inicial = useMemo(lerURL, []);
   const [tag, setTag] = useState(inicial.tag);
@@ -224,14 +145,7 @@ export default function Blog({ ir }) {
   useEffect(() => { escreverURL({ tag, q }); }, [tag, q]);
 
   const lista = useMemo(() => tags(POSTS), []);
-  const emDestaque = useMemo(() => destaque(POSTS), []);
-
-  /* O destaque sai da grade só quando a pessoa está vendo tudo. Com filtro ou
-     busca ligados ele volta para a lista: escondê-lo faria a contagem mentir
-     e o post desaparecer de uma busca pelo próprio título. */
-  const cru = useMemo(() => filtrar(POSTS, { tag, q }), [tag, q]);
-  const filtrando = Boolean(tag || q);
-  const grade = filtrando ? cru : cru.filter((p) => p !== emDestaque);
+  const grade = useMemo(() => filtrar(POSTS, { tag, q }), [tag, q]);
 
   const limpar = useCallback(() => { setTag(""); setQ(""); }, []);
 
@@ -258,38 +172,40 @@ export default function Blog({ ir }) {
                "The first text is being written. Come back in a few days.")}
           </p>
         ) : null}
+
+        {/* A grade mora na MESMA dobra do título. Antes havia uma dobra 02
+            só para ela, porque entre as duas ficava a capa de destaque; sem a
+            capa, uma segunda dobra seria um cromo e 104px de vão para dizer
+            "todos os textos" logo abaixo de "Notas". */}
+        {POSTS.length ? (
+          <>
+            <Barra
+              lista={lista}
+              tag={tag}
+              setTag={setTag}
+              q={q}
+              setQ={setQ}
+              mostrando={grade.length}
+              total={POSTS.length}
+            />
+
+            {grade.length ? (
+              <div className="v2-blog-grade">
+                {grade.map((p, i) => (
+                  <CardPost key={p.slug} p={p} i={i} n={POSTS.indexOf(p) + 1} ir={ir} />
+                ))}
+              </div>
+            ) : (
+              <div className="v2-blog-nada">
+                <p>{t("Nada com esse recorte.", "Nothing under that filter.")}</p>
+                <button type="button" className="v2-blog-limpar" onClick={limpar}>
+                  {t(`Ver os ${POSTS.length} textos`, `See all ${POSTS.length} texts`)}
+                </button>
+              </div>
+            )}
+          </>
+        ) : null}
       </Dobra>
-
-      {!filtrando && emDestaque ? <Destaque p={emDestaque} ir={ir} /> : null}
-
-      {POSTS.length ? (
-        <Dobra n="02" nome={t("Todos os textos", "Every text")} carimbo={t(`${POSTS.length} NO AR`, `${POSTS.length} LIVE`)}>
-          <Barra
-            lista={lista}
-            tag={tag}
-            setTag={setTag}
-            q={q}
-            setQ={setQ}
-            mostrando={cru.length}
-            total={POSTS.length}
-          />
-
-          {grade.length ? (
-            <div className="v2-blog-grade">
-              {grade.map((p, i) => (
-                <Card key={p.slug} p={p} i={i} n={POSTS.indexOf(p) + 1} ir={ir} />
-              ))}
-            </div>
-          ) : (
-            <div className="v2-blog-nada">
-              <p>{t("Nada com esse recorte.", "Nothing under that filter.")}</p>
-              <button type="button" className="v2-blog-limpar" onClick={limpar}>
-                {t(`Ver os ${POSTS.length} textos`, `See all ${POSTS.length} texts`)}
-              </button>
-            </div>
-          )}
-        </Dobra>
-      ) : null}
 
       {/* O blog devolve para o trabalho: é o argumento da ordem. Quem chegou
           por um texto sai sabendo que existem quatro casos abertos. */}

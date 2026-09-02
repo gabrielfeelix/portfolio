@@ -4,10 +4,16 @@
  * forma que tokens.css já define. Se um número cru aparecer neste arquivo,
  * ou ele virou token, ou o degrau escolhido está errado.
  *
- * As três medidas que vieram das referências (~/dev/refs):
- *   grade      3 colunas → 2 → 1, igual às três
- *   proporção  1 / 0.7 / 1.778, os valores medidos no CSS do bungee
- *   leitura    640px, que é a medida da página de caso, não os 809 do viper
+ * As medidas que vieram das referências (~/dev/refs):
+ *   grade      2 colunas → 1, medida na taylordesigner (01/09): grade de
+ *              `repeat(2, minmax(50px, 1fr))` com 20px de vão, card de 500
+ *              por 368 de capa. Antes eram 3 → 2 → 1, das três primeiras
+ *              referências, e saiu a pedido do Gabriel: dois em dois, como a
+ *              fileira de casos da home.
+ *   proporção  3:2 em TODO card. É a proporção em que a capa é servida
+ *              (2400×1600), então o card mostra a foto inteira, sem recorte.
+ *              A referência usa 1.36; 3:2 é o mais perto disso que não corta.
+ *   leitura    720px, centrada; ver "o post", abaixo.
  */
 
 /* ------------------------------------------------------ meta, a linha mono
@@ -43,7 +49,11 @@
   display: block;
   overflow: hidden;
   background: var(--v2-card);
-  border-radius: var(--v2-r-media);   /* 0 */
+  /* O raio dos casos da home (`.v2-cartao`, 20px), e não o raio zero de mídia.
+     Pedido do Gabriel em 01/09: a capa do blog "tem que ser igual à do case na
+     homepage". O token é o mesmo de propósito: se o card da home mudar de
+     raio, a capa do blog muda junto. */
+  border-radius: var(--v2-cartao-raio);
 }
 
 /* A janela do parallax. A foto é 14% mais alta que a moldura e sobe 7% para
@@ -66,7 +76,7 @@
   /* O zoom lento do hover. Escala e não translate: a capa tem que crescer
      dentro da janela, não deslizar dentro dela. O parallax mora no elemento
      de cima, então os dois não disputam a mesma propriedade. */
-  transition: transform 1200ms var(--v2-ease);
+  transition: transform 900ms var(--v2-ease);
 }
 
 .v2-post-capa.is-vazia {
@@ -129,101 +139,6 @@
     align-items: end;
     gap: var(--v2-s5);
   }
-}
-
-/* --------------------------------------------------------------- destaque
-   O post mais recente ocupa a largura da janela e sangra. É a peça que
-   viper, bungee e launchfolio NÃO têm no blog, e é o que faz a página abrir
-   com peso — sobretudo enquanto o blog tem poucos textos, quando ela é
-   praticamente a página inteira.
-
-   `--v2-barra` desconta a largura da barra de rolagem: 100vw a conta e 50%
-   não, e a diferença vira overflow horizontal. Ver o comentário em app.jsx. */
-.v2-post-destaque-capa {
-  position: relative;
-  display: block;
-  width: calc(100vw - var(--v2-barra, 0px));
-  margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
-  color: #fff;
-  text-decoration: none;
-}
-
-.v2-post-destaque-capa .v2-post-capa {
-  aspect-ratio: 1.2;
-  width: 100%;
-}
-
-/* O véu existe para o título ler sobre qualquer foto. Gradiente e não chapa
-   plana: chapa apaga a imagem inteira, gradiente escurece só onde o texto
-   está. Preto a 78% sob texto branco passa AA com folga. */
-/* O véu foi reforçado em 29/08, depois que a capa deixou de ser chapa escura e
-   passou a ser foto clara: com a rampa antiga (.42 aos 38%) a linha em mono
-   ficava branca sobre post-it amarelo e sumia. O axe não acusa isso — ele não
-   sabe medir texto sobre imagem — então a verificação aqui é a vista.
-
-   A rampa cobre mais e sobe mais alto, e ainda deixa os 25% do topo limpos
-   para a foto respirar. */
-.v2-post-destaque-capa::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(11, 11, 12, .94) 0%,
-    rgba(11, 11, 12, .74) 30%,
-    rgba(11, 11, 12, .34) 58%,
-    rgba(11, 11, 12, 0) 88%
-  );
-  pointer-events: none;
-}
-
-.v2-post-destaque-texto {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  gap: var(--v2-s2);
-  max-width: var(--v2-max);
-  margin: 0 auto;
-  padding: var(--v2-s4) var(--v2-gutter);
-}
-
-.v2-post-destaque-capa .v2-post-meta { color: rgba(255, 255, 255, .92); }
-
-.v2-post-destaque-titulo {
-  display: block;
-  max-width: 16ch;
-  font-size: var(--v2-t-secao);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: var(--v2-track-display);
-}
-
-.v2-post-destaque-resumo {
-  display: block;
-  max-width: var(--v2-medida-lead);
-  font-size: var(--v2-t-corpo);
-  line-height: 1.5;
-  color: rgba(255, 255, 255, .88);
-}
-
-.v2-post-destaque-capa:hover .v2-post-capa img { transform: scale(1.03); }
-
-@media (min-width: 901px) {
-  /* 2.0, e não os 2.4 da primeira versão.
-   *
-   * A capa é servida em 3:2, que é a única proporção que sobrevive aos três
-   * recortes que o site aplica no MESMO arquivo: 1:1 no card, 2.1 no card
-   * largo e este aqui. Num frame de 2.4 o corte come 37% da altura da foto e
-   * o assunto começa a sair pela borda. Em 2.0 come 25%, e o centro do quadro
-   * continua inteiro.
-   *
-   * Faixa larga só compensa quando a imagem foi feita para ela. Servir 3:2
-   * dentro de 2.4 é pedir para a foto quebrar, e foi o que aconteceu. */
-  .v2-post-destaque-capa .v2-post-capa { aspect-ratio: 2; }
-  .v2-post-destaque-texto { padding-bottom: var(--v2-s5); }
 }
 
 /* ------------------------------------------------------------------ barra
@@ -357,30 +272,32 @@
 }
 
 /* ------------------------------------------------------------------ grade
-   3 → 2 → 1, como as três referências. O `align-items: start` é o que faz a
-   grade ler como composição: cada card termina onde a capa dele termina, e
-   capas de proporções diferentes deixam de se alinhar num rodapé só. É o que
-   o bungee faz servindo aspect-ratio 1, 0.699 e 1.152 na mesma página. */
+   Dois em dois, e um só no celular. Simétrica de propósito: todo card tem a
+   mesma capa, então a linha fecha sozinha e não existe `dense`, nem `largo`,
+   nem buraco para consertar. A grade de três com card largo foi a versão de
+   29/08, e foi trocada em 01/09 pela referência taylordesigner, cuja
+   listagem é exatamente isto: duas colunas, capa retangular, meta, título.
+
+   O vão horizontal é o mesmo da fileira de casos da home (`--v2-s3`); o
+   vertical é maior porque cada card carrega três linhas de texto embaixo da
+   capa, e as linhas precisam de ar para não colar na capa de baixo. */
 .v2-blog-grade {
   display: grid;
   grid-template-columns: 1fr;
   align-items: start;
-  gap: var(--v2-s5) var(--v2-s4);
-  /* `dense` deixa um card normal voltar e preencher a coluna que o card
-     largo não coube. Sem isto, medido em 29/08 a 1440: um `largo` no meio da
-     lista abria duas colunas vazias na linha anterior, e a grade lia como
-     linha interrompida. O preço é a ordem visual poder trocar de lugar com a
-     cronológica em uma posição — e numa listagem que já tem data em todo
-     card, isso custa menos que o buraco. */
-  grid-auto-flow: dense;
+  gap: var(--v2-s5) var(--v2-s3);
+  margin-top: var(--v2-s5);
 }
 
+/* Quando a barra existe (5+ posts), ela já traz a própria margem. */
+.v2-blog-barra + .v2-blog-grade { margin-top: 0; }
+
 @media (min-width: 561px) { .v2-blog-grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1281px) { .v2-blog-grade { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 /* ------------------------------------------------------------------- card
-   Sem caixa, sem sombra, raio 0. Imagem, meta, título — a ordem do bungee,
-   com o resumo guardado para o hover como a launchfolio mostra sempre. */
+   Sem caixa, sem sombra, raio 0. Capa, meta, título, resumo. O hover é só o
+   zoom lento da capa — a mesma escala e o mesmo tempo da capa cheia dos casos
+   da home (`.v2-cartao-capa`: 1.035 em 900ms). */
 .v2-post-card {
   display: grid;
   gap: var(--v2-s2);
@@ -394,74 +311,25 @@
   overflow: hidden;
 }
 
-/* Quadrada, como o viper serve os cards dele (aspect-ratio: 1, quatro vezes
-   no CSS). Proporção variando POR CARD foi tentado e medido em 29/08: numa
-   grade de três colunas a linha tem a altura do item mais alto, e um retrato
-   ao lado de dois quadrados deixa dois buracos de ~180px. A variação mora no
-   `largo`, abaixo, que é a que a grade sabe fazer sem buraco. */
-.v2-post-card .v2-post-capa { aspect-ratio: 1; }
+.v2-post-card .v2-post-capa { aspect-ratio: 3 / 2; }
 
-/* `largo`: a linha inteira, capa de um lado e título do outro. É a quebra de
-   ritmo que impede a grade de virar catálogo — o mesmo papel da imagem sem
-   texto que o viper enfia entre duas seções. */
-/* Duas colunas das três, e não a linha inteira: assim ele emparelha com um
-   card normal e a linha fecha. Ocupando `1 / -1` ele empurrava tudo para a
-   linha seguinte e deixava o buraco que o `dense` agora não precisa consertar
-   sozinho. Em duas colunas (561 a 1280) `span 2` já é a largura toda. */
-.v2-post-card[data-formato="largo"] { grid-column: span 2; }
-/* A capa larga ocupa a largura CHEIA do card e o texto fica embaixo, igual
-   ao card normal. A primeira versão punha a capa de um lado e o título do
-   outro, e ela nasceu torta: a capa ficava com 1,6fr dos 2,6 do vão, então a
-   511px de largura por 2.1 ela media 243px de altura contra os 427px dos
-   quadrados ao lado. 184px de buraco na linha, medido a 1440 em 29/08.
+.v2-post-card:hover .v2-post-capa img,
+.v2-post-card:focus-visible .v2-post-capa img { transform: scale(1.035); }
 
-   Cheia, a conta fecha sozinha: duas colunas de 427 mais o vão de 40 dão 894
-   de largura, e 894 / 2.1 = 426px de altura — a mesma dos quadrados, sem
-   depender de acerto de proporção interna. */
-.v2-post-card[data-formato="largo"] .v2-post-capa { aspect-ratio: 2.1; }
-
-@media (min-width: 901px) {
-  .v2-post-card[data-formato="largo"] .v2-post-card-titulo {
-    font-size: var(--v2-t-caso-ato);
-    line-height: 1.1;
-    max-width: 24ch;
-  }
+/* "Mais novo" / "Mais antigo", só no fim do post. */
+.v2-post-card-rot {
+  font-family: var(--v2-mono);
+  font-size: var(--v2-t-cromo);
+  letter-spacing: var(--v2-track-cromo);
+  text-transform: uppercase;
+  color: var(--v2-ink);
 }
 
-/* Hover: a capa escurece e o resumo entra por cima. É a MESMA primitiva que
-   a dobra de peças da home pede (pendência 5) — um vocabulário, dois
-   lugares. */
-.v2-post-card-veu {
-  position: absolute;
-  inset: 0;
-  background: rgba(11, 11, 12, .72);
-  opacity: 0;
-  transition: opacity 520ms var(--v2-ease);
-  pointer-events: none;
-}
-
-.v2-post-card-resumo {
-  position: absolute;
-  inset: auto var(--v2-s3) var(--v2-s3) var(--v2-s3);
-  color: #fff;
-  font-size: var(--v2-t-corpo);
-  line-height: 1.45;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 520ms var(--v2-ease), transform 520ms var(--v2-ease);
-  pointer-events: none;
-}
-
-.v2-post-card:hover .v2-post-card-veu,
-.v2-post-card:focus-visible .v2-post-card-veu { opacity: 1; }
-
-.v2-post-card:hover .v2-post-card-resumo,
-.v2-post-card:focus-visible .v2-post-card-resumo { opacity: 1; transform: none; }
-
-.v2-post-card:hover .v2-post-capa img { transform: scale(1.04); }
+.v2-post-card-rot + .v2-post-meta { margin-top: calc(-1 * var(--v2-s1)); }
 
 .v2-post-card-titulo {
   display: block;
+  max-width: 28ch;
   font-size: var(--v2-t-lead);
   font-weight: 500;
   line-height: 1.18;
@@ -469,16 +337,18 @@
   text-wrap: balance;
 }
 
-/* Toque não tem hover: no celular o resumo volta para baixo do título, onde
-   ele é lido em vez de adivinhado. */
-@media (hover: none) {
-  .v2-post-card-veu { display: none; }
-  .v2-post-card-resumo {
-    position: static;
-    opacity: 1;
-    transform: none;
-    color: var(--v2-muted);
-  }
+/* Duas linhas e ponto: o resumo é o gancho, não o texto. O `-webkit-` é o
+   único jeito de cortar por linha que os navegadores entendem hoje. */
+.v2-post-card-resumo {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-width: var(--v2-medida-lead);
+  margin-top: calc(-1 * var(--v2-s1));
+  font-size: var(--v2-t-corpo);
+  line-height: 1.5;
+  color: var(--v2-muted);
 }
 
 /* ------------------------------------------------------------ nada achado */
@@ -507,30 +377,33 @@
 
 .v2-post { display: block; }
 
-/* A ABERTURA E CENTRADA, o corpo tambem, e a coluna e mais larga.
+/* A ABERTURA E ALINHADA A ESQUERDA, o corpo e centrado.
  *
- * A primeira versao deixava a coluna de 640px encostada na goteira esquerda de
- * uma pagina de 1360, com 680px de branco morto a direita. Reprovado por print
- * em 29/08, e com razao: aquilo nao lia como decisao de espaco, lia como
- * componente que ninguem posicionou.
+ * Duas versoes antes desta. A primeira (29/08) deixava a coluna de 640px
+ * encostada na goteira esquerda, com 680px de branco morto a direita, e foi
+ * reprovada por print. A segunda centrava tudo — ficha, titulo, resumo — e
+ * sangrava a capa de borda a borda da janela, a 72vh.
  *
- * Agora a coluna e centrada e mede 720. A nota de margem continua saindo para
- * a direita, e como a coluna esta no meio, ela cabe na folga sem empurrar
- * nada. */
+ * Esta e a da referencia taylordesigner (01/09): o titulo grande encostado a
+ * esquerda, com o resumo embaixo como subtitulo, e a capa larga DENTRO da
+ * dobra, logo abaixo. A capa que sangrava a janela inteira era a mesma "capa
+ * muito grande" que o Gabriel tirou da listagem no mesmo dia.
+ *
+ * O corpo continua centrado a 720px: a abertura pertence a pagina, o texto
+ * pertence a leitura, e os dois nao precisam da mesma margem. */
 .v2-post-cabeca {
   display: grid;
-  justify-items: center;
+  justify-items: start;
   gap: var(--v2-s3);
-  max-width: var(--v2-medida);       /* 809: aqui é texto GRANDE, não leitura */
-  margin: var(--v2-s4) auto 0;
-  text-align: center;
+  max-width: var(--v2-medida);
+  margin: var(--v2-s4) 0 0;
 }
 
 .v2-post-titulo {
   margin: 0;
   font-size: var(--v2-t-caso-hero);
   font-weight: 500;
-  line-height: 1.04;
+  line-height: 1.02;
   letter-spacing: var(--v2-track-display);
   text-wrap: balance;
 }
@@ -543,16 +416,21 @@
   color: var(--v2-muted);
 }
 
-/* A capa de abertura sangra, como no viper: ela é o conteúdo, não moldura
-   em volta do conteúdo (M4). */
+/* A capa de abertura: a largura da dobra, em 16:9. A referencia serve 2720
+   por 1600 (1.7) numa janela de 380px de altura no celular e a largura toda
+   no desktop; 16:9 e o degrau padrao mais perto disso. A foto e 3:2, entao o
+   recorte come 16% da altura, do centro — menos que os 25% do destaque que
+   existia na listagem.
+
+   Altura fixa por proporcao e nao por `vh`: o parallax precisa de uma moldura
+   que corta, e a moldura precisa ser a mesma em qualquer altura de janela
+   para a capa nao virar faixa fina em tela baixa. */
 .v2-post-abertura {
-  width: calc(100vw - var(--v2-barra, 0px));
-  /* Altura fixa em vez de `max-height`: o parallax precisa de uma moldura que
-     corta, e moldura que se ajusta ao conteúdo não corta nada. */
-  height: 72vh;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   margin: var(--v2-s5) 0 var(--v2-s6);
-  margin-inline: calc(50% - 50vw + var(--v2-barra, 0px) / 2);
+  border-radius: var(--v2-cartao-raio);   /* o mesmo raio da capa do card e do case */
   background: var(--v2-card);
 }
 
@@ -571,7 +449,11 @@
   object-fit: cover;
 }
 
-@media (max-width: 900px) { .v2-post-abertura { height: 52vh; } }
+/* No celular a capa volta para 3:2, a proporcao do arquivo: a 390px de
+   largura um 16:9 mede 219px de altura, que e vinheta, nao capa. */
+@media (max-width: 900px) {
+  .v2-post-abertura { aspect-ratio: 3 / 2; margin: var(--v2-s4) 0 var(--v2-s5); }
+}
 
 /* ---------------------------------------------------------- corpo do post
    640px, a medida da página de caso. O `--v2-medida` de 809 é para texto
@@ -742,8 +624,11 @@
 .v2-post-fig img {
   display: block;
   width: 100%;
-  border-radius: var(--v2-r-media);
+  border-radius: var(--v2-cartao-raio);
 }
+
+/* A que sangra a janela não tem canto para arredondar. */
+.v2-post-fig.is-sangra img { border-radius: 0; }
 
 /* A classe é posta pelo JS (ver useParallaxNoCorpo em Post.jsx) e não vem do
    markdown: sem script, a figura fica exatamente como estava, na altura
@@ -847,41 +732,13 @@
 .v2-post-vizinhos {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--v2-s4);
+  gap: var(--v2-s5) var(--v2-s3);
   margin-top: var(--v2-s4);
 }
 
-@media (min-width: 901px) {
-  .v2-post-vizinhos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--v2-s5); }
+@media (min-width: 561px) {
+  .v2-post-vizinhos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-.v2-post-vizinho {
-  display: grid;
-  gap: var(--v2-s2);
-  padding-top: var(--v2-s3);
-  border-top: 1px solid var(--v2-rule);
-  color: inherit;
-  text-decoration: none;
-}
-
-.v2-post-vizinho-rot {
-  font-family: var(--v2-mono);
-  font-size: var(--v2-t-cromo);
-  letter-spacing: var(--v2-track-cromo);
-  text-transform: uppercase;
-  color: var(--v2-muted);
-}
-
-.v2-post-vizinho-titulo {
-  font-size: var(--v2-t-lead);
-  font-weight: 500;
-  line-height: 1.16;
-  letter-spacing: var(--v2-track-titulo);
-  text-wrap: balance;
-  transition: opacity 320ms var(--v2-ease);
-}
-
-.v2-post-vizinho:hover .v2-post-vizinho-titulo { opacity: .55; }
 
 /* Perto disso: lista tipográfica, sem imagem. Três capas seguidas depois de
    dois cartões seriam a terceira grade da mesma página. */
@@ -929,11 +786,9 @@
 /* Quem pediu menos movimento não recebe zoom de capa nem véu deslizando. */
 @media (prefers-reduced-motion: reduce) {
   .v2-post-capa img,
-  .v2-post-card-veu,
-  .v2-post-card-resumo,
   .v2-blog-tag::after { transition: none; }
   .v2-post-card:hover .v2-post-capa img,
-  .v2-post-destaque-capa:hover .v2-post-capa img { transform: none; }
+  .v2-post-card:focus-visible .v2-post-capa img { transform: none; }
   /* Sem movimento, a folga do parallax vira só faixa cortada à toa. */
   .v2-post-capa-in { height: 100%; margin-top: 0; }
   .v2-post-abertura-in { height: 100%; margin-top: 0; }

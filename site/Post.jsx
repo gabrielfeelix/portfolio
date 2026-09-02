@@ -24,11 +24,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { m as motion, useReducedMotion } from "motion/react";
 import { Dobra, Titulo, CampoDeVoo } from "./Kit.jsx";
 import { Pill } from "./Shell.jsx";
+import { CardPost } from "./PostCard.jsx";
 import { useParallax, useRise, useSubir } from "./motion.js";
 import {
-  porSlug, corpo, vizinhos, relacionados,
-  dataLonga, dataCurta, rotuloTag,
+  POSTS, porSlug, corpo, vizinhos, relacionados,
+  dataLonga, rotuloTag,
 } from "./blog.js";
+
+/* O número que a capa vazia mostra é a posição do post na lista inteira, o
+   mesmo que a listagem dá: o "02" de um post é o mesmo em qualquer página. */
+const POSTS_N = (p) => POSTS.indexOf(p) + 1;
 import { t, url } from "./i18n.js";
 
 const SITE = "https://gabrielfelix-ux.4yu.com.br";
@@ -118,22 +123,6 @@ function useParallaxNoCorpo(ref, html, intensidade = 12) {
   }, [ref, html, intensidade, quieto]);
 }
 
-function Cartao({ p, ir, rot }) {
-  return (
-    <a
-      className="v2-post-vizinho"
-      href={url(`/blog/${p.slug}`)}
-      onClick={(e) => { e.preventDefault(); ir(`/blog/${p.slug}`); }}
-    >
-      <span className="v2-post-vizinho-rot">{rot}</span>
-      <span className="v2-post-vizinho-titulo">{p.titulo}</span>
-      <span className="v2-post-meta">
-        {dataCurta(p.data)}<i>·</i>{rotuloTag(p.tag)}
-      </span>
-    </a>
-  );
-}
-
 export default function Post({ slug, ir }) {
   const p = porSlug(slug);
   const [html, setHtml] = useState(null);
@@ -182,7 +171,13 @@ export default function Post({ slug, ir }) {
   return (
     <CampoDeVoo variante="post">
       {/* A ficha em cima, no modelo do viper: o leitor sabe a data, o assunto
-          e quanto tempo vai gastar ANTES de decidir se lê. */}
+          e quanto tempo vai gastar ANTES de decidir se lê.
+
+          Desde 01/09 a abertura é ALINHADA À ESQUERDA e a capa fica dentro da
+          largura da dobra, em vez de sangrar a janela: é o desenho da
+          referência taylordesigner (título grande à esquerda, capa larga logo
+          abaixo, o texto depois). A capa que ocupava 100vw por 72vh era a
+          mesma "capa muito grande" que saiu da listagem. */}
       <Dobra n="01" nome="Blog" carimbo={rotuloTag(p.tag).toUpperCase()} data-clara="1">
         <article className="v2-post">
           <header className="v2-post-cabeca">
@@ -250,11 +245,15 @@ export default function Post({ slug, ir }) {
         </article>
       </Dobra>
 
+      {/* Os mesmos dois cards da listagem, com capa: a referência fecha o
+          artigo com "Next Article" e duas capas lado a lado, e é a peça que o
+          leitor acabou de clicar para chegar aqui. O cartão só de texto que
+          ficava aqui antes não se parecia com nada que ele tivesse visto. */}
       {anterior || proximo ? (
         <Dobra n="02" nome={t("Continue", "Keep going")} carimbo={t("NO BLOG", "ON THE BLOG")}>
           <div className="v2-post-vizinhos">
-            {anterior ? <Cartao p={anterior} ir={ir} rot={t("Mais novo", "Newer")} /> : <span />}
-            {proximo ? <Cartao p={proximo} ir={ir} rot={t("Mais antigo", "Older")} /> : <span />}
+            {anterior ? <CardPost p={anterior} i={0} n={POSTS_N(anterior)} ir={ir} rot={t("Mais novo", "Newer")} /> : null}
+            {proximo ? <CardPost p={proximo} i={1} n={POSTS_N(proximo)} ir={ir} rot={t("Mais antigo", "Older")} /> : null}
           </div>
         </Dobra>
       ) : null}

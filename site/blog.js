@@ -91,12 +91,6 @@ export function filtrar(posts, { tag = "", q = "" } = {}) {
 
 export const porSlug = (slug) => POSTS.find((p) => p.slug === slug) || null;
 
-/* O destaque é o post marcado, e o mais recente quando ninguém foi marcado —
-   a listagem nunca abre sem uma capa grande. */
-export function destaque(posts = POSTS) {
-  return posts.find((p) => p.destaque) || posts[0] || null;
-}
-
 export function vizinhos(slug) {
   const i = POSTS.findIndex((p) => p.slug === slug);
   if (i === -1) return { anterior: null, proximo: null };
