@@ -2,9 +2,9 @@
 titulo: What I measured in six beautiful websites
 data: 2026-08-28
 tag: bastidor
-resumo: I turned down my own home page and couldn't say why. I downloaded six
-  portfolios I thought were beautiful and counted their CSS. Three numbers
-  explained the rest.
+resumo: I turned down the first version of my own home page and went looking for
+  the reason in the right place. I downloaded six portfolios I thought were
+  beautiful and counted their CSS. Three numbers explained the rest.
 capa: capa.webp
 capaAlt: Wooden movable type scattered across a work surface
 formato: largo

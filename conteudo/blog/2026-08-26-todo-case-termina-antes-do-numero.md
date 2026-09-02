@@ -8,7 +8,7 @@ resumo: Pedi uma leitura do meu portfólio calibrada como triagem de contrataç�
 capa: capa.webp
 capaAlt: Pessoas reunidas em volta de uma mesa comprida, com cadernos e anotações
 formato: normal
-publicado: true
+publicado: false
 ---
 
 Coloquei meu próprio portfólio numa auditoria calibrada como **primeira triagem

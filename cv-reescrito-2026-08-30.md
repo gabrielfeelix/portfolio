@@ -121,9 +121,9 @@ ocupando a última linha da entrada mais lida.
 - **Fui a referência de UX de outro designer do time** no produto IMMO: revisão
   de entrega, direção e acompanhamento.
 
-- **Único lugar onde testei com o usuário real do sistema**, e não com colega
-  fazendo as vezes — entrevista, gravação e hipótese montada em cima do
-  observado, sob uma regra de gestão que era resolver sem pesquisa formal.
+- **Testei com o usuário real do sistema**, e não com colega fazendo as vezes —
+  entrevista, gravação e hipótese montada em cima do observado, num time em que
+  a gestão media entrega e ninguém tinha agendado pesquisa antes.
 
 - Desenhei painéis de monitoramento para operação e diretoria: carteira por
   comportamento, aproveitamento de contratos aprovados contra pagos, meta por

@@ -8,7 +8,7 @@ resumo: I asked for a read of my portfolio calibrated as a hiring screen. The
 capa: capa.webp
 capaAlt: People gathered around a long table, with notebooks and notes
 formato: normal
-publicado: true
+publicado: false
 ---
 
 I put my own portfolio through an audit calibrated as a **hiring manager's first

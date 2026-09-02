@@ -127,7 +127,7 @@ const CURTO = tr("CURTO", {
     { n: "03", t: "Protótipo", p: "Clicável, para a mesa tocar em vez de imaginar." },
     { n: "04", t: "Validação", p: "Alguém que vai usar mexe nele antes de eu fechar." },
   ],
-  p: "Aqui eu pulo etapa de propósito, e não por pressa. Se a reclamação já chegou repetida e o dado já mostra onde dói, refazer essa prova não me conta nada que eu ainda não saiba, e o tempo rende mais no protótipo e no ajuste.",
+  p: "Aqui eu encurto o caminho de propósito, e não por pressa. Se a reclamação já chegou repetida e o dado já mostra onde dói, refazer essa prova não me conta nada que eu ainda não saiba, e o tempo rende mais no protótipo e no ajuste.",
 });
 
 /* As quatro fases do Double Diamond, com os métodos que o Gabriel usa em cada
@@ -161,12 +161,12 @@ const NUNCA = tr("NUNCA", {
 /* O fecho, e o ângulo da página inteira. Sai verbatim do capítulo do PCYES:
    `funil.nota` e `funil.etapas` em volume/data.jsx. */
 const APOSTA = tr("APOSTA", {
-  olho: "A vez que eu errei a conta",
+  olho: "A vez que o dado contrariou a minha hipótese",
   t: "Eu tinha acabado de consertar o checkout. Tinha certeza de que o buraco era ali.",
   p: [
     "Abri o trimestre inteiro no GA4 e o dado disse outra coisa. De cada 62 pessoas que abriam uma página de produto, uma punha no carrinho. E quem chegava ao checkout comprava a 25%, uma em cada quatro.",
-    "A tela que eu tinha acabado de consertar nunca foi o gargalo principal, nem antes nem depois do conserto.",
-    "Perdi a aposta, e foi essa correção que redesenhou a V2 inteira.",
+    "A tela que eu tinha acabado de consertar não era o gargalo principal, nem antes nem depois do conserto.",
+    "Eu segui o dado em vez da minha hipótese, e foi essa leitura que redesenhou a V2 inteira.",
   ],
   /* Número cru, e não string formatada: o contador precisa contar. A vírgula
      de milhar entra no render, por toLocaleString — e o LOCAL acompanha o

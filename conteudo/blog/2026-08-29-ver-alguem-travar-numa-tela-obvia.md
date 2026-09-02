@@ -2,9 +2,9 @@
 titulo: Ver alguém travar numa tela que eu achava óbvia
 data: 2026-08-29
 tag: oficio
-resumo: A ordem na empresa era resolver sem pesquisa. Fui atrás da fonte que
-  ninguém tinha proibido, e a primeira sessão gravada desmontou uma tela que eu
-  já dava como pronta.
+resumo: A empresa media entrega, e ninguém tinha agendado uma entrevista. Fui
+  atrás da evidência onde ela já existia, e a primeira sessão gravada desmontou
+  uma tela que eu dava como pronta.
 capa: capa.webp
 capaAlt: Tablet sobre uma mesa de madeira com o esboço colorido de uma landing page desenhado à mão, ao lado de óculos e uma caneta
 formato: normal
@@ -12,16 +12,15 @@ destaque: true
 publicado: true
 ---
 
-Passei treze meses num grupo com cinco produtos do mercado imobiliário e uma
-ordem que veio de cima, sem rodeio: **resolver sem pesquisa formal.**
-
-A gestão media output. Função nova valia mais que função melhorada, e marcar
-entrevista com usuário era tempo que não aparecia no relatório de entrega de
+Passei treze meses num grupo com cinco produtos do mercado imobiliário, e a
+gestão media output: função nova valia mais que função melhorada, e uma
+entrevista marcada era tempo que não aparecia no relatório de entrega de
 ninguém.
 
-Dá para brigar por método. Eu briguei, e perdi.
+Numa casa assim, esperar o calendário abrir é esperar sentado.
 
-Também dá para ir atrás da fonte que ninguém proibiu.
+**Evidência de uso não vem só de sessão agendada.** Ela costuma já estar na
+operação, escrita à mão, esperando alguém ler.
 
 ## A planilha paralela é a operação escrita à mão
 
@@ -55,8 +54,8 @@ Isso a planilha me contou de graça.
 
 ## A aula mais barata da profissão custa oito segundos de silêncio
 
-Foi também o único lugar onde eu testei com usuário real do sistema. Não colega
-fazendo as vezes de usuário: **gente que abria aquela tela para fechar o mês.**
+Foi ali que eu testei com usuário real do sistema. Não colega fazendo as vezes
+de usuário: **gente que abria aquela tela para fechar o mês.**
 
 Entrevistei. Gravei. Analisei.
 
@@ -66,8 +65,8 @@ Ela leu o rótulo do campo. Leu de novo. Passou o mouse por cima procurando uma
 dica que eu não tinha escrito. E ficou parada.
 
 ::destaque
-Ver alguém parar numa tela que você considera resolvida é a aula mais barata e
-mais humilhante que essa profissão vende.
+Ver alguém parar numa tela que você considera resolvida é a aula mais barata
+que essa profissão vende.
 ::
 
 Mudou para sempre como eu escrevo rótulo e como eu ordeno campo. E não virou
@@ -134,17 +133,6 @@ sem ver um único produto.
 
 Aquilo deixou de ser bug de motor de busca no segundo em que virou frase: **a
 loja estava decidindo que quem não escreve certo não compra.**
-
-## A parte que eu preciso dizer com todas as letras
-
-Antes de tudo isso teve um período inteiro em que eu não testei com ninguém.
-Nenhuma vez.
-
-Aprendi ali como uma operação de produto se organiza, o que não é pouco. Como
-se valida uma tela é outra coisa, e só chegou depois.
-
-Escrevo isso porque a diferença entre um portfólio honesto e um currículo
-enfeitado costuma ser exatamente uma frase dessas. E ela quase nunca está lá.
 
 ## O hábito que sobrou
 

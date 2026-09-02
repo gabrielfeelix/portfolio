@@ -2,9 +2,9 @@
 titulo: O que eu medi em seis sites bonitos
 data: 2026-08-28
 tag: bastidor
-resumo: Recusei a minha própria home e não sabia dizer por quê. Baixei seis
-  portfólios que eu achava bonitos e contei o CSS deles. Três números
-  explicaram o resto.
+resumo: Recusei a primeira versão da minha home e fui atrás do motivo no lugar
+  certo. Baixei seis portfólios que eu achava bonitos e contei o CSS deles. Três
+  números explicaram o resto.
 capa: capa.webp
 capaAlt: Tipos móveis de madeira espalhados sobre uma superfície de trabalho
 formato: largo

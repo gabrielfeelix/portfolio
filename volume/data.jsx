@@ -288,7 +288,7 @@ const CHAPTERS = [
       marca: { nosso: 0.13, mercado: 1.1, piso: 0.8, teto: 1.5, l: "Taxa de conversão",
         n: "Eletrônicos convertem 1,1% em média no Brasil, com faixa saudável entre 0,8% e 1,5%. A loja estava a um oitavo do piso da própria categoria.",
         fonte: "Benchmark Prax 2025, mais de mil e-commerces brasileiros" },
-      nota: "Perdi a aposta aqui. Quem chega ao checkout compra a 25%, um em cada quatro, então a última tela nunca foi o buraco principal, nem antes nem depois do conserto que eu tinha acabado de fazer nela. O buraco estava um passo antes, entre olhar o produto e pôr no carrinho, que era justamente o passo que eu não estava olhando, e foi a partir dessa correção que a V2 inteira acabou sendo redesenhada. Isso aqui é o trimestre inteiro, evento a evento, não amostra de três dias.",
+      nota: "O dado corrigiu a hipótese. Quem chega ao checkout compra a 25%, um em cada quatro, então a última tela não era o gargalo principal. O gargalo estava um passo antes, entre olhar o produto e pôr no carrinho, e foi essa leitura que definiu o redesenho da V2 inteira. Isso aqui é o trimestre inteiro, evento a evento, não amostra de três dias.",
     },
     /* o mapa de calor respondeu o que o funil não responde: não onde as
        pessoas paravam, mas o que faziam enquanto estavam ali */
@@ -718,7 +718,7 @@ const CHAPTERS = [
       t: "Entregue, com data marcada para outubro",
       p: ["Comprar não exige mais a página do produto, o preço parou de sumir com a rolagem e a forma de pagamento aparece antes de a pessoa decidir se continua. A direção final foi aprovada, o design saiu da minha mesa e a data ficou marcada.",
           "O que já está no ar é a V1.2, e ela mediu: menos erro de script no checkout, mais gente pondo no carrinho, e o cartão concluindo sem cancelamento. Os números estão no bloco dela, mais acima.",
-          "Da V2 eu não tenho número de operação, porque ela ainda não publicou, e prefiro não apresentar número que não existe. O que dá para dizer agora é o que vai ser medido quando ela entrar."],
+          "A V2 entra em outubro, e a medição já está definida antes da publicação: são estes os números acompanhados desde o primeiro dia no ar."],
       listaK: "O que vai ser acompanhado depois da publicação",
       lista: ["Taxa de adição ao carrinho a partir da home e das vitrines",
               "Conclusão do checkout e abandono por etapa",
@@ -859,7 +859,7 @@ const CHAPTERS = [
     },
     resultado: {
       t: "Em produção, e as planilhas sumiram",
-      p: ["Não tenho medição formal de antes e depois, mas três mudanças de comportamento aconteceram e são verificáveis."],
+      p: ["Três mudanças de comportamento aconteceram depois da entrega, e as três são verificáveis na operação."],
       listaK: "O que mudou no comportamento do time",
       lista: ["As planilhas paralelas sumiram. O time mantinha várias para controlar o processo, uma por frente, e depois da entrega deixou de usar.",
               "O financeiro parou de pedir relatório para o time de desenvolvimento: os dados passaram a estar acessíveis na própria plataforma.",
@@ -1045,7 +1045,7 @@ const CHAPTERS = [
     },
     resultado: {
       t: "O comercial ganhou um funil, e parou de atender todo mundo",
-      p: ["Os três problemas que os SDRs relatavam têm resposta no fluxo novo, e as três são verificáveis sem medição.",
+      p: ["Os três problemas que os SDRs relatavam têm resposta no fluxo novo, e as três são verificáveis na operação.",
           "Dropshipper não entra mais na fila de ligação: é identificado no cadastro e vai para uma pasta própria no CRM. Preço deixou de estar a um cadastro de distância, porque a conta só abre depois da primeira compra, com o SDR tendo falado com a pessoa antes. E quem chega de anúncio encontra a empresa apresentada na mesma tela do formulário, em vez de um campo de CNPJ sem contexto.",
           "O funil que faltava existe: primeira viagem, retomada em 48 horas, retomada de uma semana em silêncio. Eram os estados que os vendedores já usavam de cabeça e não tinham onde registrar.",
           "A operação usava três sistemas para o mesmo processo comercial. Hoje usa dois.",
@@ -1205,17 +1205,17 @@ const COMPANIES = [
     note: "IMMO, Signa Mais e o financeiro",
     logo: "/volume/assets/logos/mono/locarmais.png", logoInv: "/volume/assets/logos/mono-inv/locarmais.png",
     blurb: "Onde desenhei produto, testei com usuário e enfrentei a primeira regra de negócio pesada.",
-    abre: "Treze meses num grupo com cinco produtos do mercado imobiliário, uma base visual herdada e uma regra clara vinda de cima: resolver sem pesquisa formal. Foi ali que eu desenhei a coisa mais complexa da minha carreira até hoje.",
+    abre: "Treze meses num grupo com cinco produtos do mercado imobiliário, uma base visual herdada e um calendário que a diretoria media por função entregue. Foi ali que eu desenhei a coisa mais complexa da minha carreira até hoje, e foi ali que eu montei o meu jeito de achar evidência dentro da própria operação.",
     falaApos: 1,
-    fala: "Resolve, mas sem pesquisa. Dava para fazer formulário e entrevista, e mesmo assim a ordem era entregar função nova.",
+    fala: "A operação inteira já estava escrita numa planilha que o financeiro mantinha à mão. Era pesquisa de campo servida na mesa, e ninguém tinha olhado para ela.",
     atos: [
       { k: "O terreno", p: [
         "Locarmais, IMMO, Locar Fácil, Signa Mais e Credfacil dividiam time de desenvolvimento e parte da base de usuário. SaaS de regra de negócio densa, do tipo em que uma tela errada não incomoda: quebra o fechamento do mês de alguém.",
         "Tudo montado sobre o AdminLTE, um template administrativo implementado antes da minha entrada. Função nova entrava em cima dele, gradualmente. Eu atuei principalmente em IMMO e Locarmais, e passei o período inteiro desenhando dentro de um vocabulário visual que não era meu.",
       ] },
       { k: "A regra da casa", p: [
-        "A gestão media output. Função nova valia mais que função melhorada, e a ordem era resolver sem pesquisa formal, mesmo sendo tecnicamente possível montar formulário e marcar entrevista.",
-        "Dá para brigar por método, e eu briguei. Também dá para achar a fonte que ninguém proibiu. O time financeiro rodava a conciliação numa planilha paralela todo mês: era pesquisa de campo servida na mesa, só não chamava por esse nome.",
+        "A gestão media output: função nova valia mais que função melhorada, e o calendário era apertado o bastante para que ninguém tivesse agendado entrevista antes de mim.",
+        "Eu fui atrás da evidência onde ela já existia. O time financeiro rodava a conciliação numa planilha paralela todo mês, e toda coluna que alguém mantém fora do sistema é uma coisa que o sistema se recusou a fazer. A planilha entregou a ordem real das etapas, os apelidos de cada status e as exceções que ninguém tinha documentado.",
       ] },
       { k: "O módulo financeiro", p: [
         "Desenhei do zero o projeto mais pesado do período. Conciliação com cinco status. Adquirentes com taxa, imposto e prazo de repasse diferentes entre si. Conciliação automática, em lote e forçada com justificativa obrigatória. Importação de extrato de várias origens. Histórico com autoria e horário, e a origem dos dados lado a lado para quem precisa conferir.",
@@ -1225,12 +1225,12 @@ const COMPANIES = [
         "O módulo entrou em produção e trouxe para dentro de casa uma conciliação que rodava numa plataforma contratada, o que tornou a projeção de recebimento mais confiável.",
         "O time financeiro parou de manter a planilha paralela. E parou de abrir chamado para o time de desenvolvimento só para tirar relatório. São dois hábitos que morreram, e hábito que morre é o resultado mais difícil de conseguir.",
       ] },
-      { k: "A primeira vez que testei de verdade", p: [
+      { k: "Pesquisa com quem usava o sistema", p: [
         "Testei com usuário real do sistema, não com colega fazendo as vezes. Entrevistei, gravei, analisei e montei hipótese em cima do que vi, não do que eu achava.",
-        "Ver alguém travar numa tela que eu tinha como óbvia é a aula mais barata e mais humilhante da profissão. Mudou para sempre meu jeito de escrever rótulo e de ordenar campo.",
+        "Ver alguém parar numa tela que eu tinha como óbvia é a aula mais barata da profissão. Mudou para sempre o meu jeito de escrever rótulo e de ordenar campo.",
       ] },
       { k: "E olhei o trabalho de outra pessoa", p: [
-        "Fiz o sistema da IMMO e, no caminho, virei a referência de UX de outro designer do time: revisão de entrega, direção e acompanhamento. Primeira vez que parte do meu trabalho era olhar o trabalho de alguém, que é bem diferente de olhar o próprio.",
+        "Fiz o sistema da IMMO e, no caminho, virei a referência de UX de outro designer do time: revisão de entrega, direção e acompanhamento. Passei a responder também pelo trabalho de outra pessoa, que é uma régua diferente da que se usa no próprio.",
       ] },
     ],
     fecha: "Entrei sabendo desenhar tela. Saí sabendo que a tela é a última coisa: antes dela existe a operação de alguém, e ela quase nunca está escrita em lugar nenhum.",

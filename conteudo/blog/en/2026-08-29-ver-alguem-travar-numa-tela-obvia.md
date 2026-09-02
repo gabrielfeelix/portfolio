@@ -2,9 +2,9 @@
 titulo: Watching somebody freeze on a screen I thought was obvious
 data: 2026-08-29
 tag: oficio
-resumo: The order at the company was to solve it without research. I went after
-  the source nobody had banned, and the first recorded session took apart a
-  screen I already considered finished.
+resumo: The company measured shipped features, and nobody had booked an
+  interview. I went after the evidence where it already existed, and the first
+  recorded session took apart a screen I considered finished.
 capa: capa.webp
 capaAlt: A tablet on a wooden desk showing a hand-drawn colour sketch of a landing page, next to glasses and a pen
 formato: normal
@@ -12,16 +12,14 @@ destaque: true
 publicado: true
 ---
 
-I spent thirteen months at a group with five real-estate products and an order
-that came down from above, with no hedging: **solve it without formal research.**
+I spent thirteen months at a group with five real-estate products, and
+management measured output: a new feature counted for more than an improved one,
+and a booked interview was time that showed up on nobody's delivery report.
 
-Management measured output. A new feature counted for more than an improved one,
-and booking an interview with a user was time that showed up on nobody's delivery
-report.
+In a house like that, waiting for the calendar to open up is waiting forever.
 
-You can fight for method. I fought, and I lost.
-
-You can also go after the source nobody banned.
+**Evidence of use doesn't only come from a scheduled session.** It is usually
+already in the operation, written by hand, waiting for somebody to read it.
 
 ## The parallel spreadsheet is the operation written out by hand
 
@@ -56,9 +54,8 @@ The spreadsheet told me that for free.
 
 ## The cheapest lesson in this profession costs eight seconds of silence
 
-It was also the only place where I tested with a real user of the system. Not a
-colleague standing in for one: **people who opened that screen to close the
-month.**
+That is where I tested with a real user of the system. Not a colleague standing
+in for one: **people who opened that screen to close the month.**
 
 I interviewed. I recorded. I analysed.
 
@@ -68,8 +65,8 @@ She read the field label. Read it again. Hovered over it looking for a hint I
 hadn't written. And sat still.
 
 ::destaque
-Watching somebody stop on a screen you consider solved is the cheapest and most
-humbling lesson this profession sells.
+Watching somebody stop on a screen you consider solved is the cheapest lesson
+this profession sells.
 ::
 
 It changed for good how I write a label and how I order fields. And it didn't
@@ -135,18 +132,6 @@ without seeing a single product.
 
 That stopped being a search-engine bug the second it became a sentence: **the
 store was deciding that people who can't spell don't get to buy.**
-
-## The part I need to say in plain words
-
-Before all of this there was a whole stretch where I tested with nobody. Not
-once.
-
-I learned there how a product operation organises itself, which is not nothing.
-How you validate a screen is another thing, and it only arrived later.
-
-I'm writing this down because the difference between an honest portfolio and a
-dressed-up CV is usually exactly one sentence like that. And it is almost never
-there.
 
 ## The habit that stuck
 
