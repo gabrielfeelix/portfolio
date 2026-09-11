@@ -1,0 +1,1826 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Briefing · Bertoncini &amp; Mendonça Advogados</title>
+<meta name="description" content="Questionário de briefing para o site do escritório Bertoncini &amp; Mendonça Advogados.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.ico">
+
+<style>
+/* Página isolada do app. Repete os tokens da V2 em vez de importar tokens.css
+   porque ela é servida como estático puro, fora do bundle — se o CSS do site
+   mudar de nome no build, esta página não quebra junto. */
+:root{
+  --paper:#FFFFFF;
+  --card:#F6F6F7;
+  --superficie:#F5F4F3;
+  --ink:#0B0B0C;
+  --muted:#6B6B70;
+  --rule:#E6E6E8;
+  --accent:#E4231B;
+
+  --font:"Switzer","Switzer reserva",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --track-display:-.055em;
+  --track-cromo:.14em;
+
+  --t-hero:2.25rem;
+  --t-secao:2.5rem;
+  --t-lead:1.25rem;
+  --t-corpo:1rem;
+  --t-cromo:.75rem;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:40px; --s5:64px; --s6:104px;
+
+  --medida:809px;
+  --medida-lead:680px;
+  --gutter:var(--s4);
+
+  --ease:cubic-bezier(.44,0,.56,1);
+}
+@media (min-width:561px){
+  :root{ --t-hero:3rem; --t-secao:3rem; }
+}
+@media (min-width:901px){
+  :root{ --t-hero:4rem; --t-secao:3.5rem; --t-lead:1.5rem; }
+}
+@media (min-width:1281px){
+  :root{ --t-hero:4.5rem; --t-secao:4rem; }
+}
+
+@font-face{font-family:"Switzer";font-weight:400;font-display:swap;
+  src:url("/volume/fonts/v2/switzer-400.woff2") format("woff2")}
+@font-face{font-family:"Switzer";font-weight:500;font-display:swap;
+  src:url("/volume/fonts/v2/switzer-500.woff2") format("woff2")}
+@font-face{font-family:"Switzer";font-weight:600;font-display:swap;
+  src:url("/volume/fonts/v2/switzer-600.woff2") format("woff2")}
+@font-face{font-family:"Switzer";font-weight:700 800;font-display:swap;
+  src:url("/volume/fonts/v2/switzer-700.woff2") format("woff2")}
+@font-face{font-family:"Geist Mono";font-weight:400;font-display:swap;
+  src:url("/volume/fonts/v2/geistmono-400.woff2") format("woff2")}
+@font-face{font-family:"Geist Mono";font-weight:500;font-display:swap;
+  src:url("/volume/fonts/v2/geistmono-500.woff2") format("woff2")}
+/* Reserva métrica: mesma do site, gerada por tools/reserva-fonte.mjs. */
+@font-face{font-family:"Switzer reserva";font-weight:400;
+  src:local("Arial"),local("Helvetica"),local("Liberation Sans");
+  size-adjust:88.73%;ascent-override:110.45%;descent-override:28.18%;line-gap-override:0%}
+@font-face{font-family:"Switzer reserva";font-weight:500;
+  src:local("Arial"),local("Helvetica"),local("Liberation Sans");
+  size-adjust:89.63%;ascent-override:109.33%;descent-override:27.89%;line-gap-override:0%}
+@font-face{font-family:"Switzer reserva";font-weight:700;
+  src:local("Arial"),local("Helvetica"),local("Liberation Sans");
+  size-adjust:81.75%;ascent-override:119.88%;descent-override:30.58%;line-gap-override:0%}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--font);font-size:var(--t-corpo);line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.env{max-width:1240px;margin:0 auto;padding-inline:var(--gutter)}
+
+/* ── cromo: rótulo em mono, caixa alta ── */
+.cromo{
+  font-family:var(--mono);font-size:var(--t-cromo);font-weight:500;
+  letter-spacing:var(--track-cromo);text-transform:uppercase;color:var(--muted);
+}
+
+/* ── topo ── */
+.topo{
+  position:sticky;top:0;z-index:40;background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+.topo-in{
+  max-width:1240px;margin:0 auto;padding:var(--s2) var(--gutter);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s2);
+}
+.topo-marca{display:flex;align-items:baseline;gap:10px;min-width:0}
+.topo-marca b{font-weight:600;font-size:14px;letter-spacing:-.01em;white-space:nowrap}
+.topo-marca span{font-family:var(--mono);font-size:11px;color:var(--muted);
+  letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topo-dir{display:flex;align-items:center;gap:var(--s2);flex:none}
+#salvo{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+.progresso{width:120px;height:3px;background:var(--rule);position:relative;overflow:hidden}
+.progresso i{position:absolute;inset:0 auto 0 0;width:0;background:var(--accent);
+  transition:width .4s var(--ease)}
+@media (max-width:700px){
+  .progresso{width:64px}
+  .topo-marca span{display:none}
+}
+
+/* ── avião ── */
+/* Grafismo, não enfeite: ele desce a lateral acompanhando o avanço da leitura,
+   e é a mesma informação da barra do topo em outra forma. Fica fora do fluxo
+   e é escondido de leitor de tela. Some no celular, onde não há goteira que o
+   comporte sem brigar com o texto. */
+#aviao{
+  position:fixed;left:calc(50% - 660px);top:0;width:52px;height:52px;
+  z-index:5;pointer-events:none;opacity:0;
+  transition:opacity .6s var(--ease);
+  color:var(--accent);
+}
+#aviao.on{opacity:.9}
+#aviao svg{display:block;width:100%;height:100%;overflow:visible}
+#rastro{stroke:var(--accent);stroke-width:1;fill:none;opacity:.22;
+  stroke-dasharray:3 5}
+@media (max-width:1420px){ #aviao{display:none} }
+@media (prefers-reduced-motion:reduce){ #aviao{display:none} }
+
+/* ── abertura ── */
+.abre{padding-block:var(--s6) var(--s5)}
+h1{
+  font-size:var(--t-hero);font-weight:800;line-height:1.02;
+  letter-spacing:var(--track-display);margin:var(--s3) 0 var(--s4);
+  max-width:var(--medida);text-wrap:balance;
+}
+.lead{
+  font-size:var(--t-lead);line-height:1.5;max-width:var(--medida-lead);
+  margin:0 0 var(--s3);
+}
+.lead+.lead{color:var(--muted)}
+.abre .nota{
+  max-width:var(--medida-lead);margin-top:var(--s4);padding-top:var(--s3);
+  border-top:1px solid var(--rule);color:var(--muted);font-size:15.5px;
+}
+.abre .nota b{color:var(--ink);font-weight:600}
+
+/* ── índice ── */
+.indice{
+  padding-block:0;margin-top:var(--s4);
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+}
+/* Filete desenhado por borda do próprio item, não por fundo aparecendo entre
+   as frestas de um `gap`. Com `gap` a última linha incompleta deixava um bloco
+   cinza chapado onde não havia item — que é exatamente o que estava feio. */
+.indice a{
+  padding:var(--s3) var(--s3) var(--s3) 0;text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:5px;
+  transition:color .2s var(--ease);
+}
+/* A divisória entre as linhas do índice precisa atravessar a largura inteira,
+   inclusive onde a última linha não tem item. Uma borda no item para onde o
+   item acaba — e a segunda linha, com 4 de 5 colunas, deixava o filete morto
+   no meio da página.
+   
+   Aqui o filete é um pseudo-elemento que começa na esquerda do item e vai até
+   `100vw` para a direita: ele transborda o contêiner, que corta o excesso com
+   `overflow:hidden`. O último item de cada linha cobre o resto da faixa
+   sozinho, e a linha fecha inteira sem ninguém precisar saber quantos itens
+   ela tem, nem quanto mede cada um. */
+.indice{overflow:hidden}
+.indice a{position:relative}
+.indice a::after{
+  content:"";position:absolute;left:0;right:-100vw;bottom:0;height:1px;
+  background:var(--rule);
+}
+/* A última linha encosta na borda do contêiner, que já é um filete preto. */
+.indice a:last-child::after{display:none}
+.indice a:hover .t,.indice a:focus-visible .t{color:var(--accent)}
+.indice a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.indice .n{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+.indice .t{font-weight:600;font-size:16px;line-height:1.25;letter-spacing:-.015em;
+  transition:color .2s var(--ease)}
+.indice .q{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+/* ── bloco ── */
+.bloco{padding-block:var(--s6) 0;scroll-margin-top:80px}
+.bloco-topo{
+  display:grid;grid-template-columns:220px 1fr auto;gap:var(--s4);
+  padding-bottom:var(--s3);border-bottom:1px solid var(--ink);
+  align-items:baseline;
+}
+.bloco-topo .num{
+  font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);
+  letter-spacing:.14em}
+.bloco-topo h2{
+  font-size:var(--t-secao);font-weight:800;line-height:1.02;
+  letter-spacing:var(--track-display);margin:0;text-wrap:balance;
+}
+.bloco-topo .tempo{font-family:var(--mono);font-size:11px;color:var(--muted);
+  letter-spacing:.08em;white-space:nowrap}
+.bloco-intro{
+  grid-column:2 / -1;max-width:var(--medida-lead);color:var(--muted);
+  margin:var(--s3) 0 0;font-size:15px;
+}
+@media (max-width:640px){
+  .indice{grid-template-columns:1fr}
+  .indice a{padding-right:0}
+}
+@media (max-width:900px){
+  .bloco-topo{
+    grid-template-columns:1fr auto;gap:var(--s1) var(--s2);
+    align-items:baseline;
+  }
+  .bloco-topo h2{grid-column:1 / -1;order:3}
+  .bloco-intro{grid-column:1 / -1}
+}
+
+/* ── pergunta ── */
+.p{
+  display:grid;grid-template-columns:220px 1fr;gap:var(--s4);
+  padding-block:var(--s4);border-bottom:1px solid var(--rule);
+}
+.p-meta{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.p-id{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border:1px solid var(--rule);color:var(--muted);
+}
+.tag.ess{border-color:var(--accent);color:var(--accent)}
+.tag.pula{border-style:dashed}
+.p-corpo{min-width:0}
+.p-corpo .txt{font-size:17px;line-height:1.5;margin:0 0 10px;max-width:70ch;
+  letter-spacing:-.01em}
+.p-corpo .ajuda{color:var(--muted);font-size:14.5px;margin:0 0 var(--s2);max-width:70ch}
+.p-corpo .ajuda b{color:var(--ink);font-weight:600}
+@media (max-width:900px){
+  .p{grid-template-columns:1fr;gap:var(--s2);padding-block:var(--s3)}
+  .p-meta{flex-direction:row;align-items:center;gap:var(--s1)}
+}
+
+/* ── campos ──
+   Sem moldura de quatro lados: o campo é uma superfície levemente rebaixada
+   assentada sobre um filete, e o filete é o que responde ao foco. Tira a cara
+   de input nativo sem inventar um controle que ninguém reconhece. */
+.campo{position:relative;display:block}
+.campo::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .28s var(--ease);
+}
+.campo:focus-within::after{transform:scaleX(1)}
+
+textarea,input[type=text],input[type=email]{
+  display:block;width:100%;font-family:inherit;font-size:16px;line-height:1.55;
+  color:var(--ink);background:var(--superficie);
+  border:0;border-bottom:1px solid var(--rule);border-radius:2px 2px 0 0;
+  padding:14px 14px 13px;resize:vertical;
+  transition:background .2s var(--ease),border-color .2s var(--ease);
+}
+textarea{min-height:104px}
+textarea.alto{min-height:158px}
+textarea:hover,input[type=text]:hover,input[type=email]:hover{background:var(--card)}
+textarea:focus,input:focus{
+  outline:none;background:var(--paper);border-bottom-color:var(--rule);
+}
+/* O filete que cresce embaixo já diz onde está o foco. Um anel vermelho de
+   quatro lados em volta do campo lê como erro de validação, que é o oposto do
+   que está acontecendo. Fica só o que o teclado precisa, discreto. */
+textarea:focus-visible,input[type=text]:focus-visible,input[type=email]:focus-visible{
+  outline:1px solid var(--muted);outline-offset:2px;
+}
+::placeholder{color:#9A9AA0}
+
+.opcoes{display:grid;gap:6px;margin-bottom:var(--s2)}
+.opcao{
+  position:relative;display:grid;grid-template-columns:auto 1fr;gap:12px;
+  align-items:start;padding:14px 16px;cursor:pointer;background:var(--superficie);
+  border-radius:3px;transition:background .18s var(--ease);
+}
+.opcao::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--accent);transform:scaleY(0);transform-origin:top;
+  transition:transform .22s var(--ease);border-radius:3px 0 0 3px;
+}
+.opcao:hover{background:var(--card)}
+.opcao:has(input:checked){background:var(--card)}
+.opcao:has(input:checked)::before{transform:scaleY(1)}
+.opcao:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.opcao input{margin:3px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.opcao .lbl{font-size:15.5px;line-height:1.45}
+.opcao .lbl b{font-weight:600;display:block;margin-bottom:2px}
+.opcao .lbl span{color:var(--muted);font-size:14px}
+
+/* Grade de seleção curta: sim/não, redes sociais. Cabe lado a lado porque
+   cada rótulo é de uma palavra só. */
+.opcoes.grade{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.opcoes.grade .opcao{padding:12px 14px}
+
+/* ── lista de links ──
+   Cada linha é um link mais o motivo. O botão acrescenta uma linha vazia, e a
+   linha some junto com o que estava escrito nela quando removem. Começa com
+   uma linha só para não intimidar. */
+.links{display:grid;gap:var(--s2);margin-bottom:var(--s2)}
+.link-item{
+  display:grid;gap:8px;padding:14px 14px 14px 16px;background:var(--superficie);
+  border-radius:3px;position:relative;
+}
+.link-item .n{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);
+}
+.link-item .linha1{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;
+  align-items:center}
+.link-item .linha1 .campo{min-width:0}
+.link-item input[type=text],.link-item textarea{background:var(--paper)}
+.link-item textarea{min-height:64px}
+.tira{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);
+  background:var(--paper);border:0;cursor:pointer;padding:13px 12px;border-radius:2px;
+  align-self:stretch;
+  transition:color .2s var(--ease),background .2s var(--ease);
+}
+.tira:hover{color:var(--accent);background:var(--card)}
+.tira:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.mais{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);background:none;border:1px dashed var(--rule);border-radius:3px;
+  padding:12px 18px;cursor:pointer;justify-self:start;
+  transition:border-color .2s var(--ease),color .2s var(--ease);
+}
+.mais:hover{border-color:var(--accent);color:var(--accent)}
+.mais:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* No celular a linha do link fica estreita demais para dividir espaço com o
+   botão. Ele desce para baixo do campo e encosta na direita. */
+@media (max-width:700px){
+  .link-item .linha1{grid-template-columns:1fr}
+  .link-item .tira{justify-self:end;align-self:auto;padding:8px 10px}
+}
+
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+@media (max-width:700px){ .dupla{grid-template-columns:1fr} }
+.campo-rot{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+
+/* ── caixa de checklist ── */
+.lista-mat{
+  display:grid;gap:var(--s1);margin-top:var(--s2);
+}
+.lista-mat label{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;
+  padding:12px 14px;border:1px solid var(--rule);cursor:pointer;font-size:15px;
+  line-height:1.45;transition:background .2s var(--ease);
+}
+.lista-mat label:hover{background:var(--card)}
+.lista-mat label:has(input:checked){background:var(--card);color:var(--muted)}
+.lista-mat input{margin:3px 0 0;accent-color:var(--accent);width:16px;height:16px}
+.lista-mat b{font-weight:600;color:var(--ink)}
+.lista-mat .obs{display:block;color:var(--muted);font-size:13.5px;margin-top:3px}
+
+/* ── fim ── */
+.fim{padding-block:var(--s6);border-top:1px solid var(--ink);margin-top:var(--s6)}
+.fim h2{font-size:var(--t-secao);font-weight:800;line-height:1.02;
+  letter-spacing:var(--track-display);margin:var(--s3) 0 var(--s3);max-width:var(--medida)}
+.fim p{max-width:var(--medida-lead);color:var(--muted);margin:0 0 var(--s3)}
+.acoes{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s4)}
+.btn{
+  font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  padding:14px 24px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  cursor:pointer;border-radius:0;transition:background .2s var(--ease),color .2s var(--ease);
+}
+.btn:hover{background:var(--paper);color:var(--ink)}
+.btn.sec{background:transparent;color:var(--ink)}
+.btn.sec:hover{background:var(--card)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.rodape{
+  border-top:1px solid var(--rule);padding-block:var(--s4) var(--s6);
+  display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap;
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- O avião. Grafismo de progresso, escondido de leitor de tela. -->
+<div id="aviao" aria-hidden="true">
+  <svg viewBox="0 0 52 52" fill="none">
+    <path id="rastro" d="M4 12 C 14 18, 20 22, 26 30"/>
+    <g id="corpo">
+      <path d="M26 44 L42 12 L26 20 L10 12 Z" fill="currentColor" opacity=".9"/>
+      <path d="M26 44 L26 20" stroke="#fff" stroke-width="1" opacity=".55"/>
+    </g>
+  </svg>
+</div>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="topo-marca">
+      <b>Gabriel Felix</b>
+      <span>Briefing · Bertoncini &amp; Mendonça</span>
+    </div>
+    <div class="topo-dir">
+      <span id="salvo"></span>
+      <div class="progresso" role="progressbar" aria-label="Progresso do questionário"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barra">
+        <i></i>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="env" id="form">
+
+<section class="abre">
+  <p class="cromo">Questionário de briefing · Setembro de 2026</p>
+  <h1>Antes de desenhar, eu preciso entender vocês.</h1>
+
+  <p class="lead">
+    Estas perguntas existem para que o site pareça com o escritório de vocês, e não
+    com qualquer escritório de advocacia. É daqui que saem o tom dos textos, a escolha
+    das fotos, a ordem das páginas e as decisões de design.
+  </p>
+  <p class="lead">
+    São nove blocos. Não precisa responder tudo de uma vez: o que vocês escreverem
+    fica salvo e continua aqui quando voltarem, pelo mesmo link.
+  </p>
+
+  <div class="nota">
+    <p style="margin:0 0 12px"><b>Três coisas que ajudam:</b></p>
+    <p style="margin:0 0 10px">
+      Respondam do jeito que vocês falariam comigo, sem formalidade.
+    </p>
+    <p style="margin:0 0 10px">
+      Onde a resposta de vocês dois for diferente, escrevam as duas. Saber onde vocês
+      discordam me ajuda mais do que ler uma resposta só.
+    </p>
+    <p style="margin:0">
+      Se uma pergunta não fizer sentido, pulem. Eu pergunto de novo depois, se precisar.
+    </p>
+  </div>
+</section>
+
+<nav class="indice" aria-label="Índice dos blocos">
+  <a href="#b1"><span class="n">01</span><span class="t">Vocês</span><span class="q">8 perguntas · 10 min</span></a>
+  <a href="#b2"><span class="n">02</span><span class="t">O escritório</span><span class="q">9 perguntas · 10 min</span></a>
+  <a href="#b3"><span class="n">03</span><span class="t">Missão e valores</span><span class="q">8 perguntas · 15 min</span></a>
+  <a href="#b4"><span class="n">04</span><span class="t">Clientes</span><span class="q">5 perguntas · 8 min</span></a>
+  <a href="#b5"><span class="n">05</span><span class="t">Como vocês falam</span><span class="q">6 perguntas · 10 min</span></a>
+  <a href="#b6"><span class="n">06</span><span class="t">Referências visuais</span><span class="q">6 perguntas · 15 min</span></a>
+  <a href="#b7"><span class="n">07</span><span class="t">Conteúdo do site</span><span class="q">7 perguntas · 10 min</span></a>
+  <a href="#b8"><span class="n">08</span><span class="t">Prazos e operação</span><span class="q">8 perguntas · 5 min</span></a>
+  <a href="#b9"><span class="n">09</span><span class="t">O que a OAB deixa</span><span class="q">6 perguntas · 5 min</span></a>
+</nav>
+
+<!-- ─────────── BLOCO 1 ─────────── -->
+<section class="bloco" id="b1">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 01</span>
+    <h2>Vocês</h2>
+    <span class="tempo">≈ 10 min</span>
+  </div>
+  <p class="bloco-intro">
+    O Jus falou uma coisa que eu concordo: em advocacia, o cliente contrata a pessoa.
+    Este bloco é o material dessa parte do site.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Jus, por que direito?</p>
+      <p class="ajuda">O que te levou até lá, e o que te fez ficar.</p>
+      <label class="campo"><textarea class="alto" id="q1_1" name="q1_1" placeholder="Escreva do jeito que você me contaria numa conversa."></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Bia, por que direito?</p>
+      <p class="ajuda">O que te levou até lá, e o que te fez ficar.</p>
+      <label class="campo"><textarea class="alto" id="q1_2" name="q1_2" placeholder="Escreva do jeito que você me contaria numa conversa."></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Como vocês se conheceram, e de onde veio a ideia da sociedade?</p>
+      <label class="campo"><textarea id="q1_3" name="q1_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Onde vocês se complementam? O que cada um faz melhor que o outro?</p>
+      <label class="campo"><textarea id="q1_4" name="q1_4"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.5</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Qual foi o caso ou o momento que mais marcou cada um de vocês até aqui?</p>
+      <p class="ajuda">Sem nome de cliente nem detalhe sigiloso. O que me interessa é o que ficou com vocês.</p>
+      <label class="campo"><textarea class="alto" id="q1_5" name="q1_5"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.6</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Fora do direito: o que vocês gostam de fazer?</p>
+      <p class="ajuda">
+        Sem isso a página "Sobre" vira aquele texto que serve para qualquer advogado.
+      </p>
+      <label class="campo"><textarea id="q1_6" name="q1_6"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.7</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Formação de cada um.</p>
+      <p class="ajuda">Graduação, instituição, ano, pós e especializações, número da OAB.</p>
+      <div class="dupla">
+        <div>
+          <label class="campo-rot" for="q1_7a">Jus</label>
+          <label class="campo"><textarea id="q1_7a" name="q1_7a"></textarea></label>
+        </div>
+        <div>
+          <label class="campo-rot" for="q1_7b">Bia</label>
+          <label class="campo"><textarea id="q1_7b" name="q1_7b"></textarea></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">1.8</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Experiência anterior de cada um.</p>
+      <p class="ajuda">Escritórios, estágios, funções, tempo em cada lugar.</p>
+      <div class="dupla">
+        <div>
+          <label class="campo-rot" for="q1_8a">Jus</label>
+          <label class="campo"><textarea id="q1_8a" name="q1_8a"></textarea></label>
+        </div>
+        <div>
+          <label class="campo-rot" for="q1_8b">Bia</label>
+          <label class="campo"><textarea id="q1_8b" name="q1_8b"></textarea></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 2 ─────────── -->
+<section class="bloco" id="b2">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 02</span>
+    <h2>O escritório</h2>
+    <span class="tempo">≈ 10 min</span>
+  </div>
+  <p class="bloco-intro">
+    Aqui sai a estrutura do site: quais páginas existem, o que entra no menu e o que
+    ganha destaque na home.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais áreas do direito vocês vão atender?</p>
+      <p class="ajuda">Listem todas, mesmo as que ainda são só intenção.</p>
+      <label class="campo"><textarea id="q2_1" name="q2_1"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Dessas, quais vocês querem que o escritório seja conhecido por?</p>
+      <p class="ajuda">Essas ganham destaque no site. As outras entram, mas em segundo plano.</p>
+      <label class="campo"><textarea id="q2_2" name="q2_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quem atende o quê?</p>
+      <p class="ajuda">O Jus mencionou família. Como fica a divisão entre vocês dois?</p>
+      <label class="campo"><textarea id="q2_3" name="q2_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem alguma área que vocês atendem hoje por necessidade, mas não querem atrair no futuro?</p>
+      <p class="ajuda">Isso não vai para o site. Serve para eu não dar destaque a ela.</p>
+      <label class="campo"><textarea id="q2_4" name="q2_4"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.5</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Vocês atendem só Maringá e região, o Paraná inteiro, ou todo o país? Atendem remotamente?</p>
+      <label class="campo"><textarea id="q2_5" name="q2_5"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.6</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Endereço do escritório, e como é o atendimento.</p>
+      <p class="ajuda">Presencial, remoto ou os dois? Tem sala para receber cliente?</p>
+      <label class="campo"><textarea id="q2_6" name="q2_6"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.7</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Como é o primeiro contato hoje, e como vocês gostariam que fosse?</p>
+      <p class="ajuda">
+        A pessoa liga, manda WhatsApp, marca reunião? E qual seria o caminho ideal, se
+        vocês pudessem escolher?
+      </p>
+      <label class="campo"><textarea id="q2_7" name="q2_7"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.8</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">A primeira consulta é gratuita ou cobrada?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q2_8" value="gratuita" id="q2_8_a">
+          <span class="lbl"><b>Gratuita</b></span></label>
+        <label class="opcao"><input type="radio" name="q2_8" value="cobrada" id="q2_8_b">
+          <span class="lbl"><b>Cobrada</b></span></label>
+        <label class="opcao"><input type="radio" name="q2_8" value="depende" id="q2_8_c">
+          <span class="lbl"><b>Depende do caso</b></span></label>
+        <label class="opcao"><input type="radio" name="q2_8" value="indefinido" id="q2_8_d">
+          <span class="lbl"><b>Ainda não decidimos</b></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">2.9</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Vocês pretendem ter mais sócios, associados ou estagiários nos próximos dois anos?</p>
+      <p class="ajuda">Muda como eu estruturo a página da equipe hoje, para ela crescer sem refazer.</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q2_9" value="sim" id="q2_9_a">
+          <span class="lbl"><b>Sim</b></span></label>
+        <label class="opcao"><input type="radio" name="q2_9" value="talvez" id="q2_9_b">
+          <span class="lbl"><b>Talvez</b></span></label>
+        <label class="opcao"><input type="radio" name="q2_9" value="nao" id="q2_9_c">
+          <span class="lbl"><b>Não</b></span></label>
+      </div>
+      <label class="campo"><textarea id="q2_9_txt" name="q2_9_txt" placeholder="Se quiserem, contem um pouco (opcional)"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 3 ─────────── -->
+<section class="bloco" id="b3">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 03</span>
+    <h2>Missão e valores</h2>
+    <span class="tempo">≈ 15 min</span>
+  </div>
+  <p class="bloco-intro">
+    O bloco mais importante do questionário. Se só der tempo de um, façam este.
+  </p>
+
+  <div class="p">
+    <div class="p-meta">
+      <span class="p-id">3.1</span><span class="tag ess">Essencial</span>
+      <span class="tag pula">Talvez já respondido</span>
+    </div>
+    <div class="p-corpo">
+      <p class="txt">Qual é a missão do escritório?</p>
+      <p class="ajuda">
+        Por que ele existe, além de gerar renda. Se já estiver no arquivo que vocês
+        preencheram para o marketing, podem colar aqui.
+      </p>
+      <label class="campo"><textarea id="q3_1" name="q3_1"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta">
+      <span class="p-id">3.2</span><span class="tag ess">Essencial</span>
+      <span class="tag pula">Talvez já respondido</span>
+    </div>
+    <div class="p-corpo">
+      <p class="txt">Quais são os valores do escritório?</p>
+      <p class="ajuda">
+        Três a cinco, cada um com um exemplo do dia a dia. Em vez de "transparência",
+        escrevam "o cliente sabe quanto vai custar antes de assinar".
+      </p>
+      <label class="campo"><textarea class="alto" id="q3_2" name="q3_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Completem a frase: um cliente deveria escolher vocês em vez de outro escritório porque…</p>
+      <label class="campo"><textarea id="q3_3" name="q3_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.4</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">O que vocês fazem que a maioria dos escritórios não faz?</p>
+      <label class="campo"><textarea id="q3_4" name="q3_4"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.5</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Vocês recusam causas que vão contra os valores de vocês. Isso entra no site?</p>
+      <p class="ajuda">
+        Vale pensarem juntos: falar isso no site muda quem procura vocês, nos dois
+        sentidos.
+      </p>
+      <div class="opcoes">
+        <label class="opcao">
+          <input type="radio" name="q3_5" value="destaque" id="q3_5_a">
+          <span class="lbl"><b>Sim, com destaque</b>
+            <span>Uma seção dizendo que o escritório não atua em causas que promovam
+            discriminação. Atrai quem pensa igual e afasta quem não pensa.</span>
+          </span>
+        </label>
+        <label class="opcao">
+          <input type="radio" name="q3_5" value="sobrio" id="q3_5_b">
+          <span class="lbl"><b>Sim, em tom sóbrio</b>
+            <span>"Igualdade, respeito e dignidade" entram entre os valores, sem
+            enumerar as pautas.</span>
+          </span>
+        </label>
+        <label class="opcao">
+          <input type="radio" name="q3_5" value="nao" id="q3_5_c">
+          <span class="lbl"><b>Não por enquanto</b>
+            <span>Continua valendo internamente, mas fica fora do site.</span>
+          </span>
+        </label>
+        <label class="opcao">
+          <input type="radio" name="q3_5" value="conversar" id="q3_5_d">
+          <span class="lbl"><b>Queremos conversar sobre isso antes</b></span>
+        </label>
+      </div>
+      <label class="campo-rot" for="q3_5_txt">Por quê? E se for sim, onde vocês traçam a linha</label>
+      <label class="campo"><textarea id="q3_5_txt" name="q3_5_txt"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.6</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Se o escritório fosse uma pessoa, como ela seria?</p>
+      <p class="ajuda">Três a cinco adjetivos. Formal ou informal, séria ou calorosa, tradicional ou moderna.</p>
+      <label class="campo"><input type="text" id="q3_6" name="q3_6" placeholder="Ex.: discreta, direta, acolhedora"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.7</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">E o que ela definitivamente não seria?</p>
+      <p class="ajuda">Me ajuda tanto quanto a de cima.</p>
+      <label class="campo"><input type="text" id="q3_7" name="q3_7"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">3.8</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Onde vocês querem que o escritório esteja em cinco anos?</p>
+      <p class="ajuda">
+        Tamanho, tipo de cliente, áreas, cidade. Serve para eu saber se o site precisa
+        já nascer pronto para crescer.
+      </p>
+      <label class="campo"><textarea id="q3_8" name="q3_8"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 4 ─────────── -->
+<section class="bloco" id="b4">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 04</span>
+    <h2>Clientes</h2>
+    <span class="tempo">≈ 10 min</span>
+  </div>
+  <p class="bloco-intro">
+    Quem abre o site, e em que situação. É o que decide o tom dos textos e o peso
+    das imagens.
+  </p>
+
+  <div class="p">
+    <div class="p-meta">
+      <span class="p-id">4.1</span><span class="tag ess">Essencial</span>
+      <span class="tag pula">Talvez já respondido</span>
+    </div>
+    <div class="p-corpo">
+      <p class="txt">Descrevam o cliente de vocês como se fosse uma pessoa real.</p>
+      <p class="ajuda">
+        Idade, ocupação, situação de vida, e o que ela está enfrentando quando procura
+        vocês. Se o cliente de cada um for diferente, escrevam nos dois campos.
+      </p>
+      <div class="dupla">
+        <div>
+          <label class="campo-rot" for="q4_1a">Jus</label>
+          <label class="campo"><textarea class="alto" id="q4_1a" name="q4_1a"></textarea></label>
+        </div>
+        <div>
+          <label class="campo-rot" for="q4_1b">Bia</label>
+          <label class="campo"><textarea class="alto" id="q4_1b" name="q4_1b"></textarea></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">4.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Em que estado emocional a pessoa chega até vocês?</p>
+      <p class="ajuda">
+        Ansiosa, com medo, revoltada, perdida? Um site para quem está com medo é
+        diferente de um site para quem está indignado.
+      </p>
+      <label class="campo"><textarea id="q4_3" name="q4_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">4.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais são as dúvidas e os medos que ela traz na primeira conversa?</p>
+      <p class="ajuda">Isso vira texto no site, e depois dá pauta de artigo.</p>
+      <label class="campo"><textarea class="alto" id="q4_4" name="q4_4"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">4.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">O que faz essa pessoa confiar em vocês, e o que faria ela desistir?</p>
+      <div class="dupla">
+        <div>
+          <label class="campo-rot" for="q4_5">Faz confiar</label>
+          <label class="campo"><textarea id="q4_5" name="q4_5"></textarea></label>
+        </div>
+        <div>
+          <label class="campo-rot" for="q4_6">Faz desistir</label>
+          <label class="campo"><textarea id="q4_6" name="q4_6"></textarea></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">4.5</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Vocês atendem pessoa física, empresa, ou os dois?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q4_7" value="fisica" id="q4_7_a">
+          <span class="lbl"><b>Pessoa física</b></span></label>
+        <label class="opcao"><input type="radio" name="q4_7" value="empresa" id="q4_7_b">
+          <span class="lbl"><b>Empresa</b></span></label>
+        <label class="opcao"><input type="radio" name="q4_7" value="ambos_fisica" id="q4_7_c">
+          <span class="lbl"><b>Os dois, com pessoa física na frente</b></span></label>
+        <label class="opcao"><input type="radio" name="q4_7" value="ambos_empresa" id="q4_7_d">
+          <span class="lbl"><b>Os dois, com empresa na frente</b></span></label>
+      </div>
+      <label class="campo-rot" for="q4_8">Atendem algum setor, profissão ou comunidade em especial?</label>
+      <label class="campo"><textarea id="q4_8" name="q4_8" placeholder="Opcional"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 5 ─────────── -->
+<section class="bloco" id="b5">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 05</span>
+    <h2>Como vocês falam</h2>
+    <span class="tempo">≈ 10 min</span>
+  </div>
+  <p class="bloco-intro">
+    O Jus já disse o principal: linguagem acessível, porque advogado costuma tentar
+    explicar e acabar complicando. Aqui isso vira regra escrita.
+  </p>
+
+  <div class="p">
+    <div class="p-meta">
+      <span class="p-id">5.1</span><span class="tag ess">Essencial</span>
+      <span class="tag pula">Talvez já respondido</span>
+    </div>
+    <div class="p-corpo">
+      <p class="txt">Como vocês descreveriam o tom de voz do escritório?</p>
+      <p class="ajuda">
+        Tom de voz é o jeito de falar que se repete no site, nos artigos e até na
+        resposta de WhatsApp. "Compareça à audiência munido dos documentos elencados"
+        e "leve estes documentos no dia da audiência" dizem a mesma coisa de dois
+        jeitos. Qual é o de vocês?
+      </p>
+      <label class="campo"><textarea class="alto" id="q5_1" name="q5_1"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">5.2</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem alguma palavra ou expressão que vocês não querem ver no site?</p>
+      <p class="ajuda">
+        Do tipo "excelência", "soluções jurídicas", "parceiro estratégico", "atendimento
+        diferenciado".
+      </p>
+      <label class="campo"><textarea id="q5_2" name="q5_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">5.3</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">E alguma que é bem a cara de vocês?</p>
+      <label class="campo"><textarea id="q5_3" name="q5_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">5.4</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">O site fala com o visitante por "você", ou de forma impessoal?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q5_4" value="voce" id="q5_4_a">
+          <span class="lbl"><b>"Você"</b><span>Mais próximo. "Se você está passando por um divórcio…"</span></span></label>
+        <label class="opcao"><input type="radio" name="q5_4" value="impessoal" id="q5_4_b">
+          <span class="lbl"><b>Impessoal</b><span>Mais formal. "Em processos de divórcio, o primeiro passo é…"</span></span></label>
+        <label class="opcao"><input type="radio" name="q5_4" value="misto" id="q5_4_c">
+          <span class="lbl"><b>Depende da página</b><span>Me digam onde muda, no campo abaixo.</span></span></label>
+      </div>
+      <label class="campo"><textarea id="q5_4_txt" name="q5_4_txt" placeholder="Observações (opcional)"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">5.5</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">O escritório fala em "nós", ou cada advogado fala por si?</p>
+      <p class="ajuda">Isso muda o texto do site inteiro, não só a página "Sobre".</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q5_5" value="nos" id="q5_5_a">
+          <span class="lbl"><b>O escritório fala em "nós"</b></span></label>
+        <label class="opcao"><input type="radio" name="q5_5" value="cada_um" id="q5_5_b">
+          <span class="lbl"><b>Cada um fala por si</b></span></label>
+        <label class="opcao"><input type="radio" name="q5_5" value="misto" id="q5_5_c">
+          <span class="lbl"><b>Depende da página</b><span>Institucional em "nós", artigo assinado por quem escreveu.</span></span></label>
+      </div>
+      <label class="campo"><textarea id="q5_5_txt" name="q5_5_txt" placeholder="Observações (opcional)"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">5.6</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem alguém cujo jeito de falar vocês admiram?</p>
+      <p class="ajuda">Pode ser de qualquer área: perfil, canal, jornalista, professor, escritório.</p>
+      <label class="campo"><textarea id="q5_6" name="q5_6"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 6 ─────────── -->
+<section class="bloco" id="b6">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 06</span>
+    <h2>Referências visuais</h2>
+    <span class="tempo">≈ 15 min</span>
+  </div>
+  <p class="bloco-intro">
+    Quanto mais links, melhor. Vão colando um por vez e escrevendo o que chamou
+    atenção. "Gostei" me ajuda pouco, "gostei do tanto de espaço em branco" me ajuda
+    muito.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Sites que vocês acham bonitos, de qualquer área.</p>
+      <p class="ajuda">Não precisa ser de advocacia. Pode ser loja, restaurante, banco, o que for.</p>
+      <div class="links" data-lista="l6_1" data-rotulo="Site"></div>
+      <button type="button" class="mais" data-mais="l6_1">+ Adicionar link</button>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Sites de advocacia que vocês acham bons.</p>
+      <div class="links" data-lista="l6_2" data-rotulo="Site"></div>
+      <button type="button" class="mais" data-mais="l6_2">+ Adicionar link</button>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Sites que vocês acham ruins, ou com os quais não querem se parecer.</p>
+      <p class="ajuda">Vale tanto quanto as duas de cima.</p>
+      <div class="links" data-lista="l6_3" data-rotulo="Site"></div>
+      <button type="button" class="mais" data-mais="l6_3">+ Adicionar link</button>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">O site deve ser mais claro ou mais escuro?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q6_5" value="claro" id="q6_5_a">
+          <span class="lbl"><b>Claro</b><span>Fundo off-white, arejado, muito espaço em branco.</span></span></label>
+        <label class="opcao"><input type="radio" name="q6_5" value="escuro" id="q6_5_b">
+          <span class="lbl"><b>Escuro</b><span>Fundo azul profundo, mais denso e dramático.</span></span></label>
+        <label class="opcao"><input type="radio" name="q6_5" value="misto" id="q6_5_c">
+          <span class="lbl"><b>Os dois</b><span>Algumas seções claras, outras escuras.</span></span></label>
+        <label class="opcao"><input type="radio" name="q6_5" value="nao_sei" id="q6_5_d">
+          <span class="lbl"><b>Não sabemos</b><span>Prefiro que você proponha.</span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.5</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">O site deve ter movimento?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q6_6" value="estatico" id="q6_6_a">
+          <span class="lbl"><b>Quase nenhum</b><span>Direto ao ponto, sem animação.</span></span></label>
+        <label class="opcao"><input type="radio" name="q6_6" value="sutil" id="q6_6_b">
+          <span class="lbl"><b>Sutil</b><span>Transições discretas, coisas que aparecem conforme a pessoa rola.</span></span></label>
+        <label class="opcao"><input type="radio" name="q6_6" value="presente" id="q6_6_c">
+          <span class="lbl"><b>Presente</b><span>O movimento faz parte da personalidade do site.</span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">6.6</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Os mockups da identidade usam carimbo de cera, papel texturizado e placa de acrílico. Isso conversa com vocês?</p>
+      <label class="campo"><textarea id="q6_8" name="q6_8"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 7 ─────────── -->
+<section class="bloco" id="b7">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 07</span>
+    <h2>Conteúdo do site</h2>
+    <span class="tempo">≈ 10 min</span>
+  </div>
+  <p class="bloco-intro">
+    Quais páginas existem e o que entra em cada uma.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais páginas vocês imaginam no site?</p>
+      <p class="ajuda">
+        Minha sugestão inicial: Início, O Escritório, Áreas de Atuação, Artigos e
+        Contato. Falta alguma? Sobra alguma?
+      </p>
+      <label class="campo"><textarea id="q7_1" name="q7_1"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quantos artigos vocês pretendem ter no lançamento, e com que frequência publicar depois?</p>
+      <p class="ajuda">
+        Jus, você já está escrevendo. Melhor uma frequência que vocês consigam manter
+        do que uma ambiciosa.
+      </p>
+      <label class="campo"><textarea id="q7_2" name="q7_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais assuntos vocês acham que os primeiros artigos poderiam cobrir?</p>
+      <p class="ajuda">
+        Não precisa estar decidido. Uma lista de ideias já me serve.
+      </p>
+      <label class="campo"><textarea class="alto" id="q7_3" name="q7_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais perguntas vocês mais ouvem de clientes?</p>
+      <p class="ajuda">Viram uma seção de perguntas frequentes, e são boas pautas de artigo.</p>
+      <label class="campo"><textarea class="alto" id="q7_5" name="q7_5"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.5</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Como vocês querem que o cliente entre em contato?</p>
+      <p class="ajuda">Podem marcar mais de um. Só me digam qual é o principal.</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="checkbox" name="q7_6_wpp" id="q7_6_wpp">
+          <span class="lbl"><b>WhatsApp</b></span></label>
+        <label class="opcao"><input type="checkbox" name="q7_6_form" id="q7_6_form">
+          <span class="lbl"><b>Formulário no site</b></span></label>
+        <label class="opcao"><input type="checkbox" name="q7_6_tel" id="q7_6_tel">
+          <span class="lbl"><b>Telefone</b></span></label>
+        <label class="opcao"><input type="checkbox" name="q7_6_email" id="q7_6_email">
+          <span class="lbl"><b>E-mail</b></span></label>
+        <label class="opcao"><input type="checkbox" name="q7_6_agenda" id="q7_6_agenda">
+          <span class="lbl"><b>Agendamento online</b><span>A pessoa escolhe o horário sozinha.</span></span></label>
+      </div>
+      <label class="campo-rot" for="q7_6_txt">Qual é o principal, e por quê</label>
+      <label class="campo"><input type="text" id="q7_6_txt" name="q7_6_txt"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.6</span><span class="tag">Complementar</span></div>
+    <div class="p-corpo">
+      <p class="txt">Já existe algum texto pronto?</p>
+      <p class="ajuda">Descrição das áreas, apresentação do escritório, qualquer coisa escrita.</p>
+      <label class="campo"><textarea id="q7_8" name="q7_8"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">7.7</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">O site precisa de outro idioma além do português?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q7_9" value="nao" id="q7_9_a">
+          <span class="lbl"><b>Não</b><span>Só português.</span></span></label>
+        <label class="opcao"><input type="radio" name="q7_9" value="sim" id="q7_9_b">
+          <span class="lbl"><b>Sim</b><span>Digam qual no campo abaixo.</span></span></label>
+        <label class="opcao"><input type="radio" name="q7_9" value="futuro" id="q7_9_c">
+          <span class="lbl"><b>Não agora, mas talvez depois</b></span></label>
+      </div>
+      <label class="campo"><input type="text" id="q7_9_txt" name="q7_9_txt" placeholder="Qual idioma (opcional)"></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 8 ─────────── -->
+<section class="bloco" id="b8">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 08</span>
+    <h2>Prazos e operação</h2>
+    <span class="tempo">≈ 5 min</span>
+  </div>
+  <p class="bloco-intro">
+    Bloco rápido, mas é o que organiza a ordem do trabalho.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quando cada um de vocês sai do escritório atual?</p>
+      <p class="ajuda">Data ou mês previsto. Se já saíram, é só escrever isso.</p>
+      <div class="dupla">
+        <div>
+          <label class="campo-rot" for="q8_1a">Jus</label>
+          <label class="campo"><input type="text" id="q8_1a" name="q8_1a" placeholder="Data ou mês"></label>
+        </div>
+        <div>
+          <label class="campo-rot" for="q8_1b">Bia</label>
+          <label class="campo"><input type="text" id="q8_1b" name="q8_1b" placeholder="Data ou mês"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Existe uma data-alvo para o site estar no ar?</p>
+      <label class="campo"><input type="text" id="q8_2" name="q8_2"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quando é o ensaio de fotos com o irmão da Bia?</p>
+      <p class="ajuda">
+        <b>Me avisem com antecedência.</b> Antes do ensaio eu mando a direção de
+        enquadramento, luz, fundo e roupa. Foto feita sem isso costuma não servir para
+        o site.
+      </p>
+      <label class="campo"><input type="text" id="q8_3" name="q8_3"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Já pensaram no endereço do site?</p>
+      <p class="ajuda">
+        O <b>.adv.br</b> é exclusivo de advogados e passa credibilidade, mas exige
+        comprovação na OAB. O <b>.com.br</b> é mais simples de registrar.
+      </p>
+      <label class="campo"><input type="text" id="q8_4" name="q8_4" placeholder="Ex.: bertoncinimendonca.adv.br"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.5</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Já existe e-mail profissional do escritório?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q8_5" value="sim" id="q8_5_a">
+          <span class="lbl"><b>Sim</b></span></label>
+        <label class="opcao"><input type="radio" name="q8_5" value="nao" id="q8_5_b">
+          <span class="lbl"><b>Ainda não</b></span></label>
+      </div>
+      <label class="campo"><input type="text" id="q8_5_txt" name="q8_5_txt" placeholder="Qual (se já existir)"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.6</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quando o Instagram do escritório entra no ar?</p>
+      <label class="campo"><input type="text" id="q8_6" name="q8_6" placeholder="Data ou mês previsto"></label>
+      <div style="margin-top:var(--s2)">
+        <label class="campo-rot" for="q8_6b">Qual é o perfil do escritório</label>
+        <label class="campo"><input type="text" id="q8_6b" name="q8_6b" placeholder="@"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.7</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quais redes o escritório vai ter?</p>
+      <p class="ajuda">Marquem todas que pretendem usar, mesmo as que ainda são só intenção.</p>
+      <div class="opcoes grade">
+        <label class="opcao"><input type="checkbox" name="r_instagram" id="r_instagram">
+          <span class="lbl"><b>Instagram</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_youtube" id="r_youtube">
+          <span class="lbl"><b>YouTube</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_linkedin" id="r_linkedin">
+          <span class="lbl"><b>LinkedIn</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_tiktok" id="r_tiktok">
+          <span class="lbl"><b>TikTok</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_facebook" id="r_facebook">
+          <span class="lbl"><b>Facebook</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_x" id="r_x">
+          <span class="lbl"><b>X</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_threads" id="r_threads">
+          <span class="lbl"><b>Threads</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_whatsapp" id="r_whatsapp">
+          <span class="lbl"><b>Canal no WhatsApp</b></span></label>
+        <label class="opcao"><input type="checkbox" name="r_spotify" id="r_spotify">
+          <span class="lbl"><b>Spotify</b><span>Se pensarem em podcast.</span></span></label>
+        <label class="opcao"><input type="checkbox" name="r_newsletter" id="r_newsletter">
+          <span class="lbl"><b>Newsletter</b></span></label>
+      </div>
+      <label class="campo"><input type="text" id="q8_7" name="q8_7" placeholder="Alguma outra?"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">8.8</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Quem aprova as etapas do projeto?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q8_8" value="jus" id="q8_8_a">
+          <span class="lbl"><b>Jus</b></span></label>
+        <label class="opcao"><input type="radio" name="q8_8" value="bia" id="q8_8_b">
+          <span class="lbl"><b>Bia</b></span></label>
+        <label class="opcao"><input type="radio" name="q8_8" value="ambos" id="q8_8_c">
+          <span class="lbl"><b>Os dois juntos</b></span></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── BLOCO 9 ─────────── -->
+<section class="bloco" id="b9">
+  <div class="bloco-topo">
+    <span class="num">BLOCO 09</span>
+    <h2>O que a OAB deixa</h2>
+    <span class="tempo">≈ 5 min</span>
+  </div>
+  <p class="bloco-intro">
+    A OAB limita o que um site de advocacia pode dizer, e isso muda texto, botão e
+    estrutura. Melhor eu saber antes de desenhar.
+  </p>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.1</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">O que vocês não podem ter num site de advocacia?</p>
+      <p class="ajuda">
+        Do que vocês já sabem da prática. Eu pesquiso por fora também, mas vocês
+        conhecem isso melhor que eu.
+      </p>
+      <label class="campo"><textarea class="alto" id="q9_2" name="q9_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.2</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem palavra ou chamada que eu não posso usar?</p>
+      <p class="ajuda">
+        Coisas como "especialista em", "resultado garantido", "consulte já", tabela de
+        preço, número de causas ganhas.
+      </p>
+      <label class="campo"><textarea class="alto" id="q9_3" name="q9_3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.3</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">O que é obrigatório aparecer?</p>
+      <p class="ajuda">Número da OAB de cada um, registro da sociedade, algum aviso.</p>
+      <label class="campo"><textarea id="q9_5" name="q9_5"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.4</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Posso usar foto, nome completo e número da OAB de vocês?</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q9_4" value="sim" id="q9_4_a">
+          <span class="lbl"><b>Sim, tudo</b></span></label>
+        <label class="opcao"><input type="radio" name="q9_4" value="parcial" id="q9_4_b">
+          <span class="lbl"><b>Em parte</b><span>Contem no campo abaixo o que fica de fora.</span></span></label>
+      </div>
+      <label class="campo"><input type="text" id="q9_4_txt" name="q9_4_txt" placeholder="Observações (opcional)"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.5</span><span class="tag ess">Essencial</span></div>
+    <div class="p-corpo">
+      <p class="txt">Jus, você escreve a política de privacidade e o aviso de cookies. Confirma?</p>
+      <p class="ajuda">A parte técnica no site é comigo, o texto é com você. Só me diga o prazo.</p>
+      <div class="opcoes">
+        <label class="opcao"><input type="radio" name="q9_1" value="sim" id="q9_1_a">
+          <span class="lbl"><b>Confirmo</b></span></label>
+        <label class="opcao"><input type="radio" name="q9_1" value="nao" id="q9_1_b">
+          <span class="lbl"><b>Prefiro que venha de outro lugar</b></span></label>
+      </div>
+      <label class="campo"><input type="text" id="q9_1_txt" name="q9_1_txt" placeholder="Prazo estimado"></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">9.6</span><span class="tag">Importante</span></div>
+    <div class="p-corpo">
+      <p class="txt">Precisa de outra página legal além da política de privacidade?</p>
+      <p class="ajuda">Termos de uso, aviso de que os artigos são informativos, algo assim.</p>
+      <label class="campo"><textarea id="q9_6" name="q9_6"></textarea></label>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FIM ─────────── -->
+<section class="fim" id="fim">
+  <p class="cromo">Para terminar</p>
+  <h2>O que ficou de fora?</h2>
+
+  <div class="p" style="border-top:1px solid var(--rule)">
+    <div class="p-meta"><span class="p-id">10.1</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem alguma coisa que eu não perguntei e que vocês acham que eu preciso saber?</p>
+      <label class="campo"><textarea class="alto" id="q10_1" name="q10_1"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p">
+    <div class="p-meta"><span class="p-id">10.2</span></div>
+    <div class="p-corpo">
+      <p class="txt">Tem algo que vocês estão em dúvida, ou que preferem conversar ao vivo?</p>
+      <label class="campo"><textarea id="q10_2" name="q10_2"></textarea></label>
+    </div>
+  </div>
+
+  <div class="p" style="border-bottom:none">
+    <div class="p-meta"><span class="p-id">10.3</span></div>
+    <div class="p-corpo">
+      <p class="txt">Materiais para me enviar</p>
+      <p class="ajuda">Marquem o que já dá para mandar. O resto pode vir depois.</p>
+      <div class="lista-mat">
+        <label><input type="checkbox" id="m1" name="m1">
+          <span><b>O arquivo de briefing do marketing</b>
+            <span class="obs">Aquele que vocês preencheram para a amiga da Bia, com público e tom de voz. Pode responder boa parte deste questionário.</span></span></label>
+        <label><input type="checkbox" id="m2" name="m2">
+          <span><b>Logo em arquivo vetorial</b>
+            <span class="obs">SVG, AI ou EPS. Os arquivos que recebi são PNG em tamanho de post de Instagram, e servem para rede social, mas não para o site. Vale pedir para quem fez a identidade.</span></span></label>
+        <label><input type="checkbox" id="m3" name="m3">
+          <span><b>Fotos de vocês</b>
+            <span class="obs">Mesmo as provisórias, antes do ensaio. Já me ajudam a testar layout.</span></span></label>
+        <label><input type="checkbox" id="m4" name="m4">
+          <span><b>Missão e valores, se já estiverem escritos</b></span></label>
+        <label><input type="checkbox" id="m5" name="m5">
+          <span><b>Textos prontos de qualquer parte do site</b></span></label>
+        <label><input type="checkbox" id="m6" name="m6">
+          <span><b>Dados de contato definitivos</b>
+            <span class="obs">Endereço, telefone, e-mail, CNPJ e inscrições na OAB.</span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="acoes">
+    <button type="button" class="btn" id="salvar">Salvar respostas</button>
+    <button type="button" class="btn sec" id="baixar">Baixar uma cópia</button>
+  </div>
+  <p id="aviso-salvo" style="margin-top:var(--s3);font-size:14px;color:var(--muted)">
+    O que vocês escrevem vai sendo salvo sozinho. Podem fechar a página e voltar
+    depois pelo mesmo link, inclusive em outro computador, que as respostas continuam
+    aqui. Se um responder hoje e o outro completar semana que vem, nada se perde.
+  </p>
+</section>
+
+<footer class="rodape">
+  <span class="cromo">Gabriel Felix · Product Designer</span>
+  <span class="cromo">Briefing v1 · Setembro 2026</span>
+</footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var ID      = "bertoncini-mendonca";
+  var API     = "/api/briefing";
+  var CHAVE   = "briefing-bm-v1";     /* rascunho local, rede de segurança */
+  var form    = document.getElementById("form");
+  var salvo   = document.getElementById("salvo");
+  var barra   = document.getElementById("barra");
+  var fill    = barra.querySelector("i");
+
+  /* ══ listas de links ══
+     Cada pergunta de referência tem um contêiner .links vazio no HTML e um
+     botão que acrescenta linhas. Cada linha é uma URL mais o motivo, e as
+     duas viram um par de chaves no objeto de respostas (l6_1_1_url e
+     l6_1_1_obs), para o dado chegar no banco já legível sem eu precisar
+     interpretar array nenhum na hora de ler. */
+  function novaLinha(lista, n, valUrl, valObs){
+    var nome   = lista.dataset.lista;
+    var rotulo = lista.dataset.rotulo || "Link";
+    var div = document.createElement("div");
+    div.className = "link-item";
+    div.dataset.n = n;
+    div.innerHTML =
+      '<span class="n">' + rotulo.toUpperCase() + " " + String(n).padStart(2,"0") + '</span>' +
+      '<div class="linha1">' +
+        '<label class="campo"><input type="text" data-campo="' + nome + '_' + n + '_url" ' +
+          'placeholder="Cole o endereço do site"></label>' +
+        '<button type="button" class="tira" aria-label="Remover este link">remover</button>' +
+      '</div>' +
+      '<label class="campo"><textarea data-campo="' + nome + '_' + n + '_obs" ' +
+        'placeholder="O que vocês acharam dele?"></textarea></label>';
+    if (valUrl) div.querySelector('input').value = valUrl;
+    if (valObs) div.querySelector('textarea').value = valObs;
+    div.querySelector(".tira").addEventListener("click", function(){
+      var campos = div.querySelectorAll("[data-campo]");
+      campos.forEach(function(c){ delete dados[c.dataset.campo]; });
+      div.remove();
+      renumerar(lista);
+      marcar(); progresso();
+    });
+    div.querySelectorAll("[data-campo]").forEach(ligar);
+    lista.appendChild(div);
+    return div;
+  }
+
+  /* Depois de remover uma linha do meio, as de baixo sobem. Os valores andam
+     junto com a posição para não sobrar buraco na numeração nem chave órfã
+     no objeto. */
+  function renumerar(lista){
+    var nome = lista.dataset.lista;
+    var itens = Array.prototype.slice.call(lista.querySelectorAll(".link-item"));
+    var valores = itens.map(function(it){
+      return {
+        url: it.querySelector('input[data-campo]').value,
+        obs: it.querySelector('textarea[data-campo]').value
+      };
+    });
+    itens.forEach(function(it){
+      it.querySelectorAll("[data-campo]").forEach(function(c){ delete dados[c.dataset.campo]; });
+      it.remove();
+    });
+    valores.forEach(function(v, i){
+      var linha = novaLinha(lista, i + 1, v.url, v.obs);
+      if (v.url) dados[nome + "_" + (i+1) + "_url"] = v.url;
+      if (v.obs) dados[nome + "_" + (i+1) + "_obs"] = v.obs;
+    });
+  }
+
+  function montarListas(){
+    document.querySelectorAll(".links").forEach(function(lista){
+      var nome = lista.dataset.lista;
+      /* Recupera quantas linhas existiam. Procura até 40 para achar buraco
+         deixado por versão antiga do rascunho. */
+      var achados = [];
+      for (var i = 1; i <= 40; i++){
+        var u = dados[nome + "_" + i + "_url"], o = dados[nome + "_" + i + "_obs"];
+        if (u || o) achados.push({url:u||"", obs:o||""});
+      }
+      if (!achados.length) achados = [{url:"",obs:""}];
+      achados.forEach(function(v, i){ novaLinha(lista, i + 1, v.url, v.obs); });
+    });
+    document.querySelectorAll("[data-mais]").forEach(function(b){
+      if (b.dataset.ligado) return;
+      b.dataset.ligado = "1";
+      b.addEventListener("click", function(){
+        var lista = document.querySelector('.links[data-lista="' + b.dataset.mais + '"]');
+        var n = lista.querySelectorAll(".link-item").length + 1;
+        var item = novaLinha(lista, n);
+        item.querySelector("input").focus();
+      });
+    });
+  }
+
+  /* ══ rascunho local ══
+     Mantido mesmo com o banco: se a internet cair no meio de uma resposta
+     longa, o texto continua aqui. Todo acesso em try/catch porque janela
+     anônima e cookies desligados fazem isso estourar. */
+  function lerLocal(){
+    try { return JSON.parse(localStorage.getItem(CHAVE) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function gravarLocal(d){
+    try { localStorage.setItem(CHAVE, JSON.stringify(d)); return true; }
+    catch(e){ return false; }
+  }
+
+  var dados = lerLocal();
+
+  /* ══ campos ══ */
+  function ligar(c){
+    var k = c.dataset.campo || c.id || c.name;
+    if (!k) return;
+    /* Os campos das listas de link já são ligados quando a linha nasce, e
+       depois a varredura geral passa por cima deles de novo. Sem esta marca,
+       cada tecla grava duas vezes e o botão de adicionar acumula cliques. */
+    if (c.dataset.ligado) return;
+    c.dataset.ligado = "1";
+    var ev = (c.type === "radio" || c.type === "checkbox") ? "change" : "input";
+    c.addEventListener(ev, function(){
+      if (c.type === "radio")        dados[c.name] = c.value;
+      else if (c.type === "checkbox") dados[k] = c.checked;
+      else                            dados[k] = c.value;
+      marcar(); progresso();
+    });
+  }
+
+  function aplicar(d){
+    form.querySelectorAll("textarea, input").forEach(function(c){
+      var k = c.dataset.campo || c.id || c.name;
+      if (!k) return;
+      if (c.type === "radio"){
+        if (d[c.name] === c.value) c.checked = true;
+      } else if (c.type === "checkbox"){
+        if (d[k] === true) c.checked = true;
+      } else if (d[k] != null && !c.value) {
+        c.value = d[k];
+      }
+    });
+  }
+
+  /* ══ salvamento ══
+     Sobe para o banco sozinho, com folga depois da última tecla. O rascunho
+     local grava antes, e mais rápido, porque é o que salva a resposta se a
+     rede falhar justo no meio. */
+  var tLocal, tRede, subindo = false, pendente = false;
+
+  function marcar(){
+    salvo.textContent = "salvando…";
+    clearTimeout(tLocal);
+    tLocal = setTimeout(function(){ gravarLocal(dados); }, 400);
+    clearTimeout(tRede);
+    tRede = setTimeout(subir, 2500);
+  }
+
+  function hora(){
+    var h = new Date();
+    return String(h.getHours()).padStart(2,"0") + ":" + String(h.getMinutes()).padStart(2,"0");
+  }
+
+  function subir(){
+    if (subindo){ pendente = true; return Promise.resolve(); }
+    subindo = true;
+    return fetch(API, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ id: ID, respostas: dados })
+    }).then(function(r){
+      if (!r.ok) throw new Error(r.status);
+      salvo.textContent = "salvo " + hora();
+    }).catch(function(){
+      /* O rascunho local já guardou. Dizer "não salvou" assustaria à toa. */
+      salvo.textContent = "salvo neste aparelho";
+    }).then(function(){
+      subindo = false;
+      if (pendente){ pendente = false; subir(); }
+    });
+  }
+
+  /* ══ progresso ══ */
+  function progresso(){
+    var total = 0, feitos = 0;
+    form.querySelectorAll("textarea, input").forEach(function(c){
+      if (c.type === "checkbox") return;
+      if (c.closest(".link-item")) return;      /* lista é opcional, não conta */
+      if (c.type === "radio"){
+        if (form.querySelector('input[name="'+c.name+'"]') !== c) return;
+        total++;
+        if (form.querySelector('input[name="'+c.name+'"]:checked')) feitos++;
+        return;
+      }
+      total++;
+      if (c.value.trim()) feitos++;
+    });
+    var pct = total ? Math.round(feitos / total * 100) : 0;
+    fill.style.width = pct + "%";
+    barra.setAttribute("aria-valuenow", String(pct));
+    return pct;
+  }
+
+  /* ══ partida ══
+     O banco manda no que aparece na tela: é ele que tem o que a outra pessoa
+     escreveu. O rascunho local entra só onde o banco está vazio, que é o caso
+     de quem escreveu com a rede fora. */
+  aplicar(dados);
+  montarListas();
+  form.querySelectorAll("textarea, input").forEach(ligar);
+  progresso();
+
+  fetch(API + "?id=" + ID)
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j || !j.respostas) return;
+      var vindas = j.respostas, mudou = false;
+      Object.keys(vindas).forEach(function(k){
+        if (dados[k] === undefined || dados[k] === "" ){ dados[k] = vindas[k]; mudou = true; }
+      });
+      if (mudou){
+        document.querySelectorAll(".links").forEach(function(l){ l.innerHTML = ""; });
+        montarListas();
+        aplicar(dados);
+        form.querySelectorAll("textarea, input").forEach(ligar);
+        progresso();
+      }
+      if (j.atualizado_em){
+        var d = new Date(j.atualizado_em);
+        salvo.textContent = "salvo " + String(d.getHours()).padStart(2,"0") + ":" +
+                            String(d.getMinutes()).padStart(2,"0");
+      }
+    })
+    .catch(function(){});
+
+  /* ══ botões ══ */
+  document.getElementById("salvar").addEventListener("click", function(){
+    var b = this, antes = b.textContent;
+    b.textContent = "Salvando…"; b.disabled = true;
+    gravarLocal(dados);
+    subir().then(function(){
+      b.textContent = "Salvo";
+      setTimeout(function(){ b.textContent = antes; b.disabled = false; }, 2200);
+    });
+  });
+
+  function montarTexto(){
+    var out = ["BRIEFING · BERTONCINI & MENDONÇA ADVOGADOS",
+               "Gerado em " + new Date().toLocaleString("pt-BR"), ""];
+    form.querySelectorAll("section.bloco, section.fim").forEach(function(sec){
+      var h = sec.querySelector("h2");
+      out.push("");
+      out.push("══════════════════════════════════════════");
+      out.push((h ? h.textContent.trim() : "").toUpperCase());
+      out.push("══════════════════════════════════════════");
+      sec.querySelectorAll(".p").forEach(function(p){
+        var id = p.querySelector(".p-id");
+        var txt = p.querySelector(".txt");
+        var linhas = [];
+        p.querySelectorAll(".link-item").forEach(function(it){
+          var u = it.querySelector("input").value.trim();
+          var o = it.querySelector("textarea").value.trim();
+          if (u || o) linhas.push("· " + (u || "(sem link)") + (o ? "\n  " + o : ""));
+        });
+        p.querySelectorAll("textarea, input[type=text]").forEach(function(c){
+          if (c.closest(".link-item")) return;
+          if (c.value.trim()){
+            var rot = p.querySelector('label.campo-rot[for="'+c.id+'"]');
+            linhas.push((rot ? rot.textContent.trim() + ": " : "") + c.value.trim());
+          }
+        });
+        var r = p.querySelector('input[type=radio]:checked');
+        if (r){
+          var lb = r.closest(".opcao").querySelector(".lbl b");
+          linhas.unshift("→ " + (lb ? lb.textContent.trim() : r.value));
+        }
+        var cks = p.querySelectorAll('input[type=checkbox]:checked');
+        if (cks.length){
+          var nomes = [];
+          cks.forEach(function(c){
+            var lb = c.closest("label").querySelector("b");
+            if (lb) nomes.push(lb.textContent.trim());
+          });
+          if (nomes.length) linhas.unshift("→ " + nomes.join(", "));
+        }
+        if (!linhas.length) return;
+        out.push("");
+        out.push("[" + (id ? id.textContent.trim() : "") + "] " + (txt ? txt.textContent.trim() : ""));
+        out.push(linhas.join("\n"));
+      });
+    });
+    return out.join("\n");
+  }
+
+  document.getElementById("baixar").addEventListener("click", function(){
+    var blob = new Blob([montarTexto()], {type:"text/plain;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "briefing-bertoncini-mendonca.txt";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 100);
+  });
+
+  /* Última tentativa ao fechar a aba, para o que foi digitado nos segundos
+     finais não ficar só no rascunho local. */
+  window.addEventListener("pagehide", function(){
+    gravarLocal(dados);
+    if (navigator.sendBeacon){
+      navigator.sendBeacon(API, new Blob(
+        [JSON.stringify({ id: ID, respostas: dados })],
+        {type:"application/json"}
+      ));
+    }
+  });
+
+  /* ══ o avião ══
+     Desce a goteira esquerda acompanhando a leitura, e inclina conforme a
+     velocidade da rolagem. É a mesma informação da barra do topo, em outra
+     forma: quem está no bloco 2 vê o avião no alto, quem está no 8 vê no pé.
+     Só existe acima de 1420px, onde há goteira sobrando, e some para quem
+     pediu menos movimento (as duas regras estão no CSS). */
+  var aviao = document.getElementById("aviao");
+  var corpo = document.getElementById("corpo");
+  var ultimoY = window.scrollY, alvoIncl = 0, incl = 0, y = 0, alvoY = 0, rodando = false;
+
+  function quadro(){
+    y += (alvoY - y) * 0.12;
+    incl += (alvoIncl - incl) * 0.1;
+    aviao.style.transform = "translateY(" + y.toFixed(1) + "px)";
+    corpo.setAttribute("transform", "rotate(" + incl.toFixed(1) + " 26 26)");
+    if (Math.abs(alvoY - y) > 0.4 || Math.abs(alvoIncl - incl) > 0.4){
+      requestAnimationFrame(quadro);
+    } else { rodando = false; }
+  }
+
+  function aoRolar(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? h.scrollTop / max : 0;
+    alvoY = 80 + pct * (h.clientHeight - 200);
+    var d = window.scrollY - ultimoY;
+    ultimoY = window.scrollY;
+    /* Inclina no sentido da rolagem. O bico aponta para baixo, então descer
+       não inclina nada e o giro só marca a mudança de direção. */
+    alvoIncl = Math.max(-22, Math.min(22, -d * 1.4));
+    if (window.scrollY > 200) aviao.classList.add("on");
+    else aviao.classList.remove("on");
+    if (!rodando){ rodando = true; requestAnimationFrame(quadro); }
+  }
+
+  var espera;
+  window.addEventListener("scroll", function(){
+    aoRolar();
+    clearTimeout(espera);
+    espera = setTimeout(function(){
+      alvoIncl = 0;
+      if (!rodando){ rodando = true; requestAnimationFrame(quadro); }
+    }, 140);
+  }, {passive:true});
+
+  aoRolar();
+})();
+</script>
+</body>
+</html>

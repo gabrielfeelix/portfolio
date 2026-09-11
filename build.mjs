@@ -138,6 +138,15 @@ async function copyAssets() {
   if (existsSync(path.join(ROOT, "uploads"))) {
     await sincronizar(path.join(ROOT, "uploads"), path.join(DIST, "uploads"));
   }
+  /* Páginas de briefing de cliente: HTML estático puro, servido direto do
+     caminho real e portanto ANTES do rewrite catch-all do vercel.json, que
+     manda todo o resto para rota.html. Elas não entram no bundle, não entram
+     no sitemap e carregam `noindex` — não são páginas do portfólio, são
+     formulários que eu mando para um cliente específico. Reusam as fontes de
+     /volume/fonts/v2/, que já estão publicadas. */
+  if (existsSync(path.join(ROOT, "briefing"))) {
+    await sincronizar(path.join(ROOT, "briefing"), path.join(DIST, "briefing"));
+  }
 }
 
 /* O sitemap.
